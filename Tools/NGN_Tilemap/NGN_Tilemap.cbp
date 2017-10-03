@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="NGN_Tilemap" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="WIN - Debug">
+				<Option output="WIN/_NGN_Tilemap" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/win_debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="WIN - Release">
+				<Option output="WIN/NGN_Tilemap" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/win_release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="LINUX - Debug">
+				<Option output="LINUX/_NGN_Tilemap" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux_debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="LINUX - Release">
+				<Option output="LINUX/NGN_Tilemap" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux_release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++14" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="source/lodepng/lodepng.cpp" />
+		<Unit filename="source/lodepng/lodepng.h" />
+		<Unit filename="source/main.cpp" />
+		<Unit filename="source/tilemap.cpp" />
+		<Unit filename="source/tilemap.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
