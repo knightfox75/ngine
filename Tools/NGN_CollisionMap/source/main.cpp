@@ -38,7 +38,7 @@ void ErrorMsg() {
     std::cout << "Command line error." << std::endl;
     std::cout << "Usage: NGN_CollisionMap INPUT_FILE.PNG [-o filename] [-ts xx]" << std::endl;
     std::cout << "-o filename   Name for the output file, without extension (.map will be added automaticaly)." << std::endl;
-    std::cout << "-ts xx        Size of the squared tile in pixels (From 8 to 1024, 32 pixels by default)." << std::endl;
+    std::cout << "-ts xx        Size of the squared tile in pixels (From 8 to 1024, 32 pixels by default)." << std::endl << std::endl;
 }
 
 

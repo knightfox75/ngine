@@ -377,7 +377,7 @@ void CollisionMap::GenerateMap() {
 
     // Resultado
     std::cout << "done!" << std::endl;
-    std::cout << "Tilemap with " << last_tile << " tiles created successfully." << std::endl;
+    std::cout << "Tilemap with " << last_tile << " tiles created successfully." << std::endl << std::endl;
 
 }
 
