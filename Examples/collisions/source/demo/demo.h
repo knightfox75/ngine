@@ -63,6 +63,10 @@
 // Includes de la libreria
 #include <ngn.h>
 
+/*** Defines ***/
+#define COLOR_MAGENTA 0xFF00FFFF    // RGBA
+#define COLOR_GREEN 0x00FF00FF      // RGBA
+
 
 
 /*** Declaracion de la clase ***/

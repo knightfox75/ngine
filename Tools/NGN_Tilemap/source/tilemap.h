@@ -21,9 +21,9 @@
 
 
 /*** Defines ***/
-#define VERSION             1                   // Version del archivo
+#define VERSION             2                   // Version del archivo
 #define MAGIC_STRING        "NGN TILEDBG"       // Magic String
-#define DEFAULT_TILE_SIZE   16                  // Tamaño por defecto del TILE
+#define DEFAULT_TILE_SIZE   32                  // Tamaño por defecto del TILE
 
 
 

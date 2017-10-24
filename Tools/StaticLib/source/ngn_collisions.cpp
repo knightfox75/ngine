@@ -74,7 +74,7 @@ NGN_Collisions::~NGN_Collisions() {
 /*** Consulta el color de un pixel del mapa de colisiones ***/
 uint32_t NGN_Collisions::GetPixel(NGN_CollisionMapData* cmap, int32_t position_x, int32_t position_y) {
 
-    // Proteccion de errores
+    // Proteccion de errores (pixel fuera del mapa)
     if (
         (cmap == NULL)
         ||
@@ -87,8 +87,16 @@ uint32_t NGN_Collisions::GetPixel(NGN_CollisionMapData* cmap, int32_t position_x
         (position_y >= (int32_t)cmap->header.height)
         ) return 0x00000000;
 
-    // Devuelve el color del pixel solicitado
-    return cmap->palette[cmap->bitmap[((position_y * cmap->header.width) + position_x)]];
+    // Calcula el offset en el buffer del mapa
+    uint32_t offset = (((position_y / cmap->header.tile_size) * cmap->tiles_row_width) + (position_x / cmap->header.tile_size));
+    // Obten el tile
+    uint32_t t = cmap->tmap[offset];
+    // Calcula el offset en el buffer de tiles
+    offset = ((t * cmap->tile_bytes) + (((position_y % cmap->header.tile_size) * cmap->header.tile_size) + (position_x % cmap->header.tile_size)));
+    // Obten el pixel del tile
+    uint8_t p = cmap->tiles[offset];
+    // Devuelve el color del pixel segun la paleta
+    return cmap->palette[p];
 
 }
 

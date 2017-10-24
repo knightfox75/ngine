@@ -22,7 +22,7 @@
 
 
 /*** Defines ***/
-#define VERSION             1                   // Version del archivo
+#define VERSION             2                   // Version del archivo
 #define MAGIC_STRING        "NGN SPRITE"
 
 

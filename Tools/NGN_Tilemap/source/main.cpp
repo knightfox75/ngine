@@ -48,31 +48,52 @@ void ErrorMsg() {
 int32_t main(int32_t argc, char* args[]) {
 
     // Variables
-    std::string filename = "";      // Nombre base de los archivos de salida
+    std::string in_file = "";       // Nombre del archivo de entrada
+    std::string out_file = "";      // Nombre base de los archivos de salida
     uint32_t ts = 32;               // Tamaño del tile
     uint32_t lv = 2;                // Nivel de optimizacion
     bool ef = false;                // Generar archivos extra?
 
+    // Variables de control
+    bool _filename = false;
+    bool _ts = false;
+    bool _lv = false;
+    bool _ef = false;
+    bool _err = false;
+
     // Texto de bienvenida
-    std::cout << std::endl << "N'gine PNG to TiledBG converter." << std::endl << "(cc) 2016 - 2017 by Cesar Rincon." << std::endl << "http://www.nightfoxandco.com" << std::endl << "contact@nightfoxandco.com" << std::endl << std::endl;
+    std::cout <<
+    std::endl << "N'gine PNG to TiledBG converter." <<
+    std::endl << "Version 0.2.0-a." <<
+    std::endl << "(cc) 2016 - 2017 by Cesar Rincon." <<
+    std::endl << "http://www.nightfoxandco.com" <<
+    std::endl << "contact@nightfoxandco.com" <<
+    std::endl << std::endl;
 
     // Verifica la linea de comandos
     if ((argc < 2) || (argc > 10)) {     // Nº de argumentos incorrecto
+
         ErrorMsg();
         return 1;
-    } else if (argc > 2) {              // Analiza los argumentos extra
-        bool _filename = false;
-        bool _ts = false;
-        bool _lv = false;
-        bool _ef = false;
-        for (int32_t i = 2; i < argc; i ++) {
 
+    } else {              // Analiza los argumentos extra
+
+        // Archivo de entrada
+        in_file = args[1];
+        if ((in_file.length() < 5) || (in_file.length() > 240)) {
+            ErrorMsg();
+            return 1;
+        }
+
+        for (int32_t i = 2; i < argc; i ++) {
+            _err = true;
             if (strcmp(args[i], "-o") == 0) {      // Comando -O
                 if (((i + 1) < argc) && !_filename) {
                     _filename = true;
-                    filename = args[(i + 1)];
+                    _err = false;
+                    out_file = args[(i + 1)];
                     i ++;
-                    if ((filename.length() < 1) || (filename.length() > 240)) {
+                    if ((out_file.length() < 1) || (out_file.length() > 240)) {
                         ErrorMsg();
                         return 1;
                     }
@@ -83,6 +104,7 @@ int32_t main(int32_t argc, char* args[]) {
             } else if (strcmp(args[i], "-ts") == 0) {      // Comando -TS
                 if (((i + 1) < argc) && !_ts) {
                     _ts = true;
+                    _err = false;
                     ts = atoi(args[(i + 1)]);
                     i ++;
                     if ((ts < 8) || (ts > 1024)) {
@@ -96,6 +118,7 @@ int32_t main(int32_t argc, char* args[]) {
             } else if (strcmp(args[i], "-lv") == 0) {      // Comando -LV
                 if (((i + 1) < argc) && !_lv) {
                     _lv = true;
+                    _err = false;
                     lv = atoi(args[(i + 1)]);
                     i ++;
                     if ((lv < 1) || (lv > 3)) {
@@ -109,6 +132,7 @@ int32_t main(int32_t argc, char* args[]) {
             } else if (strcmp(args[i], "-ef") == 0) {       // Comando -EF
                 if (!_ef) {
                     ef = _ef = true;
+                    _err = false;
                 } else {
                     ErrorMsg();
                     return 1;
@@ -116,19 +140,23 @@ int32_t main(int32_t argc, char* args[]) {
             }
 
         }
+        // Error de uso incorrecto de argumentos
+        if (_err) {
+            ErrorMsg();
+            return 1;
+        }
     }
     std::cout << std::endl;
+
+    // Nombre del archivo de salida
+    if (out_file == "") out_file = in_file.substr(0, (in_file.length() - 4));
 
     // Crea el objeto de la libreria
     PngToTiles* tm = new PngToTiles();
 
     // Aplica los parametros por defecto
-    tm->input_filename = args[1];
-    if (filename != "" ){
-        tm->output_filename = filename;
-    } else {
-        tm->output_filename = args[1];
-    }
+    tm->input_filename = in_file;
+    tm->output_filename = out_file;
     tm->size_of_tile = ts;
     tm->optimize = lv;
     tm->extra_files = ef;

@@ -49,6 +49,7 @@
 
 
 /*** Includes ***/
+#include <string>
 #include <SDL_ttf.h>
 
 
@@ -73,23 +74,23 @@ class NGN_Load {
         ~NGN_Load();
 
         // Carga de texturas
-        NGN_TextureData* Texture(const char* filepath);
+        NGN_TextureData* Texture(std::string filepath);
 
         // Carga un fondo tileado
-        NGN_TiledBgData* TiledBg(const char* filepath);
+        NGN_TiledBgData* TiledBg(std::string filepath);
 
         // Carga un sprite
-        NGN_SpriteData* Sprite(const char* filepath);
+        NGN_SpriteData* Sprite(std::string filepath);
 
         // Carga un mapa de colisiones
-        NGN_CollisionMapData* CollisionMap(const char* filepath);
+        NGN_CollisionMapData* CollisionMap(std::string filepath);
 
         // Carga un archivo de audio en RAM
-        NGN_AudioClipData* AudioClip(const char* filepath);
+        NGN_AudioClipData* AudioClip(std::string filepath);
 
         // Carga y convierte una fuente TTF al formato de la libreria
         NGN_TextFont* TrueTypeFont(
-            const char* filepath,                   // Archivo a cargar
+            std::string filepath,                   // Archivo a cargar
             uint32_t height,                        // Altura de la fuente (en pixeles)
             bool antialias = true,                  // Antialias?
             uint32_t font_color = 0xFFFFFF,         // Color base

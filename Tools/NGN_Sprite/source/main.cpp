@@ -55,14 +55,21 @@ int32_t main(int32_t argc, char* args[]) {
     int32_t width = -1;                 // Ancho del frame
     int32_t height = -1;                // Altura del frame
 
-    // Texto de bienvenida
-    std::cout << std::endl << "N'gine PNG to Sprite converter." << std::endl << "(cc) 2016 - 2017 by Cesar Rincon." << std::endl << "http://www.nightfoxandco.com" << std::endl << "contact@nightfoxandco.com" << std::endl << std::endl;
-
     // Variables de control
     bool _out_file = false;
     bool _width = false;
     bool _height = false;
     bool _strip = false;
+    bool _err = false;
+
+    // Texto de bienvenida
+    std::cout <<
+    std::endl << "N'gine PNG to Sprite converter." <<
+    std::endl << "Version 0.2.0-a." <<
+    std::endl << "(cc) 2016 - 2017 by Cesar Rincon." <<
+    std::endl << "http://www.nightfoxandco.com" <<
+    std::endl << "contact@nightfoxandco.com" <<
+    std::endl << std::endl;
 
     // Verifica la linea de comandos
     if ((argc < 2) || (argc > 9)) {     // Nº de argumentos incorrecto
@@ -74,17 +81,18 @@ int32_t main(int32_t argc, char* args[]) {
 
         // Archivo de entrada
         in_file = args[1];
-        if ((in_file.length() < 5) || (out_file.length() > 240)) {
+        if ((in_file.length() < 5) || (in_file.length() > 240)) {
             ErrorMsg();
             return 1;
         }
 
         // Analiza los argumentos extra
         for (int32_t i = 2; i < argc; i ++) {
-
+            _err = true;
             if (strcmp(args[i], "-o") == 0) {      // Comando -O
                 if (((i + 1) < argc) && !_out_file) {
                     _out_file = true;
+                    _err = false;
                     out_file = args[(i + 1)];
                     i ++;
                     if ((out_file.length() < 1) || (out_file.length() > 240)) {
@@ -98,6 +106,7 @@ int32_t main(int32_t argc, char* args[]) {
             } else if (strcmp(args[i], "-w") == 0) {      // Comando -W
                 if (((i + 1) < argc) && !_width) {
                     _width = true;
+                    _err = false;
                     width = atoi(args[(i + 1)]);
                     i ++;
                     if (width < 1) {
@@ -111,6 +120,7 @@ int32_t main(int32_t argc, char* args[]) {
             } else if (strcmp(args[i], "-h") == 0) {      // Comando -H
                 if (((i + 1) < argc) && !_height) {
                     _height = true;
+                    _err = false;
                     height = atoi(args[(i + 1)]);
                     i ++;
                     if (height < 1) {
@@ -123,7 +133,13 @@ int32_t main(int32_t argc, char* args[]) {
                 }
             } else if (strcmp(args[i], "-s") == 0) {    // Comando -S
                 _strip = true;
+                _err = false;
             }
+        }
+        // Error de uso incorrecto de argumentos
+        if (_err) {
+            ErrorMsg();
+            return 1;
         }
     }
     std::cout << std::endl;
@@ -135,18 +151,17 @@ int32_t main(int32_t argc, char* args[]) {
     }
 
     // Nombre del archivo de salida
-    if (out_file == "") out_file = in_file;
-    out_file += ".spr";
+    if (out_file == "") out_file = in_file.substr(0, (in_file.length() - 4));
 
 
     /*** Parametros aceptados, crea el objeto principal ***/
     SpriteSheet* spr = new SpriteSheet();
 
     // Registra los parametros del Sprite a convertir
-    spr->frame_width = width;
-    spr->frame_height = height;
     spr->input_filename = in_file;
     spr->output_filename = out_file;
+    spr->frame_width = width;
+    spr->frame_height = height;
     if (_strip) spr->strip = true;
 
     // Carga y convierte la imagen PNG en una tira de sprites

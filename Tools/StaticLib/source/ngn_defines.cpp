@@ -125,8 +125,9 @@ NGN_CollisionMapData::NGN_CollisionMapData() {
 // Destructor
 NGN_CollisionMapData::~NGN_CollisionMapData() {
 
-    bitmap.clear();
     palette.clear();
+    tiles.clear();
+    tmap.clear();
 
 }
 

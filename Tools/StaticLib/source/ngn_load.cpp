@@ -48,6 +48,7 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <string>
 
 // SDL
 #include <SDL.h>
@@ -74,7 +75,9 @@ NGN_Load::~NGN_Load() {
 
 
 /*** Carga una textura ***/
-NGN_TextureData* NGN_Load::Texture(const char* filepath) {
+NGN_TextureData* NGN_Load::Texture(std::string filepath) {
+
+    const char* _filepath = filepath.c_str();
 
     // Crea una textura temporal que se usara como buffer
     NGN_TextureData* texture = new NGN_TextureData();
@@ -89,7 +92,7 @@ NGN_TextureData* NGN_Load::Texture(const char* filepath) {
     uint32_t w, h;
 
     // Carga el archivo PNG
-    uint32_t error = lodepng::load_file(png, filepath);
+    uint32_t error = lodepng::load_file(png, _filepath);
 
     // Si se ha cargado correctamente, decodifica la imagen
     if (error == 0) {
@@ -147,7 +150,9 @@ NGN_TextureData* NGN_Load::Texture(const char* filepath) {
 
 
 /*** Carga un fondo tileado ***/
-NGN_TiledBgData* NGN_Load::TiledBg(const char* filepath) {
+NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
+
+    const char* _filepath = filepath.c_str();
 
     // Crea un objeto temporal para procesar el fondo cargado
     NGN_TiledBgData* bg = new NGN_TiledBgData();
@@ -161,7 +166,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(const char* filepath) {
 
     // Intenta cargar el archivo
     std::ifstream file;
-    file.open(filepath, std::ifstream::in | std::ifstream::binary);
+    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
     if (file.is_open()) {
         // Carga la cabecera del archivo
         file.read((char*)&bg->header, sizeof(bg->header));
@@ -239,7 +244,9 @@ NGN_TiledBgData* NGN_Load::TiledBg(const char* filepath) {
 
 
 /*** Carga un sprite ***/
-NGN_SpriteData* NGN_Load::Sprite(const char* filepath) {
+NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
+
+    const char* _filepath = filepath.c_str();
 
     // Crea un objeto temporal para procesar el sprite
     NGN_SpriteData* spr = new NGN_SpriteData();
@@ -253,7 +260,7 @@ NGN_SpriteData* NGN_Load::Sprite(const char* filepath) {
 
     // Intenta cargar el archivo
     std::ifstream file;
-    file.open(filepath, std::ifstream::in | std::ifstream::binary);
+    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
     if (file.is_open()) {
         // Carga la cabecera del archivo
         file.read((char*)&spr->header, sizeof(spr->header));
@@ -329,31 +336,35 @@ NGN_SpriteData* NGN_Load::Sprite(const char* filepath) {
 
 
 /*** Carga un mapa de colisiones ***/
-NGN_CollisionMapData* NGN_Load::CollisionMap(const char* filepath) {
+NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
+
+    const char* _filepath = filepath.c_str();
 
     // Crea un objeto temporal para procesar el archivo
     NGN_CollisionMapData* collision = new NGN_CollisionMapData();
 
     // Intenta cargar el archivo
     std::ifstream file;
-    file.open(filepath, std::ifstream::in | std::ifstream::binary);
+    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
     if (file.is_open()) {
         // Carga la cabecera del archivo
         file.read((char*)&collision->header, sizeof(collision->header));
         // Carga la paleta
-        collision->palette.resize(256, 0);
-        file.read((char*)&collision->palette[0], (256 * sizeof(int32_t)));
-        // Carga el archivo bitmap
-        int32_t buffer_size = (collision->header.width * collision->header.height);
-        collision->bitmap.resize(buffer_size, 0);
-        file.read((char*)&collision->bitmap[0], buffer_size);
+        collision->palette.resize(collision->header.pal_length, 0);
+        file.read((char*)&collision->palette[0], (collision->header.pal_length * sizeof(int32_t)));
+        // Carga los tiles
+        collision->tiles.resize(collision->header.tileset_length, 0);
+        file.read((char*)&collision->tiles[0], collision->header.tileset_length);
+        // Carga el mapa
+        collision->tmap.resize(collision->header.map_length, 0);
+        file.read((char*)&collision->tmap[0], (collision->header.map_length * sizeof(int32_t)));
+        // Cierra el archivo
         file.close();
     } else {
         std::cout << "Error opening " << filepath << "  for read." << std::endl;
         delete collision;
         return NULL;
     }
-
 
     // Verifica que el archivo es compatible
     if (strcmp(collision->header.magic, MAGIC_STRING_CMAP) != 0) {
@@ -362,23 +373,44 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(const char* filepath) {
         return NULL;
     }
 
+    // Calcula los datos adicionales del mapa de colisiones
+    collision->tiles_row_width = (collision->header.width / collision->header.tile_size);
+    if ((collision->header.width % collision->header.tile_size) != 0) collision->tiles_row_width ++;
+    collision->tile_bytes = (collision->header.tile_size * collision->header.tile_size);
+
+    /*
+    uint32_t bb = 0;
+    for (uint32_t z = 0; z < collision->tmap.capacity(); z ++) {
+        bb = collision->tmap[z];
+        std::cout << z << ":" << bb << std::endl;
+    }
+    std::cout << "Debug: Collision Map Loading" << std::endl;
+    std::cout << "Map size: " << collision->header.width << "x" << collision->header.height << std::endl;
+    std::cout << "Size of the tile: " << collision->header.tile_size << std::endl;
+    std::cout << "Palette length: " << collision->palette.capacity() << std::endl;
+    std::cout << "Tileset length: " << (collision->tiles.capacity() / collision->tile_bytes) << std::endl;
+    std::cout << "Map length: " << collision->tmap.capacity() << std::endl;
+    std::cout << "Row width: " << collision->tiles_row_width << std::endl;
+    std::cout << "Tile space: " << collision->tile_bytes << std::endl;
+    */
 
     // Devuelve el mapa cargado
     return collision;
-
 
 }
 
 
 
 /*** Carga un archivo de audio ***/
-NGN_AudioClipData* NGN_Load::AudioClip(const char* filepath) {
+NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
+
+    const char* _filepath = filepath.c_str();
 
     // Crea un archivo temporal con el audio
     NGN_AudioClipData* clip = new NGN_AudioClipData();
 
     // Carga el archivo
-    if (clip->data.loadFromFile(filepath)) {
+    if (clip->data.loadFromFile(_filepath)) {
         return clip;
     } else {
         std::cout << "Error opening " << filepath << "  for read." << std::endl;
@@ -391,13 +423,15 @@ NGN_AudioClipData* NGN_Load::AudioClip(const char* filepath) {
 
 /*** Carga y convierte una fuente TFF al formato de la libreria ***/
 NGN_TextFont* NGN_Load::TrueTypeFont(
-    const char* filepath,                   // Archivo a cargar
+    std::string filepath,                   // Archivo a cargar
     uint32_t height,                        // Altura de la fuente (en pixeles)
     bool antialias,                         // Antialias?
     uint32_t font_color,                    // Color base
     uint32_t outline,                       // Borde? (en pixeles)
     uint32_t outline_color                  // Color del borde
 ) {
+
+    const char* _filepath = filepath.c_str();
 
     // Intenta iniciar el subsitema de TTF para SDL
     if (TTF_Init() < 0) {
@@ -409,7 +443,7 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     NGN_TextFont* font = new NGN_TextFont();
 
     // Intenta cargar la tipografia
-    TTF_Font* ttf = TTF_OpenFont(filepath, height);
+    TTF_Font* ttf = TTF_OpenFont(_filepath, height);
     if (ttf == NULL) {
         std::cout << "Error opening " << filepath << "  for read." << std::endl;
         return NULL;

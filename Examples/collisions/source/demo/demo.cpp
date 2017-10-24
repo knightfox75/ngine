@@ -246,13 +246,13 @@ void Demo::AddCherries() {
     Vector2I32 pos;     // Calculo de las posiciones
     Size2 map_size = ngn->collisions->GetMapSize(cmap_data);     // Obten el tamaño del mapa de colisiones
 
-    for (int32_t y = 0; y < map_size.height; y += TILE_SIZE) {      // Steps del tamaño del tile del mapa de colisiones
-        pos.y = y + HALF_TILE;
-        for (int32_t x = 0; x < map_size.width; x += TILE_SIZE) {
+    for (int32_t y = 0; y < map_size.height; y += cmap_data->header.tile_size) {      // Steps del tamaño del tile del mapa de colisiones
+        pos.y = y + (cmap_data->header.tile_size / 2);
+        for (int32_t x = 0; x < map_size.width; x += cmap_data->header.tile_size) {
             // Punto para colocar el objeto
-            pos.x = x + HALF_TILE;
+            pos.x = x + (cmap_data->header.tile_size / 2);
             // Si hay el color del mapa coincide, coloca un nuevo sprite
-            if (ngn->collisions->GetPixel(cmap_data, pos.x, pos.y) == 0xFFFF00FF) {     // AABBGGRR
+            if (ngn->collisions->GetPixel(cmap_data, pos.x, pos.y) == COLOR_MAGENTA) {
                 cherry.push_back(new NGN_Sprite(cherry_data, pos.x, pos.y));
             }
         }
@@ -288,6 +288,12 @@ void Demo::Move() {
         CheckRight(player, cmap_data);
     }
 
+    /*
+    std::cout <<
+    ngn->collisions->GetPixel(cmap_data, (int32_t)player->position.x, (int32_t)player->position.y)
+    << std::endl;
+    */
+
 }
 
 
@@ -309,7 +315,7 @@ bool Demo::CheckUp(NGN_Sprite* sprite, NGN_CollisionMapData* cmap) {
             x = ((int32_t)sprite->position.x + (i - ((int32_t)sprite->width / 2)));
             y = ((int32_t)sprite->position.y - ((int32_t)sprite->height / 2));
             // Si hay colision...
-            if (ngn->collisions->GetPixel(cmap, x, y) == 0xFF00FF00) {      // AABBGGRR
+            if (ngn->collisions->GetPixel(cmap, x, y) == COLOR_GREEN) {
                 // Desplaza un pixel abajo el sprite
                 sprite->position.y ++;
                 // Autoajuste
@@ -348,7 +354,7 @@ bool Demo::CheckDown(NGN_Sprite* sprite, NGN_CollisionMapData* cmap) {
             x = ((int32_t)sprite->position.x + (i - ((int32_t)sprite->width / 2)));
             y = ((int32_t)sprite->position.y + ((int32_t)sprite->height / 2) - 1);
             // Si hay colision...
-            if (ngn->collisions->GetPixel(cmap, x, y) == 0xFF00FF00) {      // AABBGGRR
+            if (ngn->collisions->GetPixel(cmap, x, y) == COLOR_GREEN) {
                 // Desplaza un pixel arriba el sprite
                 sprite->position.y --;
                 // Autoajuste
@@ -387,7 +393,7 @@ bool Demo::CheckLeft(NGN_Sprite* sprite, NGN_CollisionMapData* cmap) {
             x = ((int32_t)sprite->position.x - ((int32_t)sprite->width / 2));
             y = ((int32_t)sprite->position.y + (i - ((int32_t)sprite->height / 2)));
             // Si hay colision...
-            if (ngn->collisions->GetPixel(cmap, x, y) == 0xFF00FF00) {      // AABBGGRR
+            if (ngn->collisions->GetPixel(cmap, x, y) == COLOR_GREEN) {
                 // Desplaza un pixel a la derecha el sprite
                 sprite->position.x ++;
                 // Autoajuste
@@ -426,7 +432,7 @@ bool Demo::CheckRight(NGN_Sprite* sprite, NGN_CollisionMapData* cmap) {
             x = ((int32_t)sprite->position.x + ((int32_t)sprite->width / 2) - 1);
             y = ((int32_t)sprite->position.y + (i - ((int32_t)sprite->height / 2)));
             // Si hay colision...
-            if (ngn->collisions->GetPixel(cmap, x, y) == 0xFF00FF00) {      // AABBGGRR
+            if (ngn->collisions->GetPixel(cmap, x, y) == COLOR_GREEN) {
                 // Desplaza un pixel a la izquierda el sprite
                 sprite->position.x --;
                 // Autoajuste

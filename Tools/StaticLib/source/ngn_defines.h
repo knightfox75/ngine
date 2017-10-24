@@ -147,8 +147,8 @@ class NGN_TiledBgData {
         } header;
 
         // Contenido del fondo
-        SDL_Texture* tiles;                     // Almacena el Tileset
-        std::vector<uint8_t> tmap;        // Almacena el mapa
+        SDL_Texture* tiles;                 // Almacena el Tileset
+        std::vector<uint8_t> tmap;          // Almacena el mapa
 
     // Private
     private:
@@ -207,15 +207,24 @@ class NGN_CollisionMapData {
 
         // Cabecera del archivo
         struct {
-            uint8_t version;            // Version del programa de conversion
-            char magic[32];             // Magic String
-            uint32_t width;             // Ancho del mapa
-            uint32_t height;            // Alto del mapa
-            uint8_t reserve[256];       // Posible uso futuro
+            uint8_t version;                // Version del programa de conversion
+            char magic[32];                 // Magic String
+            uint32_t width;                 // Ancho del mapa
+            uint32_t height;                // Alto del mapa
+            uint32_t tile_size;             // Tamaño del tile
+            uint32_t pal_length;            // Tamaño de los datos (nº de elementos) de la paleta
+            uint32_t tileset_length;        // Tamaño de los datos (nº de elementos) del tileset
+            uint32_t map_length;            // Tamaño de los datos (nº de elementos) del mapa
+            uint8_t reserve[256];           // Posible uso futuro
         } header;
 
-        std::vector<uint8_t> bitmap;        // Buffer para almacenar el mapa de pixeles
         std::vector<uint32_t> palette;      // Buffer para almacenar la paleta de colores
+        std::vector<uint8_t> tiles;         // Buffer para almacenar los pixeles de los tiles
+        std::vector<uint32_t> tmap;         // Buffer para almacenar el mapa de tiles
+
+        uint32_t tile_bytes;                // Tamaño de cada tile en bytes
+        uint32_t tiles_row_width;           // Tamaño en pixeles de una fila de tiles
+
 
     // Private
     private:

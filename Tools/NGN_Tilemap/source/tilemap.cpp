@@ -232,8 +232,8 @@ void PngToTiles::GenerateTileset() {
     map_tile.resize(((size_of_tile * size_of_tile) << 2), 0);
 
     // Marcador...
-    uint32_t max_tiles = ((map_width / size_of_tile) * (map_height / size_of_tile));  // Total de tiles
-    float percent = 0.0f, old_percent = 0.0f;
+    uint64_t max_tiles = ((map_width / size_of_tile) * (map_height / size_of_tile));  // Total de tiles
+    uint64_t percent = 0, old_percent = 0;
     char s[16];
     std::cout << "Optimizing " << max_tiles << " tiles..." << std::endl;
 
@@ -271,9 +271,9 @@ void PngToTiles::GenerateTileset() {
             // Contador de tiles
             total_tiles ++;
             // Informacion del progreso
-            percent = ((float)(total_tiles * 100) / (float)max_tiles);
-            if (((int32_t)(percent * 10)) != ((int32_t)(old_percent * 10))) {
-                sprintf(s, "%05.1f%%", percent);
+            percent = ((total_tiles * 1000) / max_tiles);
+            if (percent != old_percent) {
+                sprintf(s, "%05.1f%%", ((float)percent / 10.0f));
                 std::cout << "\x0d" << s << " ";
                 old_percent = percent;
             }
@@ -365,8 +365,8 @@ int32_t PngToTiles::WriteFile(std::string filename) {
     //std::cout << basename << std::endl;
 
     // Graba el archivo principal
-    std::ofstream file;
     sprintf(f, "%s.tbg", basename);
+    std::ofstream file;
     file.open(f, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
         file.write((char*)&header, sizeof(header));         // Cabecera
@@ -384,11 +384,11 @@ int32_t PngToTiles::WriteFile(std::string filename) {
     if (extra_files) {
 
         // Graba la imagen con el tileset
-        sprintf(f, "%s.tiles.png", basename);
+        sprintf(f, "%s_tileset.png", basename);
         if (WritePNG(f, tiles) > 0) return 1;
 
         // Graba el mapa del tileset en formato binario
-        sprintf(f, "%s.map.bin", basename);
+        sprintf(f, "%s_map.bin", basename);
         file.open(f, std::ofstream::out | std::ofstream::binary);
         if (file.is_open()) {
             file.write((char*)&tmap[0], tmap.capacity());

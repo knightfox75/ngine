@@ -165,8 +165,8 @@ int32_t SpriteSheet::WriteFile(std::string filename) {
     //std::cout << basename << std::endl;
 
     // Graba el archivo principal
+    sprintf(f, "%s.spr", basename);
     std::ofstream file;
-    sprintf(f, "%s", basename);
     file.open(f, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
         file.write((char*)&header, sizeof(header));         // Cabecera
