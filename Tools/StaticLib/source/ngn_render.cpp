@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -505,6 +505,90 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
         // Renderiza la textura
         SDL_RenderCopyEx(ngn->graphics->renderer, layer->backbuffer, &source, &destination, (layer->rotation + _rotation), _center, _flip);
         //Texture(layer->gfx, _x, _y, _width, _height, (layer->rotation + _rotation), _center, _flip);
+
+        // Paso de limpieza
+        delete _center;
+
+    }
+
+}
+
+
+
+/*** Dibuja un canvas en el renderer ***/
+void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) {
+
+    // Si debe dibujarse...
+    if (canvas->visible) {
+
+        // Calculos
+        int32_t _x, _y;
+        if ((position_x != DEFAULT_VALUE) && (position_y != DEFAULT_VALUE)) {
+            canvas->position.x = position_x;
+            canvas->position.y = position_y;
+        }
+        _x = (int32_t)(canvas->position.x);
+        _y = (int32_t)(canvas->position.y);
+
+        int32_t _width = ((float)canvas->width * canvas->scale.width);
+        int32_t _height = ((float)canvas->height * canvas->scale.height);
+        double _rotation = 0.0f;
+        SDL_RendererFlip _flip;
+
+        // Centro de la rotacion
+        SDL_Point* _center = new SDL_Point();
+        _center->x = ((_width / 2.0f) + canvas->center.x);
+        _center->y = ((_height / 2.0f) + canvas->center.y);
+
+        // Flip
+        if (!canvas->flip_h && !canvas->flip_v) {
+            _flip = SDL_FLIP_NONE;
+        } else if (canvas->flip_h && !canvas->flip_v) {
+            _flip = SDL_FLIP_HORIZONTAL;
+        } else if (!canvas->flip_h && canvas->flip_v) {
+            _flip = SDL_FLIP_VERTICAL;
+        } else {
+            _flip = SDL_FLIP_NONE;
+            _rotation = 180.0f;
+        }
+
+        // Alpha
+        if (canvas->alpha == -1) {
+            // Deshabilita el canal Alpha
+            SDL_SetTextureBlendMode(canvas->backbuffer, SDL_BLENDMODE_NONE);
+        } else {
+            int32_t _alpha = canvas->alpha;
+            if (_alpha < 0) {
+                _alpha = 0;
+            } else if (_alpha > 0xFF) {
+                _alpha = 0xFF;
+            }
+            SDL_SetTextureBlendMode(canvas->backbuffer, SDL_BLENDMODE_BLEND);
+            SDL_SetTextureAlphaMod(canvas->backbuffer, (Uint8)_alpha);
+        }
+
+
+        /* Dibujado de la textura */
+
+        // Define el area de origen
+        SDL_Rect source = {
+            0,                  			// Posicion X
+            0,              				// Posicion Y
+            (int32_t)canvas->width,          // Ancho
+            (int32_t)canvas->height          // Alto
+        };
+
+        // Define el area de destino
+        SDL_Rect destination = {
+            _x,         // Posicion X
+            _y,         // Posicion Y
+            _width,     // Ancho
+            _height     // Alto
+        };
+
+        // Renderiza la textura
+        SDL_RenderCopyEx(ngn->graphics->renderer, canvas->backbuffer, &source, &destination, (canvas->rotation + _rotation), _center, _flip);
+        //Texture(canvas->gfx, _x, _y, _width, _height, (canvas->rotation + _rotation), _center, _flip);
 
         // Paso de limpieza
         delete _center;

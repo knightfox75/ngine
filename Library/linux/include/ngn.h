@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -80,6 +80,7 @@
 #include "ngn_sound.h"              // Clase para la gestion del sonido
 #include "ngn_audio_clip.h"         // Clase para los clips de audio
 #include "ngn_music_clip.h"         // Clase para los clips de musica
+#include "ngn_canvas.h"             // Clase para el lienzo de dibujo
 
 
 

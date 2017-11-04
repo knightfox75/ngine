@@ -105,6 +105,8 @@
 		<Unit filename="source/ngn_audio_clip.h" />
 		<Unit filename="source/ngn_camera.cpp" />
 		<Unit filename="source/ngn_camera.h" />
+		<Unit filename="source/ngn_canvas.cpp" />
+		<Unit filename="source/ngn_canvas.h" />
 		<Unit filename="source/ngn_collisions.cpp" />
 		<Unit filename="source/ngn_collisions.h" />
 		<Unit filename="source/ngn_defines.cpp" />

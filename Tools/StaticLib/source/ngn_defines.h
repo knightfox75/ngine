@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -56,7 +56,9 @@
 
 
 /*** Definiciones ***/
-#define DEFAULT_VALUE (1 << 31)
+#define DEFAULT_VALUE 0x7FFFFFFF
+//#define DEFAULT_VALUE (1 << 31)
+#define PI 3.14159265f
 
 
 
@@ -90,6 +92,20 @@ struct Size2I32 {
 struct Size2I64 {
     int64_t width;
     int64_t height;
+};
+
+struct CanvasPoint {
+    int32_t x;
+    int32_t y;
+    int32_t color;
+};
+
+struct CanvasLine {
+    int32_t x1;
+    int32_t y1;
+    int32_t x2;
+    int32_t y2;
+    int32_t color;
 };
 
 

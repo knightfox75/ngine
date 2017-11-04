@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -158,7 +158,7 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) 
         layer[layer_number].in_use = true;
 
         // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
-        if ((layer[layer_number].sprite_layer.width < 0) || (layer[layer_number].sprite_layer.height < 0)) {
+        if ((layer[layer_number].sprite_layer.width == DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == DEFAULT_VALUE)) {
             SizeOfLayer(layer_number, texture->width, texture->height);
         }
 
@@ -190,7 +190,7 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* backgroun
         layer[layer_number].in_use = true;
 
         // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
-        if ((layer[layer_number].sprite_layer.width < 0) || (layer[layer_number].sprite_layer.height < 0)) {
+        if ((layer[layer_number].sprite_layer.width == DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == DEFAULT_VALUE)) {
             SizeOfLayer(layer_number, background->width, background->height);
         }
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -67,13 +67,13 @@ class NGN_Graphics {
 
         // Inicializa la ventana principal y la superficie de renderizado
         bool Init(
-                  const char* window_name,              // Nombre en la ventana
-                  uint32_t native_width,            // Resolucion Nativa del juego
+                  const char* window_name,                  // Nombre en la ventana
+                  uint32_t native_width,                    // Resolucion Nativa del juego
                   uint32_t native_height,
                   int32_t screen_width = DEFAULT_VALUE,     // Resolucion de la ventana / FS
                   int32_t screen_height = DEFAULT_VALUE,
-                  bool full_scr = false,                // Pantalla completa?
-                  bool sync = true                      // VSYNC activo?
+                  bool full_scr = false,                    // Pantalla completa?
+                  bool sync = true                          // VSYNC activo?
                   );
 
         SDL_Window* window;         // Puntero a la ventana

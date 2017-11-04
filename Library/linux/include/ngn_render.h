@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -55,6 +55,7 @@
 #include "ngn_tiledbg.h"
 #include "ngn_texture.h"
 #include "ngn_text_layer.h"
+#include "ngn_canvas.h"
 
 
 
@@ -81,6 +82,9 @@ class NGN_Render {
 
         // Dibuja una capa de texto
         void TextLayer(NGN_TextLayer* layer, float position_x = DEFAULT_VALUE, float position_y = DEFAULT_VALUE);
+
+        // Dibuja un canvas
+        void Canvas(NGN_Canvas* canvas, float position_x = DEFAULT_VALUE, float position_y = DEFAULT_VALUE);
 
 
     // Private

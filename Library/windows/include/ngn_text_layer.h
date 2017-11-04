@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.1.0-alpha ***
+    *** Version 0.2.1-alpha ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -159,7 +159,7 @@ class NGN_TextLayer {
 
         // Selecciona el color del lienzo
         void CanvasColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);   // [R, G, B, A]
-        void CanvasColor(uint32_t argb);                                // [0xAARRGGBB]
+        void CanvasColor(uint32_t rgba);                                // [0xRRGGBBAA]
 
         // Escribe el texto en la capa
         void Print(std::string text);
