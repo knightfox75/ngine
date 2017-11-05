@@ -107,6 +107,10 @@ NGN_Canvas::NGN_Canvas(
     scale.width = 1.0f;         // Escala
     scale.height = 1.0f;
 
+    // Borra el contenido del canvas (basura RAM)
+    Cls(0xFFFFFFFF);
+    Cls();
+
 }
 
 
@@ -202,13 +206,14 @@ void NGN_Canvas::Cls(uint32_t color) {
     // Informa al renderer que la textura "backbuffer" es su destino
     SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
 
+
     // Borra el contenido de la textura actual
     SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                           ((color & 0xFF000000) >> 24),
-                           ((color & 0x00FF0000) >> 16),
-                           ((color & 0x0000FF00) >> 8),
-                           (color & 0x000000FF)
-                           );
+                            ((color & 0xFF000000) >> 24),
+                            ((color & 0x00FF0000) >> 16),
+                            ((color & 0x0000FF00) >> 8),
+                            (color & 0x000000FF)
+                            );
     SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(backbuffer, 0x00);
     SDL_RenderFillRect(ngn->graphics->renderer, NULL);
