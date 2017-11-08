@@ -172,6 +172,8 @@ class NGN_TextLayer {
         NGN_TextFont* font;             // Fuente actual
         NGN_TextureData* background;    // Textura de fondo (opcional)
 
+        // Limpieza del surface
+        void SurfaceCleanUp();
 
 };
 

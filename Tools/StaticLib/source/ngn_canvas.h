@@ -164,6 +164,9 @@ class NGN_Canvas {
         std::vector<CanvasLine> segment;    // Buffer para almacenar los segmentos de una forma
         std::vector<CanvasPoint> vertex;    // Buffer para almacenar los vertices de una forma
 
+        // Limpieza del surface
+        void SurfaceCleanUp();
+
 };
 
 

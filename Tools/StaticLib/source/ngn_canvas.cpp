@@ -108,8 +108,7 @@ NGN_Canvas::NGN_Canvas(
     scale.height = 1.0f;
 
     // Borra el contenido del canvas (basura RAM)
-    Cls(0xFFFFFFFF);
-    Cls();
+    SurfaceCleanUp();
 
 }
 
@@ -552,3 +551,19 @@ void NGN_Canvas::FilledCircle(uint32_t x, uint32_t y, uint32_t r, uint32_t color
 
 }
 
+
+
+/*** Limpieza de la superficie ***/
+void NGN_Canvas::SurfaceCleanUp() {
+
+    // Informa al renderer que la textura "backbuffer" es su destino
+    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
+    // Borra el contenido del renderer
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(ngn->graphics->renderer);
+    // Cambia el destino del renderer a la pantalla
+    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
+    // Restaura el color y alpha del renderer
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+
+}

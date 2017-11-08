@@ -134,7 +134,7 @@ NGN_TextLayer::NGN_TextLayer(
     canvas.r = 0x00;
 
     // Prepara la capa
-    Cls();
+    SurfaceCleanUp();
 
 }
 
@@ -419,5 +419,22 @@ void NGN_TextLayer::SetCenter(float x, float y) {
 
     center.x = x;
     center.y = y;
+
+}
+
+
+
+/*** Limpieza de la superficie ***/
+void NGN_TextLayer::SurfaceCleanUp() {
+
+    // Informa al renderer que la textura "backbuffer" es su destino
+    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
+    // Borra el contenido del renderer
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(ngn->graphics->renderer);
+    // Cambia el destino del renderer a la pantalla
+    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
+    // Restaura el color y alpha del renderer
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
 
 }

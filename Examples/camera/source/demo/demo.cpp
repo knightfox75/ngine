@@ -241,13 +241,13 @@ void Demo::CreateStage() {
     ngn->camera->PushBackground(1, bg1);
     ngn->camera->PushBackground(2, bg2);
 
-    // Añade el sprite de la mirilla a la camara para su gestion
-    ngn->camera->PushSprite(2, aim);
-
     // Genera los pajaros de la capa 0 y registralos en la camara(fondo)
     CreateBirds(0, 20, 0.33);
     CreateBirds(1, 15, 0.66f);
     CreateBirds(2, 10, 1.0f);
+
+    // Añade el sprite de la mirilla a la camara para su gestion
+    ngn->camera->PushSprite(2, aim);
 
 }
 
