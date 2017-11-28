@@ -64,8 +64,8 @@
 #include <ngn.h>
 
 /*** Defines ***/
-#define VERTEX 6
-#define SNAP 16
+#define VERTEX 8
+#define SNAP 8
 
 
 

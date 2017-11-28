@@ -62,11 +62,11 @@ class NGN_TiledBg {
 
         // Constructor
         NGN_TiledBg(
-                     NGN_TiledBgData* bg,           // Datos del fondo
-                     int32_t position_x = 0,        // Posicion X del fondo [0 por defecto]
-                     int32_t position_y = 0,        // Posicion Y del fondo [0 por defecto]
-                     bool over_scan = false         // Uso de over scan en el fondo
-                     );
+                    NGN_TiledBgData* bg,           // Datos del fondo
+                    int32_t position_x = 0,        // Posicion X del fondo [0 por defecto]
+                    int32_t position_y = 0,        // Posicion Y del fondo [0 por defecto]
+                    bool over_scan = false         // Uso de over scan en el fondo
+                    );
 
         // Destructor
         ~NGN_TiledBg();

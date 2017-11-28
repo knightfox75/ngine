@@ -1,0 +1,46 @@
+--------------------------------------------------------------------------------
+N'gine Changelog
+--------------------------------------------------------------------------------
+
+W.I.P.
+--------------------------------------------------------------------------------
+- Añadidas las funciones de colision entre Sprites por "Pixel Perfect".
+
+
+
+2017-11-14 Ver.0.3.0-a
+--------------------------------------------------------------------------------
+- Compilación de los binarios de N'gine para Windows usando las nuevas
+  versiones de las librerías SDL y SFML (SDL 2.0.7 y SFML 2.4.2).
+- Pequeñas correcciones en los textos informativos de la utilidad "PNG to 
+  Collision Map converter".
+- Cambio del formato de color en la función NGN_TextLayer::CanvasColor()
+  de ARGB a RGBA.
+- Cambio de la definición DEFAULT_VALUE de (1 << 31) a 0x7FFFFFFF.
+- Cambios menores de la detección de parámetros en la función
+  NGN_Graphics::Init(), adaptándola al nuevo DEFAULT_VALUE.
+- Cambios menores en la clase NGN_Camera, adaptándola al nuevo
+  DEFAULT_VALUE.
+- Añadidas las primeras funciones de Canvas.
+- Añadidas funciones internas para la limpieza de los buffers en su
+  proceso de creación.
+- Añadidos los ejemplos de Canvas y pequeñas correcciones en el ejemplo
+  de uso de la cámara.
+
+
+
+2017-10-24 Ver.0.2.0-a
+--------------------------------------------------------------------------------
+- Cambio del formato de pixel en los mapas de colisión de ABGR a RGBA.
+- Cambio del sistema de almacenamiento en archivo y en RAM del mapa de
+  colisiones, usando tiles para comprimir la información del mismo.
+- Optimización del contador de progreso en las utilidades.
+- Optimización de la detección de argumentos en las utilidades.
+- Optimización de la generación de nombres de archivo en las utilidades.
+- Actualizado el ejemplo de uso de los mapas de colisión.
+
+
+
+2017-10-04 Ver.0.1.0-a
+--------------------------------------------------------------------------------
+- Primera pre-release en estado Alpha.

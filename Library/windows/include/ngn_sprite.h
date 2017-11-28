@@ -67,7 +67,7 @@ class NGN_Sprite {
 
         // Contructor
         NGN_Sprite(
-                    NGN_SpriteData* sprite,                // Objeto de la clase Sprite Data
+                    NGN_SpriteData* sprite,                     // Objeto de la clase Sprite Data
                     int32_t position_x = DEFAULT_VALUE,         // Posicion X inicial (oculto por defecto)
                     int32_t position_y = DEFAULT_VALUE,         // Posicion Y inicial (oculto por defecto)
                     int32_t sprite_width = DEFAULT_VALUE,       // Ancho del sprite (por defecto, el de la textura)
@@ -89,7 +89,7 @@ class NGN_Sprite {
         Size2 box;                  // Caja de colisiones
 
         bool visible;               // Visibilidad
-        int32_t alpha;                  // Nivel de alpha
+        int32_t alpha;              // Nivel de alpha
         bool on_screen;             // Usar este flag para indicar si esta o no en pantalla
 
         double rotation;            // Rotacion del Sprite
