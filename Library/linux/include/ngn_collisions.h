@@ -81,7 +81,6 @@ class NGN_Collisions {
     private:
 
         // Deteccion de colisiones entre sprites por "pixel perfect"
-        SDL_Surface *srf1, *srf2;
         SDL_Surface* RenderSpriteInSurface(
             NGN_Sprite* sprite,     // Sprite a renderizar
             int32_t x,              // Posicion

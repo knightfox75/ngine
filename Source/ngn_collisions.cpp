@@ -61,24 +61,12 @@
 
 /*** Contructor ***/
 NGN_Collisions::NGN_Collisions() {
-
-    // Inicializa los surfaces temporales
-    srf1 = NULL;
-    srf2 = NULL;
-
 }
 
 
 
 /*** Destructor ***/
 NGN_Collisions::~NGN_Collisions() {
-
-    // Destruye las surfaces temporales
-    if (srf1 != NULL) SDL_FreeSurface(srf1);
-    srf1 = NULL;
-    if (srf2 != NULL) SDL_FreeSurface(srf2);
-    srf2 = NULL;
-
 }
 
 
@@ -243,10 +231,12 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
     // Sprite 1
     x = ((int32_t)spr1->position.x - xa);
     y = ((int32_t)spr1->position.y - ya);
+    SDL_Surface* srf1 = NULL;
     srf1 = RenderSpriteInSurface(spr1, x, y, area_w, area_h);
     // Sprite 2
     x = (spr2->position.x - xa);
     y = (spr2->position.y - ya);
+    SDL_Surface* srf2 = NULL;
     srf2 = RenderSpriteInSurface(spr2, x, y, area_w, area_h);
 
     // Deteccion de la colision
