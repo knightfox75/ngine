@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -67,7 +67,7 @@ class NGN_Sprite {
 
         // Contructor
         NGN_Sprite(
-                    NGN_SpriteData* sprite,                // Objeto de la clase Sprite Data
+                    NGN_SpriteData* sprite,                     // Objeto de la clase Sprite Data
                     int32_t position_x = DEFAULT_VALUE,         // Posicion X inicial (oculto por defecto)
                     int32_t position_y = DEFAULT_VALUE,         // Posicion Y inicial (oculto por defecto)
                     int32_t sprite_width = DEFAULT_VALUE,       // Ancho del sprite (por defecto, el de la textura)
@@ -89,7 +89,7 @@ class NGN_Sprite {
         Size2 box;                  // Caja de colisiones
 
         bool visible;               // Visibilidad
-        int32_t alpha;                  // Nivel de alpha
+        int32_t alpha;              // Nivel de alpha
         bool on_screen;             // Usar este flag para indicar si esta o no en pantalla
 
         double rotation;            // Rotacion del Sprite
@@ -99,9 +99,11 @@ class NGN_Sprite {
 
         // Posiciona el sprite
         void Position(float position_x, float position_y);
+        void Position(Vector2 pos);
 
         // Mueve el sprite
         void Translate(float speed_x, float speed_y);
+        void Translate(Vector2 spd);
 
         // Cambia el tamaño del Sprite
         void Size(float w, float h);

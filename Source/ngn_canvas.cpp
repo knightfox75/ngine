@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -128,9 +128,16 @@ NGN_Canvas::~NGN_Canvas() {
 /*** Posiciona el canvas ***/
 void NGN_Canvas::Position(float position_x, float position_y) {
 
-    // Asigna la posicion al Texture
+    // Asigna la posicion al canvas
     position.x = position_x;
     position.y = position_y;
+
+}
+void NGN_Canvas::Position(Vector2 pos) {
+
+    // Asigna la posicion al canvas
+    position.x = pos.x;
+    position.y = pos.y;
 
 }
 
@@ -142,6 +149,13 @@ void NGN_Canvas::Translate(float speed_x, float speed_y) {
     // Calcula la nueva posicion
     position.x += speed_x;
     position.y += speed_y;
+
+}
+void NGN_Canvas::Translate(Vector2 spd) {
+
+    // Calcula la nueva posicion
+    position.x += spd.x;
+    position.y += spd.y;
 
 }
 

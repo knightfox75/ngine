@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -111,9 +111,11 @@ class NGN_Canvas {
 
         // Posiciona la capa
         void Position(float position_x, float position_y);
+        void Position(Vector2 pos);
 
         // Mueve la capa
         void Translate(float speed_x, float speed_y);
+        void Translate(Vector2 spd);
 
         // Cambia el tamaño de la capa
         void Size(float w, float h);

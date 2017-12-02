@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -62,11 +62,11 @@ class NGN_TiledBg {
 
         // Constructor
         NGN_TiledBg(
-                     NGN_TiledBgData* bg,           // Datos del fondo
-                     int32_t position_x = 0,        // Posicion X del fondo [0 por defecto]
-                     int32_t position_y = 0,        // Posicion Y del fondo [0 por defecto]
-                     bool over_scan = false         // Uso de over scan en el fondo
-                     );
+                    NGN_TiledBgData* bg,           // Datos del fondo
+                    int32_t position_x = 0,        // Posicion X del fondo [0 por defecto]
+                    int32_t position_y = 0,        // Posicion Y del fondo [0 por defecto]
+                    bool over_scan = false         // Uso de over scan en el fondo
+                    );
 
         // Destructor
         ~NGN_TiledBg();
@@ -96,9 +96,11 @@ class NGN_TiledBg {
 
         // Posiciona el fondo
         void Position(float position_x, float position_y);
+        void Position(Vector2 pos);
 
         // Mueve el fondo
         void Translate(float speed_x, float speed_y);
+        void Translate(Vector2 spd);
 
         //  Escala el fondo
         void Scale(float w, float h);   // [Sobrecarga 1]       Escala los dos ejes por separado

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -73,9 +73,21 @@ class NGN_Collisions {
         // Consulta si hay colision por cajas entre 2 sprites
         bool HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2);
 
+        // Consulta si hay colision por "pixel perfect" entre 2 sprites
+        bool PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2);
+
 
     // Private
     private:
+
+        // Deteccion de colisiones entre sprites por "pixel perfect"
+        SDL_Surface* RenderSpriteInSurface(
+            NGN_Sprite* sprite,     // Sprite a renderizar
+            int32_t x,              // Posicion
+            int32_t y,
+            int32_t w,              // Tamaño del buffer
+            int32_t h
+            );
 
 
 };

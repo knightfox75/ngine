@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -304,6 +304,20 @@ void NGN_Camera::LookAt(uint32_t position_x, uint32_t position_y) {
     // Posiciona la camara en estas coordenadas
     position.x = position_x;
     position.y = position_y;
+
+}
+
+
+
+/*** Haz que la camara se mueva a una coordenada concreta [Sobrecarga 3] ***/
+void NGN_Camera::LookAt(Vector2I32 pos) {
+
+    // Anula el target actual si este existe
+    target = NULL;
+
+    // Posiciona la camara en estas coordenadas
+    position.x = (pos.x >= 0) ? (uint32_t)pos.x : 0;
+    position.y = (pos.y >= 0) ? (uint32_t)pos.y : 0;
 
 }
 

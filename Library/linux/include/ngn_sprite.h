@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -99,9 +99,11 @@ class NGN_Sprite {
 
         // Posiciona el sprite
         void Position(float position_x, float position_y);
+        void Position(Vector2 pos);
 
         // Mueve el sprite
         void Translate(float speed_x, float speed_y);
+        void Translate(Vector2 spd);
 
         // Cambia el tamaño del Sprite
         void Size(float w, float h);

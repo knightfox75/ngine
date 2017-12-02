@@ -2,9 +2,12 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
-W.I.P.
+2017-11-14 Ver.0.4.0-a
 --------------------------------------------------------------------------------
 - Añadidas las funciones de colision entre Sprites por "Pixel Perfect".
+- Añadidas las sobrecargas para poder usar el tipo de dato "Vector2" en la
+  mayoria de funciones de desplazamiento y de posicionamiento.
+  (Translate() y Position())
 
 
 

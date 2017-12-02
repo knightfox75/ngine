@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -95,9 +95,11 @@ class NGN_Texture {
 
         // Posiciona la textura
         void Position(float position_x, float position_y);
+        void Position(Vector2 pos);
 
         // Mueve la textura
         void Translate(float speed_x, float speed_y);
+        void Translate(Vector2 spd);
 
         // Cambia el tamaño de la textura
         void Size(float w, float h);

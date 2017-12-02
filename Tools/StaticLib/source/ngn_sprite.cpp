@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.2.1-alpha ***
+    *** Version 0.4.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -150,6 +150,13 @@ void NGN_Sprite::Position(float position_x, float position_y) {
     position.y = position_y;
 
 }
+void NGN_Sprite::Position(Vector2 pos) {
+
+    // Asigna la posicion al Sprite
+    position.x = pos.x;
+    position.y = pos.y;
+
+}
 
 
 
@@ -159,6 +166,13 @@ void NGN_Sprite::Translate(float speed_x, float speed_y) {
     // Calcula la nueva posicion
     position.x += speed_x;
     position.y += speed_y;
+
+}
+void NGN_Sprite::Translate(Vector2 spd) {
+
+    // Calcula la nueva posicion
+    position.x += spd.x;
+    position.y += spd.y;
 
 }
 
