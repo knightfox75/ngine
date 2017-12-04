@@ -2,6 +2,17 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+W.I.P. Ver.0.4.1-a
+--------------------------------------------------------------------------------
+- Detectado un bug de SDL2 en Linux que causava que las texturas generadas no
+  realizasen correctamente la transparencia al ser rellenadas por primera vez.
+  Esto causava que las capas de texto que usaban una imagen de fondo, esta no
+  se mostrara correctamente despues del comando CLS en Linux, en Windows por
+  contra, funcionava sin problemas. Se ha solucionado realizando un doble
+  borrado de la textura con los colores 0xFFFFFFFF y 0x00000000 antes de
+  aplicar la imagen de fondo a la textura.
+
+
 2017-11-14 Ver.0.4.0-a
 --------------------------------------------------------------------------------
 - Añadidas las funciones de colision entre Sprites por "Pixel Perfect".
