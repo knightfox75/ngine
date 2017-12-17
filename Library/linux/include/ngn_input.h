@@ -145,10 +145,29 @@ class NGN_Input {
         NGN_Key *key_Q, *key_W, *key_E, *key_R, *key_T, *key_Y, *key_U, *key_I, *key_O, *key_P;
         NGN_Key *key_A, *key_S, *key_D, *key_F, *key_G, *key_H, *key_J, *key_K, *key_L;
         NGN_Key *key_Z, *key_X, *key_C, *key_V, *key_B, *key_N, *key_M;
-        NGN_Key *key_SPACE, *key_ESC, *key_RETURN;
+        NGN_Key *key_SPACE, *key_ESC, *key_RETURN, *key_TAB, *key_BACK_SPACE;
         NGN_Key *key_ARROW_UP, *key_ARROW_DOWN, *key_ARROW_LEFT, *key_ARROW_RIGHT;
+        NGN_Key *key_LEFT_CONTROL, *key_RIGHT_CONTROL, *key_LEFT_SHIFT, *key_RIGHT_SHIFT, *key_LEFT_ALT, *key_RIGHT_ALT;
+        NGN_Key *key_F1, *key_F2, *key_F3, *key_F4, *key_F5, *key_F6, *key_F7, *key_F8, *key_F9, *key_F10, *key_F11, *key_F12;
+        NGN_Key *key_INSERT, *key_DELETE, *key_HOME, *key_END, *key_PAGE_UP, *key_PAGE_DOWN;
+
+        // Teclas de simbolos
+        NGN_Key *key_GRAVE, *key_MINUS, *key_EQUAL;
+        NGN_Key *key_LEFT_BRACKET, *key_RIGHT_BRACKET;
+        NGN_Key *key_SEMICLON, *key_APOSTROPHE, *key_BACK_SLASH;
+        NGN_Key *key_COMMA, *key_PERIOD, *key_SLASH;
 
         // Teclas especiales
+        NGN_Key *key_PRINT_SCREEN, *key_SCROLL_LOCK, *key_PAUSE;
+
+        // Bloque numerico
+        NGN_Key *nkp_SLASH, *nkp_ASTERISK, *nkp_MINUS;
+        NGN_Key *nkp_7, *nkp_8, *nkp_9;
+        NGN_Key *nkp_4, *nkp_5, *nkp_6;
+        NGN_Key *nkp_1, *nkp_2, *nkp_3;
+        NGN_Key *nkp_0, *nkp_PERIOD, *nkp_RETURN, *nkp_PLUS;
+
+        // Teclas adicionales
         NGN_Key* key_ANY_KEY;
 
 

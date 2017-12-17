@@ -242,11 +242,72 @@ void NGN_Input::AddKeys() {
     key_SPACE = new NGN_Key(); keylist.push_back(key_SPACE);
     key_ESC = new NGN_Key(); keylist.push_back(key_ESC);
     key_RETURN = new NGN_Key(); keylist.push_back(key_RETURN);
+    key_TAB = new NGN_Key(); keylist.push_back(key_TAB);
+    key_BACK_SPACE = new NGN_Key(); keylist.push_back(key_BACK_SPACE);
 
     key_ARROW_UP = new NGN_Key(); keylist.push_back(key_ARROW_UP);
     key_ARROW_DOWN = new NGN_Key(); keylist.push_back(key_ARROW_DOWN);
     key_ARROW_LEFT = new NGN_Key(); keylist.push_back(key_ARROW_LEFT);
     key_ARROW_RIGHT = new NGN_Key(); keylist.push_back(key_ARROW_RIGHT);
+
+    key_LEFT_CONTROL = new NGN_Key(); keylist.push_back(key_LEFT_CONTROL);
+    key_RIGHT_CONTROL = new NGN_Key(); keylist.push_back(key_RIGHT_CONTROL);
+    key_LEFT_SHIFT = new NGN_Key(); keylist.push_back(key_LEFT_SHIFT);
+    key_RIGHT_SHIFT = new NGN_Key(); keylist.push_back(key_RIGHT_SHIFT);
+    key_LEFT_ALT = new NGN_Key(); keylist.push_back(key_LEFT_ALT);
+    key_RIGHT_ALT = new NGN_Key(); keylist.push_back(key_RIGHT_ALT);
+
+    key_F1 = new NGN_Key(); keylist.push_back(key_F1);
+    key_F2 = new NGN_Key(); keylist.push_back(key_F2);
+    key_F3 = new NGN_Key(); keylist.push_back(key_F3);
+    key_F4 = new NGN_Key(); keylist.push_back(key_F4);
+    key_F5 = new NGN_Key(); keylist.push_back(key_F5);
+    key_F6 = new NGN_Key(); keylist.push_back(key_F6);
+    key_F7 = new NGN_Key(); keylist.push_back(key_F7);
+    key_F8 = new NGN_Key(); keylist.push_back(key_F8);
+    key_F9 = new NGN_Key(); keylist.push_back(key_F9);
+    key_F10 = new NGN_Key(); keylist.push_back(key_F10);
+    key_F11 = new NGN_Key(); keylist.push_back(key_F11);
+    key_F12 = new NGN_Key(); keylist.push_back(key_F12);
+
+    key_INSERT = new NGN_Key(); keylist.push_back(key_INSERT);
+    key_DELETE = new NGN_Key(); keylist.push_back(key_DELETE);
+    key_HOME = new NGN_Key(); keylist.push_back(key_HOME);
+    key_END = new NGN_Key(); keylist.push_back(key_END);
+    key_PAGE_UP = new NGN_Key(); keylist.push_back(key_PAGE_UP);
+    key_PAGE_DOWN = new NGN_Key(); keylist.push_back(key_PAGE_DOWN);
+
+    key_GRAVE = new NGN_Key(); keylist.push_back(key_GRAVE);
+    key_MINUS = new NGN_Key(); keylist.push_back(key_MINUS);
+    key_EQUAL = new NGN_Key(); keylist.push_back(key_EQUAL);
+    key_LEFT_BRACKET = new NGN_Key(); keylist.push_back(key_LEFT_BRACKET);
+    key_RIGHT_BRACKET = new NGN_Key(); keylist.push_back(key_RIGHT_BRACKET);
+    key_APOSTROPHE = new NGN_Key(); keylist.push_back(key_APOSTROPHE);
+    key_BACK_SLASH = new NGN_Key(); keylist.push_back(key_BACK_SLASH);
+    key_COMMA = new NGN_Key(); keylist.push_back(key_COMMA);
+    key_PERIOD = new NGN_Key(); keylist.push_back(key_PERIOD);
+    key_SLASH = new NGN_Key(); keylist.push_back(key_SLASH);
+
+    key_PRINT_SCREEN = new NGN_Key(); keylist.push_back(key_PRINT_SCREEN);
+    key_SCROLL_LOCK = new NGN_Key(); keylist.push_back(key_SCROLL_LOCK);
+    key_PAUSE = new NGN_Key(); keylist.push_back(key_PAUSE);
+
+    nkp_SLASH = new NGN_Key(); keylist.push_back(nkp_SLASH);
+    nkp_ASTERISK = new NGN_Key(); keylist.push_back(nkp_ASTERISK);
+    nkp_MINUS = new NGN_Key(); keylist.push_back(nkp_MINUS);
+    nkp_7 = new NGN_Key(); keylist.push_back(nkp_7);
+    nkp_8 = new NGN_Key(); keylist.push_back(nkp_8);
+    nkp_9 = new NGN_Key(); keylist.push_back(nkp_9);
+    nkp_4 = new NGN_Key(); keylist.push_back(nkp_4);
+    nkp_5 = new NGN_Key(); keylist.push_back(nkp_5);
+    nkp_6 = new NGN_Key(); keylist.push_back(nkp_6);
+    nkp_1 = new NGN_Key(); keylist.push_back(nkp_1);
+    nkp_2 = new NGN_Key(); keylist.push_back(nkp_2);
+    nkp_3 = new NGN_Key(); keylist.push_back(nkp_3);
+    nkp_0 = new NGN_Key(); keylist.push_back(nkp_0);
+    nkp_PERIOD = new NGN_Key(); keylist.push_back(nkp_PERIOD);
+    nkp_RETURN = new NGN_Key(); keylist.push_back(nkp_RETURN);
+    nkp_PLUS = new NGN_Key(); keylist.push_back(nkp_PLUS);
 
     // Teclas especiales
     key_ANY_KEY = new NGN_Key();
@@ -303,11 +364,72 @@ void NGN_Input::ReadKeyboard() {
     key_SPACE->held = kb[SDL_SCANCODE_SPACE];
     key_ESC->held = kb[SDL_SCANCODE_ESCAPE];
     key_RETURN->held = kb[SDL_SCANCODE_RETURN];
+    key_TAB->held = kb[SDL_SCANCODE_TAB];
+    key_BACK_SPACE->held = kb[SDL_SCANCODE_BACKSPACE];
 
     key_ARROW_UP->held = kb[SDL_SCANCODE_UP];
     key_ARROW_DOWN->held = kb[SDL_SCANCODE_DOWN];
     key_ARROW_LEFT->held = kb[SDL_SCANCODE_LEFT];
     key_ARROW_RIGHT->held = kb[SDL_SCANCODE_RIGHT];
+
+    key_LEFT_CONTROL->held = kb[SDL_SCANCODE_LCTRL];
+    key_RIGHT_CONTROL->held = kb[SDL_SCANCODE_RCTRL];
+    key_LEFT_SHIFT->held = kb[SDL_SCANCODE_LSHIFT];
+    key_RIGHT_SHIFT->held = kb[SDL_SCANCODE_RSHIFT];
+    key_LEFT_ALT->held = kb[SDL_SCANCODE_LALT];
+    key_RIGHT_ALT->held = kb[SDL_SCANCODE_RALT];
+
+    key_F1->held = kb[SDL_SCANCODE_F1];
+    key_F2->held = kb[SDL_SCANCODE_F2];
+    key_F3->held = kb[SDL_SCANCODE_F3];
+    key_F4->held = kb[SDL_SCANCODE_F4];
+    key_F5->held = kb[SDL_SCANCODE_F5];
+    key_F6->held = kb[SDL_SCANCODE_F6];
+    key_F7->held = kb[SDL_SCANCODE_F7];
+    key_F8->held = kb[SDL_SCANCODE_F8];
+    key_F9->held = kb[SDL_SCANCODE_F9];
+    key_F10->held = kb[SDL_SCANCODE_F10];
+    key_F11->held = kb[SDL_SCANCODE_F11];
+    key_F12->held = kb[SDL_SCANCODE_F12];
+
+    key_INSERT->held = kb[SDL_SCANCODE_INSERT];
+    key_DELETE->held = kb[SDL_SCANCODE_DELETE];
+    key_HOME->held = kb[SDL_SCANCODE_HOME];
+    key_END->held = kb[SDL_SCANCODE_END];
+    key_PAGE_UP->held = kb[SDL_SCANCODE_PAGEUP];
+    key_PAGE_DOWN->held = kb[SDL_SCANCODE_PAGEDOWN];
+
+    key_BACK_SLASH->held = kb[SDL_SCANCODE_GRAVE];
+    key_MINUS->held = kb[SDL_SCANCODE_MINUS];
+    key_EQUAL->held = kb[SDL_SCANCODE_EQUALS];
+    key_LEFT_BRACKET->held = kb[SDL_SCANCODE_LEFTBRACKET];
+    key_RIGHT_BRACKET->held = kb[SDL_SCANCODE_RIGHTBRACKET];
+    key_APOSTROPHE->held = kb[SDL_SCANCODE_APOSTROPHE];
+    key_BACK_SLASH->held = kb[SDL_SCANCODE_BACKSLASH];
+    key_COMMA->held = kb[SDL_SCANCODE_COMMA];
+    key_PERIOD->held = kb[SDL_SCANCODE_PERIOD];
+    key_SLASH->held = kb[SDL_SCANCODE_SLASH];
+
+    key_PRINT_SCREEN->held = kb[SDL_SCANCODE_PRINTSCREEN];
+    key_SCROLL_LOCK->held = kb[SDL_SCANCODE_SCROLLLOCK];
+    key_PAUSE->held = kb[SDL_SCANCODE_PAUSE];
+
+    nkp_SLASH->held = kb[SDL_SCANCODE_KP_DIVIDE];
+    nkp_ASTERISK->held = kb[SDL_SCANCODE_KP_MULTIPLY];
+    nkp_MINUS->held = kb[SDL_SCANCODE_KP_MINUS];
+    nkp_7->held = kb[SDL_SCANCODE_KP_7];
+    nkp_8->held = kb[SDL_SCANCODE_KP_8];
+    nkp_9->held = kb[SDL_SCANCODE_KP_9];
+    nkp_4->held = kb[SDL_SCANCODE_KP_4];
+    nkp_5->held = kb[SDL_SCANCODE_KP_5];
+    nkp_6->held = kb[SDL_SCANCODE_KP_6];
+    nkp_1->held = kb[SDL_SCANCODE_KP_1];
+    nkp_2->held = kb[SDL_SCANCODE_KP_2];
+    nkp_3->held = kb[SDL_SCANCODE_KP_3];
+    nkp_0->held = kb[SDL_SCANCODE_KP_0];
+    nkp_PERIOD->held = kb[SDL_SCANCODE_KP_PERIOD];
+    nkp_RETURN->held = kb[SDL_SCANCODE_KP_ENTER];
+    nkp_PLUS->held = kb[SDL_SCANCODE_KP_PLUS];
 
 }
 

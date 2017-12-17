@@ -4,6 +4,7 @@ N'gine Changelog
 
 W.I.P. Ver.0.4.1-a
 --------------------------------------------------------------------------------
+- Añadidas el resto de teclas pendientes del teclado (US) a la clase INPUT.
 - Detectado un bug de SDL2 en Linux que causava que las texturas generadas no
   realizasen correctamente la transparencia al ser rellenadas por primera vez.
   Esto causava que las capas de texto que usaban una imagen de fondo, esta no
