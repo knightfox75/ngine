@@ -2,7 +2,7 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
-W.I.P. Ver.0.4.1-a
+2017-12-19 Ver.0.4.1-a
 --------------------------------------------------------------------------------
 - Añadidas el resto de teclas pendientes del teclado (US) a la clase INPUT.
 - Detectado un bug de SDL2 en Linux que causava que las texturas generadas no
