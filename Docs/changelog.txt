@@ -2,16 +2,25 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-01-10 Ver.0.4.2-a
+--------------------------------------------------------------------------------
+- Corregido un bug en el método Cls() de la clase TEXT_LAYER el cual causaba
+  que no se borrara el contenido de la capa de texto si el color de fondo tenia
+  un valor de alpha igual a 0.
+  (Gracias a David Bassagaña por el aviso)
+
+
+  
 2017-12-19 Ver.0.4.1-a
 --------------------------------------------------------------------------------
 - Añadidas el resto de teclas pendientes del teclado (US) a la clase INPUT.
 - Detectado un bug de SDL2 en Linux que causaba que las texturas generadas no
   realizasen correctamente la transparencia al ser rellenadas por primera vez.
-  Esto causaba que en las capas de texto donde se usaba una imagen de fondo, esta no
-  se mostrara correctamente después del comando CLS en Linux, en Windows por
-  contra, funcionaba sin problemas. Se ha solucionado realizando un doble
-  borrado de la textura con los colores 0xFFFFFFFF y 0x00000000 antes de
-  aplicar la imagen de fondo a la textura.
+  Esto causaba que en las capas de texto donde se usaba una imagen de fondo,
+  esta no se mostrara correctamente después del comando CLS en Linux, en
+  Windows por contra, funcionaba sin problemas. Se ha solucionado realizando
+  un doble borrado de la textura con los colores 0xFFFFFFFF y 0x00000000 antes
+  de aplicar la imagen de fondo a la textura.
 
 
 

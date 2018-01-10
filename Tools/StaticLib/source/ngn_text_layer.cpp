@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.1-alpha ***
+    *** Version 0.4.2-alpha ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -192,15 +192,17 @@ void NGN_TextLayer::Cls() {
         _center->y = (destination.h / 2);
         // Renderiza el fondo en el backbuffer de la capa
         SDL_RenderCopyEx(ngn->graphics->renderer, background->gfx, &source, &destination, 0.0f, _center, SDL_FLIP_NONE);
-    } else if (canvas.a > 0) {
+    } else {
         // Borra el contenido de la textura actual
         SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0x00);
         SDL_RenderFillRect(ngn->graphics->renderer, NULL);
         // Rellenalo del color de fondo
-        SDL_SetRenderDrawColor(ngn->graphics->renderer, canvas.r, canvas.g, canvas.b, canvas.a);
-        SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        if (canvas.a > 0) {
+            SDL_SetRenderDrawColor(ngn->graphics->renderer, canvas.r, canvas.g, canvas.b, canvas.a);
+            SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        }
     }
 
     // Cambia el destino del renderer a la pantalla
