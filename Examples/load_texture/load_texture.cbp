@@ -106,6 +106,9 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++14" />
 		</Compiler>
+		<Unit filename="resource/recource.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="source/demo/demo.cpp" />
 		<Unit filename="source/demo/demo.h" />
 		<Unit filename="source/main.cpp" />
