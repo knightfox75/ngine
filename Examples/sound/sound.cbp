@@ -108,6 +108,8 @@
 		</Compiler>
 		<Unit filename="resource/recource.rc">
 			<Option compilerVar="WINDRES" />
+			<Option target="WIN - Debug" />
+			<Option target="WIN - Release" />
 		</Unit>
 		<Unit filename="source/demo/demo.cpp" />
 		<Unit filename="source/demo/demo.h" />
