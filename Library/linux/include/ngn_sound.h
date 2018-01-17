@@ -1,8 +1,8 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.2-alpha ***
-    Sonido (sin streaming)
+    *** Version 0.4.3-alpha ***
+    Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
     (cc) 2016 - 2018 by Cesar Rincon "NightFox"
@@ -199,6 +199,9 @@ class NGN_Sound {
 
         // Continua la reproduccion de todos los sonidos y musicas pausadas con anterioridad
         void ResumeAll();
+
+        // Deten todos los efectos de sonido, si hay streams de musica, cierralos
+        void StopAll();
 
         // Actualiza la cola del audio
         void Update();

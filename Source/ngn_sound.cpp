@@ -1,8 +1,8 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.2-alpha ***
-    Sonido (sin streaming)
+    *** Version 0.4.3-alpha ***
+    Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
     (cc) 2016 - 2018 by Cesar Rincon "NightFox"
@@ -796,6 +796,27 @@ void NGN_Sound::ResumeAll() {
     if (music_cue.size() > 0) {
         for (uint32_t i = 0; i < music_cue.size(); i ++) {
             if (music_cue[i] != NULL) music_cue[i]->Resume();
+        }
+    }
+
+}
+
+
+
+/*** Deten todos los sonidos ***/
+void NGN_Sound::StopAll() {
+
+    // Intenta detener los SFX
+    if (sfx_cue.size() > 0) {
+        for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+            if (sfx_cue[i] != NULL) sfx_cue[i]->Stop();
+        }
+    }
+
+    // Intenta cerrar los strams de musica
+    if (music_cue.size() > 0) {
+        for (uint32_t i = 0; i < music_cue.size(); i ++) {
+            if (music_cue[i] != NULL) music_cue[i]->Stop();
         }
     }
 

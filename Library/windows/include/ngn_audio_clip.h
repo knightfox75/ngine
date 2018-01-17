@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.2-alpha ***
+    *** Version 0.4.3-alpha ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016

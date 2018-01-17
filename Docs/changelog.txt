@@ -2,12 +2,23 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-01-17 Ver.0.4.3-a
+--------------------------------------------------------------------------------
+- Actualizado el template de la librería y los ejemplos para que incorporen un
+  icono al archivo ejecutable de Windows que se genere. 
+- Añadido un nuevo template para la creación de aplicaciones con pantallas de
+  inicio y menú.
+- Añadida la función StopAll(); a la clase SOUND, la cual detiene todos los
+  SFX activos y cierra todos los streams de música abiertos.
+
+  
+
 2018-01-10 Ver.0.4.2-a
 --------------------------------------------------------------------------------
 - Corregido un bug en el método Cls() de la clase TEXT_LAYER el cual causaba
   que no se borrara el contenido de la capa de texto si el color de fondo tenia
   un valor de alpha igual a 0.
-  (Gracias a David Bassagaña por el aviso)
+  (Gracias a David Bassaganya por el aviso)
 
 
   
