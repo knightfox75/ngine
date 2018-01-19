@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.3-alpha ***
+    *** Version 0.4.4-alpha ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016

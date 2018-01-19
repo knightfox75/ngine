@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.3-alpha ***
+    *** Version 0.4.4-alpha ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -501,7 +501,7 @@ void NGN_Sound::PlayMusic(
 /*** Cierra el stream de audio abierto ***/
 void NGN_Sound::CloseMusic(NGN_MusicClip* music) {
 
-    if (music != NULL) music->Stop();
+    if (MusicIsAlive(music)) music->Stop();
 
 }
 
