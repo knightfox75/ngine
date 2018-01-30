@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.4.5-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -48,8 +48,8 @@
 
 
 /*** Includes ***/
-
-
+// C++
+#include <string>
 
 
 
@@ -67,37 +67,46 @@ class NGN_Graphics {
 
         // Inicializa la ventana principal y la superficie de renderizado
         bool Init(
-                  const char* window_name,                  // Nombre en la ventana
+                  std::string window_name,                  // Nombre en la ventana
                   uint32_t native_width,                    // Resolucion Nativa del juego
                   uint32_t native_height,
-                  int32_t screen_width = DEFAULT_VALUE,     // Resolucion de la ventana / FS
-                  int32_t screen_height = DEFAULT_VALUE,
                   bool full_scr = false,                    // Pantalla completa?
-                  bool sync = true                          // VSYNC activo?
+                  bool sync = true,                         // VSYNC activo?
+                  int32_t window_width = DEFAULT_VALUE,     // Resolucion de la ventana
+                  int32_t window_height = DEFAULT_VALUE
                   );
 
-        SDL_Window* window;         // Puntero a la ventana
-        SDL_Renderer* renderer;     // Puntero al renderer
+        SDL_Window* window;             // Puntero a la ventana
+        SDL_Renderer* renderer;         // Puntero al renderer
 
-        bool full_screen;           // Pantalla completa?
-        bool vsync;                 // VSYNC Activo?
-
-        int32_t screen_w;               // Resolucion de la ventana
-        int32_t screen_h;
+        bool full_screen;               // Pantalla completa?
+        bool vsync;                     // VSYNC Activo?
 
         int32_t native_w;               // Resolucion nativa del juego
         int32_t native_h;
+        std::string window_caption;     // Guarda el titulo de la ventana
 
-        bool force_redaw;           // Indicar que se debe forzar el redibujado
-
+        bool force_redaw;               // Indicar que se debe forzar el redibujado
 
         // Actualiza el renderer a 60fps
         void Update();
+
+        // Ajusta el clip del viewport
+        void SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h);
 
 
 
     // Private
     private:
+
+        // Resolucion de la ventana
+        int32_t screen_w;
+        int32_t screen_h;
+
+        // Resolucion de pantalla completa
+        int32_t desktop_w;
+        int32_t desktop_h;
+        int32_t desktop_refresh_rate;
 
         // Control del framerate
         void SyncFrame(int32_t fps);

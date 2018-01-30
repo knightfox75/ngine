@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.4.5-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -48,6 +48,7 @@
 // C++
 #include <cstdio>
 #include <iostream>
+#include <string>
 #include <cmath>
 
 // SDL
@@ -94,14 +95,17 @@ NGN_Graphics::~NGN_Graphics() {
 
 /*** Inicializa el engine grafico ***/
 bool NGN_Graphics::Init(
-                          const char* window_name,          // Nombre en la ventana
+                          std::string window_name,          // Nombre en la ventana
                           uint32_t native_width,            // Resolucion Nativa del juego
                           uint32_t native_height,
-                          int32_t screen_width,             // Resolucion de la ventana
-                          int32_t screen_height,
                           bool full_scr,                    // Pantalla completa?
-                          bool sync                         // VSYNC activo?
+                          bool sync,                        // VSYNC activo?
+                          int32_t window_width,             // Resolucion de la ventana
+                          int32_t window_height
                          ) {
+
+    // Guarda el titulo de la ventana
+    window_caption = window_name;
 
     // Guarda la resolucion nativa e informa a la camara de esta resolucion
     if (native_width > 0 && native_height > 0) {
@@ -113,21 +117,30 @@ bool NGN_Graphics::Init(
     }
 
     // Guarda el tamaño de la ventana
-    if ((screen_width != DEFAULT_VALUE) && (screen_height != DEFAULT_VALUE)) {
-        screen_w = screen_width;
-        screen_h = screen_height;
+    if ((window_width != DEFAULT_VALUE) && (window_height != DEFAULT_VALUE)) {
+        screen_w = window_width;
+        screen_h = window_height;
     } else {
         screen_w = native_w;
         screen_h = native_h;
     }
+
+    // Guarda la resolucion del escritorio
+    SDL_DisplayMode display;
+    if (SDL_GetDesktopDisplayMode(0, &display) < 0) {
+        std::cout << "Can't get current desktop resolution." << std::endl;
+        return false;
+    }
+    desktop_w = display.w;
+    desktop_h = display.h;
+    desktop_refresh_rate = display.refresh_rate;
 
     // Calcula el factor de escala
     scale_x = ((float)screen_w / (float)native_w);
     scale_y = ((float)screen_h / (float)native_h);
 
     // Crea la ventana para el renderer, con las opciones por defecto
-    window = SDL_CreateWindow(window_name, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_w, screen_h, SDL_WINDOW_SHOWN);
-
+    window = SDL_CreateWindow((const char*)window_caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_w, screen_h, SDL_WINDOW_SHOWN);
     // Verifica si ha ocurrido un error en la creacion de la ventana
     if (window == NULL) {
         std::cout << "SDL unable to create the main Window." << std::endl;
@@ -136,7 +149,6 @@ bool NGN_Graphics::Init(
 
     // Si la ventana se ha creado, intenta crear la superficie de renderizado, con el dibujado sincronizado al frame
     renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
-    //renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED));
     // Si no se puede crear, destruye la venta e informa del error
     if (renderer == NULL) {
         SDL_DestroyWindow(window);
@@ -144,6 +156,16 @@ bool NGN_Graphics::Init(
         std::cout << "SDL unable to create the rendering surface." << std::endl;
         return false;
     }
+    // Ajusta el viewport del renderer a la resolucion nativa
+    SDL_Rect viewport = {
+                0,          // Posicion X
+                0,          // Posicion Y
+                screen_w,   // Ancho
+                screen_h    // Alto
+                };
+    SDL_RenderSetViewport(renderer, &viewport);
+    // Ahora limita el area de dibujado a esa resolucion
+    SDL_RenderSetClipRect(renderer, &viewport);
 
     // Selecciona el color por defecto del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
@@ -163,7 +185,7 @@ bool NGN_Graphics::Init(
 
     // Intenta modificar el VSYNC
     _vsync = vsync = sync;
-    if (vsync) {
+    if (vsync && (desktop_refresh_rate >= 60)) {
         if (!SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1")) {
             std::cout << "SDL unable to activate VSYNC." << std::endl;
         }
@@ -175,6 +197,9 @@ bool NGN_Graphics::Init(
 
     // Ajusta el escalado
     SDL_RenderSetScale(renderer, scale_x, scale_y);
+
+    // Deshabilita el salvapantallas
+    SDL_DisableScreenSaver();
 
     // Sal con normalidad
     return true;
@@ -200,6 +225,32 @@ void NGN_Graphics::Update(void) {
 
     // Borra el contenido para el siguiente frame
     SDL_RenderClear(renderer);
+
+}
+
+
+
+/*** Cambia el tamaño del clip del viewport ***/
+void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
+
+    SDL_Rect viewport = {
+                x,          // Posicion X
+                y,          // Posicion Y
+                w,          // Ancho
+                h           // Alto
+                };
+
+    if (viewport.x < 0) viewport.x = 0;
+    if (viewport.y < 0) viewport.y = 0;
+
+    if ((viewport.x + viewport.w) > native_w) viewport.w = (native_w - viewport.x);
+    if (viewport.w < 0) return;
+
+    if ((viewport.y + viewport.h) > native_h) viewport.h = (native_h - viewport.y);
+    if (viewport.h < 0) return;
+
+    // Ahora limita el area de dibujado a esa resolucion
+    SDL_RenderSetClipRect(renderer, &viewport);
 
 }
 
@@ -242,7 +293,7 @@ void NGN_Graphics::UpdateRendererFlags() {
 
     // VSYNC
     if (_vsync != vsync) {
-        if (vsync) {
+        if (vsync && (desktop_refresh_rate >= 60)) {
             SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
         } else {
             SDL_SetHint(SDL_HINT_RENDER_VSYNC, "0");
