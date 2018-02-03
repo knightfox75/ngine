@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.0-alpha ***
+    *** Version 0.5.1-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -159,6 +159,10 @@ bool NGN_Graphics::Init(
         }
     }
 
+    // Calcula la relacion de aspecto
+    aspect_native = ((float)native_w / (float)native_h);
+    aspect_desktop = ((float)desktop_w / (float)desktop_h);
+
     // Pantalla completa o ventana?
     full_screen = full_scr;
     _full_screen = -1;
@@ -177,9 +181,6 @@ bool NGN_Graphics::Init(
         native_h
     };
 
-    // Calcula la relacion de aspecto
-    aspect_native = ((float)native_w / (float)native_h);
-    aspect_desktop = ((float)desktop_w / (float)desktop_h);
 
     // Deshabilita el salvapantallas
     SDL_DisableScreenSaver();

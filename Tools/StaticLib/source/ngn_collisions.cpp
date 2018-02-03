@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.0-alpha ***
+    *** Version 0.5.1-alpha ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016

@@ -2,6 +2,12 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-02-03 Ver.0.5.1-a
+--------------------------------------------------------------------------------
+- Corregido un error en la detección de la relación de aspecto de la pantalla
+  en el modo "SCR_WINDOW_FULL".
+
+
 2018-02-02 Ver.0.5.0-a
 --------------------------------------------------------------------------------
 - Actualizados los templates de la librería.
