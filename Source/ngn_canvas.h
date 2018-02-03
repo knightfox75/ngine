@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -78,8 +78,8 @@ class NGN_Canvas {
         NGN_Canvas(
             float position_x = 0.0f,            // Posicion X (0 por defecto)
             float position_y = 0.0f,            // Posicion Y (0 por defecto)
-            int32_t _width = DEFAULT_VALUE,     // Ancho de la capa (Toda la pantalla por defecto)
-            int32_t _height = DEFAULT_VALUE     // Alto de la capa (Toda la pantalla por defecto)
+            int32_t _width = NGN_DEFAULT_VALUE,     // Ancho de la capa (Toda la pantalla por defecto)
+            int32_t _height = NGN_DEFAULT_VALUE     // Alto de la capa (Toda la pantalla por defecto)
         );
 
         // Destructor de la clase
@@ -153,10 +153,10 @@ class NGN_Canvas {
         void Box(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, bool paint = false);
 
         // Dibuja un circulo
-        void Circle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2 = DEFAULT_VALUE, double in_angle = 0.0f, double out_angle = 0.0f);
+        void Circle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2 = NGN_DEFAULT_VALUE, double in_angle = 0.0f, double out_angle = 0.0f);
 
         // Dibuja un circulo relleno
-        void FilledCircle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2 = DEFAULT_VALUE);
+        void FilledCircle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2 = NGN_DEFAULT_VALUE);
 
 
 

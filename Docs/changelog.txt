@@ -2,6 +2,29 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-02-02 Ver.0.5.0-a
+--------------------------------------------------------------------------------
+- Actualizados los templates de la librería.
+- Ahora se deshabilita el protector de pantalla de forma automática al
+  iniciarse.
+- Se ha modificado el orden de los parámetros del método NGN_Graphics::Init();
+  para mayor facilidad de uso.
+- La opción VSYNC se deshabilita de manera automática si el refresco del
+  monitor es inferior a 60hz;
+- Se ha reescrito el método para el cambio de modo de pantalla, pudiendo
+  escoger ahora entre modo ventana, ventana a pantalla completa y
+  pantalla completa. Esto evita el dibujado de elementos fuera de lugar
+  en modo pantalla completa en algunas tarjetas gráficas. Se recomienda el
+  uso de modo "SCR_WINDOW_FULL" (modo ventana completa) en Linux.
+- El parámetro window_name en el método NGN_Graphics::Init(); es ahora del
+  tipo string y se almacena en la propiedad window_caption;
+- Añadido el método NGN_Graphics::SetViewportClip(); el cual permite definir
+  el área visible de la pantalla.
+- Añadido el método NGN_Graphics::ShowMouse() para mostrar y ocultar el
+  cursor del ratón cuando estamos en el foco de la aplicación.
+
+
+
 2018-01-17 Ver.0.4.4-a
 --------------------------------------------------------------------------------
 - Modificado el método CloseMusic(); de la clase NGN_Sound para que, en caso

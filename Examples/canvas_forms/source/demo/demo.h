@@ -4,7 +4,7 @@
     Ejemplo: Canvas - Dibujo de formas
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -64,8 +64,8 @@
 #include <ngn.h>
 
 /*** Defines ***/
-#define VERTEX 8
-#define SNAP 8
+#define VERTEX 6
+#define SNAP 16
 
 
 

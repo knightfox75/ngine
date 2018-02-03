@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -81,7 +81,7 @@ NGN_TextLayer::NGN_TextLayer(
     background = bg;
 
     // Guarda el tamaño
-    if ((_width != DEFAULT_VALUE) && (_height != DEFAULT_VALUE)) {
+    if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
         width = _width;
         height = _height;
     } else if (bg != NULL) {
@@ -205,10 +205,8 @@ void NGN_TextLayer::Cls() {
         }
     }
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
     // Resetea el cabezal de escritura
     locate.x = locate.y = padding;
@@ -350,10 +348,8 @@ void NGN_TextLayer::Print(std::string text) {
         }
     }
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
     // Paso de limpieza
     delete _center;
@@ -458,9 +454,7 @@ void NGN_TextLayer::SurfaceCleanUp() {
     // Borra el contenido del renderer
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_RenderClear(ngn->graphics->renderer);
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }

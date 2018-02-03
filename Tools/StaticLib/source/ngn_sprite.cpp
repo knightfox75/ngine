@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -72,7 +72,7 @@ NGN_Sprite::NGN_Sprite(
     data = sprite;
 
     // Tamaño
-    if ((sprite_width != DEFAULT_VALUE) && (sprite_height != DEFAULT_VALUE)) {
+    if ((sprite_width != NGN_DEFAULT_VALUE) && (sprite_height != NGN_DEFAULT_VALUE)) {
         // Tamaño definido por el usuario
         width = sprite_width;
         height = sprite_height;
@@ -87,7 +87,7 @@ NGN_Sprite::NGN_Sprite(
     original.height = height;
 
     // Tamaño de la caja de colisiones
-    if ((box_width != DEFAULT_VALUE) && (box_height != DEFAULT_VALUE)) {
+    if ((box_width != NGN_DEFAULT_VALUE) && (box_height != NGN_DEFAULT_VALUE)) {
         box.width = box_width;
         box.height = box_height;
     } else {
@@ -96,7 +96,7 @@ NGN_Sprite::NGN_Sprite(
     }
 
     // Posicion
-    if ((position_x != DEFAULT_VALUE) && (position_y != DEFAULT_VALUE)) {
+    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
         // Posicion definida por el usuario
         position.x = position_x;
         position.y = position_y;

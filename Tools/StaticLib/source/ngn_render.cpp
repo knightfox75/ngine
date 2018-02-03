@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -77,7 +77,7 @@ void NGN_Render::Texture(NGN_Texture* texture, float position_x, float position_
 
         // Calculos
         int32_t _x, _y;
-        if ((position_x == DEFAULT_VALUE) && (position_y == DEFAULT_VALUE)) {
+        if ((position_x == NGN_DEFAULT_VALUE) && (position_y == NGN_DEFAULT_VALUE)) {
             texture->screen = texture->position;
         } else {
             texture->screen.x = position_x;
@@ -163,7 +163,7 @@ void NGN_Render::Sprite(NGN_Sprite* sprite, float position_x, float position_y) 
 
         // Calculos
         int32_t _x, _y;
-        if ((position_x == DEFAULT_VALUE) && (position_y == DEFAULT_VALUE)) {
+        if ((position_x == NGN_DEFAULT_VALUE) && (position_y == NGN_DEFAULT_VALUE)) {
             sprite->screen.x = (uint32_t)sprite->position.x;
             sprite->screen.y = (uint32_t)sprite->position.y;
         } else {
@@ -388,10 +388,8 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
                 }
             }
 
-            // Cambia el destino del renderer a la pantalla
-            SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-            // Restaura el color y alpha del renderer
-            SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+            // Restaura el render a la pantalla
+            ngn->graphics->RenderToScreen();
 
         }
 
@@ -439,7 +437,7 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
 
         // Calculos
         int32_t _x, _y;
-        if ((position_x != DEFAULT_VALUE) && (position_y != DEFAULT_VALUE)) {
+        if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
             layer->position.x = position_x;
             layer->position.y = position_y;
         }
@@ -523,7 +521,7 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
 
         // Calculos
         int32_t _x, _y;
-        if ((position_x != DEFAULT_VALUE) && (position_y != DEFAULT_VALUE)) {
+        if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
             canvas->position.x = position_x;
             canvas->position.y = position_y;
         }

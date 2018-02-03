@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -101,8 +101,8 @@ NGN_TiledBg::NGN_TiledBg(
     position.x = position_x;
     position.y = position_y;
 
-    last_position.x = DEFAULT_VALUE;
-    last_position.y = DEFAULT_VALUE;
+    last_position.x = NGN_DEFAULT_VALUE;
+    last_position.y = NGN_DEFAULT_VALUE;
 
     center.x = 0;
     center.y = 0;

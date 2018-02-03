@@ -4,7 +4,7 @@
     Ejemplo: Canvas - Efectos graficos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -108,14 +108,10 @@ bool Demo::Awake() {
     // Selecciona el modo grafico
     if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT)) return false;
 
-    // Pantalla completa?
-    ngn->graphics->full_screen = false;
-
-    // Vsync
-    ngn->graphics->vsync = true;
+    // Esconde el cursor del raton
+    ngn->graphics->ShowMouse(false);
 
     // Debug?
-    SDL_ShowCursor(SDL_DISABLE);
     ngn->system->fps_counter = false;
 
     // Fuerza la actualizacion de la pantalla

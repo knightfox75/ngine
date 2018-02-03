@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,12 +68,12 @@ class NGN_Sprite {
         // Contructor
         NGN_Sprite(
                     NGN_SpriteData* sprite,                     // Objeto de la clase Sprite Data
-                    int32_t position_x = DEFAULT_VALUE,         // Posicion X inicial (oculto por defecto)
-                    int32_t position_y = DEFAULT_VALUE,         // Posicion Y inicial (oculto por defecto)
-                    int32_t sprite_width = DEFAULT_VALUE,       // Ancho del sprite (por defecto, el de la textura)
-                    int32_t sprite_height = DEFAULT_VALUE,      // Altura del sprite (por defecto, la de la textura)
-                    int32_t box_width = DEFAULT_VALUE,          // Ancho de la caja de colisiones
-                    int32_t box_height = DEFAULT_VALUE          // Alto de la caja de colisiones
+                    int32_t position_x = NGN_DEFAULT_VALUE,         // Posicion X inicial (oculto por defecto)
+                    int32_t position_y = NGN_DEFAULT_VALUE,         // Posicion Y inicial (oculto por defecto)
+                    int32_t sprite_width = NGN_DEFAULT_VALUE,       // Ancho del sprite (por defecto, el de la textura)
+                    int32_t sprite_height = NGN_DEFAULT_VALUE,      // Altura del sprite (por defecto, la de la textura)
+                    int32_t box_width = NGN_DEFAULT_VALUE,          // Ancho de la caja de colisiones
+                    int32_t box_height = NGN_DEFAULT_VALUE          // Alto de la caja de colisiones
                     );
 
         // Destructor

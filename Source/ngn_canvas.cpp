@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -74,7 +74,7 @@ NGN_Canvas::NGN_Canvas(
 ) {
 
     // Guarda el tamaño
-    if ((_width != DEFAULT_VALUE) && (_height != DEFAULT_VALUE)) {
+    if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
         width = _width;
         height = _height;
     } else {
@@ -231,10 +231,8 @@ void NGN_Canvas::Cls(uint32_t color) {
     SDL_SetTextureAlphaMod(backbuffer, 0x00);
     SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }
 
@@ -259,10 +257,8 @@ void NGN_Canvas::Point(uint32_t x, uint32_t y, uint32_t color) {
     // Dibuja el punto
     SDL_RenderDrawPoint(ngn->graphics->renderer, x, y);
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }
 
@@ -289,10 +285,8 @@ void NGN_Canvas::Points(const std::vector<CanvasPoint> &points) {
         SDL_RenderDrawPoint(ngn->graphics->renderer, points[n].x, points[n].y);
     }
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }
 
@@ -317,10 +311,8 @@ void NGN_Canvas::Line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32
     // Dibuja la linea
     SDL_RenderDrawLine(ngn->graphics->renderer, x1, y1, x2, y2);
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }
 
@@ -347,10 +339,8 @@ void NGN_Canvas::Lines(const std::vector<CanvasLine> &lines) {
         SDL_RenderDrawLine(ngn->graphics->renderer, lines[n].x1, lines[n].y1, lines[n].x2, lines[n].y2);
     }
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }
 
@@ -399,10 +389,8 @@ void NGN_Canvas::Box(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_
         SDL_RenderDrawLine(ngn->graphics->renderer, _x2, _y1, _x1, _y1);
     }
 
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }
 
@@ -413,7 +401,7 @@ void NGN_Canvas::Circle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint
 
     // Asignacion de los radios y proteccion de 0
     uint32_t _r = (r < 1) ? 1 : r;
-    uint32_t _r2 = ((r2 == DEFAULT_VALUE) || (r2 < 1)) ? _r : r2;
+    uint32_t _r2 = ((r2 == NGN_DEFAULT_VALUE) || (r2 < 1)) ? _r : r2;
 
     // Calculo del arco a dibujar
     bool arc = false;
@@ -501,7 +489,7 @@ void NGN_Canvas::FilledCircle(uint32_t x, uint32_t y, uint32_t r, uint32_t color
 
     // Asignacion de los radios y proteccion de 0
     uint32_t _r = (r < 1) ? 1 : r;
-    uint32_t _r2 = ((r2 == DEFAULT_VALUE) || (r2 < 1)) ? _r : r2;
+    uint32_t _r2 = ((r2 == NGN_DEFAULT_VALUE) || (r2 < 1)) ? _r : r2;
 
     // Angulos de inicio y final
     double st = -(PI / 2.0f), ed = (PI / 2.0f);
@@ -575,9 +563,7 @@ void NGN_Canvas::SurfaceCleanUp() {
     // Borra el contenido del renderer
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_RenderClear(ngn->graphics->renderer);
-    // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
-    // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
+    // Restaura el render a la pantalla
+    ngn->graphics->RenderToScreen();
 
 }

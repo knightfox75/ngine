@@ -4,7 +4,7 @@
     Ejemplo: Carga de texturas en PNG
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 

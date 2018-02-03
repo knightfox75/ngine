@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -71,7 +71,7 @@ NGN_Texture::NGN_Texture(
     data = texture;
 
     // Tamaño
-    if ((texture_width != DEFAULT_VALUE) && (texture_height != DEFAULT_VALUE)) {
+    if ((texture_width != NGN_DEFAULT_VALUE) && (texture_height != NGN_DEFAULT_VALUE)) {
         // Tamaño definido por el usuario
         width = texture_width;
         height = texture_height;
@@ -86,7 +86,7 @@ NGN_Texture::NGN_Texture(
     original.height = height;
 
     // Posicion
-    if ((position_x != DEFAULT_VALUE) && (position_y != DEFAULT_VALUE)) {
+    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
         // Posicion definida por el usuario
         position.x = position_x;
         position.y = position_y;

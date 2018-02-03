@@ -4,7 +4,7 @@
     Ejemplo: Camara virtual 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -129,14 +129,10 @@ bool Demo::Awake() {
     // Selecciona el modo grafico
     if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT)) return false;
 
-    // Pantalla completa?
-    ngn->graphics->full_screen = false;
-
-    // Vsync
-    ngn->graphics->vsync = true;
+    // Esconde el cursor del raton
+    ngn->graphics->ShowMouse(false);
 
     // Debug?
-    SDL_ShowCursor(SDL_DISABLE);
     ngn->system->fps_counter = false;
 
     // Fuerza la actualizacion de la pantalla
@@ -241,13 +237,13 @@ void Demo::CreateStage() {
     ngn->camera->PushBackground(1, bg1);
     ngn->camera->PushBackground(2, bg2);
 
-    // Añade el sprite de la mirilla a la camara para su gestion
-    ngn->camera->PushSprite(2, aim);
-
     // Genera los pajaros de la capa 0 y registralos en la camara(fondo)
     CreateBirds(0, 20, 0.33);
     CreateBirds(1, 15, 0.66f);
     CreateBirds(2, 10, 1.0f);
+
+    // Añade el sprite de la mirilla a la camara para su gestion
+    ngn->camera->PushSprite(2, aim);
 
 }
 

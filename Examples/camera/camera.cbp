@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="WIN - Debug">
-				<Option output="./camera" prefix_auto="1" extension_auto="1" />
+				<Option output="./_camera" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/win_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -31,7 +31,7 @@
 				</Linker>
 			</Target>
 			<Target title="WIN - Release">
-				<Option output="./camera" prefix_auto="1" extension_auto="1" />
+				<Option output="./_camera" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/win_release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -56,7 +56,7 @@
 				</Linker>
 			</Target>
 			<Target title="LINUX - Debug">
-				<Option output="./camera" prefix_auto="1" extension_auto="1" />
+				<Option output="./_camera" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/linux_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -78,7 +78,7 @@
 				</Linker>
 			</Target>
 			<Target title="LINUX - Release">
-				<Option output="./camera" prefix_auto="1" extension_auto="1" />
+				<Option output="./_camera" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/linux_release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />

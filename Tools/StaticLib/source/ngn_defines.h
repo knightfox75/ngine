@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.4.4-alpha ***
+    *** Version 0.5.0-alpha ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -56,9 +56,12 @@
 
 
 /*** Definiciones ***/
-#define DEFAULT_VALUE 0x7FFFFFFF
-//#define DEFAULT_VALUE (1 << 31)
-#define PI 3.14159265f
+#define NGN_DEFAULT_VALUE       0x7FFFFFFF      // Valor de "defecto"
+#define NGN_SCR_WINDOW          0               // "Modo ventana"
+#define NGN_SCR_WINDOW_FULL     1               // "Modo ventana a pantalla completa"
+#define NGN_SCR_FULLSCREEN      2               // "Modo pantalla completa"
+#define PI                      3.14159265f     // Definicion del numero PI
+
 
 
 
