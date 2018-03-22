@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.1-alpha ***
+    *** Version 0.5.2-alpha ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -60,8 +60,11 @@
 
 /*** Includes ***/
 
+// C++
+#include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
+
 // SDL
-#include <SDL.h>
+#include <SDL.h>                    // Tipos de datos de SDL2
 
 // Libreria
 #include "ngn_defines.h"            // Definiciones

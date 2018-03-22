@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.1-alpha ***
+    *** Version 0.5.2-alpha ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -135,6 +135,9 @@ NGN_TextLayer::NGN_TextLayer(
 
     // Prepara la capa
     SurfaceCleanUp();
+
+    // Borra el contenido para actualizar su fondo, padding etc
+    Cls();
 
 }
 

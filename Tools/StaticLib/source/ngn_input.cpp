@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.1-alpha ***
+    *** Version 0.5.2-alpha ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -319,7 +319,7 @@ void NGN_Input::AddKeys() {
 // Realiza la lectura del teclado
 void NGN_Input::ReadKeyboard() {
 
-    const Uint8* kb = SDL_GetKeyboardState(NULL);
+    const uint8_t* kb = SDL_GetKeyboardState(NULL);
 
     key_1->held = kb[SDL_SCANCODE_1];
     key_2->held = kb[SDL_SCANCODE_2];

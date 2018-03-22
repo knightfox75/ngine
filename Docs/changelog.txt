@@ -2,6 +2,19 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-03-22 Ver.0.5.2-a
+--------------------------------------------------------------------------------
+- Actualizados los templates para autodefectar el sistema operativo de destino
+  y asi poder adaptar el método optimo para el cambio del modo de pantalla.
+- Añadido el include a la libreria "cstdint" para asegurar el uso de tipos de
+  dato intxx_t de C++ 11.
+- Corregido un BUG en el template de "Menu", el cual no eliminava los datos del
+  cursor al destruir el objeto.
+- Añadido el soporte a gamepad en el template "Menu".
+- Al crear una capa de texto, se ejecuta automaticamente el comando Cls(); para
+  aplicar la textura de fondo de manera automatica. 
+  
+
 2018-02-03 Ver.0.5.1-a
 --------------------------------------------------------------------------------
 - Corregido un error en la detección de la relación de aspecto de la pantalla

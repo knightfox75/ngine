@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.1-alpha ***
+    *** Version 0.5.2-alpha ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -51,6 +51,7 @@
 /*** Includes ***/
 
 // C++
+#include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <vector>
 #include <string>
 

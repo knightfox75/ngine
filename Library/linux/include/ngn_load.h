@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.1-alpha ***
+    *** Version 0.5.2-alpha ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -49,7 +49,10 @@
 
 
 /*** Includes ***/
+// Includes de C++
+#include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <string>
+// Includes de SDL TTF
 #include <SDL_ttf.h>
 
 

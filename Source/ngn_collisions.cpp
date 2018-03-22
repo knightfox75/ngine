@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.1-alpha ***
+    *** Version 0.5.2-alpha ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -324,7 +324,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
             _alpha = 0xFF;
         }
         SDL_SetTextureBlendMode(sprite->data->gfx, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(sprite->data->gfx, (Uint8)_alpha);
+        SDL_SetTextureAlphaMod(sprite->data->gfx, (uint8_t)_alpha);
     }
 
     /* Dibujado del sprite */
