@@ -103,7 +103,7 @@ NGN_Sprite::NGN_Sprite(
         box.offset.y = box_offset_y;
     } else {
         box.offset.x = 0.0f;
-        box.offset.x = 0.0f;
+        box.offset.y = 0.0f;
     }
 
     // Posicion
