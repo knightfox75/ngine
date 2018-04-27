@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -72,6 +72,7 @@ NGN_Camera::NGN_Camera() {
     //world.height = ngn->graphics->native_h;
     position.x = position.y = 0.0f;
     scroll.width = scroll.height = 0.0f;
+    animation_pause = false;
 
 
 }
@@ -493,8 +494,8 @@ void NGN_Camera::Update() {
                         // Calcula la posicion del sprite en pantalla segun el origen de dibujado
                         screen.x = layer[l].spr[s]->position.x - sprite.x;
                         screen.y = layer[l].spr[s]->position.y - sprite.y;
-                        // Si existe una animacion, aplicala
-                        layer[l].spr[s]->PlayAnimation();
+                        // Si existe una animacion y no hay pausa, aplicala
+                        if (!animation_pause) layer[l].spr[s]->PlayAnimation();
                         // Si esta dentro de la pantalla, dibujalo en el renderer e indicalo
                         if (
                             (screen.x > -(layer[l].spr[s]->width / 2.0f))
@@ -658,5 +659,8 @@ void NGN_Camera::Reset() {
         layer[i].spr.clear();
     }
     layer.clear();
+
+    // Quita la pausa de la animacion
+    animation_pause = false;
 
 }

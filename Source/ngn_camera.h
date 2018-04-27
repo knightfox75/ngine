@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -105,6 +105,9 @@ class NGN_Camera {
 
         // Posicion de la camara en el mundo
         Vector2I64 position;
+
+        // Pausa la animacion de los sprites
+        bool animation_pause;
 
         // Define en numero de capas a crear (elimina las existentes)
         void CreateLayers(uint32_t layers);

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -126,8 +126,8 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
     // Calculos previos (distancia entre sprites)
     Vector2 distance;
-    distance.x = (int32_t)(std::abs(spr1->position.x - spr2->position.x));
-    distance.y = (int32_t)(std::abs(spr1->position.y - spr2->position.y));
+    distance.x = (int32_t)(std::abs((spr1->position.x + spr1->box.offset.x) - (spr2->position.x + spr2->box.offset.x)));
+    distance.y = (int32_t)(std::abs((spr1->position.y + spr1->box.offset.y) - (spr2->position.y + spr2->box.offset.y)));
     // Calculos previos (tamaño de la colision)
     Size2 collision_size;
     collision_size.width = (int32_t)((spr1->box.width / 2.0f) + (spr2->box.width / 2.0f));

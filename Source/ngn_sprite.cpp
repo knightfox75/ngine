@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,14 +59,16 @@
 
 /*** Contructor ***/
 NGN_Sprite::NGN_Sprite(
-                    NGN_SpriteData* sprite,        // Objeto de la clase Sprite Data
-                    int32_t position_x,                 // Posicion X inicial (oculto por defecto)
-                    int32_t position_y,                 // Posicion Y inicial (oculto por defecto)
-                    int32_t sprite_width,               // Ancho del sprite (por defecto, el de la textura)
-                    int32_t sprite_height,              // Altura del sprite (por defecto, la de la textura)
-                    int32_t box_width,                  // Ancho de la caja de colisiones
-                    int32_t box_height                  // Alto de la caja de colisiones
-                    ) {
+    NGN_SpriteData* sprite,        // Objeto de la clase Sprite Data
+    int32_t position_x,                 // Posicion X inicial (oculto por defecto)
+    int32_t position_y,                 // Posicion Y inicial (oculto por defecto)
+    int32_t sprite_width,               // Ancho del sprite (por defecto, el de la textura)
+    int32_t sprite_height,              // Altura del sprite (por defecto, la de la textura)
+    int32_t box_width,                  // Ancho de la caja de colisiones
+    int32_t box_height,                 // Alto de la caja de colisiones
+    int32_t box_offset_x,               // Offset horizontal de la caja de colisiones
+    int32_t box_offset_y                // Offset vertical de la de colisiones
+) {
 
     // Guarda el grafico que usara este sprite
     data = sprite;
@@ -93,6 +95,15 @@ NGN_Sprite::NGN_Sprite(
     } else {
         box.width = width;
         box.height = height;
+    }
+
+    // Offset de la caja de colisiones
+    if ((box_offset_x != NGN_DEFAULT_VALUE) && (box_offset_y != NGN_DEFAULT_VALUE)) {
+        box.offset.x = box_offset_x;
+        box.offset.y = box_offset_y;
+    } else {
+        box.offset.x = 0.0f;
+        box.offset.x = 0.0f;
     }
 
     // Posicion
