@@ -66,6 +66,8 @@
 /*** Contructor de la clase NGN_Camera ***/
 NGN_Camera::NGN_Camera() {
 
+    // Limpia los vectores
+    layer.clear();
     // Parametros iniciales
     target = NULL;
     //world.width = ngn->graphics->native_w;     // Se autoconfigura en ngn_graphics.cpp
@@ -73,7 +75,6 @@ NGN_Camera::NGN_Camera() {
     position.x = position.y = 0.0f;
     scroll.width = scroll.height = 0.0f;
     animation_pause = false;
-
 
 }
 
@@ -104,6 +105,9 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
         layer[i].sprite_layer.height = NGN_DEFAULT_VALUE;
         layer[i].in_use = false;
         layer[i].visible = true;
+        layer[i].texture.clear();
+        layer[i].bg.clear();
+        layer[i].spr.clear();
     }
 
 }
