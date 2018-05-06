@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -203,7 +203,7 @@ class NGN_SpriteData {
 
 
         // Contenido del fondo
-        SDL_Texture* gfx;                   // Almacena el grafico de todos los frames
+        std::vector<SDL_Texture*> gfx;                   // Almacena el grafico de todos los frames
 
     // Private
     private:

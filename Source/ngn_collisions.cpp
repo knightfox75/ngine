@@ -315,7 +315,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     // Alpha
     if (sprite->alpha == -1) {
         // Deshabilita el canal Alpha
-        SDL_SetTextureBlendMode(sprite->data->gfx, SDL_BLENDMODE_NONE);
+        SDL_SetTextureBlendMode(sprite->data->gfx[sprite->frame], SDL_BLENDMODE_NONE);
     } else {
         int32_t _alpha = sprite->alpha;
         if (_alpha < 0) {
@@ -323,16 +323,15 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(sprite->data->gfx, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(sprite->data->gfx, (uint8_t)_alpha);
+        SDL_SetTextureBlendMode(sprite->data->gfx[sprite->frame], SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(sprite->data->gfx[sprite->frame], (uint8_t)_alpha);
     }
 
     /* Dibujado del sprite */
     // Define el area de origen
-    int32_t frame = (sprite->frame * sprite->data->header.frame_height);
     SDL_Rect source = {
         0,                  // Posicion X
-        frame,              // Posicion Y
+        0,                  // Posicion Y
         (int32_t)sprite->data->header.frame_width,      // Ancho
         (int32_t)sprite->data->header.frame_height      // Alto
     };
@@ -345,7 +344,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     };
 
     // Renderiza la textura
-    SDL_RenderCopyEx(ngn->graphics->renderer, sprite->data->gfx, &source, &destination, (sprite->rotation + _rotation), _center, _flip);
+    SDL_RenderCopyEx(ngn->graphics->renderer, sprite->data->gfx[sprite->frame], &source, &destination, (sprite->rotation + _rotation), _center, _flip);
 
     // Area a extraer
     SDL_Rect area = {0, 0, w, h};

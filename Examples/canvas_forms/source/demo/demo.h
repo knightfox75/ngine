@@ -86,8 +86,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -113,6 +113,9 @@ class Demo {
 
         // Crea las formas
         void Create();
+
+        // Update
+        void Update();
 
         // Dibuja en el canvas
         void Draw();

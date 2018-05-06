@@ -82,8 +82,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -97,6 +97,7 @@ class Demo {
         NGN_Sprite* cake;
 
         // Funciones
+        void Update();          // Update
         bool Load();            // Carga los archivos necesarios
         void CreateStage();     // Crea la escena
         void Logic();           // Logica del programa

@@ -137,35 +137,29 @@ bool Demo::Start() {
 
 
 
-/*** Actualizacion a cada frame ***/
-bool Demo::Update() {
+/*** Ejecucion del programa ***/
+void Demo::Run() {
 
     // Control del loop
     bool loop = true;
 
-    // Gestor de eventos de SDL y N'gine
-    ngn->system->EventUpdate();            // Actualiza los eventos
+    // Loop principal
+    while (loop) {
 
-    // Control del bucle principal
-    loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
-    loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
-    loop &= !ngn->input->controller[0].button[10].down;         // O se pulsa el boton XBOX
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
 
-    /***
-    Actualizacion del programa
-    ***/
-    // Animacion
-    Animation();
-    // Render de objetos
-    Render();
+        // Actualizacion del programa
+        Update();
 
-    // Actualiza el contenido de la pantalla
-    ngn->graphics->Update();
-    // Actualiza el sonido
-    ngn->sound->Update();
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
 
-    // Devuelve el resultado
-    return loop;
+        // Control del bucle principal
+        loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
+        loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+
+    }
 
 }
 
@@ -248,6 +242,18 @@ void Demo::CreateSnow() {
 
     // Ajusta el alpha
     canvas_snow->alpha = 200;
+
+}
+
+
+
+/*** Actualizacion del programa ***/
+void Demo::Update() {
+
+    // Animacion
+    Animation();
+    // Render de objetos
+    Render();
 
 }
 

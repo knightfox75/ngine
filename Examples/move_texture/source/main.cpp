@@ -79,11 +79,13 @@ int main(int argc, char* args[]) {
 
     // Nucleo de ejecucion
     if (demo->Awake()) {
-        // Bucle de ejecucion
-        if (demo->Start()) while (demo->Update());
+        // Libreria inicializada con exito
+        std::cout << "N'GINE test succefull!" << std::endl;
+        // Ejecucion
+        if (demo->Start()) demo->Run();
     } else {
         // Error al inicializar la libreria
-        std::cout << "N'GINE failed!" << std::endl;
+        std::cout << "N'GINE test failed!" << std::endl;
     }
 
     // Elimina el objecto demo

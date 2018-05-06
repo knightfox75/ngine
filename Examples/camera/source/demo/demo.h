@@ -82,8 +82,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -116,6 +116,9 @@ class Demo {
 
         // Crea los pajaros de una capa en concreto
         void CreateBirds(uint32_t ly, uint32_t num, float scale);
+
+        // Update
+        void Update();
 
         // Mueve a los pajaros
         void MoveBirds();

@@ -166,33 +166,29 @@ bool Demo::Start() {
 
 
 
-/*** Actualizacion a cada frame ***/
-bool Demo::Update() {
+/*** Ejecucion del programa ***/
+void Demo::Run() {
 
     // Control del loop
     bool loop = true;
 
-    // Gestor de eventos de SDL y N'gine
-    ngn->system->EventUpdate();            // Actualiza los eventos
+    // Loop principal
+    while (loop) {
 
-    // Control del bucle principal
-    loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
-    loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
 
-    // Mueve los sprites
-    MoveSprites();
+        // Actualizacion del programa
+        Update();
 
-    // Dibuja en el canvas
-    DrawCanvas();
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
 
-    // Renderiza la escena
-    Render();
+        // Control del bucle principal
+        loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
+        loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
 
-    // Actualiza el contenido de la pantalla
-    ngn->graphics->Update();
-
-    // Devuelve el resultado
-    return loop;
+    }
 
 }
 
@@ -274,6 +270,20 @@ void Demo::CreateSprites() {
             bird[i].sprite->flip_h = true;
         }
     }
+
+}
+
+
+
+/*** Actualizacion del programa ***/
+void Demo::Update() {
+
+    // Mueve los sprites
+    MoveSprites();
+    // Dibuja en el canvas
+    DrawCanvas();
+    // Renderiza la escena
+    Render();
 
 }
 

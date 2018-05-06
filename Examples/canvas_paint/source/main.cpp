@@ -81,8 +81,8 @@ int main(int argc, char* args[]) {
     if (demo->Awake()) {
         // Libreria inicializada con exito
         std::cout << "N'GINE test succefull!" << std::endl;
-        // Bucle de ejecucion
-        if (demo->Start()) while (demo->Update());
+        // Ejecucion
+        if (demo->Start()) demo->Run();
     } else {
         // Error al inicializar la libreria
         std::cout << "N'GINE test failed!" << std::endl;

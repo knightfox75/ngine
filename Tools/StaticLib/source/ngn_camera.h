@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -69,26 +69,7 @@
 /*** Declaracion de la clase de la Camara virtual en 2D ***/
 class NGN_Camera {
 
-    // Private [Declaracion de los prototipos de datos]
-    private:
-
-        // Estructura de capas de dibujado
-        struct layer_data{
-            std::vector<NGN_Texture*> texture;  // Fondos de textura en esta capa
-            std::vector<NGN_TiledBg*> bg;       // Fondos de tiles en esta capa
-            std::vector<NGN_Sprite*> spr;       // Sprites en esta capa
-            Size2I64 sprite_layer;                // Tamaño para la capa de sprites
-            bool visible;                       // Visibilidad de la capa
-            bool in_use;                        // Hay datos en la capa
-        };
-
-        // Parametros internos de la camara para su funcionamiento
-        NGN_Sprite* target;         // Sprite al que seguira la camara
-        Size2I64 scroll;               // Tamaño total del scroll en el mundo
-
-
-
-    // Public
+    // Metodos y propiedades publicas
     public:
 
         // Contructor de la clase
@@ -97,14 +78,14 @@ class NGN_Camera {
         // Destructor de la clase
         ~NGN_Camera();
 
-        // Vector de memoria con las capas
-        std::vector<layer_data> layer;
-
-        // Tamaño del mundo
+       // Tamaño del mundo
         Size2I64 world;
 
         // Posicion de la camara en el mundo
         Vector2I64 position;
+
+        // Pausa la animacion de los sprites
+        bool animation_pause;
 
         // Define en numero de capas a crear (elimina las existentes)
         void CreateLayers(uint32_t layers);
@@ -146,6 +127,31 @@ class NGN_Camera {
 
         // Reset de la camara
         void Reset();
+
+
+    // Datos privados de la clase
+    private:
+
+        // Estructura de capas de dibujado
+        struct layer_data{
+            std::vector<NGN_Texture*> texture;  // Fondos de textura en esta capa
+            std::vector<NGN_TiledBg*> bg;       // Fondos de tiles en esta capa
+            std::vector<NGN_Sprite*> spr;       // Sprites en esta capa
+            Size2I64 sprite_layer;              // Tamaño para la capa de sprites
+            bool visible;                       // Visibilidad de la capa
+            bool in_use;                        // Hay datos en la capa
+        };
+
+        // Parametros internos de la camara para su funcionamiento
+        NGN_Sprite* target;                     // Sprite al que seguira la camara
+        Size2I64 scroll;                        // Tamaño total del scroll en el mundo
+
+
+    // Vector de datos gestionados por la camara
+    public:
+
+        // Vector de memoria con las capas
+        std::vector<layer_data> layer;
 
 };
 

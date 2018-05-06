@@ -146,30 +146,29 @@ bool Demo::Start() {
 
 
 
-/*** Actualizacion a cada frame ***/
-bool Demo::Update() {
+/*** Ejecucion del programa ***/
+void Demo::Run() {
 
     // Control del loop
     bool loop = true;
 
-    // Gestor de eventos de SDL y N'gine
-    ngn->system->EventUpdate();            // Actualiza los eventos
+    // Loop principal
+    while (loop) {
 
-    // Control del bucle principal
-    loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
-    loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
 
-    // Dibuja en el canvas
-    Draw();
+        // Actualizacion del programa
+        Update();
 
-    // Render de la escena
-    Render();
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
 
-    // Actualiza el contenido de la pantalla
-    ngn->graphics->Update();
+        // Control del bucle principal
+        loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
+        loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
 
-    // Devuelve el resultado
-    return loop;
+    }
 
 }
 
@@ -219,6 +218,18 @@ void Demo::Create() {
 
     // Id de vertice activo
     point = -1;
+
+}
+
+
+
+/*** Actualizacion del programa ***/
+void Demo::Update() {
+
+    // Dibuja en el canvas
+    Draw();
+    // Render de la escena
+    Render();
 
 }
 

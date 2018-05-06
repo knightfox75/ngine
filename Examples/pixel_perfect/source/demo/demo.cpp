@@ -149,33 +149,29 @@ bool Demo::Start() {
 
 
 
-/*** Actualizacion a cada frame ***/
-bool Demo::Update() {
+/*** Ejecucion del programa ***/
+void Demo::Run() {
 
     // Control del loop
     bool loop = true;
 
-    // Gestor de eventos de SDL y N'gine
-    ngn->system->EventUpdate();            // Actualiza los eventos
+    // Loop principal
+    while (loop) {
 
-    // Control del bucle principal
-    loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
-    loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
-    loop &= !ngn->input->controller[0].button[10].down;         // O se pulsa el boton XBOX
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
 
-    /***
-    Actualizacion del programa
-    ***/
-    Logic();        // Logica del programa
-    Render();       // Renderiza la escena
+        // Actualizacion del programa
+        Update();
 
-    // Actualiza el contenido de la pantalla
-    ngn->graphics->Update();
-    // Actualiza el sonido
-    ngn->sound->Update();
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
 
-    // Devuelve el resultado
-    return loop;
+        // Control del bucle principal
+        loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
+        loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+
+    }
 
 }
 
@@ -211,6 +207,16 @@ void Demo::CreateStage() {
     cake->frame = 0;
     // Crea el sprite de la estrella
     star = new NGN_Sprite(star_data, 0, 0);
+
+}
+
+
+
+/*** Actualizacion del programa ***/
+void Demo::Update() {
+
+    Logic();        // Logica del programa
+    Render();       // Renderiza la escena
 
 }
 
@@ -260,7 +266,6 @@ void Demo::Logic() {
     }
     if (ngn->input->key_E->down) zoom.x = zoom.y = 1.0f;
     cake->Scale(zoom.x, zoom.y);
-
 
     // Dependiendo de si hay o no colision
     if (ngn->collisions->PixelPerfect(star, cake)) {

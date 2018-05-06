@@ -85,8 +85,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -96,6 +96,7 @@ class Demo {
         NGN_Canvas* canvas_snow;
 
         // Metodos
+        void Update();      // Update
         void CreateBg();    // Crea el fondo
         void CreateSnow();  // Crea el canvas con nieve
         void Animation();   // Animacion del canvas

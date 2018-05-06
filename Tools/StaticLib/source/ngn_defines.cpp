@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.2-alpha ***
+    *** Version 0.5.3-alpha ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -102,15 +102,18 @@ NGN_TiledBgData::~NGN_TiledBgData() {
 // Constructor
 NGN_SpriteData::NGN_SpriteData() {
 
-    gfx = NULL;
+    gfx.clear();
 
 }
 
 // Destructor
 NGN_SpriteData::~NGN_SpriteData() {
 
-    if (gfx != NULL) SDL_DestroyTexture(gfx);
-    gfx = NULL;
+    for (uint32_t i = 0; i < gfx.size(); i ++) {
+        if (gfx[i] != NULL) SDL_DestroyTexture(gfx[i]);
+        gfx[i] = NULL;
+    }
+    gfx.clear();
 
 }
 

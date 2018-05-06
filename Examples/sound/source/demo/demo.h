@@ -80,8 +80,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -102,6 +102,9 @@ class Demo {
 
         // Crea los decorados
         void CreateStage();
+
+        // Update
+        void Update();
 
         // Render de los graficos
         void Render();

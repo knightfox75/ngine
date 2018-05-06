@@ -80,8 +80,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -118,6 +118,10 @@ class Demo {
 
         // Crea el cursor
         void CreateCursor();
+
+        // Update
+        void Update();
+
         // Actualiza el cursor
         void UpdateCursor();
 

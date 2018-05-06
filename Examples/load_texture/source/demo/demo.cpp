@@ -135,27 +135,29 @@ bool Demo::Start() {
 
 
 
-/*** Actualizacion a cada frame ***/
-bool Demo::Update() {
+/*** Ejecucion del programa ***/
+void Demo::Run() {
 
     // Control del loop
     bool loop = true;
 
-    // Gestor de eventos de SDL y N'gine
-    ngn->system->EventUpdate();            // Actualiza los eventos
+    // Loop principal
+    while (loop) {
 
-    // Control del bucle principal
-    loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
-    loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
 
-    // Render de la escena
-    Render();
+        // Render de la escena
+        Render();
 
-    // Actualiza el contenido de la pantalla
-    ngn->graphics->Update();
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
 
-    // Devuelve el resultado
-    return loop;
+        // Control del bucle principal
+        loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
+        loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+
+    }
 
 }
 

@@ -156,30 +156,30 @@ bool Demo::Start() {
 
 
 
-/*** Actualizacion a cada frame ***/
-bool Demo::Update() {
+/*** Ejecucion del programa ***/
+void Demo::Run() {
 
     // Control del loop
     bool loop = true;
 
-    // Gestor de eventos de SDL y N'gine
-    ngn->system->EventUpdate();            // Actualiza los eventos
+    // Loop principal
+    while (loop) {
 
-    // Control del bucle principal
-    loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
-    loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
 
-    // Actualiza los elementos de la escena
-    UpdateCursor();
+        // Actualizacion del programa
+        Update();
 
-    // Render de la escena
-    Render();
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
 
-    // Actualiza el contenido de la pantalla
-    ngn->graphics->Update();
+        // Control del bucle principal
+        loop &= !ngn->system->quit;                                 // Si se pulsa la [X] de la ventana
+        loop &= !ngn->input->key_ESC->down;                         // O se pulsa la tecla [ESC] sal del bucle de ejecucion
 
-    // Devuelve el resultado
-    return loop;
+    }
+
 
 }
 
@@ -245,7 +245,7 @@ void Demo::CreateTextBox() {
 
     // Ajusta el padding de la caja
     textbox->Padding(24);
-    // Borra el contenido de la caja para aplicar el padding
+    // Borra el contenido de la caja para aplicar el padding y el fondo
     textbox->Cls();
 
     // Textos
@@ -294,6 +294,18 @@ void Demo::CreateCursor() {
     cursor->InkColor(0xFFFFFF);
     cursor->CanvasColor(255, 200, 100, 128);
     cursor->Cls();
+
+}
+
+
+
+/*** Actualizacion del programa ***/
+void Demo::Update() {
+
+    // Actualiza los elementos de la escena
+    UpdateCursor();
+    // Render de la escena
+    Render();
 
 }
 

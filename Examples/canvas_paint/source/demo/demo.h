@@ -82,8 +82,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -116,6 +116,9 @@ class Demo {
 
         // Crea los sprites
         void CreateSprites();
+
+        // Update
+        void Update();
 
         // Mueve los sprites
         void MoveSprites();

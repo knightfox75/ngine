@@ -203,7 +203,7 @@ class NGN_SpriteData {
 
 
         // Contenido del fondo
-        SDL_Texture* gfx;                   // Almacena el grafico de todos los frames
+        std::vector<SDL_Texture*> gfx;                   // Almacena el grafico de todos los frames
 
     // Private
     private:

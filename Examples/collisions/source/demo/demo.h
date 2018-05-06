@@ -87,7 +87,7 @@ class Demo {
         bool Start();
 
         // Update
-        bool Update();
+        void Run();
 
 
     private:
@@ -116,6 +116,9 @@ class Demo {
 
         // Añade cerezas
         void AddCherries();
+
+        // Update
+        void Update();
 
         // Mueve al player
         void Move();

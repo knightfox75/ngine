@@ -265,7 +265,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
         // Carga la cabecera del archivo
         file.read((char*)&spr->header, sizeof(spr->header));
         // Calcula el tamaño del buffer
-        uint32_t buffer_size = (((spr->header.sheet_width * spr->header.sheet_height) * spr->header.total_frames) << 2);      // * 4
+        uint32_t buffer_size = ((spr->header.sheet_width * spr->header.sheet_height) << 2);      // * 4
         // Frames del sprite
         raw.resize(buffer_size);
         file.read((char*)&raw[0], buffer_size);
@@ -292,41 +292,55 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
         delete spr;
         return NULL;
     }
-
-    // Crea la superficie en base a los pixeles cargados
-    surface = SDL_CreateRGBSurfaceFrom(
-                                        (char*)&pixels[0],      // Datos
-                                        w,                      // Ancho
-                                        h,                      // Alto
-                                        32,                     // Profuncidad de color 32bpp [RGBA8888]
-                                        (w << 2),               // Longitud de una fila de pixeles en bytes
-                                        0x000000ff,             // Mascara R
-                                        0x0000ff00,             // Mascara G
-                                        0x00ff0000,             // Mascara B
-                                        0xff000000              // Mascara A
-                                        );
-
-
-    // Borra los buffers temporales
+    // Borra el buffer temporal
     raw.clear();
+
+    // Redimensiona el vector
+    spr->gfx.resize(spr->header.total_frames);
+    for (uint32_t i = 0; i < spr->gfx.size(); i ++) spr->gfx[i] = NULL;
+    uint32_t frame_data_size = (spr->header.frame_width * spr->header.frame_height);
+
+    // Crea una textura por cada fotograma
+    for (uint32_t i = 0; i < spr->header.total_frames; i ++) {
+
+        // Crea la superficie en base a los pixeles cargados
+        surface = SDL_CreateRGBSurfaceFrom(
+                                            (char*)&pixels[((frame_data_size * i) << 2)],   // Datos [frame * datos del frame * 4bpp]
+                                            spr->header.frame_width,                        // Ancho
+                                            spr->header.frame_height,                       // Alto
+                                            32,                     // Profuncidad de color 32bpp [RGBA8888]
+                                            (spr->header.frame_width << 2),                 // Longitud de una fila de pixeles en bytes
+                                            0x000000ff,             // Mascara R
+                                            0x0000ff00,             // Mascara G
+                                            0x00ff0000,             // Mascara B
+                                            0xff000000              // Mascara A
+                                            );
+
+
+        if (surface == NULL) {
+             std::cout << "Unable to convert [" << filepath << "] to a surface." << std::endl;
+             pixels.clear();
+             return NULL;
+        }
+
+        // Si se ha creado la superficie con exito, conviertela a textura
+        spr->gfx[i] = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+
+        // Verifica que la conversion ha sido correcta
+        if (spr->gfx[i] == NULL) {
+             std::cout << "Unable to load [" << filepath << "] as a sprite." << std::endl;
+             SDL_FreeSurface(surface);
+             pixels.clear();
+             return NULL;
+        }
+
+        // Borra el surface creado
+        SDL_FreeSurface(surface);
+
+    }
+
+    // Borra el buffer de pixeles
     pixels.clear();
-
-    if (surface == NULL) {
-         std::cout << "Unable to convert [" << filepath << "] to a surface." << std::endl;
-         return NULL;
-    }
-
-    // Si se ha creado la superficie con exito, conviertela a textura
-    spr->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
-    // Verifica que la conversion ha sido correcta
-    if (spr->gfx == NULL) {
-         std::cout << "Unable to load [" << filepath << "] as a sprite." << std::endl;
-         SDL_FreeSurface(surface);
-         return NULL;
-    }
-
-    // Destruye el surface temporal antes de salir
-    SDL_FreeSurface(surface);
 
     // Fondo cargado
     return spr;

@@ -2,19 +2,38 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-05-07 Ver.0.5.3-a
+--------------------------------------------------------------------------------
+- Añadida la posibilidad de cambiar el centro de la caja de colisión de los
+  sprites mediante el uso de un offset.
+- Actualizada la documentación de la clase NGN_Sprite.
+- Añadido el flag "animation_pause" a la clase NGN_Camera, el cual pausa la
+  animación de todos los sprites si está en TRUE.
+- Cambios menores en la estructura de la clase "NGN_Camera".
+- Cambio en la estructura interna de NGN_Sprite y NGN_SpriteData, almacenando
+  ahora cada fotograma en una textura independiente, lo cual soluciona el 
+  problema del límite de altura del sprite sheet de 8192 pixeles. Ahora cada
+  fotograma puede tener un tamaño máximo de 8192x8192 pixeles. Esto no afecta
+  al formato interno de los archivos .SPR y no es necesario reconvertirlos ni
+  realizar ningún cambio en los proyectos existentes.
+- Corregido el bug en el método NGN_Load::Sprite(); el cual reservaba más
+  memoria de la requerida al cargar el sprite sheet.
+- Añadido el ejemplo para el uso del hitbox ajustable de los Sprites.
+
+
 2018-03-22 Ver.0.5.2-a
 --------------------------------------------------------------------------------
-- Actualizados los templates para autodefectar el sistema operativo de destino
-  y asi poder adaptar el método optimo para el cambio del modo de pantalla.
-- Añadido el include a la libreria "cstdint" para asegurar el uso de tipos de
+- Actualizados los templates para auto-detectar el sistema operativo de destino
+  y así poder adaptar el método óptimo para el cambio del modo de pantalla.
+- Añadido el include a la librería "cstdint" para asegurar el uso de tipos de
   dato intxx_t de C++ 11.
-- Corregido un BUG en el template de "Menu", el cual no eliminava los datos del
+- Corregido un BUG en el template de "Menu", el cual no eliminaba los datos del
   cursor al destruir el objeto.
 - Añadido el soporte a gamepad en el template "Menu".
 - Al crear una capa de texto, se ejecuta automaticamente el comando Cls(); para
-  aplicar la textura de fondo de manera automatica. 
-  
+  aplicar la textura de fondo de manera automática.
 
+  
 2018-02-03 Ver.0.5.1-a
 --------------------------------------------------------------------------------
 - Corregido un error en la detección de la relación de aspecto de la pantalla

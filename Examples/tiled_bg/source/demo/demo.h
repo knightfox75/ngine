@@ -80,8 +80,8 @@ class Demo {
         // Start
         bool Start();
 
-        // Update
-        bool Update();
+        // Run
+        void Run();
 
 
     private:
@@ -105,6 +105,9 @@ class Demo {
 
         // Crea los fondos
         void CreateStage();
+
+        // Update
+        void Update();
 
         // Mueve el fondo con los cursores
         void Move();
