@@ -59,9 +59,9 @@ int32_t main(int32_t argc, char* args[]) {
 
     // Texto de bienvenida
     std::cout <<
-    std::endl << "N'gine PNG to Collision Map converter." <<
-    std::endl << "Version 0.2.0-a." <<
-    std::endl << "(cc) 2016 - 2017 by Cesar Rincon." <<
+    std::endl << "N'gine PNG to Collision Map converter. (v0.3.0-a)." <<
+    std::endl << "For N'gine Version 0.6.0-a or higher." <<
+    std::endl << "(cc) 2016 - 2018 by Cesar Rincon." <<
     std::endl << "http://www.nightfoxandco.com" <<
     std::endl << "contact@nightfoxandco.com" <<
     std::endl << std::endl;

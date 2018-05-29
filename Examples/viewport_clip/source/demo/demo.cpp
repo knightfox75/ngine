@@ -8,10 +8,15 @@
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere SDL2 (2.0.5 or higher)
+    Requiere N'gine 0.6.0-a o superior
+
+    Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
+    http://downloads.sourceforge.net/project/mingw-w64/
+
+    Requiere SDL2 (2.0.8) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.4.1 or higher)
+    Requiere SFML (2.5.0) - 64-bits
     http://www.sfml-dev.org/
 
     Requiere LodePNG

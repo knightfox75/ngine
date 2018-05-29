@@ -105,7 +105,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++14" />
+			<Add option="-m64" />
 		</Compiler>
+		<Linker>
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-m64" />
+		</Linker>
 		<Unit filename="resource/recource.rc">
 			<Option compilerVar="WINDRES" />
 			<Option target="WIN - Debug" />

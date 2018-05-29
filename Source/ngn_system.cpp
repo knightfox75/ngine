@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.5.3-alpha ***
+    *** Version 0.6.0-alpha ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
