@@ -2,6 +2,19 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-05-31 Ver.0.6.0-a
+--------------------------------------------------------------------------------
+  [Windows]
+- Binarios de la librería compilados para el uso de SDL2 2.0.8.
+- Binarios de la librería compilados para el uso de SFML 2.5.0.
+- Binarios de la librería compilados usando MinGW-windows-gcc-7.3.0.
+- Documentación de instalación actualizada.
+  [General]
+- Binarios de la librería compilados para entornos x64.
+- Templates actualizados para su compilación en 64bits.
+- Ejemplos compilados a 64 bits.
+
+
 2018-05-07 Ver.0.5.3-a
 --------------------------------------------------------------------------------
 - Añadida la posibilidad de cambiar el centro de la caja de colisión de los
