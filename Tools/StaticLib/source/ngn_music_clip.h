@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.0-alpha ***
+    *** Version 0.6.1-alpha ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -78,10 +78,15 @@ class NGN_MusicClip {
         // Reproduce la musica [1ª sobrecarga]
         void Play(
                   int32_t volume,      // Volumen inicial
-                  bool loop                 // Loop?
+                  bool loop            // Loop?
                   );
 
-        // Reproduce el la musica [2ª sobrecarga]
+        void SetLoop(
+                    int32_t loop_start,                     // Punto inicial del loop (milisegundos)
+                    int32_t loop_end = NGN_DEFAULT_VALUE    // Punto final del loop (milisengundos)
+                    );
+
+        // Continua la reproduccion pausada de la musica [2ª sobrecarga]
         void Resume();
 
         // Verifica si aun se este reproduciendo

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.0-alpha ***
+    *** Version 0.6.1-alpha ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -140,12 +140,21 @@ class NGN_Sound {
 
         /*** Musicas por streaming (BGM) [4 simultaneas maximo por defecto] ***/
 
-        // Abre una musica para streaming
+        // Abre una musica para streaming (Sobrecarga 1)
         NGN_MusicClip* OpenMusic(
                                 const char* filepath,           // Archivo de audio
                                 bool auto_start = true,         // Reproduccion automatica
-                                int32_t volume = 100,      // Volumen
+                                int32_t volume = 100,           // Volumen
                                 bool loop = true                // Loop ?
+                                );
+
+        // Abre una musica para streaming (Sobrecarga 2)
+        NGN_MusicClip* OpenMusic(
+                                const char* filepath,                   // Archivo de audio
+                                int32_t loop_start,                     // Inicio del loop (milisegundos)
+                                int32_t loop_end = NGN_DEFAULT_VALUE,   // Fin del loop (milisegundos)
+                                bool auto_start = true,                 // Reproduccion automatica
+                                int32_t volume = 100                    // Volumen
                                 );
 
         // Cierra el stream de audio

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.0-alpha ***
+    *** Version 0.6.1-alpha ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -433,11 +433,11 @@ void NGN_Sound::SfxUpdate() {
 
 
 
-/*** Abre una musica para streaming ***/
+/*** Abre una musica para streaming (sobrecarga 1) ***/
 NGN_MusicClip* NGN_Sound::OpenMusic(
         const char* filepath,   // Archivo de audio
         bool auto_start,        // Reproduccion automatica
-        int32_t volume,    // Volumen
+        int32_t volume,         // Volumen
         bool loop               // Loop ?
     ) {
 
@@ -459,6 +459,51 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
         // Y reproducelo si esta el flag de autostart
         music_cue[id]->Play(volume, loop);
+        if (!auto_start) music_cue[id]->Pause();
+
+        // Devuelve la referencia al clip creado
+        return music_cue[id];
+
+    } else {
+
+        return NULL;
+
+    }
+
+}
+
+
+
+/*** Abre una musica para streaming (sobrecarga 2) ***/
+NGN_MusicClip* NGN_Sound::OpenMusic(
+        const char* filepath,           // Archivo de audio
+        int32_t loop_start,             // Inicio del loop (milisegundos)
+        int32_t loop_end,               // Fin del loop (milisegundos)
+        bool auto_start,                // Reproduccion automatica
+        int32_t volume                  // Volumen
+    ) {
+
+    // Si no se ha alcanzado el numero
+    if (music_cue.size() < MAX_MUSIC_CHANNELS) {
+
+        // Crea un nuevo clip en la cola de musicas
+        music_cue.push_back(new NGN_MusicClip());
+
+        // ID
+        uint32_t id = (music_cue.size() - 1);
+
+        // Abre el archivo
+        if (!music_cue[id]->Open(filepath)) {
+            // Si hay un error, eliminalo y sal
+            sfx_cue.erase(sfx_cue.begin() + id);
+            return NULL;
+        }
+
+        // Aplicale los puntos de loop
+        music_cue[id]->SetLoop(loop_start, loop_end);
+
+        // Reproducelo si esta el flag de autostart
+        music_cue[id]->Play(volume, true);
         if (!auto_start) music_cue[id]->Pause();
 
         // Devuelve la referencia al clip creado

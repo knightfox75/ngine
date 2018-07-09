@@ -2,6 +2,15 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2018-07-09 Ver.0.6.1-a
+--------------------------------------------------------------------------------
+- Incorporados los archivos DLL necesarios para las utilidades de la librería
+  en su versión para Windows.
+- Añadida la sobrecarga al método NGN_Sound::OpenMusic() que nos permite
+  escoger los puntos de entrada y salida del LOOP.
+- Añadido el ejemplo de loop de música cambiando los puntos de loop.
+
+
 2018-05-31 Ver.0.6.0-a
 --------------------------------------------------------------------------------
   [Windows]

@@ -15,5 +15,6 @@
 		<Project filename="pixel_perfect/pixel_perfect.cbp" />
 		<Project filename="viewport_clip/viewport_clip.cbp" />
 		<Project filename="hitbox/hitbox.cbp" />
+		<Project filename="music_loop/music_loop.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

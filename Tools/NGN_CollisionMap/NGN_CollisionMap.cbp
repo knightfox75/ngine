@@ -58,8 +58,6 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Linker>
-			<Add option="-static-libstdc++" />
-			<Add option="-static-libgcc" />
 			<Add option="-m64" />
 		</Linker>
 		<Unit filename="source/lodepng/lodepng.cpp" />

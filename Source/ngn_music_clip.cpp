@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.0-alpha ***
+    *** Version 0.6.1-alpha ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -104,6 +104,41 @@ void NGN_MusicClip::Play(
     music.play();
 
 }
+
+
+
+/*** Establece el los puntos de loop de un stream ***/
+void NGN_MusicClip::SetLoop(
+    int32_t loop_start,     // Punto inicial del loop (milisegundos)
+    int32_t loop_end        // Punto final del loop (milisengundos)
+    ) {
+
+    // Ajuste del punto final
+    sf::Time duration = music.getDuration();
+    if (loop_end == NGN_DEFAULT_VALUE) loop_end = duration.asMilliseconds();
+
+    // Proteccion
+    if (
+        (loop_end > duration.asMilliseconds())  // Si el punto final de loop esta mas alla del final
+        ||
+        (loop_start >= loop_end)                // Si el punto de inicio supera el punto final
+    ) return;
+
+    // Convierte el tiempo de los puntos al formato SF::TIME
+    sf::Time _offset = sf::milliseconds(loop_start);
+    sf::Time _length = sf::milliseconds(loop_end - loop_start);
+
+    // Prepara los datos del loop
+    sf::Music::TimeSpan loop;
+    loop.offset = _offset;
+    loop.length = _length;
+
+    // Aplicalos
+    music.setLoopPoints(loop);
+
+}
+
+
 
 /*** Continua la reproduccion de una musica por streaming de un archivo ***/
 void NGN_MusicClip::Resume() {

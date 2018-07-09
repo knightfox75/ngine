@@ -107,8 +107,6 @@
 			<Add option="-m64" />
 		</Compiler>
 		<Linker>
-			<Add option="-static-libstdc++" />
-			<Add option="-static-libgcc" />
 			<Add option="-m64" />
 		</Linker>
 		<Unit filename="resource/recource.rc">
