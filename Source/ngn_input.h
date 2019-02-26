@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.6.2-alpha ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -52,6 +52,7 @@
 // Includes de C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <vector>
+#include <string>
 
 
 /*** Defines ***/
@@ -126,6 +127,7 @@ class NGN_Input {
             bool available;                                 // El controlador esta disponible?
             SDL_Joystick* joy;                              // Puntero a la informacion del joy
             int32_t id;                                     // ID de la instancia de este joy
+            std::string name;                               // Nombre del JoyStick
             int32_t axis_number;                            // Numero de axis disponibles
             float axis[GAME_CONTROLLER_AXIS];               // Axis
             int32_t button_number;                          // Numero de botones disponibles
@@ -137,6 +139,14 @@ class NGN_Input {
             NGN_Key pov_left;                               // POV como teclas cursor (Izquierda)
             NGN_Key pov_right;                              // POV como teclas cursor (Derecha)
         };
+
+        // Lista de controladores disponibles
+        struct controller_list_data {
+            std::string name;   // ID del controlador
+            int32_t slot;       // Slot de la lista asignado
+        };
+        std::vector<controller_list_data> controller_list;
+
 
 
 
@@ -188,7 +198,7 @@ class NGN_Input {
 
 
         // Lista de game controllers
-        std::vector<controller_data> controller;
+        controller_data controller[GAME_CONTROLLERS];
         int32_t controllers;
 
 
@@ -229,10 +239,16 @@ class NGN_Input {
         void GameControllerInit();
 
         // Reinicia la lista de controladores
-        void GameControllerReset();
+        void GameControllerReset(uint8_t idx);
 
         // Actualiza la lista de game controllers
         void UpdateGameController();
+
+        // Añade controladores a la lista
+        void AddControllers(int32_t gc);
+
+        // Quita controladores de la lista
+        void RemoveControllers();
 
 };
 

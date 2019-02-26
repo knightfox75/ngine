@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.6.2-alpha ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -185,13 +185,13 @@ void NGN_System::MouseMotion() {
 /*** Lectura del evento del Joystick [SDL_JOYAXISMOTION] ***/
 void NGN_System::JoyAxisMotion() {
 
-    if (ngn->input->controllers > 0) {
-        for (int32_t i = 0; i < ngn->input->controllers; i ++) {
-            if (ngn->input->controller[i].available) {
-                if (sdl_event.jaxis.which == ngn->input->controller[i].id) {
-                    if (sdl_event.jaxis.axis < ngn->input->controller[i].axis_number) {
-                        ngn->input->controller[i].axis[sdl_event.jaxis.axis] = (sdl_event.jaxis.value < 0) ? ((float)sdl_event.jaxis.value / 32768.0f):((float)sdl_event.jaxis.value / 32767.0f);
-                    }
+    if (ngn->input->controllers <= 0) return;
+
+    for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
+        if (ngn->input->controller[i].available) {
+            if (sdl_event.jaxis.which == ngn->input->controller[i].id) {
+                if (sdl_event.jaxis.axis < ngn->input->controller[i].axis_number) {
+                    ngn->input->controller[i].axis[sdl_event.jaxis.axis] = (sdl_event.jaxis.value < 0) ? ((float)sdl_event.jaxis.value / 32768.0f):((float)sdl_event.jaxis.value / 32767.0f);
                 }
             }
         }
