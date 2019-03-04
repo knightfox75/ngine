@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,15 +59,15 @@
 
 /*** Contructor ***/
 NGN_Sprite::NGN_Sprite(
-    NGN_SpriteData* sprite,        // Objeto de la clase Sprite Data
-    int32_t position_x,                 // Posicion X inicial (oculto por defecto)
-    int32_t position_y,                 // Posicion Y inicial (oculto por defecto)
-    int32_t sprite_width,               // Ancho del sprite (por defecto, el de la textura)
-    int32_t sprite_height,              // Altura del sprite (por defecto, la de la textura)
-    int32_t box_width,                  // Ancho de la caja de colisiones
-    int32_t box_height,                 // Alto de la caja de colisiones
-    int32_t box_offset_x,               // Offset horizontal de la caja de colisiones
-    int32_t box_offset_y                // Offset vertical de la de colisiones
+    NGN_SpriteData* sprite,         // Objeto de la clase Sprite Data
+    int32_t position_x,             // Posicion X inicial (oculto por defecto)
+    int32_t position_y,             // Posicion Y inicial (oculto por defecto)
+    uint32_t sprite_width,          // Ancho del sprite (por defecto, el de la textura)
+    uint32_t sprite_height,         // Altura del sprite (por defecto, la de la textura)
+    uint32_t box_width,             // Ancho de la caja de colisiones
+    uint32_t box_height,            // Alto de la caja de colisiones
+    int32_t box_offset_x,           // Offset horizontal de la caja de colisiones
+    int32_t box_offset_y            // Offset vertical de la de colisiones
 ) {
 
     // Guarda el grafico que usara este sprite
@@ -319,18 +319,19 @@ int32_t NGN_Sprite::SetAnimation(std::string name) {
 /*** Reproduce la animacion del Sprite ***/
 void NGN_Sprite::PlayAnimation() {
 
-    // Si hay una animacion valida cargada, reproduce la animacion
-    if (current_animation.id > -1) {
-        if (!animation_pause) {
-            animation_timer ++;
-            if (animation_timer >= current_animation.frame_duration) {
-                animation_timer = 0;
-                frame ++;
-                if (frame > current_animation.last_frame) frame = current_animation.loop;
-            }
-        }
+    // Si hay una animacion valida cargada, no se repite el frame y no esta en pausa, reproduce la animacion
+    if (current_animation.id < 0) return;
+    if (runtime_frame == ngn->graphics->runtime_frame) return;
+    if (animation_pause) return;
 
+    animation_timer ++;
+    if (animation_timer >= current_animation.frame_duration) {
+        animation_timer = 0;
+        frame ++;
+        if (frame > current_animation.last_frame) frame = current_animation.loop;
     }
+
+    runtime_frame = ngn->graphics->runtime_frame;
 
 }
 

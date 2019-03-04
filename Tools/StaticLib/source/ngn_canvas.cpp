@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -67,10 +67,10 @@
 
 /*** Constructor de la clase NGN_Canvas ***/
 NGN_Canvas::NGN_Canvas(
-    float position_x,                   // Posicion X (0 por defecto)
-    float position_y,                   // Posicion Y (0 por defecto)
-    int32_t _width,                     // Ancho de la capa (Toda la pantalla por defecto)
-    int32_t _height                     // Alto de la capa (Toda la pantalla por defecto)
+    int32_t position_x,         // Posicion X (0 por defecto)
+    int32_t position_y,         // Posicion Y (0 por defecto)
+    uint32_t _width,            // Ancho de la capa (Toda la pantalla por defecto)
+    uint32_t _height            // Alto de la capa (Toda la pantalla por defecto)
 ) {
 
     // Guarda el tamaño

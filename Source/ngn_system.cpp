@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -47,6 +47,7 @@
 // C++
 #include <cstdio>
 #include <iostream>
+#include <ctime>
 
 // SDL
 #include <SDL.h>
@@ -67,6 +68,9 @@ NGN_System::NGN_System() {
     // Tiempo delta
     _delta_time = SDL_GetTicks();
     delta_time = 0.0f;
+
+    // Inicia el seed del random
+    srand(time(NULL));
 
 }
 

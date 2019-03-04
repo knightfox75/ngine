@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,11 +68,11 @@ class NGN_Texture {
 
         // Contructor
         NGN_Texture(
-                    NGN_TextureData* texture,               // Objeto de la clase Texture Data
-                    int32_t position_x = NGN_DEFAULT_VALUE,         // Posicion X inicial (oculto por defecto)
-                    int32_t position_y = NGN_DEFAULT_VALUE,         // Posicion Y inicial (oculto por defecto)
-                    int32_t texture_width = NGN_DEFAULT_VALUE,      // Ancho de la textura (por defecto, el de la textura)
-                    int32_t texture_height = NGN_DEFAULT_VALUE      // Altura de la textura (por defecto, la de la textura)
+                    NGN_TextureData* texture,                               // Objeto de la clase Texture Data
+                    int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
+                    int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
+                    uint32_t texture_width = (uint32_t)NGN_DEFAULT_VALUE,   // Ancho de la textura (por defecto, el de la textura)
+                    uint32_t texture_height = (uint32_t)NGN_DEFAULT_VALUE   // Altura de la textura (por defecto, la de la textura)
                     );
 
         // Destructor

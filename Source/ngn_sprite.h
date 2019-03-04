@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,15 +68,15 @@ class NGN_Sprite {
 
         // Contructor
         NGN_Sprite(
-            NGN_SpriteData* sprite,                         // Objeto de la clase Sprite Data
-            int32_t position_x = NGN_DEFAULT_VALUE,         // Posicion X inicial (oculto por defecto)
-            int32_t position_y = NGN_DEFAULT_VALUE,         // Posicion Y inicial (oculto por defecto)
-            int32_t sprite_width = NGN_DEFAULT_VALUE,       // Ancho del sprite (por defecto, el de la textura)
-            int32_t sprite_height = NGN_DEFAULT_VALUE,      // Altura del sprite (por defecto, la de la textura)
-            int32_t box_width = NGN_DEFAULT_VALUE,          // Ancho de la caja de colisiones
-            int32_t box_height = NGN_DEFAULT_VALUE,         // Alto de la caja de colisiones
-            int32_t box_offset_x = NGN_DEFAULT_VALUE,       // Offset horizontal de la caja de colisiones
-            int32_t box_offset_y = NGN_DEFAULT_VALUE        // Offset vertical de la de colisiones
+            NGN_SpriteData* sprite,                                 // Objeto de la clase Sprite Data
+            int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
+            int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
+            uint32_t sprite_width = (uint32_t)NGN_DEFAULT_VALUE,    // Ancho del sprite (por defecto, el de la textura)
+            uint32_t sprite_height = (uint32_t)NGN_DEFAULT_VALUE,   // Altura del sprite (por defecto, la de la textura)
+            uint32_t box_width = (uint32_t)NGN_DEFAULT_VALUE,       // Ancho de la caja de colisiones
+            uint32_t box_height = (uint32_t)NGN_DEFAULT_VALUE,      // Alto de la caja de colisiones
+            int32_t box_offset_x = NGN_DEFAULT_VALUE,               // Offset horizontal de la caja de colisiones
+            int32_t box_offset_y = NGN_DEFAULT_VALUE                // Offset vertical de la de colisiones
         );
 
         // Destructor
@@ -155,6 +155,7 @@ class NGN_Sprite {
 
         // Si se da el caso, capa en la camara virtual 2D donde esta ubicado.
         int32_t camera_layer;
+        uint32_t runtime_frame;         // ID del frame en tiempo de ejecución
 
 
 
@@ -162,7 +163,7 @@ class NGN_Sprite {
     private:
 
         // Propiedades internas del Sprite
-        Size2 original;         			// Tamaño original
+        Size2 original;         		// Tamaño original
         uint32_t animation_timer;       // Control de velocidad de la animacion
 
 };

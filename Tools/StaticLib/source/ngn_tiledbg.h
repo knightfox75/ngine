@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -65,8 +65,7 @@ class NGN_TiledBg {
         NGN_TiledBg(
                     NGN_TiledBgData* bg,           // Datos del fondo
                     int32_t position_x = 0,        // Posicion X del fondo [0 por defecto]
-                    int32_t position_y = 0,        // Posicion Y del fondo [0 por defecto]
-                    bool over_scan = false         // Uso de over scan en el fondo
+                    int32_t position_y = 0         // Posicion Y del fondo [0 por defecto]
                     );
 
         // Destructor
@@ -124,14 +123,6 @@ class NGN_TiledBg {
             Vector2 offset;                     // Guarda el acumulado del autoscroll
             bool enabled;                       // El fondo lo gestiona la camara en modo virtual
         } virtual_bg;
-
-        // Datos del overscan
-        struct {
-            Size2I32 out_size;      // Tamaño del fondo con overscan
-            Size2I32 in_size;       // Tamaño del fondo sin overscan
-            Size2 border;           // Tamaño del borde del oversca
-            bool enabled;           // Esta el overscan activo?
-        } overscan;
 
     // Private
     private:

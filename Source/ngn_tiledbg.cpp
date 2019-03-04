@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -60,42 +60,18 @@
 NGN_TiledBg::NGN_TiledBg(
                         NGN_TiledBgData* bg,            // Datos del fondo
                         int32_t position_x,             // Posicion X del fondo [0 por defecto]
-                        int32_t position_y,             // Posicion Y del fondo [0 por defecto]
-                        bool over_scan                  // Uso de overscan en el fondo
+                        int32_t position_y              // Posicion Y del fondo [0 por defecto]
                         ) {
 
     // Copia del fondo
     bgdata = bg;
 
-    // En caso de estar el over scan activo, haz los calculos pertinentes
-    if (!over_scan) {
-        // Over scan inactivo
-        bb_size.width = ngn->graphics->native_w;
-        bb_size.height = ngn->graphics->native_h;
-        // Tamaño del fondo completo
-        width = bgdata->header.bg_width;
-        height = bgdata->header.bg_height;
-        // Parametros del overscan inactivo
-        overscan.border.width = overscan.border.height = 0;
-        overscan.in_size.width = overscan.in_size.height = 0;
-        overscan.out_size.width = overscan.out_size.height = 0;
-        // Indica que esta desactivado
-        overscan.enabled = false;
-    } else {
-        // Over scan activo
-        bb_size.width = bb_size.height = std::sqrt((ngn->graphics->native_w * ngn->graphics->native_w) + (ngn->graphics->native_h * ngn->graphics->native_h));
-        overscan.border.width = (((float)(bb_size.width - ngn->graphics->native_w)) / 2.0f);
-        overscan.border.height = (((float)(bb_size.height - ngn->graphics->native_h)) / 2.0f);
-        overscan.out_size.width = bgdata->header.bg_width;
-        overscan.out_size.height = bgdata->header.bg_height;
-        overscan.in_size.width = (bgdata->header.bg_width - (bb_size.width - ngn->graphics->native_w));
-        overscan.in_size.height = (bgdata->header.bg_height - (bb_size.height - ngn->graphics->native_h));
-        // Tamaño del fondo recortado
-        width = overscan.in_size.width;
-        height = overscan.in_size.height;
-        // Indica que esta activado
-        overscan.enabled = true;
-    }
+    // Tamaño del backbuffer
+    bb_size.width = ngn->graphics->native_w;
+    bb_size.height = ngn->graphics->native_h;
+    // Tamaño del fondo completo
+    width = bgdata->header.bg_width;
+    height = bgdata->header.bg_height;
 
     // Almacena los datos del fondo, segun los datos facilitados
     position.x = position_x;

@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -51,6 +51,7 @@
 #include <string>
 #include <cmath>
 
+
 // SDL
 #include <SDL.h>
 
@@ -76,12 +77,25 @@ NGN_Graphics::NGN_Graphics() {
     fps_frames = 0;
     fps_timer = SDL_GetTicks() + 1000;
 
+    // Inicia los viewports
+    ResetViewports();
+
+    // Genera el primer runtime frame
+    runtime_frame = 0;
+    GenerateRuntimeFrameId();
+
 }
 
 
 
 /*** Destructor ***/
 NGN_Graphics::~NGN_Graphics() {
+
+    // Elimina los vectores de memoria
+    for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
+        if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
+    }
+    viewport_list.clear();
 
     // Elimina los contenedores graficos
     SDL_DestroyRenderer(renderer);
@@ -108,8 +122,8 @@ bool NGN_Graphics::Init(
 
     // Guarda la resolucion nativa e informa a la camara de esta resolucion
     if (native_width > 0 && native_height > 0) {
-        ngn->camera->world.width = native_w = native_width;
-        ngn->camera->world.height = native_h = native_height;
+        ngn->camera->world.width = render_resolution.width = native_w = native_width;
+        ngn->camera->world.height = render_resolution.height = native_h = native_height;
     } else {
         std::cout << "Native resolution must be greather than 0." << std::endl;
         return false;
@@ -181,7 +195,6 @@ bool NGN_Graphics::Init(
         native_h
     };
 
-
     // Deshabilita el salvapantallas
     SDL_DisableScreenSaver();
 
@@ -196,10 +209,13 @@ bool NGN_Graphics::Init(
 void NGN_Graphics::RenderToScreen() {
 
     // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(renderer, NULL);
+    if (current_viewport < 0) {
+        SDL_SetRenderTarget(renderer, NULL);
+    } else {
+        SDL_SetRenderTarget(renderer, viewport_list[current_viewport].surface);
+    }
     // Restaura el color y alpha del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
-
 
 }
 
@@ -220,8 +236,151 @@ void NGN_Graphics::Update(void) {
     // Contador de FPS [ *** Debug ***]
     if (ngn->system->fps_counter) FpsCounter();
 
+    // Borra los viewports de existir estos
+    ClearViewports();
+
     // Borra el contenido para el siguiente frame
     SDL_RenderClear(renderer);
+
+    // Genera el Runtime Frame ID para el siguiente frame
+    GenerateRuntimeFrameId();
+
+}
+
+
+
+/*** Abre un viewport en la ID dada ***/
+void NGN_Graphics::OpenViewport(
+    uint8_t id,         // ID del VIEWPORT
+    int32_t pos_x,      // Posicion del viewport
+    int32_t pos_y,
+    uint32_t width,     // Ancho del viewport
+    uint32_t height,    // Alto del viewport
+    uint32_t h_res,     // Resolucion del render en el viewport
+    uint32_t v_res
+) {
+
+    // Check de ID
+    if (id >= VIEWPORT_NUMBER) return;
+
+    // Configura los parametros del viewport
+    Viewport_struct v;
+    v.x = pos_x;
+    v.y = pos_y;
+    v.w = width;
+    v.h = height;
+    if ((h_res != NGN_DEFAULT_VALUE) && (v_res != NGN_DEFAULT_VALUE)) {
+        v.render_w = h_res;
+        v.render_h = v_res;
+    } else {
+        v.render_w = width;
+        v.render_h = height;
+    }
+
+    // Check de datos
+    if ((v.w > native_w) || (v.h > native_h) || (v.render_w > native_w) || (v.render_h > native_h)) return;
+
+    if (viewport_list[id].available) {
+        if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
+    }
+
+    // Crea la textura
+    v.surface = SDL_CreateTexture(
+                             renderer,                      // Renderer
+                             SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                             SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+                             v.render_w,                    // Ancho de la textura
+                             v.render_h                     // Alto de la textura
+                             );
+
+    // Viewport disponible
+    v.available = true;
+
+    // Registra el viewport
+    viewport_list[id] = v;
+
+}
+
+
+
+/*** Cierra el viewport seleccionado ***/
+void NGN_Graphics::CloseViewport(uint8_t id) {
+
+    // Check de ID
+    if (id >= VIEWPORT_NUMBER) return;
+
+    // Elimina la textura del surface
+    if (viewport_list[id].available) {
+        if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
+    }
+
+    // Datos del viewport por defecto
+    Viewport_struct v;
+    v.available = false;
+    v.x = 0;
+    v.y = 0;
+    v.w = 0;
+    v.h = 0;
+    v.render_w = 0;
+    v.render_h = 0;
+    v.surface = NULL;
+
+    // Actualiza los datos del viewport cerrado
+    viewport_list[id] = v;
+
+}
+
+
+
+/*** Selecciona el viewport ***/
+void NGN_Graphics::SelectViewport(uint8_t id) {
+
+    if (id > VIEWPORT_NUMBER) return;
+    if (!viewport_list[id].available) return;
+
+    // Registra y actualiza el viewport
+    current_viewport = id;
+    SDL_SetRenderTarget(renderer, viewport_list[id].surface);
+
+    // Registra el tamaño del area de render
+    render_resolution.width = viewport_list[id].render_w;
+    render_resolution.height = viewport_list[id].render_h;
+
+}
+
+
+
+/*** Posiciona un viewport (Sobrecarga 1) ***/
+void NGN_Graphics::ViewportPosition(uint8_t id, int32_t x, int32_t y) {
+
+    if (id > VIEWPORT_NUMBER) return;
+    if (!viewport_list[id].available) return;
+
+    viewport_list[id].x = x;
+    viewport_list[id].y = y;
+
+}
+/*** Posiciona un viewport (Sobrecarga 1) ***/
+void NGN_Graphics::ViewportPosition(uint8_t id, Vector2I32 position) {
+
+    ViewportPosition(id, position.x, position.y);
+
+}
+
+
+
+/*** Selecciona el VIEWPORT por defecto ***/
+void NGN_Graphics::DefaultViewport() {
+
+    // Ningun viewport seleccionado
+    current_viewport = -1;
+
+    // Registra el tamaño del area de render
+    render_resolution.width = native_w;
+    render_resolution.height = native_h;
+
+    // Devuelve el render a la pantalla
+    RenderToScreen();
 
 }
 
@@ -258,11 +417,13 @@ void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
 /*** Cambia el estado de visibilidad del cursor del raton ***/
 void NGN_Graphics::ShowMouse(bool visible) {
+
     if (visible) {
         SDL_ShowCursor(SDL_ENABLE);
     } else {
         SDL_ShowCursor(SDL_DISABLE);
     }
+
 }
 
 
@@ -411,5 +572,69 @@ void NGN_Graphics::FpsCounter() {
     } else {
         fps_frames ++;
     }
+
+}
+
+
+
+/*** Parametros por defecto de los viewports ***/
+void NGN_Graphics::ResetViewports() {
+
+    Viewport_struct v;
+
+    v.available = false;
+    v.x = 0;
+    v.y = 0;
+    v.w = 0;
+    v.h = 0;
+    v.render_w = 0;
+    v.render_h = 0;
+    v.surface = NULL;
+
+    viewport_list.clear();
+    viewport_list.reserve(VIEWPORT_NUMBER);
+
+    for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
+        if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
+        viewport_list[i] = v;
+    }
+
+    current_viewport = -1;
+
+}
+
+
+
+/*** Limpia todas las texturas de los viewports ***/
+void NGN_Graphics::ClearViewports() {
+
+    for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
+        if (viewport_list[i].available) {
+            // Informa al renderer que la textura "backbuffer" es su destino
+            SDL_SetRenderTarget(renderer, viewport_list[i].surface);
+            // Borra el contenido de la textura actual
+            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+            SDL_RenderFillRect(renderer, NULL);
+        }
+    }
+
+    // Devuelve el render a la pantalla principal
+    RenderToScreen();
+
+}
+
+
+
+
+/*** Genera la ID del frame en Runtime ***/
+void NGN_Graphics::GenerateRuntimeFrameId() {
+
+    uint32_t id = 0;
+
+    do {
+        id = (uint32_t)(rand() % 0x7FFFFFFF);
+    } while (id == runtime_frame);
+
+    runtime_frame = id;
 
 }

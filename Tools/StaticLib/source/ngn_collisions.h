@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -87,8 +87,8 @@ class NGN_Collisions {
             NGN_Sprite* sprite,     // Sprite a renderizar
             int32_t x,              // Posicion
             int32_t y,
-            int32_t w,              // Tamaño del buffer
-            int32_t h
+            uint32_t w,             // Tamaño del buffer
+            uint32_t h
             );
 
 

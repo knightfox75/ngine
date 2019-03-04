@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -265,7 +265,7 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
 
 /*** Renderiza un sprite en una superficie ***/
-SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x, int32_t y, int32_t w, int32_t h) {
+SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x, int32_t y, uint32_t w, uint32_t h) {
 
     // Crea una nueva textura como buffer del tamaño necesario
     SDL_Texture* backbuffer = NULL;
@@ -347,7 +347,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     SDL_RenderCopyEx(ngn->graphics->renderer, sprite->data->gfx[sprite->frame], &source, &destination, (sprite->rotation + _rotation), _center, _flip);
 
     // Area a extraer
-    SDL_Rect area = {0, 0, w, h};
+    SDL_Rect area = {0, 0, (int32_t)w, (int32_t)h};
     // Superficie para guardar los pixeles extraidos
     SDL_Surface *surface = SDL_CreateRGBSurface(
         0,              // Flag (siempre 0)

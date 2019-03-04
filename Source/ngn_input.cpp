@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -156,7 +156,7 @@ NGN_Input::~NGN_Input() {
     RemoveKeys();
 
     // Cierra los JOYS abiertos
-    for (uint32_t i = 0; i < GAME_CONTROLLERS; i ++) if (SDL_JoystickGetAttached(controller[i].joy)) SDL_JoystickClose(controller[i].joy);
+    GameControllerClose();
 
 }
 
@@ -512,6 +512,19 @@ void NGN_Input::GameControllerInit() {
 
     // Datos por defecto de la lista
     for (uint8_t i = 0; i < GAME_CONTROLLERS; i ++) GameControllerReset(i);
+
+}
+
+
+
+/*** Cierra los controladores abiertos ***/
+void NGN_Input::GameControllerClose() {
+
+    // Cierra los controladores de la lista
+    for (uint32_t i = 0; i < GAME_CONTROLLERS; i ++) if (SDL_JoystickGetAttached(controller[i].joy)) SDL_JoystickClose(controller[i].joy);
+
+    // Limpia la lista de controladores
+    controller_list.clear();
 
 }
 

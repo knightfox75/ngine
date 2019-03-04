@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -51,6 +51,13 @@
 // C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <string>
+// N'gine
+#include "ngn_defines.h"
+
+
+
+/*** Definiciones ***/
+static const uint8_t VIEWPORT_NUMBER = 8;       // Numero de viewports configurables
 
 
 
@@ -86,6 +93,8 @@ class NGN_Graphics {
         int32_t native_h;
         std::string window_caption;     // Guarda el titulo de la ventana
 
+        Size2I32 render_resolution;     // Resolucion de salida del render
+
         bool force_redaw;               // Indicar que se debe forzar el redibujado
 
         // Estable el destino del render a la pantalla
@@ -94,12 +103,50 @@ class NGN_Graphics {
         // Actualiza el renderer a 60fps
         void Update();
 
+        // Multi-viewport
+        struct Viewport_struct {
+            int32_t x;
+            int32_t y;
+            int32_t w;
+            int32_t h;
+            int32_t render_w;
+            int32_t render_h;
+            bool available;
+            SDL_Texture* surface;
+        };
+        std::vector<Viewport_struct> viewport_list;
+        int8_t current_viewport;                    // Viewport actual (-1 sin viewport)
+
+        // Abre un viewport
+        void OpenViewport(
+            uint8_t id,                             // ID del VIEWPORT
+            int32_t pos_x,                          // Posicion del viewport
+            int32_t pos_y,
+            uint32_t width,                         // Ancho del viewport
+            uint32_t height,                        // Alto del viewport
+            uint32_t h_res = NGN_DEFAULT_VALUE,     // Resolucion del render en el viewport
+            uint32_t v_res = NGN_DEFAULT_VALUE
+        );
+        // Cierra un viewport
+        void CloseViewport(uint8_t id);
+        // Selecciona el viewport
+        void SelectViewport(uint8_t id);
+        // Posiciona un viewport
+        void ViewportPosition(uint8_t id, int32_t x, int32_t y);    // Sobrecarga 1
+        void ViewportPosition(uint8_t id, Vector2I32 position);     // Sobrecarga 2
+        // Viewport por defecto
+        void DefaultViewport();
+
+
         // Ajusta el clip del viewport
         void SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h);
         SDL_Rect cliparea;
 
         // Ajusta la visibilidad del cursor del raton
         void ShowMouse(bool visible);
+
+        // ID del frame en tiempo de ejecucion
+        uint32_t runtime_frame;
 
 
 
@@ -135,6 +182,15 @@ class NGN_Graphics {
         uint32_t fps_frames;
         uint32_t fps_timer;
         void FpsCounter();
+
+        // Inicializa los viewports
+        void ResetViewports();
+
+        // Limpeza del renderer de los viewports
+        void ClearViewports();
+
+        // Genera un ID del frame unico en Runtime
+        void GenerateRuntimeFrameId();
 
 };
 

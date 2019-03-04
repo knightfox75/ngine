@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -184,7 +184,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
     }
 
     // Verifica que el archivo es compatible
-    if (strcmp(bg->header.magic, MAGIC_STRING_TBG) != 0) {
+    if (std::string(bg->header.magic) != MAGIC_STRING_TBG) {
         std::cout << "File " << filepath << "  is in unknow format." << std::endl;
         delete bg;
         return NULL;
@@ -277,7 +277,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     }
 
     // Verifica que el archivo es compatible
-    if (strcmp(spr->header.magic, MAGIC_STRING_SPR) != 0) {
+    if (std::string(spr->header.magic) != MAGIC_STRING_SPR) {
         std::cout << "File " << filepath << "  is in unknow format." << std::endl;
         delete spr;
         return NULL;
@@ -381,7 +381,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
     }
 
     // Verifica que el archivo es compatible
-    if (strcmp(collision->header.magic, MAGIC_STRING_CMAP) != 0) {
+    if (std::string(collision->header.magic) != MAGIC_STRING_CMAP) {
         std::cout << "File " << filepath << "  is in unknow format." << std::endl;
         delete collision;
         return NULL;

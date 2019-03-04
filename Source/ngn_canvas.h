@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,7 +59,7 @@
 #include "ngn_defines.h"
 
 // Definiciones
-#define CIRCLE_PRECISION 2.0f
+static const float CIRCLE_PRECISION = 2.0f;
 
 
 
@@ -77,10 +77,10 @@ class NGN_Canvas {
 
         // Constructor de la clase
         NGN_Canvas(
-            float position_x = 0.0f,            // Posicion X (0 por defecto)
-            float position_y = 0.0f,            // Posicion Y (0 por defecto)
-            int32_t _width = NGN_DEFAULT_VALUE,     // Ancho de la capa (Toda la pantalla por defecto)
-            int32_t _height = NGN_DEFAULT_VALUE     // Alto de la capa (Toda la pantalla por defecto)
+            int32_t position_x = 0,                     // Posicion X (0 por defecto)
+            int32_t position_y = 0,                     // Posicion Y (0 por defecto)
+            uint32_t _width = NGN_DEFAULT_VALUE,        // Ancho de la capa (Toda la pantalla por defecto)
+            uint32_t _height = NGN_DEFAULT_VALUE        // Alto de la capa (Toda la pantalla por defecto)
         );
 
         // Destructor de la clase
@@ -96,8 +96,8 @@ class NGN_Canvas {
 
         // Propiedades
         Vector2 position;                   // Posicion de la capa
-        int32_t width;                      // Tamaño
-        int32_t height;
+        float width;                        // Tamaño
+        float height;
         Vector2 center;                     // Centro de la capa para su rotacion
 
         bool visible;                       // Visibilidad

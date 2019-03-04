@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -57,9 +57,9 @@
 
 
 /*** Defines ***/
-#define MAGIC_STRING_TBG            "NGN TILEDBG"
-#define MAGIC_STRING_SPR            "NGN SPRITE"
-#define MAGIC_STRING_CMAP           "NGN COLLISION MAP"
+static const std::string MAGIC_STRING_TBG = "NGN TILEDBG";
+static const std::string MAGIC_STRING_SPR = "NGN SPRITE";
+static const std::string MAGIC_STRING_CMAP = "NGN COLLISION MAP";
 
 
 

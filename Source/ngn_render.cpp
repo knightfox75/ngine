@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -255,6 +255,16 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     SDL_Rect source = {0, 0, 0, 0};
     SDL_Rect destination = {0, 0, 0, 0};
 
+    // Area del render
+    Size2I32 render_area;
+    if (ngn->graphics->current_viewport < 0) {
+        render_area.width = bg->bb_size.width;
+        render_area.height = bg->bb_size.height;
+    } else {
+        render_area.width = ngn->graphics->render_resolution.width;
+        render_area.height = ngn->graphics->render_resolution.height;
+    }
+
     // Analiza si es necesario redibujar la textura
     int32_t gap_x = (int32_t)(std::floor(bg->position.x) - std::floor(bg->last_position.x));
     int32_t gap_y = (int32_t)(std::floor(bg->position.y) - std::floor(bg->last_position.y));
@@ -297,8 +307,8 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
         SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
         // Tamaño del area de dibujado
-        int32_t tile_last_x = (((int32_t)(std::floor(bg->bb_size.width / tile_size))) + 2);      // +2 soluciona el encage en resoluciones anamorficas
-        int32_t tile_last_y = (((int32_t)(std::floor(bg->bb_size.height / tile_size))) + 2);
+        int32_t tile_last_x = (((int32_t)(std::floor(render_area.width / tile_size))) + 2);      // +2 soluciona el encage en resoluciones anamorficas
+        int32_t tile_last_y = (((int32_t)(std::floor(render_area.height / tile_size))) + 2);
 
         // Calcula el offset del dibujado de los tiles
         int32_t tile_offset_x = std::floor(bg->position.x / tile_size);
@@ -398,11 +408,11 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     SDL_SetTextureAlphaMod(bg->backbuffer, (uint8_t)_alpha);
 
     // Define los puntos de entrada y salida de la textura
-    source.x = 0; source.y = 0; source.w = bg->bb_size.width; source.h = bg->bb_size.height;
-    destination.w = (bg->bb_size.width * bg->scale.x);
-    destination.h = (bg->bb_size.height * bg->scale.y);
-    destination.x = ((ngn->graphics->native_w / 2.0f) - (destination.w / 2.0f));
-    destination.y = ((ngn->graphics->native_h / 2.0f) - (destination.h / 2.0f));
+    source.x = 0; source.y = 0; source.w = render_area.width; source.h = render_area.height;
+    destination.w = (render_area.width * bg->scale.x);
+    destination.h = (render_area.height * bg->scale.y);
+    destination.x = ((ngn->graphics->render_resolution.width / 2.0f) - (destination.w / 2.0f));
+    destination.y = ((ngn->graphics->render_resolution.height / 2.0f) - (destination.h / 2.0f));
     _rotation = bg->rotation;
     _center->x = (destination.w / 2.0f) + bg->center.x;
     _center->y = (destination.h / 2.0f) + bg->center.y;
@@ -581,5 +591,41 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
 
     // Paso de limpieza
     delete _center;
+
+}
+
+
+
+
+/*** Render de todos los viewports disponibles ***/
+void NGN_Render::Viewports() {
+
+    // Restaura el viewport por defecto
+    ngn->graphics->DefaultViewport();
+
+    SDL_Rect source, destination;   // Areas de entrada y salida
+
+    for (uint8_t i = 0; i < ngn->graphics->viewport_list.capacity(); i ++) {
+        if (ngn->graphics->viewport_list[i].available) {
+            // Defines las areas
+            source = {
+                0,
+                0,
+                ngn->graphics->viewport_list[i].render_w,
+                ngn->graphics->viewport_list[i].render_h
+            };
+            destination = {
+                ngn->graphics->viewport_list[i].x,
+                ngn->graphics->viewport_list[i].y,
+                ngn->graphics->viewport_list[i].w,
+                ngn->graphics->viewport_list[i].h
+            };
+            // Render de la textura al render principal
+            SDL_RenderCopy(ngn->graphics->renderer, ngn->graphics->viewport_list[i].surface, &source, &destination);
+        }
+    }
+
+
+    //std::cout << "Viewports: " << ngn->graphics->viewport_list.capacity() << std::endl;
 
 }

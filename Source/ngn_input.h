@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -237,6 +237,9 @@ class NGN_Input {
 
         // Inicializa los game controllers
         void GameControllerInit();
+
+        // Cierra todos los controladores
+        void GameControllerClose();
 
         // Reinicia la lista de controladores
         void GameControllerReset(uint8_t idx);

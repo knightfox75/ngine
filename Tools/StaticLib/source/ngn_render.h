@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -73,19 +73,22 @@ class NGN_Render {
         ~NGN_Render();
 
         // Dibuja una textura en la surface del renderer
-        void Texture(NGN_Texture* texture, float position_x = NGN_DEFAULT_VALUE, float position_y = NGN_DEFAULT_VALUE);
+        void Texture(NGN_Texture* texture, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
 
         // Dibuja un Sprite
-        void Sprite(NGN_Sprite* sprite, float position_x = NGN_DEFAULT_VALUE, float position_y = NGN_DEFAULT_VALUE);
+        void Sprite(NGN_Sprite* sprite, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
 
         // Dibuja un fondo de Tiles
         void TiledBg(NGN_TiledBg* bg);
 
         // Dibuja una capa de texto
-        void TextLayer(NGN_TextLayer* layer, float position_x = NGN_DEFAULT_VALUE, float position_y = NGN_DEFAULT_VALUE);
+        void TextLayer(NGN_TextLayer* layer, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
 
         // Dibuja un canvas
-        void Canvas(NGN_Canvas* canvas, float position_x = NGN_DEFAULT_VALUE, float position_y = NGN_DEFAULT_VALUE);
+        void Canvas(NGN_Canvas* canvas, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
+
+        // Render de los viewports
+        void Viewports();
 
 
     // Private

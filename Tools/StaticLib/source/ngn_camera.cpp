@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -115,11 +115,11 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
 
 
 /*** Especifica el tamaño de la capa para los sprites ***/
-void NGN_Camera::SizeOfLayer(uint32_t layer_number, float width, float height) {
+void NGN_Camera::SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height) {
 
     if (layer_number < layer.size()) {
-        if (width > 0.0f) layer[layer_number].sprite_layer.width = width;
-        if (height > 0.0f) layer[layer_number].sprite_layer.height = height;
+        if (width > 0) layer[layer_number].sprite_layer.width = width;
+        if (height > 0) layer[layer_number].sprite_layer.height = height;
     }
 
 }
@@ -136,10 +136,6 @@ void NGN_Camera::Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* 
     // El mundo NO puede ser menor del tamaño de la pantalla
     if (world.width < ngn->graphics->native_w) world.width = ngn->graphics->native_w;
     if (world.height < ngn->graphics->native_h) world.height = ngn->graphics->native_h;
-
-    // Tamaño del scroll principal
-    scroll.width = (world.width - ngn->graphics->native_w);
-    scroll.height = (world.height - ngn->graphics->native_h);
 
     // Registra el target
     target = target_sprite;
@@ -334,6 +330,14 @@ void NGN_Camera::Update() {
     // Si hay capas definidas
     if (layer.size() > 0) {
 
+        // Opten el area de render
+        render_area.width = ngn->graphics->render_resolution.width;
+        render_area.height = ngn->graphics->render_resolution.height;
+
+        // Calcula el tamaño del scroll
+        scroll.width = (world.width - render_area.width);
+        scroll.height = (world.height - render_area.height);
+
         // Control de la camara
         Vector2I64 origin;     // Esquina superior-izquierda del mundo en pantalla
         origin.x = origin.y = 0;
@@ -354,13 +358,13 @@ void NGN_Camera::Update() {
             campos.y = position.y;
         }
         // Ajusta su posicion para que quede dentro del mundo
-        if (campos.x < (ngn->graphics->native_w / 2)) campos.x = (ngn->graphics->native_w / 2);
-        if (campos.x > (world.width - (ngn->graphics->native_w / 2))) campos.x = (world.width - (ngn->graphics->native_w / 2));
-        if (campos.y < (ngn->graphics->native_h / 2)) campos.y = (ngn->graphics->native_h / 2);
-        if (campos.y > (world.height - (ngn->graphics->native_h / 2))) campos.y = (world.height - (ngn->graphics->native_h / 2));
+        if (campos.x < (render_area.width / 2)) campos.x = (render_area.width / 2);
+        if (campos.x > (world.width - (render_area.width / 2))) campos.x = (world.width - (render_area.width / 2));
+        if (campos.y < (render_area.height / 2)) campos.y = (render_area.height / 2);
+        if (campos.y > (world.height - (render_area.height / 2))) campos.y = (world.height - (render_area.height / 2));
         // Calcula la coordenada de origen del dibujado
-        origin.x = (campos.x - (ngn->graphics->native_w / 2));
-        origin.y = (campos.y - (ngn->graphics->native_h / 2));
+        origin.x = (campos.x - (render_area.width / 2));
+        origin.y = (campos.y - (render_area.height / 2));
 
         //std::cout << scroll.width << " " << scroll.height << std::endl;
 
@@ -375,11 +379,11 @@ void NGN_Camera::Update() {
                     for (uint32_t b = 0; b < layer[l].texture.size(); b ++) {
                         // Calcula el rango de desplazamiento de este fondo
                         if (layer[l].texture[b]->virtual_texture.enabled) {
-                            temp.x = (layer[l].texture[b]->virtual_texture.texture_size.width - ngn->graphics->native_w);
-                            temp.y = (layer[l].texture[b]->virtual_texture.texture_size.height - ngn->graphics->native_h);
+                            temp.x = (layer[l].texture[b]->virtual_texture.texture_size.width - render_area.width);
+                            temp.y = (layer[l].texture[b]->virtual_texture.texture_size.height - render_area.height);
                         } else {
-                            temp.x = (layer[l].texture[b]->width - ngn->graphics->native_w);
-                            temp.y = (layer[l].texture[b]->height - ngn->graphics->native_h);
+                            temp.x = (layer[l].texture[b]->width - render_area.width);
+                            temp.y = (layer[l].texture[b]->height - render_area.height);
                         }
                         // Calcula la posicion relativa en X (efecto parallax)
                         if (scroll.width > 0) {
@@ -427,11 +431,11 @@ void NGN_Camera::Update() {
                     for (uint32_t b = 0; b < layer[l].bg.size(); b ++) {
                         // Calcula el rango de desplazamiento de este fondo, sea real o virtual
                         if (layer[l].bg[b]->virtual_bg.enabled) {
-                            temp.x = (layer[l].bg[b]->virtual_bg.bg_size.width - ngn->graphics->native_w);
-                            temp.y = (layer[l].bg[b]->virtual_bg.bg_size.height - ngn->graphics->native_h);
+                            temp.x = (layer[l].bg[b]->virtual_bg.bg_size.width - render_area.width);
+                            temp.y = (layer[l].bg[b]->virtual_bg.bg_size.height - render_area.height);
                         } else {
-                            temp.x = (layer[l].bg[b]->width - ngn->graphics->native_w);
-                            temp.y = (layer[l].bg[b]->height - ngn->graphics->native_h);
+                            temp.x = (layer[l].bg[b]->width - render_area.width);
+                            temp.y = (layer[l].bg[b]->height - render_area.height);
                         }
                         //if (b == 0) std::cout << layer[l].bg[b]->width << " " << layer[l].bg[b]->height << std::endl;
                         // Calcula la posicion relativa en X (efecto parallax)
@@ -481,9 +485,11 @@ void NGN_Camera::Update() {
                 // Dibuja los sprites encima de estos fondos (si existen)
                 if (layer[l].spr.size() > 0) {
                     // Calcula el rango de desplazamiento de este fondo
-                    temp.x = (layer[l].sprite_layer.width - ngn->graphics->native_w);
-                    temp.y = (layer[l].sprite_layer.height - ngn->graphics->native_h);
+                    temp.x = (layer[l].sprite_layer.width - render_area.width);
+                    temp.y = (layer[l].sprite_layer.height - render_area.height);
                     for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
+                        // Resetea si es necesario el flag "on_screen"
+                        if (layer[l].spr[s]->runtime_frame != ngn->graphics->runtime_frame) layer[l].spr[s]->on_screen = false;
                         // Calcula la posicion relativa segun la capa que esta
                         if (scroll.width > 0) {
                             sprite.x = ((temp.x * origin.x) / scroll.width);
@@ -504,19 +510,16 @@ void NGN_Camera::Update() {
                         if (
                             (screen.x > -(layer[l].spr[s]->width / 2.0f))
                             &&
-                            (screen.x < (ngn->graphics->native_w + (layer[l].spr[s]->width / 2.0f)))
+                            (screen.x < (render_area.width + (layer[l].spr[s]->width / 2.0f)))
                             &&
                             (screen.y > -(layer[l].spr[s]->height / 2.0f))
                             &&
-                            (screen.y < (ngn->graphics->native_h + (layer[l].spr[s]->height / 2.0f)))
+                            (screen.y < (render_area.height + (layer[l].spr[s]->height / 2.0f)))
                         ) {
                             // Indica que esta en pantalla
-                            layer[l].spr[s]->on_screen = true;
+                            layer[l].spr[s]->on_screen |= true;
                             // Y dibujalo
                             ngn->render->Sprite(layer[l].spr[s], screen.x, screen.y);
-                        } else {
-                            // Indica que no esta en pantalla
-                            layer[l].spr[s]->on_screen = false;
                         }
                     }
                 }

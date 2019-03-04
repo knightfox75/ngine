@@ -2,6 +2,29 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2019-03-04 Ver.0.7.0-a
+--------------------------------------------------------------------------------
+- Corregido un BUG en la lectura del POV de los controladores si ningún
+  controlador estaba conectado, dando falsos positivos en la lectura.
+- Reescrita en su totalidad la rutina de detección de los controladores,
+  conservando ahora su ID aun que se desconecte un controlador con ID inferior.
+- Cambiados los tipos de dato de algunos parámetros en las clases NGN_Camera,
+  NGN_Canvas, NGN_Sprite, NGN_TextLayer y NGN_Texture y su documentación.
+- Modificadas algunas definiciones de parámetros internos de N'gine, pasando a
+  usar el método "static const" en vez de "#define".
+- Añadida la opción de la creación y render hacia diferentes viewports
+  seleccionables, mediante los métodos OpenViewport();  CloseViewport();
+  SelectViewport(); ViewportPosition(); DefaultViewport(); en la clase
+  NGN_Graphics y del método render->Viewports(); en la clase NGN_Render;
+- Internamente se genera un ID de frame en tiempo de ejecución, de este modo
+  es posible evitar que varias llamadas a PlayAnimation(); aceleren la
+  animación de los sprites.
+- Eliminadas temporalmente las opciones de "overscan" de los fodos de tiles
+  debido a su incompatibilidad con el sistema de "viewports" y su bajo
+  rendimiento en general.
+- Añadido el ejemplo para el uso de múltiples viewports.
+
+
 2018-07-09 Ver.0.6.1-a
 --------------------------------------------------------------------------------
 - Incorporados los archivos DLL necesarios para las utilidades de la librería

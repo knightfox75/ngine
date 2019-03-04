@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -91,7 +91,7 @@ class NGN_Camera {
         void CreateLayers(uint32_t layers);
 
         // Define el tamaño la capa de sprites (por defecto, todas las capas tienen el tamaño del mundo)
-        void SizeOfLayer(uint32_t layer_number, float width, float height);
+        void SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height);
 
         // Inicializa la camara
         void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = NULL);
@@ -129,6 +129,7 @@ class NGN_Camera {
         void Reset();
 
 
+
     // Datos privados de la clase
     private:
 
@@ -145,6 +146,7 @@ class NGN_Camera {
         // Parametros internos de la camara para su funcionamiento
         NGN_Sprite* target;                     // Sprite al que seguira la camara
         Size2I64 scroll;                        // Tamaño total del scroll en el mundo
+        Size2I32 render_area;                   // Tamaño del area del render
 
 
     // Vector de datos gestionados por la camara

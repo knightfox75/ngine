@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.2-alpha ***
+    *** Version 0.7.0-alpha ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,8 +68,8 @@
 
 
 /*** Definiciones ***/
-#define MAX_SFX_CHANNELS 64         // Numero maximo de efectos simultaneos
-#define MAX_MUSIC_CHANNELS 4        // Numero maximo de musicas por streaming simultaneas
+static const uint8_t MAX_SFX_CHANNELS = 64;     // Numero maximo de efectos simultaneos
+static const uint8_t MAX_MUSIC_CHANNELS = 4;    // Numero maximo de musicas por streaming simultaneas
 
 
 

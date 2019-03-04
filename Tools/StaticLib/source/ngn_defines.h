@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.6.1-alpha ***
+    *** Version 0.7.0-alpha ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -57,11 +57,13 @@
 
 
 /*** Definiciones ***/
-#define NGN_DEFAULT_VALUE       0x7FFFFFFF      // Valor de "defecto"
-#define NGN_SCR_WINDOW          0               // "Modo ventana"
-#define NGN_SCR_WINDOW_FULL     1               // "Modo ventana a pantalla completa"
-#define NGN_SCR_FULLSCREEN      2               // "Modo pantalla completa"
-#define PI                      3.14159265f     // Definicion del numero PI
+static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;    // Valor de "defecto"
+static const int8_t NGN_SCR_WINDOW = 0;                 // "Modo ventana"
+static const int8_t NGN_SCR_WINDOW_FULL = 1;            // "Modo ventana a pantalla completa"
+static const int8_t NGN_SCR_FULLSCREEN = 2;             // "Modo pantalla completa"
+static const float PI = 3.14159265f;                    // Definicion del numero PI
+static const float DEG2RAD = (PI / 180.0f);             // Constante de conversion Grados a Radianes
+static const float RAD2DEG = (180.0f / PI);             // Constante de conversion Radianes a Grados
 
 
 
