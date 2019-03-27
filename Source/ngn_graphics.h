@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha-WIP2 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -97,8 +97,8 @@ class NGN_Graphics {
 
         bool force_redaw;               // Indicar que se debe forzar el redibujado
 
-        // Estable el destino del render a la pantalla
-        void RenderToScreen();
+        // Estable el destino del render al seleccionado por defecto
+        void RenderToSelected();
 
         // Actualiza el renderer a 60fps
         void Update();
@@ -184,7 +184,7 @@ class NGN_Graphics {
         void FpsCounter();
 
         // Inicializa los viewports
-        void ResetViewports();
+        void SetupViewports();
 
         // Limpeza del renderer de los viewports
         void ClearViewports();

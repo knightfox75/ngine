@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha-WIP2 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -90,9 +90,23 @@ class NGN_Render {
         // Render de los viewports
         void Viewports();
 
+        // Establece una textura como destino del render
+        void RenderToTexture(NGN_Texture* texture);
+
+        // Establece la pantalla como destino del render
+        void RenderToScreen();
+
+        // Fija la textura al renderer en caso de estar activo
+        void SetRenderToTextureState();
+        // Opten el estado del render to texture;
+        bool GetRenderToTextureState();
+
 
     // Private
     private:
+
+        bool render2texture;        // Flag de render to texture
+        NGN_Texture* rend2text;     // Textura de destino del render
 
 };
 

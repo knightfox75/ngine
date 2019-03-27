@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha-WIP2 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -105,7 +105,8 @@ class NGN_Camera {
         int32_t PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x = 0.0f, float auto_y = 0.0f);
 
         // Añade un sprite a la capa  y devuelve su indice en la lista. En caso de error, devuelve -1
-        int32_t PushSprite(uint32_t layer_number, NGN_Sprite* sprite);
+        int32_t PushSprite(uint32_t layer_number, NGN_Sprite* sprite);          // Primera sobrecarga
+        int32_t PushSprite(uint32_t layer_number, NGN_Texture* texture);        // Segunda sobrecarga
 
         // Selecciona donde mira la camara
         void LookAt(NGN_Sprite* target_sprite);                     // Sigue a un sprite
@@ -116,14 +117,16 @@ class NGN_Camera {
         void Update();
 
         // Quita un fondo de la camara
-        int32_t RemoveBackground(NGN_Texture* texture);
-        int32_t RemoveBackground(NGN_TiledBg* background);
+        int32_t RemoveBackground(NGN_Texture* texture);         // Primera sobrecarga
+        int32_t RemoveBackground(NGN_TiledBg* background);      // Segunda sobrecarga
 
         // Quita un Sprite de la camara
-        int32_t RemoveSprite(NGN_Sprite* sprite);
+        int32_t RemoveSprite(NGN_Sprite* sprite);       // Primera sobrecarga
+        int32_t RemoveSprite(NGN_Texture* texture);     // Segunda sobrecarga
 
         // Cambia un elemento de capa
-        int32_t ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number);
+        int32_t ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number);         // Primera sobrecarga
+        int32_t ChangeLayer(NGN_Texture* texture, uint32_t layer_number);       // Segunda sobrecarga
 
         // Reset de la camara
         void Reset();
@@ -137,6 +140,7 @@ class NGN_Camera {
         struct layer_data{
             std::vector<NGN_Texture*> texture;  // Fondos de textura en esta capa
             std::vector<NGN_TiledBg*> bg;       // Fondos de tiles en esta capa
+            std::vector<NGN_Texture*> spr_t;    // Textura como Sprites para esta capa
             std::vector<NGN_Sprite*> spr;       // Sprites en esta capa
             Size2I64 sprite_layer;              // Tamaño para la capa de sprites
             bool visible;                       // Visibilidad de la capa

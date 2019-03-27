@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha-WIP2 ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -208,8 +208,8 @@ void NGN_TextLayer::Cls() {
         }
     }
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
     // Resetea el cabezal de escritura
     locate.x = locate.y = padding;
@@ -351,8 +351,8 @@ void NGN_TextLayer::Print(std::string text) {
         }
     }
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
     // Paso de limpieza
     delete _center;
@@ -457,7 +457,7 @@ void NGN_TextLayer::SurfaceCleanUp() {
     // Borra el contenido del renderer
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_RenderClear(ngn->graphics->renderer);
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }

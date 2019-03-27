@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha-WIP2 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -107,6 +107,7 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
         layer[i].visible = true;
         layer[i].texture.clear();
         layer[i].bg.clear();
+        layer[i].spr_t.clear();
         layer[i].spr.clear();
     }
 
@@ -260,7 +261,7 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background
 
 
 
-/*** Añade un sprite a la capa especificada ***/
+/*** Añade un sprite a la capa especificada (1ra sobrecarga) ***/
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
     // Si la capa es valida
@@ -281,6 +282,32 @@ int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
     // Devuelve el indice
     return (layer[layer_number].spr.size() - 1);
+
+}
+
+
+
+/*** Añade un sprite a la capa especificada (2da sobrecarga) ***/
+int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Texture* texture) {
+
+    // Si la capa es valida
+    if (layer_number < layer.capacity()) {
+
+        // Indica al sprite en que capa se ha añadido
+        texture->camera_layer = layer_number;
+        // Añade el fondo a la lista
+        layer[layer_number].spr_t.push_back(texture);
+        // Y registra que esta en uso la capa
+        layer[layer_number].in_use = true;
+
+    } else {
+
+        return -1;
+
+    }
+
+    // Devuelve el indice
+    return (layer[layer_number].spr_t.size() - 1);
 
 }
 
@@ -482,6 +509,42 @@ void NGN_Camera::Update() {
                     }
                 }
 
+                // Dibuja las texturas encima de estos fondos (si existen)
+                if (layer[l].spr_t.size() > 0) {
+                    // Calcula el rango de desplazamiento de este fondo
+                    temp.x = (layer[l].sprite_layer.width - render_area.width);
+                    temp.y = (layer[l].sprite_layer.height - render_area.height);
+                    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+                        // Calcula la posicion relativa segun la capa que esta
+                        if (scroll.width > 0) {
+                            sprite.x = ((temp.x * origin.x) / scroll.width);
+                        } else {
+                            sprite.x = 0.0f;
+                        }
+                        if (scroll.height > 0) {
+                            sprite.y = ((temp.y * origin.y) / scroll.height);
+                        } else {
+                            sprite.y = 0.0f;
+                        }
+                        // Calcula la posicion del sprite en pantalla segun el origen de dibujado
+                        screen.x = layer[l].spr_t[s]->position.x - sprite.x;
+                        screen.y = layer[l].spr_t[s]->position.y - sprite.y;
+                        // Si esta dentro de la pantalla, dibujalo en el renderer e indicalo
+                        if (
+                            (screen.x > -layer[l].spr_t[s]->width)
+                            &&
+                            (screen.x < (render_area.width + layer[l].spr_t[s]->width))
+                            &&
+                            (screen.y > -layer[l].spr_t[s]->height)
+                            &&
+                            (screen.y < (render_area.height + layer[l].spr_t[s]->height))
+                        ) {
+                            // Dibujalo
+                            ngn->render->Texture(layer[l].spr_t[s], screen.x, screen.y);
+                        }
+                    }
+                }
+
                 // Dibuja los sprites encima de estos fondos (si existen)
                 if (layer[l].spr.size() > 0) {
                     // Calcula el rango de desplazamiento de este fondo
@@ -589,7 +652,7 @@ int32_t NGN_Camera::RemoveBackground(NGN_TiledBg* background) {
 
 
 
-/*** Quita un Sprite de la camara ***/
+/*** Quita un Sprite de la camara (1ra sobrecarga) ***/
 int32_t NGN_Camera::RemoveSprite(NGN_Sprite* sprite) {
 
     int32_t r = -1;                     // Resultado de la operacion
@@ -622,7 +685,40 @@ int32_t NGN_Camera::RemoveSprite(NGN_Sprite* sprite) {
 
 
 
-/*** Cambia un sprite de capa ***/
+/*** Quita un Sprite de la camara (2da sobrecarga) ***/
+int32_t NGN_Camera::RemoveSprite(NGN_Texture* texture) {
+
+    int32_t r = -1;                         // Resultado de la operacion
+    int32_t l = texture->camera_layer;      // Capa donde esta el sprite alojado
+
+    // Si el sprite no esta asignado a la camara, sal
+    if (l < 0) return r;
+
+    // Sprites
+    if (layer[l].spr_t.size() > 0) {
+        for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+            // Si el sprite es el solicitado...
+            if (layer[l].spr_t[s] == texture) {
+                // Indica al sprite que ya no pertenece a ninguna capa
+                texture->camera_layer = -1;
+                // Borra el elemento
+                layer[l].spr_t.erase((layer[l].spr_t.begin() + s));
+                r = 0;
+                break;
+            }
+        }
+    }
+
+    //for (uint32_t l = 0; l < layer.size(); l ++) std::cout << "Sprites in layer " << l << ": " << layer[l].spr_t.size() << std::endl;
+
+    // Devuelve el resultado de la operacion
+    return r;
+
+}
+
+
+
+/*** Cambia un sprite de capa (1ra sobrecarga) ***/
 int32_t NGN_Camera::ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number) {
 
     uint32_t s = 0;
@@ -657,12 +753,48 @@ int32_t NGN_Camera::ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number) {
 
 
 
+/*** Cambia un sprite de capa (2da sobrecarga) ***/
+int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
+
+    uint32_t s = 0;
+    uint32_t l = 0;
+    int32_t r = -1;
+
+    // Verifica que la capa sea valida y el sprite no sea nulo
+    if ((layer_number < layer.capacity()) && (texture != NULL)) {
+        // Capa actual
+        l = texture->camera_layer;
+        // Si la capa de origen y destino son identicas, sal y devuelve error
+        if (l == layer_number) return r;
+        // Busca el sprite en su capa asignada
+        for (s = 0; s < layer[l].spr_t.size(); s ++) {
+            if (layer[l].spr_t[s] == texture) {
+                // Borra el elemento de la capa actual
+                layer[l].spr_t.erase((layer[l].spr_t.begin() + s));
+                // Y añadelo a su nueva capa de destino
+                r = PushSprite(layer_number, texture);
+                // Fuerza la salida del bucle
+                break;
+            }
+        }
+        // En caso de exito, devuelve el ID en la capa de este sprite
+        return r;
+    } else {
+        // Devuelve error
+        return r;
+    }
+
+}
+
+
+
 /*** Reinicia la camara ***/
 void NGN_Camera::Reset() {
 
     for (uint32_t i = 0; i < layer.capacity(); i ++) {
         layer[i].texture.clear();
         layer[i].bg.clear();
+        layer[i].spr_t.clear();
         layer[i].spr.clear();
     }
     layer.clear();

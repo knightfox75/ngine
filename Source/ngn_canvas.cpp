@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha-WIP2 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -231,8 +231,8 @@ void NGN_Canvas::Cls(uint32_t color) {
     SDL_SetTextureAlphaMod(backbuffer, 0x00);
     SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
 
@@ -257,8 +257,8 @@ void NGN_Canvas::Point(uint32_t x, uint32_t y, uint32_t color) {
     // Dibuja el punto
     SDL_RenderDrawPoint(ngn->graphics->renderer, x, y);
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
 
@@ -285,8 +285,8 @@ void NGN_Canvas::Points(const std::vector<CanvasPoint> &points) {
         SDL_RenderDrawPoint(ngn->graphics->renderer, points[n].x, points[n].y);
     }
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
 
@@ -311,8 +311,8 @@ void NGN_Canvas::Line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32
     // Dibuja la linea
     SDL_RenderDrawLine(ngn->graphics->renderer, x1, y1, x2, y2);
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
 
@@ -339,8 +339,8 @@ void NGN_Canvas::Lines(const std::vector<CanvasLine> &lines) {
         SDL_RenderDrawLine(ngn->graphics->renderer, lines[n].x1, lines[n].y1, lines[n].x2, lines[n].y2);
     }
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
 
@@ -389,8 +389,8 @@ void NGN_Canvas::Box(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_
         SDL_RenderDrawLine(ngn->graphics->renderer, _x2, _y1, _x1, _y1);
     }
 
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
 
@@ -563,7 +563,7 @@ void NGN_Canvas::SurfaceCleanUp() {
     // Borra el contenido del renderer
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_RenderClear(ngn->graphics->renderer);
-    // Restaura el render a la pantalla
-    ngn->graphics->RenderToScreen();
+    // Restaura el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }
