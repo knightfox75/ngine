@@ -2,6 +2,26 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+
+2019-03-28 Ver.0.8.0-a
+--------------------------------------------------------------------------------
+- Actualizada la documentación del usuario.
+- Añadida la sobrecarga al constructor de la clase NGN_Texture para la creación
+  de texturas en blanco.
+- Añadido el método ClearContent(); a la clase NGN_Texture para borrar el
+  contenido de una textura, si esta se ha creado en blanco.
+- Añadido el método RenderToTexture(NGN_Texture* texture); en la clase
+  NGN_Render para fijar una textura como destino del render.
+- Añadido el método RenderToScreen(); en la clase NGN_Render para fijar
+  el surface por defecto como destino del render.
+- Añadidas las sobrecargas de los métodos PushSprite(); RemoveSprite();
+  ChangeLayer(); de la clase NGN_Camera para poder registrar texturas
+  como sprites en la cámara 2D.
+- Añadida la posibilidad de crear animaciones de los sprites con orden
+  decreciente en los frames (animación inversa).
+- Corregido un bug en la inicialización de los viewports.
+
+
 2019-03-04 Ver.0.7.0-a
 --------------------------------------------------------------------------------
 - Corregido un BUG en la lectura del POV de los controladores si ningún

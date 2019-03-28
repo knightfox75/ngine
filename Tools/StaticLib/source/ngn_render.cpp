@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -60,12 +60,20 @@
 
 /*** Contructor ***/
 NGN_Render::NGN_Render() {
+
+    // Parametros iniciales
+    render2texture = false;
+    rend2text = NULL;
+
 }
 
 
 
 /*** Destructor ***/
 NGN_Render::~NGN_Render() {
+
+    rend2text = NULL;
+
 }
 
 
@@ -393,8 +401,8 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
             }
         }
 
-        // Restaura el render a la pantalla
-        ngn->graphics->RenderToScreen();
+        // Restaura el render al seleccionado
+        ngn->graphics->RenderToSelected();
 
     }
 
@@ -627,5 +635,55 @@ void NGN_Render::Viewports() {
 
 
     //std::cout << "Viewports: " << ngn->graphics->viewport_list.capacity() << std::endl;
+
+}
+
+
+
+/*** Selecciona una textura como destino del render ***/
+void NGN_Render::RenderToTexture(NGN_Texture* texture) {
+
+    // Si la textura es nula, sal
+    if (!texture) return;
+
+    // Asigna la textura
+    rend2text = texture;
+    render2texture = true;
+
+    // Fija la textura como destino del render
+    SDL_SetRenderTarget(ngn->graphics->renderer, rend2text->data->gfx);
+
+}
+
+
+
+/*** Selecciona la pantalla (o el viewport) como destino del renderer ***/
+void NGN_Render::RenderToScreen() {
+
+    render2texture = false;
+    ngn->graphics->RenderToSelected();
+
+}
+
+
+
+/*** Fija la textura del render to texture ***/
+void NGN_Render::SetRenderToTextureState() {
+
+    if (!render2texture) return;
+    if (!rend2text) {
+        render2texture = false;
+        return;
+    }
+    SDL_SetRenderTarget(ngn->graphics->renderer, rend2text->data->gfx);
+
+}
+
+
+
+/*** Opten el estado del render to texture ***/
+bool NGN_Render::GetRenderToTextureState() {
+
+    return render2texture;
 
 }

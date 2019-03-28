@@ -17,5 +17,6 @@
 		<Project filename="hitbox/hitbox.cbp" />
 		<Project filename="music_loop/music_loop.cbp" />
 		<Project filename="multiple_viewports/multiple_viewports.cbp" />
+		<Project filename="render_to_texture/render_to_texture.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha-WIP2 ***
+    *** Version 0.8.0-alpha ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -281,7 +281,7 @@ void NGN_Texture::SetCenter(float x, float y) {
 /*** Borra el contenido de la textura, si no esta enlazada ***/
 void NGN_Texture::ClearContent() {
 
-    if (!linked) return;
+    if (linked) return;
 
     // Informa al renderer que la textura "backbuffer" es su destino
     SDL_SetRenderTarget(ngn->graphics->renderer, data->gfx);

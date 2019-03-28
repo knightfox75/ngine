@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha-WIP2 ***
+    *** Version 0.8.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -671,6 +671,10 @@ void NGN_Render::RenderToScreen() {
 void NGN_Render::SetRenderToTextureState() {
 
     if (!render2texture) return;
+    if (!rend2text) {
+        render2texture = false;
+        return;
+    }
     SDL_SetRenderTarget(ngn->graphics->renderer, rend2text->data->gfx);
 
 }

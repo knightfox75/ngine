@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -131,27 +131,27 @@ class NGN_Sprite {
         void SetCenter(float x, float y);
 
         // Gestor de animaciones
-        uint32_t frame;                         // Fotograma actual
+        int32_t frame;                          // Fotograma actual
         struct animation_data{
-            std::string name;                       // Nombre de la animacion
-            int32_t id;                                 // ID de la animacion
-            uint32_t first_frame;               // Primer frame de la animacion
-            uint32_t last_frame;                // Ultimo frame (inclusive) de la animacion
-            uint32_t loop;                      // Frame que es el punto de loop
-            uint32_t frame_duration;            // Duracion de cada frame de la animacion en ciclos del juego
+            std::string name;                   // Nombre de la animacion
+            int32_t id;                         // ID de la animacion
+            int32_t first_frame;                // Primer frame de la animacion
+            int32_t last_frame;                 // Ultimo frame (inclusive) de la animacion
+            int32_t loop;                       // Frame que es el punto de loop
+            int32_t frame_duration;             // Duracion de cada frame de la animacion en ciclos del juego
         };
         std::vector<animation_data> animation;      // Vector con las animaciones
         int32_t AddAnimation(
             std::string name,                       // Nombre de la animacion
-            uint32_t first_frame,               // Primer fotograma de la animacion
-            uint32_t last_frame,                // Ultimo fotograma de la animacion
-            uint32_t loop,                      // Fotograma "punto de loop"
-            uint32_t frame_duration             // Duracion en ciclos de cada fotograma
+            int32_t first_frame,                    // Primer fotograma de la animacion
+            int32_t last_frame,                     // Ultimo fotograma de la animacion
+            int32_t loop,                           // Fotograma "punto de loop"
+            int32_t frame_duration                  // Duracion en ciclos de cada fotograma
             );
         int32_t SetAnimation(std::string name = "");    // Selecciona una animacion a reproducir
-        void PlayAnimation();                       // Reproduce la animacion seleccionada
-        animation_data current_animation;           // Parametros de la animacion actual
-        bool animation_pause;                       // Pausa la animacion actual
+        void PlayAnimation();                           // Reproduce la animacion seleccionada
+        animation_data current_animation;               // Parametros de la animacion actual
+        bool animation_pause;                           // Pausa la animacion actual
 
         // Si se da el caso, capa en la camara virtual 2D donde esta ubicado.
         int32_t camera_layer;
@@ -164,7 +164,7 @@ class NGN_Sprite {
 
         // Propiedades internas del Sprite
         Size2 original;         		// Tamaño original
-        uint32_t animation_timer;       // Control de velocidad de la animacion
+        int32_t animation_timer;        // Control de velocidad de la animacion
 
 };
 

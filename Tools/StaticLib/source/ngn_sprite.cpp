@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -245,10 +245,10 @@ void NGN_Sprite::SetCenter(float x, float y) {
 /*** Añade una animacion al Sprite ***/
 int32_t NGN_Sprite::AddAnimation(
                               std::string name,
-                              uint32_t first_frame,
-                              uint32_t last_frame,
-                              uint32_t loop,
-                              uint32_t frame_duration
+                              int32_t first_frame,
+                              int32_t last_frame,
+                              int32_t loop,
+                              int32_t frame_duration
                             ) {
 
     // Verifica el nombre
@@ -327,8 +327,13 @@ void NGN_Sprite::PlayAnimation() {
     animation_timer ++;
     if (animation_timer >= current_animation.frame_duration) {
         animation_timer = 0;
-        frame ++;
-        if (frame > current_animation.last_frame) frame = current_animation.loop;
+        if (current_animation.first_frame <= current_animation.last_frame) {
+            frame ++;
+            if (frame > current_animation.last_frame) frame = current_animation.loop;
+        } else {
+            frame --;
+            if (frame < current_animation.last_frame) frame = current_animation.loop;
+        }
     }
 
     runtime_frame = ngn->graphics->runtime_frame;

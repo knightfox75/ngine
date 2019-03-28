@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -58,18 +58,17 @@
 
 
 
-/*** Contructor ***/
+/*** Contructor (1ra sobrecarga) ***/
 NGN_Texture::NGN_Texture(
                     NGN_TextureData* texture,               // Objeto de la clase Texture Data
                     int32_t position_x,                     // Posicion X inicial (oculto por defecto)
                     int32_t position_y,                     // Posicion Y inicial (oculto por defecto)
                     uint32_t texture_width,                 // Ancho de la textura (por defecto, el de la textura)
                     uint32_t texture_height                 // Altura de la textura (por defecto, la de la textura)
-                    ) {
+) {
 
     // Guarda el grafico que usara este texture
     data = texture;
-
     // Tamaño
     if ((texture_width != NGN_DEFAULT_VALUE) && (texture_height != NGN_DEFAULT_VALUE)) {
         // Tamaño definido por el usuario
@@ -80,6 +79,7 @@ NGN_Texture::NGN_Texture(
         width = data->width;
         height = data->height;
     }
+    linked = true;
 
     // Guarda el tamaño original al crear la textura
     original.width = width;
@@ -95,6 +95,72 @@ NGN_Texture::NGN_Texture(
         position.x = -width;
         position.y = -height;
     }
+
+    DefaultValues();
+
+}
+
+
+/*** Contructor (2da sobrecarga) ***/
+NGN_Texture::NGN_Texture(
+                    uint32_t texture_width,     // Ancho de la textura (por defecto, el de la textura)
+                    uint32_t texture_height,    // Altura de la textura (por defecto, la de la textura)
+                    int32_t position_x,         // Posicion X inicial (oculto por defecto)
+                    int32_t position_y          // Posicion Y inicial (oculto por defecto)
+) {
+
+    // Tamaño definido por el usuario
+    width = texture_width;
+    height = texture_height;
+
+    // Crea la textura
+    data = new NGN_TextureData();
+    data->gfx = SDL_CreateTexture(
+        ngn->graphics->renderer,        // Renderer
+        SDL_PIXELFORMAT_BGRA8888,       // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+        width,                          // Ancho de la textura
+        height                          // Alto de la textura
+    );
+    data->width = width;
+    data->height = height;
+    linked = false;
+
+    // Guarda el tamaño original al crear la textura
+    original.width = width;
+    original.height = height;
+
+    // Posicion
+    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
+        // Posicion definida por el usuario
+        position.x = position_x;
+        position.y = position_y;
+    } else {
+        // Posicion fuera del escenario
+        position.x = -width;
+        position.y = -height;
+    }
+
+    DefaultValues();
+
+}
+
+
+
+/*** Destructor ***/
+NGN_Texture::~NGN_Texture() {
+
+    // Elimina la textura si no es enlazada
+    if (!linked) delete data;
+    // Elimina la referencia al grafico
+    data = NULL;
+
+}
+
+
+
+/*** Parametros por defecto del contructor ***/
+void NGN_Texture::DefaultValues() {
 
     // Valores por defecto
     visible = true;             // Visibilidad
@@ -117,16 +183,6 @@ NGN_Texture::NGN_Texture(
     virtual_texture.offset.x = 0.0f;
     virtual_texture.offset.y = 0.0f;
     virtual_texture.enabled = false;
-
-}
-
-
-
-/*** Destructor ***/
-NGN_Texture::~NGN_Texture() {
-
-    // Elimina la referencia al grafico
-    data = NULL;
 
 }
 
@@ -217,5 +273,23 @@ void NGN_Texture::SetCenter(float x, float y) {
 
     center.x = x;
     center.y = y;
+
+}
+
+
+
+/*** Borra el contenido de la textura, si no esta enlazada ***/
+void NGN_Texture::ClearContent() {
+
+    if (linked) return;
+
+    // Informa al renderer que la textura "backbuffer" es su destino
+    SDL_SetRenderTarget(ngn->graphics->renderer, data->gfx);
+    // Borra el contenido de la textura actual
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+
+    // Devuelve el render al seleccionado
+    ngn->graphics->RenderToSelected();
 
 }

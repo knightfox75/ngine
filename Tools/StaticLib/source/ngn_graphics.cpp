@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.7.0-alpha ***
+    *** Version 0.8.0-alpha ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -78,7 +78,7 @@ NGN_Graphics::NGN_Graphics() {
     fps_timer = SDL_GetTicks() + 1000;
 
     // Inicia los viewports
-    ResetViewports();
+    SetupViewports();
 
     // Genera el primer runtime frame
     runtime_frame = 0;
@@ -148,7 +148,7 @@ bool NGN_Graphics::Init(
     }
 
     // Si la ventana se ha creado, intenta crear la superficie de renderizado, con el dibujado sincronizado al frame
-    renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC));
+    renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE));
     // Si no se puede crear, destruye la venta e informa del error
     if (renderer == NULL) {
         SDL_DestroyWindow(window);
@@ -205,14 +205,16 @@ bool NGN_Graphics::Init(
 
 
 
-/*** Establece el destino del render a la pantalla ***/
-void NGN_Graphics::RenderToScreen() {
+/*** Estable el destino del render al seleccionado por defecto ***/
+void NGN_Graphics::RenderToSelected() {
 
     // Cambia el destino del renderer a la pantalla
-    if (current_viewport < 0) {
-        SDL_SetRenderTarget(renderer, NULL);
-    } else {
+    if (ngn->render->GetRenderToTextureState()) {
+        ngn->render->SetRenderToTextureState();
+    } else if (current_viewport >= 0) {
         SDL_SetRenderTarget(renderer, viewport_list[current_viewport].surface);
+    } else {
+        SDL_SetRenderTarget(renderer, NULL);
     }
     // Restaura el color y alpha del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
@@ -379,8 +381,8 @@ void NGN_Graphics::DefaultViewport() {
     render_resolution.width = native_w;
     render_resolution.height = native_h;
 
-    // Devuelve el render a la pantalla
-    RenderToScreen();
+    // Devuelve el render al seleccionado
+    RenderToSelected();
 
 }
 
@@ -578,7 +580,7 @@ void NGN_Graphics::FpsCounter() {
 
 
 /*** Parametros por defecto de los viewports ***/
-void NGN_Graphics::ResetViewports() {
+void NGN_Graphics::SetupViewports() {
 
     Viewport_struct v;
 
@@ -595,7 +597,6 @@ void NGN_Graphics::ResetViewports() {
     viewport_list.reserve(VIEWPORT_NUMBER);
 
     for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
-        if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
         viewport_list[i] = v;
     }
 
@@ -618,8 +619,8 @@ void NGN_Graphics::ClearViewports() {
         }
     }
 
-    // Devuelve el render a la pantalla principal
-    RenderToScreen();
+    // Devuelve el render al seleccionado
+    RenderToSelected();
 
 }
 
