@@ -139,6 +139,8 @@
 		<Unit filename="source/ngn_texture.h" />
 		<Unit filename="source/ngn_tiledbg.cpp" />
 		<Unit filename="source/ngn_tiledbg.h" />
+		<Unit filename="source/ngn_toolbox.cpp" />
+		<Unit filename="source/ngn_toolbox.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

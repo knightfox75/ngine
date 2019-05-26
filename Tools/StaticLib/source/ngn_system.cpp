@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha ***
+    *** Version 0.9.0-wip1 ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -143,6 +143,24 @@ void NGN_System::EventUpdate() {
 
     // Actualiza el estado de los dispositvos de entrada
     ngn->input->Update();
+
+}
+
+
+
+/*** Devuelve un string con la version actual de N'gine ***/
+std::string NGN_System::GetVersion() {
+
+    std::string version = "N'gine version ";
+    version += ngn->toolbox->Int2String(NGN_VERSION_MAJOR, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(NGN_VERSION_MINOR, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(NGN_VERSION_PATCH, 1, "0");
+    version += "-";
+    version += NGN_VERSION_METADATA;
+
+    return version;
 
 }
 

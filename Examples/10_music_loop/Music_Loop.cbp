@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Music_Loop" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="WIN - Debug">
+				<Option output="./Music_Loop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/win_debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DOS_WINDOWS" />
+					<Add option="-DMODE_DEBUG" />
+					<Add directory="$(CODEBLOCKS)/Libs/ngn/include" />
+					<Add directory="$(CODEBLOCKS)/Libs/sdl2/include" />
+					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
+				</Compiler>
+				<Linker>
+					<Add library="mingw32" />
+					<Add library="ngn_d" />
+					<Add library="SDL2main" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio-d" />
+					<Add library="sfml-system-d" />
+					<Add directory="$(CODEBLOCKS)/Libs/ngn/lib" />
+					<Add directory="$(CODEBLOCKS)/Libs/sdl2/lib" />
+					<Add directory="$(CODEBLOCKS)/Libs/sfml/lib" />
+				</Linker>
+			</Target>
+			<Target title="WIN - Release">
+				<Option output="./Music_Loop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/win_release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DOS_WINDOWS" />
+					<Add option="-DMODE_RELEASE" />
+					<Add directory="$(CODEBLOCKS)/Libs/ngn/include" />
+					<Add directory="$(CODEBLOCKS)/Libs/sdl2/include" />
+					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="mingw32" />
+					<Add library="ngn" />
+					<Add library="SDL2main" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="$(CODEBLOCKS)/Libs/ngn/lib" />
+					<Add directory="$(CODEBLOCKS)/Libs/sdl2/lib" />
+					<Add directory="$(CODEBLOCKS)/Libs/sfml/lib" />
+				</Linker>
+			</Target>
+			<Target title="LINUX - Debug">
+				<Option output="./Music_Loop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux_debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_DEBUG" />
+					<Add directory="/usr/include/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Compiler>
+				<Linker>
+					<Add library="ngn_d" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="/usr/lib/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Linker>
+			</Target>
+			<Target title="LINUX - Release">
+				<Option output="./Music_Loop" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/linux_release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_RELEASE" />
+					<Add directory="/usr/include/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="ngn" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="/usr/lib/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++14" />
+			<Add option="-m64" />
+		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
+		<Unit filename="resource/recource.rc">
+			<Option compilerVar="WINDRES" />
+			<Option target="WIN - Debug" />
+			<Option target="WIN - Release" />
+		</Unit>
+		<Unit filename="source/demo/demo.cpp" />
+		<Unit filename="source/demo/demo.h" />
+		<Unit filename="source/main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

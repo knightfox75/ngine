@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha ***
+    *** Version 0.9.0-wip1 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -80,6 +80,7 @@ NGN::NGN() {
 
     // Crea los objetos de la libreria
     system = NULL;          // Funciones del sistema
+    toolbox = NULL;         // Caja de herramientas
     input = NULL;           // Metodos de entrada
     graphics = NULL;        // Gestion del Renderer de SDL
     render = NULL;          // Dibuja los diferentes elementos graficos
@@ -103,6 +104,7 @@ NGN::~NGN() {
     delete render; render = NULL;
     delete graphics; graphics = NULL;
     delete input; input = NULL;
+    delete toolbox; toolbox = NULL;
     delete system; system = NULL;
 
     // Cierra los subsistemas de SDL
@@ -117,21 +119,23 @@ bool NGN::Init() {
 
     // Crea los objetos de la libreria
     system = new NGN_System();              // Funciones del sistema
-    if (system == NULL) return false;
+    if (!system) return false;
+    toolbox = new NGN_ToolBox();            // Caja de herramientas
+    if (!toolbox) return false;
     input = new NGN_Input();                // Metodos de entrada
-    if (input == NULL) return false;
+    if (!input) return false;
     graphics = new NGN_Graphics();          // Gestion del Renderer de SDL
-    if (graphics == NULL) return false;
+    if (!graphics) return false;
     render = new NGN_Render();              // Dibuja los diferentes elementos graficos
-    if (render == NULL) return false;
+    if (!render) return false;
     camera = new NGN_Camera();              // Crea la camara virtual 2D
-    if (camera == NULL) return false;
+    if (!camera) return false;
     load = new NGN_Load();                  // Carga de archivos
-    if (load == NULL) return false;
+    if (!load) return false;
     collisions = new NGN_Collisions();      // Sistema de colisiones
-    if (collisions == NULL) return false;
+    if (!collisions) return false;
     sound = new NGN_Sound();                // Efectos de sonido
-    if (sound == NULL) return false;
+    if (!sound) return false;
 
     // Inicializa la libreria SDL
     if (!system->Init()) return false;

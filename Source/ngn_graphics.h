@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha ***
+    *** Version 0.9.0-wip1 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016

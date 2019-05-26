@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha ***
+    *** Version 0.9.0-wip1 ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -73,6 +73,9 @@ class NGN_System {
         // Gestor de eventos de SDL
         SDL_Event sdl_event;
         void EventUpdate();
+
+        // Version de N'gine (a string)
+        std::string GetVersion();
 
         // Flags de sistema
         bool quit;                      // Se solicita la salida de la aplicacion

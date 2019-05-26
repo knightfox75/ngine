@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.8.0-alpha ***
+    *** Version 0.9.0-wip1 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -72,6 +72,7 @@
 // Libreria
 #include "ngn_defines.h"            // Definiciones
 #include "ngn_system.h"             // Funciones del sistema
+#include "ngn_toolbox.h"            // Caja de herramientas (metodos diversos y utiles)
 #include "ngn_input.h"              // Metodos de entrada
 #include "ngn_graphics.h"           // Gestion del Renderer de SDL
 #include "ngn_render.h"             // Renderiza los diferentes elementos graficos
@@ -104,6 +105,7 @@ class NGN {
 
         // Punteros a las clases
         NGN_System* system;             // Funciones del sistema
+        NGN_ToolBox* toolbox;           // Caja de herramientas
         NGN_Input* input;               // Metodos de entrada
         NGN_Graphics* graphics;         // Gestion del Renderer de SDL
         NGN_Render* render;             // Dibuja los diferentes elementos graficos
