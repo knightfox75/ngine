@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.0-wip1 ***
+    *** Version 0.9.0 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,14 +12,17 @@
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
-    Requiere SDL2 (2.0.8) - 64-bits
+    Requiere SDL2 (2.0.9) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.5.0) - 64-bits
+    Requiere SDL2_TTF (2.0.15) - 64-bits
+    http://www.libsdl.org/download-2.0.php
+
+    Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    Requiere LodePNG (20190615)
+    (c) 2005 - 2019 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 

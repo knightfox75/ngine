@@ -4,12 +4,12 @@
     Conversor de PNG a TILES + MAP [Funciones]
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    (c) 2005 - 2019 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -21,9 +21,9 @@
 
 
 /*** Defines ***/
-#define VERSION             2                   // Version del archivo
-#define MAGIC_STRING        "NGN TILEDBG"       // Magic String
-#define DEFAULT_TILE_SIZE   32                  // Tamaño por defecto del TILE
+static const int32_t VERSION = 2;                           // Version del archivo
+static const std::string MAGIC_STRING = "NGN TILEDBG";      // Magic String
+static const int32_t DEFAULT_TILE_SIZE = 32;                // Tamaño por defecto del TILE
 
 
 

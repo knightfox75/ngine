@@ -4,12 +4,12 @@
     Conversor de PNG a TILES + MAP
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    (c) 2005 - 2019 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -29,6 +29,20 @@
 
 // Tielmap
 #include "tilemap.h"
+
+
+
+/*** Version de N'gine ***/
+static const int32_t NGN_VERSION_MAJOR = 0;                 // Version mayor
+static const int32_t NGN_VERSION_MINOR = 9;                 // Version menor
+static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
+static const std::string NGN_VERSION_METADATA = "a";        // Version metadatos
+/*** Version del programa ***/
+static const int32_t PROGRAM_VERSION_MAJOR = 0;             // Version mayor
+static const int32_t PROGRAM_VERSION_MINOR = 3;             // Version menor
+static const int32_t PROGRAM_VERSION_PATCH = 1;             // Version parche
+static const std::string PROGRAM_VERSION_METADATA = "a";    // Version metadatos
+
 
 
 /*** Mensages de error ***/
@@ -62,10 +76,12 @@ int32_t main(int32_t argc, char* args[]) {
     bool _err = false;
 
     // Texto de bienvenida
+    std::string ngn_version = std::to_string(NGN_VERSION_MAJOR) + "." + std::to_string(NGN_VERSION_MINOR) + "." + std::to_string(NGN_VERSION_PATCH) + "-" + NGN_VERSION_METADATA;
+    std::string program_version = std::to_string(PROGRAM_VERSION_MAJOR) + "." + std::to_string(PROGRAM_VERSION_MINOR) + "." + std::to_string(PROGRAM_VERSION_PATCH) + "-" + NGN_VERSION_METADATA;
     std::cout <<
-    std::endl << "N'gine PNG to TiledBG converter. (v0.3.0-a)." <<
-    std::endl << "For N'gine Version 0.6.0-a or higher." <<
-    std::endl << "(cc) 2016 - 2018 by Cesar Rincon." <<
+    std::endl << "N'gine PNG to TiledBG converter. (v" << program_version << ")." <<
+    std::endl << "For N'gine Version " << ngn_version << " or higher." <<
+    std::endl << "(cc) 2016 - 2019 by Cesar Rincon." <<
     std::endl << "http://www.nightfoxandco.com" <<
     std::endl << "contact@nightfoxandco.com" <<
     std::endl << std::endl;

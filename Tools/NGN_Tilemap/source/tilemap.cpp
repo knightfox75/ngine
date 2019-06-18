@@ -4,12 +4,12 @@
     Conversor de PNG a TILES + MAP [Funciones]
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    (c) 2005 - 2019 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -339,7 +339,7 @@ int32_t PngToTiles::WriteFile(std::string filename) {
 
     header.version = VERSION;
 
-    sprintf(header.magic, MAGIC_STRING);
+    sprintf(header.magic, "%s", MAGIC_STRING.c_str());
 
     header.bg_width = bg_width;
     header.bg_height = bg_height;

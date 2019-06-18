@@ -4,12 +4,12 @@
     Conversor de PNG a Mapa de Colisiones (.map)
 
     Proyecto iniciado el 8 de Abril del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    (c) 2005 - 2019 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -271,7 +271,7 @@ void CollisionMap::GenerateHeader() {
 
     // Actualiza la informacion de la cabecera
     header.version = VERSION;                           // Version del programa
-    sprintf(header.magic, MAGIC_STRING);                // Magic String
+    sprintf(header.magic, "%s", MAGIC_STRING.c_str());  // Magic String
     header.width = out_width;                           // Tamaño del mapa en pixeles
     header.height = out_height;
     header.tile_size = tile_size;                       // Tamaño del tile

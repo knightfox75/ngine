@@ -4,7 +4,7 @@
     Conversor de PNG a Sprite sheet (.spr)
 
     Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -22,8 +22,8 @@
 
 
 /*** Defines ***/
-#define VERSION             2                   // Version del archivo
-#define MAGIC_STRING        "NGN SPRITE"
+static const int32_t VERSION = 2;                       // Version del archivo
+static const std::string MAGIC_STRING = "NGN SPRITE";   // Magic string
 
 
 

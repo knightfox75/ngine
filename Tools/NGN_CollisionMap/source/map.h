@@ -4,12 +4,12 @@
     Conversor de PNG a Mapa de Colisiones (.map)
 
     Proyecto iniciado el 8 de Abril del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    (c) 2005 - 2019 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -21,15 +21,15 @@
 
 
 
-/*** Defines ***/
-#define VERSION             2                           // Version del archivo
-#define MAGIC_STRING        "NGN COLLISION MAP"         // Magic string
-
-
-
 /*** Includes ***/
 #include <vector>
 #include <string>
+
+
+
+/*** Defines ***/
+static const int32_t VERSION = 2;                               // Version del archivo
+static const std::string MAGIC_STRING = "NGN COLLISION MAP";    // Magic string
 
 
 

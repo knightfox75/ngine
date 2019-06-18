@@ -3,6 +3,31 @@ N'gine Changelog
 --------------------------------------------------------------------------------
 
 
+2019-06-18 Ver.0.9.0-a
+--------------------------------------------------------------------------------
+- Añadida la clase "NGN_ToolBox" a la librería, la cual contiene herramientas
+  genéricas de ayuda a la programación.
+- Añadido el método "Int2String" a la clase "NGN_ToolBox", el cual convierte
+  un numero entero a cadena de texto con formato.
+- Añadido el método "Float2String" a la clase "NGN_ToolBox", el cual convierte
+  un numero decimal a cadena de texto con formato.
+- Añadido el método "GetDistance" a la clase "NGN_ToolBox", el cual devuelve
+  la distancia entre 2 puntos (4 sobrecargas).
+- Añadidas las constantes "NGN_VERSION_MAJOR", "NGN_VERSION_MINOR",
+  "NGN_VERSION_PATCH" y "NGN_VERSION_METADATA", las cuales indican la versión
+  de N'gine.
+- Añadido el método "GetVersion" en la clase "NGN_System", el cual devuelve
+  un string con la versión actual de N'gine.
+- Actualizados los templates de N'gine para code::blocks, mostrando ahora en
+  la consola la versión de N'gine si se ejecutan en modo "debug".
+- Actualizados los templates de N'gine para code::blocks, declarando el
+  define "MODE_DEBUG" cuando se selecciona este.
+- Actualizados todos los ejemplos del uso de las funciones de N'gine.
+- Actualizada la librería para el uso de SDL2 2.0.9, SDL2_TTF 2.0.15,
+  SFML 2.5.1 y LodePNG 20190615.
+
+
+
 2019-03-28 Ver.0.8.0-a
 --------------------------------------------------------------------------------
 - Actualizada la documentación del usuario.

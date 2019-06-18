@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.0-wip1 ***
+    *** Version 0.9.0 ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016

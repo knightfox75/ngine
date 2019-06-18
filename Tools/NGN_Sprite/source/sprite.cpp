@@ -4,7 +4,7 @@
     Conversor de PNG a Sprite sheet (.spr)
 
     Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -294,13 +294,13 @@ void SpriteSheet::GenerateSpriteSheet() {
     std::cout << "Output sprite sheet size is " << out_width << "x" << out_height << " pixels." << std::endl;
 
     // Actualiza la informacion de la cabecera
-    header.version = VERSION;               // Version del programa
-    sprintf(header.magic, MAGIC_STRING);   // Magic String
-    header.sheet_width = out_width;         // Dimensiones del strip
+    header.version = VERSION;                               // Version del programa
+    sprintf(header.magic, "%s", MAGIC_STRING.c_str());      // Magic String
+    header.sheet_width = out_width;                         // Dimensiones del strip
     header.sheet_height = out_height;
-    header.frame_width = frame_width;       // Dimensiones del frame
+    header.frame_width = frame_width;                       // Dimensiones del frame
     header.frame_height = frame_height;
-    header.total_frames = _total_frames;    // Numero de frames del sprite
+    header.total_frames = _total_frames;                    // Numero de frames del sprite
     for (uint32_t i = 0; i < sizeof(header.reserve); i ++) header.reserve[i] = 0;    // Espacio reservado
 
 }
