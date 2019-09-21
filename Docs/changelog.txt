@@ -2,6 +2,10 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2019-09-04 Ver.0.9.1-a
+--------------------------------------------------------------------------------
+- Documentación actualizada con la nueva URL del sitio oficial.
+
 
 2019-06-18 Ver.0.9.0-a
 --------------------------------------------------------------------------------
@@ -25,7 +29,6 @@ N'gine Changelog
 - Actualizados todos los ejemplos del uso de las funciones de N'gine.
 - Actualizada la librería para el uso de SDL2 2.0.9, SDL2_TTF 2.0.15,
   SFML 2.5.1 y LodePNG 20190615.
-
 
 
 2019-03-28 Ver.0.8.0-a

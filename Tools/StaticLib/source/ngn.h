@@ -1,12 +1,12 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.0 ***
+    *** Version 0.9.1-a ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
     (cc) 2016 - 2019 by Cesar Rincon "NightFox"
-    http://www.nightfoxandco.com
+    https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
