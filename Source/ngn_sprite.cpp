@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.1-a ***
+    *** Version 0.10.0-a ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -96,6 +96,11 @@ NGN_Sprite::NGN_Sprite(
         box.width = width;
         box.height = height;
     }
+    // Caja de colisiones habilitada por defecto
+    box_enabled = true;
+
+    // Prepara la lista de colisionadores adicionales
+    colliders.clear();
 
     // Offset de la caja de colisiones
     if ((box_offset_x != NGN_DEFAULT_VALUE) && (box_offset_y != NGN_DEFAULT_VALUE)) {
@@ -242,6 +247,94 @@ void NGN_Sprite::SetCenter(float x, float y) {
 }
 
 
+/*** Añade un nuevo collider al Sprite ***/
+int32_t NGN_Sprite::AddCollider(
+    std::string name,           // Nombre del colisionador
+    float offset_x,             // Offset X
+    float offset_y,             // Offset Y
+    float width,                // Ancho del colisionador
+    float height                // Altura del colisionador
+) {
+
+    // Verifica el nombre (longitud)
+    if ((name.length() < 1) || (name.length() > 255)) return 1;
+    // Verifica el nombre (nombre repetido)
+    if (GetColliderId(name) >= 0) return 2;
+
+    // Crea un collider temporal con los datos necesarios
+    ColliderData c;
+    c.name = name;
+    c.offset.x = offset_x;
+    c.offset.y = offset_y;
+    c.width = width;
+    c.height = height;
+    c.enabled = true;
+
+    // Registra el collider en el vector
+    colliders.push_back(c);
+
+    // Collider creado con exito
+    return 0;
+
+}
+
+
+
+/*** Opten la ID de un collider ***/
+int32_t NGN_Sprite::GetColliderId(std::string name) {
+
+    // Resultado
+    int32_t r = -1;
+
+    // Busca el collider
+    for (uint32_t i = 0; i < colliders.size(); i ++) {
+        if (name == colliders[i].name) {
+            r = i;
+            break;
+        }
+    }
+
+    // Revuelve el resultado
+    return r;
+
+}
+
+
+
+/*** Cambia el estado de un collider ***/
+int32_t NGN_Sprite::ColliderEnabled(std::string name, bool status) {
+
+    // Busca y verifica la ID del collider
+    int32_t id = GetColliderId(name);
+    if (id < 0) return 1;
+
+    // Cambia su estado
+    colliders[id].enabled = status;
+
+    // Cambio correcto
+    return 0;
+
+}
+
+
+
+/*** Elimina un collider ***/
+int32_t NGN_Sprite::RemoveCollider(std::string name) {
+
+    // Busca y verifica la ID del collider
+    int32_t id = GetColliderId(name);
+    if (id < 0) return 1;
+
+    // Elimina el collider del vector
+    colliders.erase((colliders.begin() + id));
+
+    // Eliminacion correcta
+    return 0;
+
+}
+
+
+
 /*** Añade una animacion al Sprite ***/
 int32_t NGN_Sprite::AddAnimation(
                               std::string name,
@@ -252,8 +345,8 @@ int32_t NGN_Sprite::AddAnimation(
                             ) {
 
     // Verifica el nombre
-    if (name.length() < 1 || name.length() > 255) return 1;
-    for (uint32_t i = 0; i < animation.size(); i ++) if (animation[i].name == name) return 1;
+    if ((name.length() < 1) || (name.length() > 255)) return 1;
+    for (uint32_t i = 0; i < animation.size(); i ++) if (animation[i].name == name) return 2;
 
 
     // Variable temporal con la animacion

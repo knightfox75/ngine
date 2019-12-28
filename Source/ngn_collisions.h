@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.1-a ***
+    *** Version 0.10.0-a ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -81,6 +81,9 @@ class NGN_Collisions {
 
     // Private
     private:
+
+        // Algoritmo de colision por cajas
+        bool CheckColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
 
         // Deteccion de colisiones entre sprites por "pixel perfect"
         SDL_Surface* RenderSpriteInSurface(

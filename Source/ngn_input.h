@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.1-a ***
+    *** Version 0.10.0-a ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -55,10 +55,29 @@
 #include <string>
 
 
-/*** Defines ***/
-#define GAME_CONTROLLERS 8              // Numero maximo de game controllers
-#define GAME_CONTROLLER_AXIS 8          // Numero maximo de axis por game controller
-#define GAME_CONTROLLER_BUTTONS 20      // Numero maximo de botones por game controller
+/*** Define las propiedades de los controladores ***/
+static const int32_t GAME_CONTROLLERS = 8;              // Numero maximo de game controllers
+static const int32_t GAME_CONTROLLER_AXIS = 8;          // Numero maximo de axis por game controller
+static const int32_t GAME_CONTROLLER_BUTTONS = 20;      // Numero maximo de botones por game controller
+
+/*** Definiciones por defecto de X-INPUT (XBOX Controller) ***/
+static const uint32_t XBOX_BUTTON_A = 0;                // Botones del PAD de XBOX
+static const uint32_t XBOX_BUTTON_B = 1;
+static const uint32_t XBOX_BUTTON_X = 2;
+static const uint32_t XBOX_BUTTON_Y = 3;
+static const uint32_t XBOX_BUTTON_L = 4;
+static const uint32_t XBOX_BUTTON_R = 5;
+static const uint32_t XBOX_BUTTON_BACK = 6;
+static const uint32_t XBOX_BUTTON_START = 7;
+static const uint32_t XBOX_BUTTON_STICK_L = 8;
+static const uint32_t XBOX_BUTTON_STICK_R = 9;
+static const uint32_t XBOX_BUTTON_XBOX = 10;
+static const uint32_t XBOX_STICK_L_AXIS_X = 0;          // Axis analogicos
+static const uint32_t XBOX_STICK_L_AXIS_Y = 1;
+static const uint32_t XBOX_STICK_R_AXIS_X = 2;
+static const uint32_t XBOX_STICK_R_AXIS_Y = 3;
+static const uint32_t XBOX_TRIGGER_AXIS = 4;            // Gatillos analogicos
+static const float XBOX_AXIS_DEADZONE = 0.25f;          // Zona muerta de los axis
 
 
 
