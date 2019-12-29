@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.1-a ***
+    *** Version 0.10.0-a ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -97,8 +97,9 @@ class NGN_Sprite {
                 float x;            // Offset horizontal de la caja
                 float y;            // Offset vertical de la caja
             } offset;
-        } box;                      // Caja de colisiones
+        } box;                      // Caja principal de colision
 
+        bool box_enabled;           // Caja principal de colisiones habilitada
 
         bool visible;               // Visibilidad
         int32_t alpha;              // Nivel de alpha
@@ -129,6 +130,40 @@ class NGN_Sprite {
 
         // Fija el centro del Sprite (Posicion relativa desde el centro REAL)
         void SetCenter(float x, float y);
+
+
+        // Gestion de colisionadores
+        struct ColliderData{
+            std::string name;       // ID (nombre) del collider
+            struct {
+                float x;            // Posicion X respecto al centro del sprite
+                float y;            // Posicion Y respecto al centro del sprite
+            } offset;
+            float width;            // Ancho del collider
+            float height;           // Altura del Collider
+            bool enabled;           // Colisionador activo
+        };
+        std::vector<ColliderData> colliders;    // Colisionadores adicionales
+
+        // Añade un nuevo collider
+        int32_t AddCollider(
+            std::string name,           // Nombre del colisionador
+            float offset_x,             // Offset X
+            float offset_y,             // Offset Y
+            float width,                // Ancho del colisionador
+            float height                // Altura del colisionador
+        );
+
+        // Busca la ID de un collider, devuelve -1 si no se encuentra
+        int32_t GetColliderId(std::string name);
+
+        // Habilita o deshabilita un collider
+        int32_t ColliderEnabled(std::string name, bool status);
+
+        // Elimina un collider
+        int32_t RemoveCollider(std::string name);
+
+
 
         // Gestor de animaciones
         int32_t frame;                          // Fotograma actual

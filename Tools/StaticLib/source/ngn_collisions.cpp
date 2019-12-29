@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.9.1-a ***
+    *** Version 0.10.0-a ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -124,17 +124,120 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
     // Proteccion de errores
     if ((spr1 == NULL) || (spr2 == NULL)) return false;
 
+    // Almacena el resultado
+    bool r = false;
+
+    // Variables para los calculos
+    float x1, y1, w1, h1, x2, y2, w2, h2;
+
+    // Fase 1 - Si estan habilitadas, colision entre las cajas principales
+    if (spr1->box_enabled && spr2->box_enabled) {
+        // Introduce los datos
+        x1 = (spr1->position.x + spr1->box.offset.x);
+        y1 = (spr1->position.y + spr1->box.offset.y);
+        x2 = (spr2->position.x + spr2->box.offset.x);
+        y2 = (spr2->position.y + spr2->box.offset.y);
+        w1 = spr1->box.width;
+        h1 = spr1->box.height;
+        w2 = spr2->box.width;
+        h2 = spr2->box.height;
+        // Colision entre las cajas principales
+        r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+    }
+
+    // Fase 2 - Si la caja principal del Sprite 1 esta habilitada, verifica la colision con los colliders del Sprite 2, si estos existen
+    if (spr1->box_enabled && (spr2->colliders.size() > 0)) {
+        // Introduce los datos del Sprite 1
+        x1 = (spr1->position.x + spr1->box.offset.x);
+        y1 = (spr1->position.y + spr1->box.offset.y);
+        w1 = spr1->box.width;
+        h1 = spr1->box.height;
+        // Recorre el vector de colliders del Sprite 2
+        for (uint32_t i = 0; i < spr2->colliders.size(); i ++) {
+            // Si esta habilitado
+            if (spr2->colliders[i].enabled) {
+                // Introduce los datos del collider
+                x2 = (spr2->position.x + spr2->colliders[i].offset.x);
+                y2 = (spr2->position.y + spr2->colliders[i].offset.y);
+                w2 = spr2->colliders[i].width;
+                h2 = spr2->colliders[i].height;
+                // Verifica la colision
+                r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+            }
+        }
+    }
+
+    // Fase 3 - Si la caja principal del Sprite 2 esta habilitada, verifica la colision con los colliders del Sprite 1, si estos existen
+    if (spr2->box_enabled && (spr1->colliders.size() > 0)) {
+        // Introduce los datos del Sprite 2
+        x2 = (spr2->position.x + spr2->box.offset.x);
+        y2 = (spr2->position.y + spr2->box.offset.y);
+        w2 = spr2->box.width;
+        h2 = spr2->box.height;
+        // Recorre el vector de colliders del Sprite 1
+        for (uint32_t i = 0; i < spr1->colliders.size(); i ++) {
+            // Si esta habilitado
+            if (spr1->colliders[i].enabled) {
+                // Introduce los datos del collider
+                x1 = (spr1->position.x + spr1->colliders[i].offset.x);
+                y1 = (spr1->position.y + spr1->colliders[i].offset.y);
+                w1 = spr1->colliders[i].width;
+                h1 = spr1->colliders[i].height;
+                // Verifica la colision
+                r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+            }
+        }
+    }
+
+    // Fase 4 - Si ambos Sprites tienes colliders, comparalos entre ellos
+    if ((spr1->colliders.size() > 0) && (spr2->colliders.size() > 0)) {
+        // Recorre el vector de colliders del Sprite 1
+        for (uint32_t n = 0; n < spr1->colliders.size(); n ++) {
+            // Si esta habilitado
+            if (spr1->colliders[n].enabled) {
+                // Introduce los datos del collider
+                x1 = (spr1->position.x + spr1->colliders[n].offset.x);
+                y1 = (spr1->position.y + spr1->colliders[n].offset.y);
+                w1 = spr1->colliders[n].width;
+                h1 = spr1->colliders[n].height;
+                // Recorre el vector de colliders del Sprite 2
+                for (uint32_t i = 0; i < spr2->colliders.size(); i ++) {
+                    // Si esta habilitado
+                    if (spr2->colliders[i].enabled) {
+                        // Introduce los datos del collider
+                        x2 = (spr2->position.x + spr2->colliders[i].offset.x);
+                        y2 = (spr2->position.y + spr2->colliders[i].offset.y);
+                        w2 = spr2->colliders[i].width;
+                        h2 = spr2->colliders[i].height;
+                        // Verifica la colision
+                        r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+                    }
+                }
+            }
+        }
+    }
+
+    // Devuelve el resultado
+    return r;
+
+}
+
+
+
+/*** Algoritmo de colision por cajas ***/
+bool NGN_Collisions::CheckColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+
     // Calculos previos (distancia entre sprites)
     Vector2 distance;
-    distance.x = (int32_t)(std::abs((spr1->position.x + spr1->box.offset.x) - (spr2->position.x + spr2->box.offset.x)));
-    distance.y = (int32_t)(std::abs((spr1->position.y + spr1->box.offset.y) - (spr2->position.y + spr2->box.offset.y)));
+    distance.x = std::abs(x1 - x2);
+    distance.y = std::abs(y1 - y2);
     // Calculos previos (tamaño de la colision)
     Size2 collision_size;
-    collision_size.width = (int32_t)((spr1->box.width / 2.0f) + (spr2->box.width / 2.0f));
-    collision_size.height = (int32_t)((spr1->box.height / 2.0f) + (spr2->box.height / 2.0f));
+    collision_size.width = (w1 / 2.0f) + (w2 / 2.0f);
+    collision_size.height = (h1 / 2.0f) + (h2 / 2.0f);
 
     // Verifica si existe la colision
-    if ((distance.x <= collision_size.width) && (distance.y <= collision_size.height)) {
+    if ((distance.x < collision_size.width) && (distance.y < collision_size.height)) {
         return true;
     } else {
         return false;

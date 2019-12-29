@@ -12,7 +12,7 @@
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
-    Requiere SDL2 (2.0.9) - 64-bits
+    Requiere SDL2 (2.0.10) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.1) - 64-bits

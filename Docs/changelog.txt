@@ -2,6 +2,20 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2019-12-29 Ver.0.10.0-a
+--------------------------------------------------------------------------------
+- Añadida la propiedad "box_enabled" a la clase "NGN_Sprite", la cual permite
+  habilitar o deshabilitar la caja de colisión principal.
+- Ahora los Sprites pueden disponer de colisionadores adicionales.
+- Añadidos los métodos "AddCollider", "GetColliderId", "ColliderEnabled" y
+  "RemoveCollider" a la clase "NGN_Sprite".
+- Se ha actualizado la documentación.
+- Añadido el ejemplo para el uso de múltiples colisionadores en los sprites.
+- Ajustes menores en el algoritmo de detección de colisiones por cajas.
+- N'gine recompilado con la versión 2.0.10 de SDL2.
+- N'gine para Linux Mint actualizado a la versión 17.3 TRICIA.
+
+
 2019-09-04 Ver.0.9.1-a
 --------------------------------------------------------------------------------
 - Documentación actualizada con la nueva URL del sitio oficial.

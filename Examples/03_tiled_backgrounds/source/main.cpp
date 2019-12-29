@@ -3,16 +3,16 @@
     Ejemplo de carga y scroll de fondos con tiles
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2018 by Cesar Rincon "NightFox"
-    http://www.nightfoxandco.com
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.9.0-a o superior
+    Requiere N'gine 0.10.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
-    Requiere SDL2 (2.0.8) - 64-bits
+    Requiere SDL2 (2.0.10) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.0) - 64-bits

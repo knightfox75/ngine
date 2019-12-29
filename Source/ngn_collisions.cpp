@@ -237,7 +237,7 @@ bool NGN_Collisions::CheckColliders(float x1, float y1, float w1, float h1, floa
     collision_size.height = (h1 / 2.0f) + (h2 / 2.0f);
 
     // Verifica si existe la colision
-    if ((distance.x <= collision_size.width) && (distance.y <= collision_size.height)) {
+    if ((distance.x < collision_size.width) && (distance.y < collision_size.height)) {
         return true;
     } else {
         return false;
