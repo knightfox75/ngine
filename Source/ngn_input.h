@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.10.1-wip_03 ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -157,6 +157,8 @@ class NGN_Input {
             NGN_Key pov_down;                               // POV como teclas cursor (Abajo)
             NGN_Key pov_left;                               // POV como teclas cursor (Izquierda)
             NGN_Key pov_right;                              // POV como teclas cursor (Derecha)
+            bool rumble_available;                          // Dispone de efecto "rumble"
+            SDL_Haptic* haptic;                             // Puntero a la informacion del "haptic"
         };
 
         // Lista de controladores disponibles
@@ -220,6 +222,8 @@ class NGN_Input {
         controller_data controller[GAME_CONTROLLERS];
         int32_t controllers;
 
+        // Efecto simple de "rumble" para el controlador
+        int32_t ControllerRumble(uint32_t controller_id, float intensity, uint32_t duration);
 
 
         // Actualiza el estado de los dispositivos de entrada

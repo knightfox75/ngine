@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.10.1-wip_03 ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -67,6 +67,9 @@ NGN_AudioClip::NGN_AudioClip() {
     // Volumen
     _volume = 0;
 
+    // Multiplicador de volumen para la atenuacion panoramica
+    _panning_attenuation = 1.0f;
+
 }
 
 
@@ -87,12 +90,14 @@ void NGN_AudioClip::Clip(NGN_AudioClipData* clip) {
 
 /*** Reproduce el sonido ***/
 void NGN_AudioClip::Play(
-    int32_t volume,        // Volumen inicial
+    int32_t volume,         // Volumen inicial
     int32_t pan,            // Nivel de panning (-100 a 100)
     bool loop               // Loop?
     ) {
 
     sound.setRelativeToListener(true);
+    sound.setMinDistance(1.0f);
+    sound.setAttenuation(0.0f);
     Panning(pan);
 
     _volume = volume;
@@ -155,7 +160,8 @@ void NGN_AudioClip::Volume(int32_t volume) {
     _volume = volume;
     if (_volume < 0) _volume = 0;
     if (_volume > 100) _volume = 100;
-    sound.setVolume(_volume);
+    int32_t v = (int32_t)((float)_volume * _panning_attenuation);
+    sound.setVolume(v);
 }
 
 
@@ -204,10 +210,17 @@ void NGN_AudioClip::Panning(int32_t pan) {
     if (_panning > 100) _panning = 100;
 
     // Calculos de angulo
-    float angle = ((3.141592f * ((float)(-_panning + 100))) / 200.0f);
+    float angle = ((PI * ((float)(-_panning + 100))) / 200.0f);
     float x = std::cos(angle);
     float z = std::sin(angle);
     sound.setPosition(x, 0.0f, z);
+
+    // Calculos de la compensacion de la atenuacion panoramica
+    _panning_attenuation = (1.0f - (std::abs(x) / 2.0f));
+
+    // Reajusta el nivel de volumen
+    int32_t v = (int32_t)((float)_volume * _panning_attenuation);
+    sound.setVolume(v);
 
 }
 

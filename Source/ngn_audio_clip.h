@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.10.1-wip_03 ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -137,6 +137,7 @@ class NGN_AudioClip {
         // Parametros
         int32_t _panning;
         int32_t _volume;
+        float _panning_attenuation;
 
 };
 
