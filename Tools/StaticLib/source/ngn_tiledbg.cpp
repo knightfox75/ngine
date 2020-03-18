@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -87,6 +87,7 @@ NGN_TiledBg::NGN_TiledBg(
 
     visible = true;
     alpha = 0xFF;
+    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
 
     scale.x = 1.0f;
     scale.y = 1.0f;

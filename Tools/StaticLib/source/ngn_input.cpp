@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -92,20 +92,8 @@ NGN_Key::~NGN_Key() {
 /*** Actualiza la tecla ***/
 void NGN_Key::Update() {
 
-    if (held) {
-        if (last) {
-            down = false;
-        } else {
-            down = true;
-        }
-    } else {
-        down = false;
-        if (last) {
-            up = true;
-        } else {
-            up = false;
-        }
-    }
+    down = held & !last;
+    up = !held & last;
 
     last = held;
 
@@ -547,6 +535,8 @@ void NGN_Input::GameControllerReset(uint8_t idx) {
     controller[idx].pov_down.Reset();
     controller[idx].pov_left.Reset();
     controller[idx].pov_right.Reset();
+    controller[idx].rumble_available = false;
+    controller[idx].haptic = NULL;
 
 }
 
@@ -673,6 +663,15 @@ void NGN_Input::AddControllers(int32_t gc) {
                         controller[i].button_number = SDL_JoystickNumButtons(joy);
                         if (controller[i].button_number > GAME_CONTROLLER_BUTTONS) controller[i].button_number = GAME_CONTROLLER_BUTTONS;
                         if (SDL_JoystickNumHats(joy) > 0) controller[i].pov_available = true;
+                        // Efecto "rumble"
+                        controller[i].haptic = SDL_HapticOpen(i);
+                        if (controller[i].haptic) {
+                            if (SDL_HapticRumbleInit(controller[i].haptic) == 0) {
+                                controller[i].rumble_available = true;
+                            } else {
+                                SDL_HapticClose(controller[i].haptic);
+                            }
+                        }
                         // Guarda este JOY en la lista de controladores disponibles
                         add_joy.name = name;
                         add_joy.slot = i;
@@ -707,6 +706,8 @@ void NGN_Input::RemoveControllers() {
             joy = controller[slot].joy;
             // Si el Joystick no esta disponible...
             if (!SDL_JoystickGetAttached(joy)) {
+                // Si esta abiero el sistema de "haptic", cierralo
+                if (controller[slot].haptic) SDL_HapticClose(controller[slot].haptic);
                 // Cierra el controlador
                 SDL_JoystickClose(joy);
                 // Reinicialo
@@ -726,5 +727,19 @@ void NGN_Input::RemoveControllers() {
 
 
 
+/*** Efecto simple de "rumble" en el controlador ***/
+int32_t NGN_Input::ControllerRumble(uint32_t controller_id, float intensity, uint32_t duration) {
 
+    // Fuera de rando
+    if (controller_id > GAME_CONTROLLERS) return -1;
+    // Game controller disponible
+    if (!controller[controller_id].available) return -1;
+    // Rumble disponible
+    if (!controller[controller_id].rumble_available) return -1;
+    // Rango de fuerza incorrecto
+    if ((intensity < 0.0f) || (intensity > 1.0f)) return -1;
 
+    // Aplica el efecto rumble
+    return SDL_HapticRumblePlay(controller[controller_id].haptic, intensity, duration);
+
+}

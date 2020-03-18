@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -430,6 +430,55 @@ void NGN_Graphics::ShowMouse(bool visible) {
 
 
 
+/*** Clona un sprite con los parametros actuales ***/
+NGN_Sprite* NGN_Graphics::CloneSprite(NGN_Sprite* sprite) {
+
+    // Si el sprite no es valido...
+    if (!sprite) return NULL;
+
+    // Sprite base para recibir el clon
+    NGN_Sprite* _spr = new NGN_Sprite(
+        sprite->data,
+        sprite->position.x,
+        sprite->position.y,
+        sprite->width,
+        sprite->height,
+        sprite->box.width,
+        sprite->box.height,
+        sprite->box.offset.x,
+        sprite->box.offset.y
+    );
+
+    // Copia los parametros
+    _spr->position = sprite->position;
+    _spr->screen = sprite->screen;
+    _spr->width = sprite->width;
+    _spr->height = sprite->height;
+    _spr->center = sprite->center;
+    _spr->box = sprite->box;
+    _spr->box_enabled = sprite->box_enabled;
+    _spr->visible = sprite->visible;
+    _spr->alpha = sprite->alpha;
+    _spr->on_screen = sprite->on_screen;
+    _spr->rotation = sprite->rotation;
+    _spr->flip_h = sprite->flip_h;
+    _spr->flip_v = sprite->flip_v;
+    _spr->colliders = sprite->colliders;
+    _spr->frame = sprite->frame;
+    _spr->animation = sprite->animation;
+    _spr->current_animation = sprite->current_animation;
+    _spr->animation_pause = sprite->animation_pause;
+    _spr->camera_layer = sprite->camera_layer;
+    _spr->runtime_frame = sprite->runtime_frame;
+
+    // Devuelve el clon creado
+    return _spr;
+
+}
+
+
+
+
 /*** Sincronizacion de velocidad del framerate ***/
 void NGN_Graphics::SyncFrame(int32_t fps) {
 
@@ -639,3 +688,4 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
     runtime_frame = id;
 
 }
+

@@ -2,6 +2,21 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2020-03-18 Ver.0.11.0-a
+--------------------------------------------------------------------------------
+- Ajustes en el algoritmo de cálculo del efecto "panning" de los efectos
+  sonido, para un mejor equilibrio de volumen.
+- Añadida la funcionalidad de "rumble" para los controladores que lo soporten.
+- Optimizada la lectura del estado de las teclas.
+- Añadido el método para el clonado de Sprites en la clase "NGN_Graphics".
+- Añadido la propiedad de modo de mezcla de color (blending) a las clases
+  "NGN_Canvas", "NGN_Sprite", "NGN_TextLayer", "NGN_Texture" y "NGN_TiledBg".
+  Esta propiedad puede tener los valores NGN_BLENDMODE_NONE,
+  NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE y NGN_BLENDMODE_MODULATE,
+  estableciéndose por defecto el valor NGN_BLENDMODE_ALPHA.
+- Se ha actualizado la documentación y los ejemplos.
+
+
 2019-12-29 Ver.0.10.0-a
 --------------------------------------------------------------------------------
 - Añadida la propiedad "box_enabled" a la clase "NGN_Sprite", la cual permite

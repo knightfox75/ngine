@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.1-wip_03 ***
+    *** Version 0.11.0-a ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -126,6 +126,7 @@ NGN_Sprite::NGN_Sprite(
     frame = 0;                  // Primer fotograma
     visible = true;             // Visibilidad
     alpha = 0xFF;               // Alpha
+    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
     on_screen = false;          // Reset del flag
     rotation = 0.0f;            // Rotacion
     center.x = 0.0f;            // Centro de rotacion
@@ -140,6 +141,7 @@ NGN_Sprite::NGN_Sprite(
     current_animation.name = "";
     current_animation.id = -1;
     animation_pause = false;
+    animation_timer = 0;
 
     // Otros parametros
     camera_layer = -1;      // Por defecto, no estas en la camara

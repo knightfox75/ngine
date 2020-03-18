@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.1-wip_03 ***
+    *** Version 0.11.0-a ***
     GUI - Interfaz grafica de usuario
 
     Proyecto iniciado el 1 de Febrero del 2016

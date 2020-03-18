@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,18 +59,25 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 0;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 10;                // Version menor
+static const int32_t NGN_VERSION_MINOR = 11;                // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
 static const std::string NGN_VERSION_METADATA = "a";        // Version metadatos
 
-/*** Definiciones ***/
+/*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;        // Valor de "defecto"
+/*** Definiciones de modos de pantalla ***/
 static const int8_t NGN_SCR_WINDOW = 0;                     // "Modo ventana"
 static const int8_t NGN_SCR_WINDOW_FULL = 1;                // "Modo ventana a pantalla completa"
 static const int8_t NGN_SCR_FULLSCREEN = 2;                 // "Modo pantalla completa"
+/*** Definiciones de constantes matematicas ***/
 static const float PI = 3.14159265f;                        // Definicion del numero PI
 static const float DEG2RAD = (PI / 180.0f);                 // Constante de conversion Grados a Radianes
 static const float RAD2DEG = (180.0f / PI);                 // Constante de conversion Radianes a Grados
+/*** Definiciones de modos de mezcla de color ***/
+static const SDL_BlendMode NGN_BLENDMODE_NONE = SDL_BLENDMODE_NONE;          // Sin mezcla
+static const SDL_BlendMode NGN_BLENDMODE_ALPHA = SDL_BLENDMODE_BLEND;        // Por nivel de alpha
+static const SDL_BlendMode NGN_BLENDMODE_ADDITIVE = SDL_BLENDMODE_ADD;       // Mezcla aditiva
+static const SDL_BlendMode NGN_BLENDMODE_MODULATE = SDL_BLENDMODE_MOD;       // Modulacion por color
 
 
 

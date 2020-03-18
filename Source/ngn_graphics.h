@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.1-wip_03 ***
+    *** Version 0.11.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -147,6 +147,11 @@ class NGN_Graphics {
 
         // ID del frame en tiempo de ejecucion
         uint32_t runtime_frame;
+
+
+        /*** Clonado de objetos ***/
+        // Clona un sprite con los parametros actuales
+        NGN_Sprite* CloneSprite(NGN_Sprite* sprite);
 
 
 

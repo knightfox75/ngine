@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -127,7 +127,7 @@ void NGN_Render::Texture(NGN_Texture* texture, float position_x, float position_
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(texture->data->gfx, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(texture->data->gfx, texture->blend_mode);
         SDL_SetTextureAlphaMod(texture->data->gfx, (uint8_t)_alpha);
     }
 
@@ -212,7 +212,7 @@ void NGN_Render::Sprite(NGN_Sprite* sprite, float position_x, float position_y) 
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(sprite->data->gfx[sprite->frame], SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(sprite->data->gfx[sprite->frame], sprite->blend_mode);
         SDL_SetTextureAlphaMod(sprite->data->gfx[sprite->frame], (uint8_t)_alpha);
     }
 
@@ -413,6 +413,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     } else if (_alpha > 0xFF) {
         _alpha = 0xFF;
     }
+    SDL_SetTextureBlendMode(bg->backbuffer, bg->blend_mode);
     SDL_SetTextureAlphaMod(bg->backbuffer, (uint8_t)_alpha);
 
     // Define los puntos de entrada y salida de la textura
@@ -488,7 +489,7 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(layer->backbuffer, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(layer->backbuffer, layer->blend_mode);
         SDL_SetTextureAlphaMod(layer->backbuffer, (uint8_t)_alpha);
     }
 
@@ -570,7 +571,7 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(canvas->backbuffer, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(canvas->backbuffer, canvas->blend_mode);
         SDL_SetTextureAlphaMod(canvas->backbuffer, (uint8_t)_alpha);
     }
 

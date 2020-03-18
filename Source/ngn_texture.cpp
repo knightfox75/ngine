@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.1-wip_03 ***
+    *** Version 0.11.0-a ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -165,6 +165,7 @@ void NGN_Texture::DefaultValues() {
     // Valores por defecto
     visible = true;             // Visibilidad
     alpha = 0xFF;               // Alpha
+    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
     rotation = 0.0f;            // Rotacion
     center.x = 0.0f;            // Centro de rotacion
     center.y = 0.0f;

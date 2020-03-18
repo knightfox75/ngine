@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     TOOL BOX - Caja de herramientas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -57,7 +57,7 @@
 
 // n'gine
 #include "ngn_defines.h"
-
+#include "ngn_sprite.h"
 
 
 
@@ -103,6 +103,7 @@ class NGN_ToolBox {
 
         // Distancia entre 2 puntos (2 parametros, entero, 4a sobrecarga)
         uint32_t GetDistance(Vector2I32 a, Vector2I32 b);
+
 
 
     // Segmento privado

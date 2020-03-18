@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.0-a ***
+    *** Version 0.11.0-a ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -109,6 +109,7 @@ NGN_TextLayer::NGN_TextLayer(
     // Propiedades adicionales
     visible = true;             // Visibilidad
     alpha = 0xFF;               // Alpha
+    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
     rotation = 0.0f;            // Rotacion
     center.x = 0.0f;            // Centro de rotacion
     center.y = 0.0f;

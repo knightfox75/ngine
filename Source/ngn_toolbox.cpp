@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.1-wip_03 ***
+    *** Version 0.11.0-a ***
     TOOL BOX - Caja de herramientas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -57,6 +57,7 @@
 
 // Class
 #include "ngn_toolbox.h"
+#include "ngn_sprite.h"
 
 
 

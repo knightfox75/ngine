@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.10.1-wip_03 ***
+    *** Version 0.11.0-a ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -102,6 +102,7 @@ class NGN_Canvas {
 
         bool visible;                       // Visibilidad
         int32_t alpha;                      // Nivel de alpha
+        SDL_BlendMode blend_mode;           // Modo de mezcla de color
 
         double rotation;                    // Rotacion de la capa
 
