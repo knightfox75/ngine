@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-wip_1 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -783,6 +783,136 @@ int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
         // Devuelve error
         return r;
     }
+
+}
+
+
+
+/*** Manda un sprite al frente (1ra sobrecarga) ***/
+int32_t NGN_Camera::SendToFront(NGN_Sprite* sprite) {
+
+    int32_t r = -1;                     // Resultado de la operacion
+    int32_t l = sprite->camera_layer;   // Capa donde esta el sprite alojado
+
+    // Si el sprite no esta asignado a la camara, sal
+    if (l < 0) return r;
+
+    // Reordena la lista de sprite, poniendo el seleccionado al final
+    std::vector<NGN_Sprite*> _tmp;
+    _tmp.clear();
+    _tmp.resize(layer[l].spr.size());
+    uint32_t cnt = 0;
+    for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
+        if (layer[l].spr[s] == sprite) continue;
+        _tmp[cnt] = layer[l].spr[s];
+        cnt ++;
+    }
+    _tmp[cnt] = sprite;
+    // Copia la lista temporal a la original
+    layer[l].spr = _tmp;
+    // Y borra la lista temporal
+    _tmp.clear();
+
+    // Devuelve el resultado de la operacion
+    return cnt;
+
+}
+
+
+
+/*** Manda un sprite al frente (2da sobrecarga) ***/
+int32_t NGN_Camera::SendToFront(NGN_Texture* texture) {
+
+    int32_t r = -1;                     // Resultado de la operacion
+    int32_t l = texture->camera_layer;   // Capa donde esta el sprite alojado
+
+    // Si el sprite no esta asignado a la camara, sal
+    if (l < 0) return r;
+
+    // Reordena la lista de sprite, poniendo el seleccionado al final
+    std::vector<NGN_Texture*> _tmp;
+    _tmp.clear();
+    _tmp.resize(layer[l].spr_t.size());
+    uint32_t cnt = 0;
+    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+        if (layer[l].spr_t[s] == texture) continue;
+        _tmp[cnt] = layer[l].spr_t[s];
+        cnt ++;
+    }
+    _tmp[cnt] = texture;
+    // Copia la lista temporal a la original
+    layer[l].spr_t = _tmp;
+    // Y borra la lista temporal
+    _tmp.clear();
+
+    // Devuelve el resultado de la operacion
+    return cnt;
+
+}
+
+
+
+/*** Manda un sprite al fondo (1ra sobrecarga) ***/
+int32_t NGN_Camera::SendToBack(NGN_Sprite* sprite) {
+
+    int32_t r = -1;                     // Resultado de la operacion
+    int32_t l = sprite->camera_layer;   // Capa donde esta el sprite alojado
+
+    // Si el sprite no esta asignado a la camara, sal
+    if (l < 0) return r;
+
+    // Reordena la lista de sprite, poniendo el seleccionado al final
+    std::vector<NGN_Sprite*> _tmp;
+    _tmp.clear();
+    _tmp.resize(layer[l].spr.size());
+    uint32_t cnt = 0;
+    _tmp[cnt] = sprite;
+    cnt ++;
+    for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
+        if (layer[l].spr[s] == sprite) continue;
+        _tmp[cnt] = layer[l].spr[s];
+        cnt ++;
+    }
+    // Copia la lista temporal a la original
+    layer[l].spr = _tmp;
+    // Y borra la lista temporal
+    _tmp.clear();
+
+    // Devuelve el resultado de la operacion
+    return 0;
+
+}
+
+
+
+/*** Manda un sprite al fondo (2da sobrecarga) ***/
+int32_t NGN_Camera::SendToBack(NGN_Texture* texture) {
+
+    int32_t r = -1;                     // Resultado de la operacion
+    int32_t l = texture->camera_layer;   // Capa donde esta el sprite alojado
+
+    // Si el sprite no esta asignado a la camara, sal
+    if (l < 0) return r;
+
+    // Reordena la lista de sprite, poniendo el seleccionado al final
+    std::vector<NGN_Texture*> _tmp;
+    _tmp.clear();
+    _tmp.resize(layer[l].spr_t.size());
+    uint32_t cnt = 0;
+    _tmp[cnt] = texture;
+    cnt ++;
+    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+        if (layer[l].spr_t[s] == texture) continue;
+        _tmp[cnt] = layer[l].spr_t[s];
+        cnt ++;
+    }
+    // Copia la lista temporal a la original
+    layer[l].spr_t = _tmp;
+    // Y borra la lista temporal
+    _tmp.clear();
+
+    // Devuelve el resultado de la operacion
+    return cnt;
 
 }
 

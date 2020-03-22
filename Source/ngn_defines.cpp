@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-wip_1 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -82,15 +82,19 @@ NGN_TextureData::~NGN_TextureData() {
 // Constructor
 NGN_TiledBgData::NGN_TiledBgData() {
 
-    tiles = NULL;
+    tiles.clear();
+    tmap.clear();
 
 }
 
 // Destructor
 NGN_TiledBgData::~NGN_TiledBgData() {
 
-    if (tiles != NULL) SDL_DestroyTexture(tiles);
-    tiles = NULL;
+    for (uint32_t i = 0; i < tiles.size(); i ++) {
+        if (tiles[i] != NULL) SDL_DestroyTexture(tiles[i]);
+        tiles[i] = NULL;
+    }
+    tiles.clear();
     tmap.clear();
 
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-wip_1 ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -217,29 +217,85 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
     // Borra los buffers temporales
     tiles.clear();
     pixels.clear();
-
+    // Si no se ha creado la superficie, sal
     if (surface == NULL) {
          std::cout << "Unable to convert [" << filepath << "] to a surface." << std::endl;
          return NULL;
     }
 
     // Si se ha creado la superficie con exito, conviertela a textura
-    bg->tiles = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+    SDL_Texture* tileset = NULL;
+    tileset = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
     // Verifica que la conversion ha sido correcta
-    if (bg->tiles == NULL) {
+    if (tileset == NULL) {
          std::cout << "Unable to load [" << filepath << "] as a tileset." << std::endl;
          SDL_FreeSurface(surface);
          return NULL;
     }
-
     // Destruye el surface temporal antes de salir
     SDL_FreeSurface(surface);
 
-    // Fondo cargado
+    // Datos para el corte del tileset en tiles
+    uint32_t tl = 0;
+    uint32_t rows = (bg->header.tileset_height / bg->header.tile_size);
+    uint32_t columns = (bg->header.tileset_width / bg->header.tile_size);
+    uint32_t total_tiles = rows * columns;
+
+    // Prepara la lista de tiles
+    bg->tiles.clear();
+    bg->tiles.resize(total_tiles);
+    for (uint32_t i = 0; i < bg->tiles.size(); i ++) {
+        bg->tiles[i] =  SDL_CreateTexture(
+                            ngn->graphics->renderer,       // Renderer
+                            SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                            SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+                            bg->header.tile_size,          // Ancho de la textura
+                            bg->header.tile_size           // Alto de la textura
+                        );
+    }
+
+    // Rotacion y FLIP
+    double _rotation = 0.0f;
+    SDL_RendererFlip _flip = SDL_FLIP_NONE;
+
+    // Centro de la rotacion
+    SDL_Point* _center = new SDL_Point();
+
+    // Define las areas de origen y destino
+    SDL_Rect source = {0, 0, (int32_t)bg->header.tile_size, (int32_t)bg->header.tile_size};
+    SDL_Rect destination = {0, 0, (int32_t)bg->header.tile_size, (int32_t)bg->header.tile_size};
+
+    // Corta el tileset
+    for (uint32_t rw = 0; rw < rows; rw ++) {
+        source.y = (rw * bg->header.tile_size);
+        for (uint32_t cl = 0; cl < columns; cl ++) {
+            // Informa al renderer que la textura es su destino
+            SDL_SetRenderTarget(ngn->graphics->renderer, bg->tiles[tl]);
+            // Borra el contenido de la textura actual
+            SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+            SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+            SDL_SetTextureBlendMode(bg->tiles[tl], SDL_BLENDMODE_BLEND);
+            SDL_SetTextureAlphaMod(bg->tiles[tl], 0xFF);
+            // Calcula el punto de corte
+            source.x = (cl * bg->header.tile_size);
+            // Envia el tile a la textura correspondiente de la lista
+            SDL_RenderCopyEx(ngn->graphics->renderer, tileset, &source, &destination, _rotation, _center, _flip);
+            // Siguiente tile
+            tl ++;
+        }
+    }
+
+    // Elimina el tileset
+    SDL_DestroyTexture(tileset);
+    tileset = NULL;
+
+    // Paso de limpieza
+    delete _center;
+
+    // Devuelve el fondo cargado
     return bg;
 
 }
-
 
 
 
@@ -342,7 +398,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     // Borra el buffer de pixeles
     pixels.clear();
 
-    // Fondo cargado
+    // Devuelve el sprite cargado
     return spr;
 
 }

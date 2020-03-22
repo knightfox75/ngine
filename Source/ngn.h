@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-wip_1 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -85,7 +85,6 @@
 #include "ngn_texture.h"            // Clase para los fondos con texturas
 #include "ngn_camera.h"             // Clase de la camara virtual 2D
 #include "ngn_text_layer.h"         // Clase para generar una capa de texto TFF en pantalla
-#include "ngn_gui.h"                // Clase de la interfaz grafica de usuario
 #include "ngn_collisions.h"         // Clase del sistema de colisiones
 #include "ngn_sound.h"              // Clase para la gestion del sonido
 #include "ngn_audio_clip.h"         // Clase para los clips de audio
