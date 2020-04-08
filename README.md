@@ -1,6 +1,5 @@
 # ngine
-2D Game Engine written in C++ based on SDL2 &amp; SFML
-<br><br>
+
 - ¿Que es N’gine?<br>
 N’gine es un motor de código abierto para el desarrollo de juegos en 2D, en especial para juegos pixel art, inspirado en las técnicas usadas por las consolas clásicas (fondos de tiles, sprite-sheets, etc).<br>
 
