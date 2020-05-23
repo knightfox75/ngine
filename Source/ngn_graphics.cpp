@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.12.0-wip_1 ***
+    *** Version 0.12.0-wip_2 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -146,6 +146,7 @@ bool NGN_Graphics::Init(
         std::cout << "SDL unable to create the main Window." << std::endl;
         return false;
     }
+    window_flags = SDL_GetWindowFlags(window);
 
     // Si la ventana se ha creado, intenta crear la superficie de renderizado, con el dibujado sincronizado al frame
     renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE));
@@ -600,6 +601,21 @@ void NGN_Graphics::SetVsync() {
 
 
 
+/*** Obten el estado del foco de la ventana ***/
+void NGN_Graphics::GetWindowFocus() {
+
+    // Has perdido el foco?
+    int32_t flags = SDL_GetWindowFlags(window);
+    if (flags == window_flags) return;
+
+    // Si has cambiado alguna caracteristica de la ventana (foco), fuerza el redibujado
+    force_redaw = true;
+    window_flags = flags;
+
+}
+
+
+
 /*** Gestion de los parametros del render ***/
 void NGN_Graphics::UpdateRendererFlags() {
 
@@ -607,6 +623,8 @@ void NGN_Graphics::UpdateRendererFlags() {
     SetFullScreen();
     // VSYNC
     SetVsync();
+    // Focus
+    GetWindowFocus();
 
 }
 

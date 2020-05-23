@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.12.0-wip_1 ***
+    *** Version 0.12.0-wip_2 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -84,6 +84,7 @@ class NGN_Graphics {
                   );
 
         SDL_Window* window;             // Puntero a la ventana
+        int32_t window_flags;           // Control de los falgs de la ventana
         SDL_Renderer* renderer;         // Puntero al renderer
 
         int8_t full_screen;             // Pantalla completa?
@@ -180,6 +181,8 @@ class NGN_Graphics {
         void SetFullScreen();
         // Cambio del VSYNC
         void SetVsync();
+        // Deteccion del cambio de foco
+        void GetWindowFocus();
         // Gestion de los parametros del render
         void UpdateRendererFlags();
 
