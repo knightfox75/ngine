@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -293,8 +293,6 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
         int32_t map_h = (int32_t)(bg->bgdata->header.map_height / tile_size);
 
         // Tileset
-        uint32_t tx, ty;              // Posicion de lectura
-        uint32_t tw = (bg->bgdata->header.tileset_width / tile_size);    // Ancho del Tileset en TILES
         uint32_t id, tile, flip;      // Informacion
 
         // Coordenadas de dibujado
@@ -350,12 +348,6 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
                         if (tile > 0) {
                             // Orientacion del tile
                             flip = bg->bgdata->tmap[(id + 3)];
-                            // Calcula la posicion de origen de la lectura
-                            ty = std::floor(tile / tw);
-                            tx = (tile - (ty * tw));
-                            // Define el punto de origen
-                            source.x = (source.w * tx);
-                            source.y = (source.h * ty);
                             // Define el punto de destino
                             destination.x = px;
                             destination.y = py;
@@ -394,7 +386,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
                                     break;
                             }
                             // Envia el tile al renderer
-                            SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles, &source, &destination, _rotation, _center, _flip);
+                            SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &source, &destination, _rotation, _center, _flip);
                         }
                     }
                 }

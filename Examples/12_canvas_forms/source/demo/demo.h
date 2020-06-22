@@ -8,19 +8,19 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.11.0-a o superior
+    Requiere N'gine 0.12.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
-    Requiere SDL2 (2.0.10) - 64-bits
+    Requiere SDL2 (2.0.12) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.5.0) - 64-bits
+    Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    Requiere LodePNG (20200306)
+    (c) 2005 - 2020 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
@@ -72,8 +72,8 @@
 static const std::string WINDOW_TITLE = "N'gine canvas forms";      // Titulo de la ventana
 static const uint32_t SCR_WIDTH = 1280;                             // Resolucion
 static const uint32_t SCR_HEIGHT = 720;
-static const uint32_t SCR_MODE_WINDOWS = NGN_SCR_WINDOW;            // Modo de pantalla en Windows
-static const uint32_t SCR_MODE_LINUX = NGN_SCR_WINDOW;              // Modo de pantalla en Linux
+static const int8_t SCR_MODE_WINDOWS = NGN_SCR_WINDOW;              // Modo de pantalla en Windows
+static const int8_t SCR_MODE_LINUX = NGN_SCR_WINDOW;                // Modo de pantalla en Linux
 static const bool SHOW_MOUSE = false;                               // Estado del puntero del raton
 static const bool BILINEAR_FILTER = false;                          // Filtrado bi-linear
 static const bool VSYNC = true;                                     // Sincronismo vertical

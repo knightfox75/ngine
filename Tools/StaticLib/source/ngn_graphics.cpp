@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -112,7 +112,7 @@ bool NGN_Graphics::Init(
                           std::string window_name,          // Nombre en la ventana
                           uint32_t native_width,            // Resolucion Nativa del juego
                           uint32_t native_height,
-                          int8_t full_scr,                  // Pantalla completa?
+                          int8_t scr_mode,                  // Modo de pantalla
                           bool bilinear_filter,             // Filtrado bilinear?
                           bool sync                         // VSYNC activo?
                          ) {
@@ -146,6 +146,7 @@ bool NGN_Graphics::Init(
         std::cout << "SDL unable to create the main Window." << std::endl;
         return false;
     }
+    window_flags = SDL_GetWindowFlags(window);
 
     // Si la ventana se ha creado, intenta crear la superficie de renderizado, con el dibujado sincronizado al frame
     renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE));
@@ -178,9 +179,9 @@ bool NGN_Graphics::Init(
     aspect_desktop = ((float)desktop_w / (float)desktop_h);
 
     // Pantalla completa o ventana?
-    full_screen = full_scr;
-    _full_screen = -1;
-    SetFullScreen();
+    screen_mode = scr_mode;
+    _screen_mode = 127;
+    ChangeScreenMode();
 
     // Intenta modificar el VSYNC
     vsync = sync;
@@ -200,6 +201,36 @@ bool NGN_Graphics::Init(
 
     // Sal con normalidad
     return true;
+
+}
+
+
+
+/*** Cambia el modo de pantalla ***/
+void NGN_Graphics::SetMode(int8_t mode) {
+
+    switch (mode) {
+        case NGN_SCR_WINDOW:
+            screen_mode = NGN_SCR_WINDOW;
+            break;
+        case NGN_SCR_WINDOW_X2:
+            screen_mode = NGN_SCR_WINDOW_X2;
+            break;
+        case NGN_SCR_WINDOW_X3:
+            screen_mode = NGN_SCR_WINDOW_X3;
+            break;
+        case NGN_SCR_WINDOW_X4:
+            screen_mode = NGN_SCR_WINDOW_X4;
+            break;
+        case NGN_SCR_WINDOW_FULL:
+            screen_mode = NGN_SCR_WINDOW_FULL;
+            break;
+        case NGN_SCR_FULLSCREEN:
+            screen_mode = NGN_SCR_FULLSCREEN;
+            break;
+    }
+
+    ChangeScreenMode();
 
 }
 
@@ -478,6 +509,16 @@ NGN_Sprite* NGN_Graphics::CloneSprite(NGN_Sprite* sprite) {
 
 
 
+/*** Devuelve la resolucion actual del escritorio ***/
+Size2I32 NGN_Graphics::GetDesktopResolution() {
+
+    Size2I32 res = {desktop_w, desktop_h};
+    return res;
+
+}
+
+
+
 
 /*** Sincronizacion de velocidad del framerate ***/
 void NGN_Graphics::SyncFrame(int32_t fps) {
@@ -499,10 +540,10 @@ void NGN_Graphics::SyncFrame(int32_t fps) {
 
 
 /*** Cambia de modo ventana a pantalla completa y vice-versa ***/
-void NGN_Graphics::SetFullScreen() {
+void NGN_Graphics::ChangeScreenMode() {
 
     // Full Screen?
-    if (_full_screen != full_screen) {
+    if (_screen_mode != screen_mode) {
 
         // Area del viewport
         SDL_Rect viewport;
@@ -513,9 +554,11 @@ void NGN_Graphics::SetFullScreen() {
         float scale_x, scale_y;
 
         // MODO "FULL WINDOW"
-        if (full_screen == NGN_SCR_WINDOW_FULL) {
+        if (screen_mode == NGN_SCR_WINDOW_FULL) {
+
             // Modo del renderer
             SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
             // Segun la relacion de aspecto, calcula el viewport y el clip area
             if (aspect_native == aspect_desktop) {  // Mismo formato
                 // Escala
@@ -541,26 +584,86 @@ void NGN_Graphics::SetFullScreen() {
                 viewport.x = (int32_t)((((float)desktop_w - w) / scale_x) / 2.0f);
                 viewport.y = 0;
             }
-        } else if (full_screen == NGN_SCR_FULLSCREEN) {     // MODO "FULL SCREEN"
+
+        } else if (screen_mode == NGN_SCR_FULLSCREEN) {     // MODO "FULL SCREEN"
+
+
+            // Analiza el modo actual de pantalla y prepara el FULL SCREEN para la resolucion del escritorio
+            SDL_DisplayMode display_mode;
+            SDL_GetCurrentDisplayMode(0, &display_mode);
+            display_mode.w = desktop_w;
+            display_mode.h = desktop_h;
+            SDL_SetWindowDisplayMode(window, &display_mode);
+            float aspect_display = ((float)display_mode.w / (float)display_mode.h);
+
             // Modo del renderer
             SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
-            // Area de dibujado
-            viewport.x = 0;
-            viewport.y = 0;
-            // Escala
-            scale_x = 1.0f;
-            scale_y = 1.0f;
+
+            // Segun la relacion de aspecto, calcula el viewport y el clip area
+            if (aspect_native == aspect_display) {  // Mismo formato
+                // Escala
+                scale_x = ((float)display_mode.w / (float)native_w);
+                scale_y = ((float)display_mode.h / (float)native_h);
+                // Area de dibujado
+                viewport.x = 0;
+                viewport.y = 0;
+            } else if (aspect_native > aspect_display) {    // Wide en pantalla letter box
+                // Escala
+                h = (((float)native_h * (float)display_mode.w) / (float)native_w);
+                scale_x = ((float)display_mode.w / (float)native_w);
+                scale_y = (h / (float)native_h);
+                // Area de dibujado
+                viewport.x = 0;
+                viewport.y = (int32_t)((((float)display_mode.h - h) / scale_y) / 2.0f);
+            } else {    // Letter box en pantalla wide
+                // Escala
+                w = (((float)native_w * (float)display_mode.h) / (float)native_h);
+                scale_x = (w / (float)native_w);
+                scale_y = ((float)display_mode.h / (float)native_h);
+                // Area de dibujado
+                viewport.x = (int32_t)((((float)display_mode.w - w) / scale_x) / 2.0f);
+                viewport.y = 0;
+            }
+
         } else {        // MODO "WINDOW"
+
             // Modo del renderer
             SDL_SetWindowFullscreen(window, 0);
+
+            // Ajusta el tamaño de la ventana
+            int8_t win_size = NGN_SCR_WINDOW;
+            switch (screen_mode) {
+                case NGN_SCR_WINDOW:
+                    win_size = 1;
+                    break;
+                case NGN_SCR_WINDOW_X2:
+                    win_size = 2;
+                    break;
+                case NGN_SCR_WINDOW_X3:
+                    win_size = 3;
+                    break;
+                case NGN_SCR_WINDOW_X4:
+                    win_size = 4;
+                    break;
+            }
+
+            // Cambia el tamaño de la ventana
+            int32_t win_width = native_w * win_size;
+            int32_t win_height = native_h * win_size;
+            SDL_SetWindowSize(window, win_width, win_height);
+
+
             // Posiciona la ventana
             SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
             // Area de dibujado
             viewport.x = 0;
             viewport.y = 0;
+
             // Escala
-            scale_x = 1.0f;
-            scale_y = 1.0f;
+            scale_x = win_size;
+            scale_y = win_size;
+
         }
 
         // Ajusta el escalado
@@ -570,7 +673,7 @@ void NGN_Graphics::SetFullScreen() {
         SDL_RenderSetViewport(renderer, &viewport);
 
         // Actualiza los flags
-        _full_screen = full_screen;
+        _screen_mode = screen_mode;
         force_redaw = true;
 
     } else {
@@ -600,13 +703,31 @@ void NGN_Graphics::SetVsync() {
 
 
 
+/*** Obten el estado del foco de la ventana ***/
+void NGN_Graphics::GetWindowFocus() {
+
+    // Has perdido el foco?
+    int32_t flags = SDL_GetWindowFlags(window);
+    if (flags == window_flags) return;
+
+    // Si has cambiado alguna caracteristica de la ventana (foco), fuerza el redibujado
+    force_redaw = true;
+    if (screen_mode == NGN_SCR_FULLSCREEN) _screen_mode = 127;
+    window_flags = flags;
+
+}
+
+
+
 /*** Gestion de los parametros del render ***/
 void NGN_Graphics::UpdateRendererFlags() {
 
-    // Pantalla completa
-    SetFullScreen();
+    // Modo de pantalla
+    ChangeScreenMode();
     // VSYNC
     SetVsync();
+    // Focus
+    GetWindowFocus();
 
 }
 

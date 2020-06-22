@@ -4,12 +4,12 @@
     Conversor de PNG a Sprite sheet (.spr)
 
     Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
-    http://www.nightfoxandco.com
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005-2016 by Lode Vandevenne
+    (c) 2005 - 2020 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/

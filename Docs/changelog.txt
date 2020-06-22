@@ -2,6 +2,26 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2020-06-22 Ver.0.12.0-a
+--------------------------------------------------------------------------------
+- Ahora se detecta el cambio de foco/cambio de modo de pantalla para forzar
+  el redibujado de la escena.
+- Añadidos los métodos SendToFront() y SendToBack() a la clase "NGN_Camera", 
+  los cuales envían un sprite al frente o al fondo su capa respectivamente.
+- Optimizado el algoritmo de render de los fondos de tiles. Tambien se ha
+  cambiado la rutina de carga de estos archivos.
+- Añadido el método SetMode() a la clase "NGN_Graphics", el cual nos permite
+  cambiar el tamaño y modo de la ventana entre ventana x1, x2, x3, x4, ventana
+  completa o pantalla completa, a tiempo real y sin reiniciar el programa. Por
+  contra, desaparece el uso de la variable full_screen para estos cambios.
+- Añadido el método GetDesktopResolution(); a la clase "NGN_Graphics", el cual
+  devuelve la resolución del escritorio.
+- Se añade el ejemplo de uso del método SetMode().
+- La librería LodePNG se actualiza a la versión 20200306.
+- Los binarios de la librería se compilan con la versión de SDL2 2.0.12.
+- Templates actualizados.
+
+
 2020-03-18 Ver.0.11.0-a
 --------------------------------------------------------------------------------
 - Ajustes en el algoritmo de cálculo del efecto "panning" de los efectos

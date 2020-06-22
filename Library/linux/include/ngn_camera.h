@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-a ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -127,6 +127,14 @@ class NGN_Camera {
         // Cambia un elemento de capa
         int32_t ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number);         // Primera sobrecarga
         int32_t ChangeLayer(NGN_Texture* texture, uint32_t layer_number);       // Segunda sobrecarga
+
+        // Manda al frente de la capa a un elemento
+        int32_t SendToFront(NGN_Sprite* sprite);        // Primera sobrecarga
+        int32_t SendToFront(NGN_Texture* texture);      // Segunda sobrecarga
+
+        // Manda al fondo de la capa a un elemento
+        int32_t SendToBack(NGN_Sprite* sprite);        // Primera sobrecarga
+        int32_t SendToBack(NGN_Texture* texture);      // Segunda sobrecarga
 
         // Reset de la camara
         void Reset();

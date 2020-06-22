@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.12.0-wip_2 ***
+    *** Version 0.12.0-a ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -61,14 +61,17 @@
 static const int32_t NGN_VERSION_MAJOR = 0;                 // Version mayor
 static const int32_t NGN_VERSION_MINOR = 12;                // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
-static const std::string NGN_VERSION_METADATA = "wip_2";    // Version metadatos
+static const std::string NGN_VERSION_METADATA = "a";        // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;        // Valor de "defecto"
 /*** Definiciones de modos de pantalla ***/
-static const int8_t NGN_SCR_WINDOW = 0;                     // "Modo ventana"
-static const int8_t NGN_SCR_WINDOW_FULL = 1;                // "Modo ventana a pantalla completa"
-static const int8_t NGN_SCR_FULLSCREEN = 2;                 // "Modo pantalla completa"
+static const int8_t NGN_SCR_WINDOW = 1;                     // "Modo ventana x1"
+static const int8_t NGN_SCR_WINDOW_X2 = 2;                  // "Modo ventana x2"
+static const int8_t NGN_SCR_WINDOW_X3 = 3;                  // "Modo ventana x3"
+static const int8_t NGN_SCR_WINDOW_X4 = 4;                  // "Modo ventana x4"
+static const int8_t NGN_SCR_WINDOW_FULL = 0;                // "Modo ventana a pantalla completa"
+static const int8_t NGN_SCR_FULLSCREEN = -1;                // "Modo pantalla completa"
 /*** Definiciones de constantes matematicas ***/
 static const float PI = 3.14159265f;                        // Definicion del numero PI
 static const float DEG2RAD = (PI / 180.0f);                 // Constante de conversion Grados a Radianes

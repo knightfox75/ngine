@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-a ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016

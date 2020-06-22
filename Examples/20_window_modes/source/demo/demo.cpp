@@ -1,0 +1,325 @@
+/******************************************************************************
+
+    N'gine Lib for C++
+    Ejemplo del uso de los modos de pantalla (Programa)
+
+    Proyecto iniciado el 1 de Febrero del 2016
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    https://nightfoxandco.com
+    contact@nightfoxandco.com
+
+    Requiere N'gine 0.12.0-a o superior
+
+    Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
+    http://downloads.sourceforge.net/project/mingw-w64/
+
+    Requiere SDL2 (2.0.12) - 64-bits
+    http://www.libsdl.org/download-2.0.php
+
+    Requiere SDL2_TTF (2.0.15) - 64-bits
+    http://www.libsdl.org/download-2.0.php
+
+    Requiere SFML (2.5.1) - 64-bits
+    http://www.sfml-dev.org/
+
+    Requiere LodePNG (20200306)
+    (c) 2005 - 2020 by Lode Vandevenne
+    http://lodev.org/lodepng/
+
+
+    N'gine se distribuye bajo la licencia CREATIVE COMMONS
+    "Attribution-NonCommercial 4.0 International"
+    https://creativecommons.org/licenses/by-nc/4.0/
+
+    You are free to:
+
+        - Share
+        copy and redistribute the material in any medium or format.
+        - Adapt
+        remix, transform, and build upon the material.
+
+        The licensor cannot revoke these freedoms as long as you follow
+        the license terms.
+
+    Under the following terms:
+
+        - Attribution
+        You must give appropriate credit, provide a link to the license,
+        and indicate if changes were made. You may do so in any reasonable
+        manner, but not in any way that suggests the licensor endorses you
+        or your use.
+
+        - NonCommercial
+        You may not use the material for commercial purposes.
+
+        - No additional restrictions
+        You may not apply legal terms or technological measures that
+        legally restrict others from doing anything the license permits.
+
+******************************************************************************/
+
+
+
+/*** Includes ***/
+// c++
+#include <cstdio>
+#include <iostream>
+#include <string>
+// Includes de la libreria
+#include <ngn.h>
+// Includes del programa
+#include "demo.h"
+
+
+
+/*** Constructor de la clase ***/
+Demo::Demo() {
+
+    // Punteros de datos de los fondos
+    for (uint8_t i = 0; i < bg_number; i ++) {
+        bg_data[i] = NULL;
+        bg[i] = NULL;
+    }
+
+    // GUI
+    font = NULL;
+    text = NULL;
+
+}
+
+
+
+/*** Destructor de la clase ***/
+Demo::~Demo() {
+
+    // Punteros de datos de los fondos
+    for (uint8_t i = 0; i < bg_number; i ++) {
+        delete bg[i];
+        bg[i] = NULL;
+        delete bg_data[i];
+        bg_data[i] = NULL;
+    }
+
+    // GUI
+    delete text; text = NULL;
+    delete font; font = NULL;
+
+}
+
+
+
+/*** Inicializa N'GINE ***/
+bool Demo::Awake() {
+
+    // Inicializa la libreria
+    if (!ngn->Init()) {
+        std::cout << "Critical error, can't initialize n'gine." << std::endl;
+        return false;
+    }
+
+    // Crea la ventana con la resolucion nativa
+    if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT, NGN_SCR_WINDOW, BILINEAR_FILTER, VSYNC)) return false;
+    ngn->graphics->Update();
+
+    // visibilidad del cursor del raton
+    ngn->graphics->ShowMouse(SHOW_MOUSE);
+
+    // Contador de FPS activo?
+    ngn->system->fps_counter = FPS_COUNTER;
+
+    // Selecciona el modo grafico (ventana/full screen)
+    #if defined (OS_WINDOWS)
+        ngn->graphics->SetMode(SCR_MODE_WINDOWS);
+    #elif defined (OS_LINUX)
+        ngn->graphics->SetMode(SCR_MODE_LINUX);
+    #endif
+    ngn->graphics->Update();
+
+    // Muestra la version de la libreria en la consola
+    #if defined (MODE_DEBUG)
+        std::cout << ngn->system->GetVersion() << std::endl;
+    #endif
+
+    // Inicializacion completada con exito
+    return true;
+
+}
+
+
+
+/*** Al iniciar el programa ***/
+bool Demo::Start() {
+
+    // Carga de archivos
+    if (!Load()) return false;
+
+    // Crea los elementos del programa
+    Create();
+
+    // Procesos correctos
+    return true;
+
+}
+
+
+
+/*** Ejecucion del programa ***/
+int8_t Demo::Run() {
+
+    // Control del loop
+    int8_t loop = -1;
+
+    while (loop < 0) {
+
+        // Gestor de eventos de SDL y N'gine
+        ngn->system->EventUpdate();            // Actualiza los eventos
+
+
+        /***
+        Bucle principal del programa
+        ***/
+        Logic();        // Logica del programa
+        Render();       // Render de los elementos graficos
+
+
+        // Actualiza el contenido de la pantalla
+        ngn->graphics->Update();
+        // Actualiza el sonido
+        ngn->sound->Update();
+
+        // Control del bucle principal
+        if (ngn->system->quit) {    // Si se pulsa la [X] de la ventana
+            loop = 0;
+        } else if (ngn->input->key_ESC->down || ngn->input->controller[0].button[10].down) {    // Si se pulsa la tecla [ESC] O se pulsa el boton XBOX
+            loop = 1;
+        }
+
+    }
+
+    // Devuelve el resultado
+    return loop;
+
+}
+
+
+
+/*** Carga de los archivos necesarios ***/
+bool Demo::Load() {
+
+    // Carga los fondos
+    const std::string basename = "data/bglow";
+    std::string filename = "";
+    for (uint8_t i = 0; i < bg_number; i ++) {
+        filename = basename + ngn->toolbox->Int2String(i, 1, "0") + ".tbg";     // Genera el nombre de archivo
+        bg_data[i] = ngn->load->TiledBg(filename);                              // Intenta cargar el archivo
+        if (!bg_data[i]) return false;                                          // Verifica que la carga se haya realizado
+    }
+
+    // Fuente
+    font = ngn->load->TrueTypeFont("data/monofonto.ttf", 16, true, 0xFFFFFF, 1, 0x000000);
+    if (!font) return false;
+
+    // Archivos cargados con exito
+    return true;
+
+}
+
+
+
+/*** Crea los elementos del programa ***/
+void Demo::Create() {
+
+    // Crea los fondos de tiles
+    for (uint8_t i = 0; i < bg_number; i ++) {
+        bg[i] = new NGN_TiledBg(bg_data[i], 0, 0);
+    }
+
+    // GUI
+    text = new NGN_TextLayer(font);
+    text->Padding(8);
+    text->Cls();
+    update_gui = 2;
+
+    // Modo por defecto
+    mode = 1;
+
+}
+
+
+
+/*** Logica del programa ***/
+void Demo::Logic() {
+
+    // Parallax de los fondos
+    float speed = 0.0f;
+    for (uint8_t i = 0; i < bg_number; i ++) {
+        speed = bg_speed[i];
+        bg[i]->Translate(speed, 0.0f);
+        if (bg[i]->position.x > bg_loop[i]) bg[i]->position.x -= bg_loop[i];
+        if (bg[i]->position.x < 0) bg[i]->position.x += bg_loop[i];
+    }
+
+    // Cambio de modo grafico --
+    if (ngn->input->key_ARROW_DOWN->down) {
+        mode --;
+        if (mode < -1) mode = -1;   // Modo pantalla completa (real)
+        ngn->graphics->SetMode(mode);
+        update_gui = true;
+    }
+
+    // Cambio de modo grafico ++
+    if (ngn->input->key_ARROW_UP->down) {
+        mode ++;
+        if (mode > NGN_SCR_WINDOW_X4) mode = NGN_SCR_WINDOW_X4;   // Modo WINDOW X4
+        ngn->graphics->SetMode(mode);
+        update_gui = true;
+    }
+
+    // GUI
+    if (update_gui || ngn->graphics->force_redaw) {
+        std::string txt = "";
+        text->Cls();
+        txt += "NATIVE RESOLUTION: " + ngn->toolbox->Int2String(ngn->graphics->native_w, 1, "0") + "x" + ngn->toolbox->Int2String(ngn->graphics->native_h, 1, "0") + "\n";
+        Size2I32 desktop = ngn->graphics->GetDesktopResolution();
+        txt += "DESKTOP RESOLUTION: " + ngn->toolbox->Int2String(desktop.width, 1, "0") + "x" + ngn->toolbox->Int2String(desktop.height, 1, "0") + "\n";
+        txt += "MODE: ";
+        switch (mode) {
+            case NGN_SCR_WINDOW:
+                txt += "WINDOW X1";
+                break;
+            case NGN_SCR_WINDOW_X2:
+                txt += "WINDOW X2";
+                break;
+            case NGN_SCR_WINDOW_X3:
+                txt += "WINDOW X3";
+                break;
+            case NGN_SCR_WINDOW_X4:
+                txt += "WINDOW X4";
+                break;
+            case NGN_SCR_WINDOW_FULL:
+                txt += "WINDOW FULL";
+                break;
+            case NGN_SCR_FULLSCREEN:
+                txt += "FULL SCREEN";
+                break;
+        }
+        text->Print(txt);
+        update_gui = false;
+    }
+
+}
+
+
+
+/*** Render de los elementos graficos ***/
+void Demo::Render() {
+
+    // Fondos de tiles
+    for (uint8_t i = 0; i < bg_number; i ++) {
+        ngn->render->TiledBg(bg[i]);
+    }
+
+    // Capa de texto
+    ngn->render->TextLayer(text);
+
+}

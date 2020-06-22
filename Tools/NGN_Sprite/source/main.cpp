@@ -4,12 +4,12 @@
     Conversor de PNG a Sprite sheet (.spr)
 
     Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2019 by Cesar Rincon "NightFox"
-    http://www.nightfoxandco.com
+    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG
-    (c) 2005 - 2019 by Lode Vandevenne
+    (c) 2005 - 2020 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -34,13 +34,13 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 0;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 9;                 // Version menor
+static const int32_t NGN_VERSION_MINOR = 12;                // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
 static const std::string NGN_VERSION_METADATA = "a";        // Version metadatos
 /*** Version del programa ***/
 static const int32_t PROGRAM_VERSION_MAJOR = 0;             // Version mayor
 static const int32_t PROGRAM_VERSION_MINOR = 3;             // Version menor
-static const int32_t PROGRAM_VERSION_PATCH = 1;             // Version parche
+static const int32_t PROGRAM_VERSION_PATCH = 2;             // Version parche
 static const std::string PROGRAM_VERSION_METADATA = "a";    // Version metadatos
 
 

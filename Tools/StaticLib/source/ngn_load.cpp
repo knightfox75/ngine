@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
+    *** Version 0.12.0-a ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -149,7 +149,7 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
 
 
 
-/*** Carga un fondo tileado ***/
+/*** Carga un fondo de tiles ***/
 NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 
     const char* _filepath = filepath.c_str();
@@ -159,10 +159,6 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 
     // Crea un buffer temporal para la descompresion del Tileset
     std::vector<uint8_t> tiles;
-    std::vector<uint8_t> pixels;
-
-    // Crea una superficie temporal para la generacion del tileset
-    SDL_Surface* surface = NULL;
 
     // Intenta cargar el archivo
     std::ifstream file;
@@ -190,56 +186,98 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
         return NULL;
     }
 
-
     // Decodifica los datos del tileset en PNG a Pixeles
+    std::vector<uint8_t> pixels;
     uint32_t w, h;
     if (lodepng::decode(pixels, w, h, tiles) > 0) {
         std::cout << "Error decoding " << filepath << "  tileset." << std::endl;
         tiles.clear();
+        pixels.clear();
         delete bg;
         return NULL;
     }
-
-    // Crea la superficie en base a los pixeles cargados
-    surface = SDL_CreateRGBSurfaceFrom(
-                                        (char*)&pixels[0],      // Datos
-                                        w,                      // Ancho
-                                        h,                      // Alto
-                                        32,                     // Profuncidad de color 32bpp [RGBA8888]
-                                        (w << 2),               // Longitud de una fila de pixeles en bytes
-                                        0x000000ff,             // Mascara R
-                                        0x0000ff00,             // Mascara G
-                                        0x00ff0000,             // Mascara B
-                                        0xff000000              // Mascara A
-                                        );
-
-
     // Borra los buffers temporales
     tiles.clear();
+
+
+    // Datos para el corte del tileset en tiles independientes
+    uint32_t tl = 0;                                                            // Numero de tile
+    uint32_t rows = (bg->header.tileset_height / bg->header.tile_size);         // Numero de filas de tiles
+    uint32_t columns = (bg->header.tileset_width / bg->header.tile_size);       // Numero de columnas de tiles
+    uint32_t total_tiles = rows * columns;                                      // Numero total de tiles en el tileset
+    uint32_t tw = bg->header.tile_size;                                         // Ancho del tile
+    uint32_t th = bg->header.tile_size;                                         // Altura del tile
+
+    // Prepara la lista de tiles
+    bg->tiles.clear();
+    bg->tiles.resize(total_tiles);
+
+    // Almacena los pixels de un tile
+    std::vector<uint8_t> tile_pixels;
+    tile_pixels.resize((tw * th) << 2);
+
+    // Copia cada tile en una textura independiente
+    SDL_Surface* surface = NULL;        // Crea una superficie temporal para la generacion de cada tile
+    uint32_t pixel_pos = 0;             // Offset de cada pixel en el tileset descomprimido
+    uint32_t tile_pos = 0;              // Offset de cada pixel en el tile generado
+    // Recorre la matriz de pixeles
+    for (uint32_t y = 0; y < bg->header.tileset_height; y += th) {                          // Filas de tiles
+        for (uint32_t x = 0; x < bg->header.tileset_width; x += tw) {                       // Columnas de tiles
+            // Copia los graficos de una tile
+            for (uint32_t a = 0; a < th; a ++) {                                            // Filas de pixeles de la tile
+                for (uint32_t b = 0; b < tw; b ++) {                                        // Columnas de pixeles de la tile
+                    pixel_pos = ((((y + a) * bg->header.tileset_width) + (x + b)) << 2);
+                    tile_pos = (((a * tw) + b) << 2);                                       // Posicion en el destino
+                    for (uint32_t n = 0; n < 4; n ++) {
+                        tile_pixels[(tile_pos + n)] = pixels[(pixel_pos + n)];              // Copia los pixeles de esa tile (4 bytes)
+                    }
+                }
+            }
+            // Genera una surface con los datos de esa tile
+            surface = SDL_CreateRGBSurfaceFrom(
+                    (char*)&tile_pixels[0],     // Datos
+                    tw,                         // Ancho
+                    th,                         // Alto
+                    32,                         // Profuncidad de color 32bpp [RGBA8888]
+                    (tw << 2),                  // Longitud de una fila de pixeles en bytes
+                    0x000000ff,                 // Mascara R
+                    0x0000ff00,                 // Mascara G
+                    0x00ff0000,                 // Mascara B
+                    0xff000000                  // Mascara A
+            );
+            // Verifica si se ha generado el surface
+            if (surface == NULL) {
+                 std::cout << "Unable to convert [" << filepath << "] tileset to a surface." << std::endl;
+                 pixels.clear();
+                 tile_pixels.clear();
+                 delete bg;
+                 return NULL;
+            }
+            // Crea una textura a partir del surface
+            bg->tiles[tl] = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+            // Verifica si se ha creado con exito
+            if (bg->tiles[tl] == NULL) {
+                 std::cout << "Unable to create [" << filepath << "] tileset." << std::endl;
+                 pixels.clear();
+                 tile_pixels.clear();
+                 SDL_FreeSurface(surface);
+                 delete bg;
+                 return NULL;
+            }
+            tl ++;
+            // Borra el surface creado
+            SDL_FreeSurface(surface);
+        }
+    }
+
+    // Elimina los pixeles no necesarios
     pixels.clear();
+    tile_pixels.clear();
 
-    if (surface == NULL) {
-         std::cout << "Unable to convert [" << filepath << "] to a surface." << std::endl;
-         return NULL;
-    }
-
-    // Si se ha creado la superficie con exito, conviertela a textura
-    bg->tiles = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
-    // Verifica que la conversion ha sido correcta
-    if (bg->tiles == NULL) {
-         std::cout << "Unable to load [" << filepath << "] as a tileset." << std::endl;
-         SDL_FreeSurface(surface);
-         return NULL;
-    }
-
-    // Destruye el surface temporal antes de salir
-    SDL_FreeSurface(surface);
-
-    // Fondo cargado
+    // Devuelve el fondo cargado
     return bg;
 
 }
-
 
 
 
@@ -342,7 +380,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     // Borra el buffer de pixeles
     pixels.clear();
 
-    // Fondo cargado
+    // Devuelve el sprite cargado
     return spr;
 
 }

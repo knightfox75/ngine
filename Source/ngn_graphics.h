@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.12.0-wip_2 ***
+    *** Version 0.12.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -78,16 +78,18 @@ class NGN_Graphics {
                   std::string window_name,              // Nombre en la ventana
                   uint32_t native_width,                // Resolucion Nativa del juego
                   uint32_t native_height,
-                  int8_t full_scr = NGN_SCR_WINDOW,     // Pantalla completa?
+                  int8_t scr_mode = NGN_SCR_WINDOW,     // Modo de pantalla
                   bool bilinear_filter = false,         // Filtro bilinear activado?
                   bool sync = true                      // VSYNC activo?
                   );
+
+        void SetMode(int8_t mode);      // Cambia el modo de pantalla
 
         SDL_Window* window;             // Puntero a la ventana
         int32_t window_flags;           // Control de los falgs de la ventana
         SDL_Renderer* renderer;         // Puntero al renderer
 
-        int8_t full_screen;             // Pantalla completa?
+        int8_t screen_mode;     // Modo de pantalla actual
         bool vsync;                     // VSYNC Activo?
 
         int32_t native_w;               // Resolucion nativa del juego
@@ -154,6 +156,9 @@ class NGN_Graphics {
         // Clona un sprite con los parametros actuales
         NGN_Sprite* CloneSprite(NGN_Sprite* sprite);
 
+        /*** Resolucion del escritorio ***/
+        Size2I32 GetDesktopResolution();
+
 
 
     // Private
@@ -174,11 +179,11 @@ class NGN_Graphics {
         int32_t time_last_frame;
 
         // Control de la pantalla (verificacion)
-        int8_t _full_screen;        // Pantalla completa?
+        int8_t _screen_mode;        // Modo actual de pantalla?
         bool _vsync;                // VSYNC Activo?
 
-        // Cambio de pantalla completa a ventana
-        void SetFullScreen();
+        // Cambio del modo de pantalla
+        void ChangeScreenMode();
         // Cambio del VSYNC
         void SetVsync();
         // Deteccion del cambio de foco

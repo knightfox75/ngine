@@ -7,12 +7,12 @@
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.11.0-a o superior
+    Requiere N'gine 0.12.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
-    Requiere SDL2 (2.0.10) - 64-bits
+    Requiere SDL2 (2.0.12) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SDL2_TTF (2.0.15) - 64-bits

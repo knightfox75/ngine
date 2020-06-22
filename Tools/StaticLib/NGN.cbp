@@ -117,8 +117,6 @@
 		<Unit filename="source/ngn_defines.h" />
 		<Unit filename="source/ngn_graphics.cpp" />
 		<Unit filename="source/ngn_graphics.h" />
-		<Unit filename="source/ngn_gui.cpp" />
-		<Unit filename="source/ngn_gui.h" />
 		<Unit filename="source/ngn_input.cpp" />
 		<Unit filename="source/ngn_input.h" />
 		<Unit filename="source/ngn_load.cpp" />

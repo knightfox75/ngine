@@ -1,13 +1,21 @@
-/******************************************************************************
+*******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.11.0-a ***
-    GUI - Interfaz grafica de usuario
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
-    https://nightfoxandco.com
+    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
+    http://www.nightfoxandco.com
     contact@nightfoxandco.com
+
+    Requiere SDL2 (2.0.5 or higher)
+    http://www.libsdl.org/download-2.0.php
+
+    Requiere SFML (2.4.1 or higher)
+    http://www.sfml-dev.org/
+
+    Requiere LodePNG
+    (c) 2005 - 2016 by Lode Vandevenne
+    http://lodev.org/lodepng/
 
 
     N'gine se distribuye bajo la licencia CREATIVE COMMONS
@@ -39,36 +47,9 @@
         You may not apply legal terms or technological measures that
         legally restrict others from doing anything the license permits.
 
-******************************************************************************/
+*******************************************************************************
 
+DESCARGO DE RESPONSABILIDAD. EL SOFTWARE SE CONCEDE CON LICENCIA “TAL CUAL”.
+POR CONSIGUIENTE, USTED ASUME EL RIESGO DE UTILIZARLO.
+NO SE OTORGA NINGUNA GARANTÍA NI CONDICIÓN EXPLÍCITAS.
 
-
-/*** Includes ***/
-
-// C++
-#include <cstdio>
-//#include <iostream>
-
-// n'gine
-#include "ngn.h"
-
-// Class
-#include "ngn_gui.h"
-
-
-
-/******************************************************************************
-
-    Clase NGN_Gui
-
-******************************************************************************/
-
-/*** Contructor de la clase NGN_Gui ***/
-NGN_Gui::NGN_Gui() {
-}
-
-
-
-/*** Destructor de la clase NGN_Gui ***/
-NGN_Gui::~NGN_Gui() {
-}

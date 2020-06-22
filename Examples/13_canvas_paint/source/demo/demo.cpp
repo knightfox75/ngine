@@ -8,19 +8,19 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.11.0-a o superior
+    Requiere N'gine 0.12.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
-    Requiere SDL2 (2.0.10) - 64-bits
+    Requiere SDL2 (2.0.12) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.5.0) - 64-bits
+    Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    Requiere LodePNG (20200306)
+    (c) 2005 - 2020 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
@@ -124,24 +124,23 @@ bool Demo::Awake() {
         return false;
     }
 
-    // Selecciona el modo grafico
-    #if defined (OS_WINDOWS)
-        if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT, SCR_MODE_WINDOWS, BILINEAR_FILTER, VSYNC)) return false;
-    #elif defined (OS_LINUX)
-        if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT, NGN_SCR_WINDOW, BILINEAR_FILTER, VSYNC)) return false;
-    #endif
+    // Crea la ventana con la resolucion nativa
+    if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT, NGN_SCR_WINDOW, BILINEAR_FILTER, VSYNC)) return false;
+    ngn->graphics->Update();
 
-    // Esconde el cursor del raton
+    // visibilidad del cursor del raton
     ngn->graphics->ShowMouse(SHOW_MOUSE);
 
-    // Contador de FPS
+    // Contador de FPS activo?
     ngn->system->fps_counter = FPS_COUNTER;
 
-    // Fuerza la actualizacion de la pantalla
-    ngn->graphics->Update();
-    #if defined (OS_LINUX)
-        ngn->graphics->full_screen = SCR_MODE_LINUX;
+    // Selecciona el modo grafico (ventana/full screen)
+    #if defined (OS_WINDOWS)
+        ngn->graphics->SetMode(SCR_MODE_WINDOWS);
+    #elif defined (OS_LINUX)
+        ngn->graphics->SetMode(SCR_MODE_LINUX);
     #endif
+    ngn->graphics->Update();
 
     // Muestra la version de la libreria en la consola
     #if defined (MODE_DEBUG)
