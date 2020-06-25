@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.12.0-a o superior
+    Requiere N'gine 0.13.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -72,8 +72,8 @@
 static const std::string WINDOW_TITLE = "N'gine sprites pixel perfect collisions";  // Titulo de la ventana
 static const uint32_t SCR_WIDTH = 1280;                                             // Resolucion
 static const uint32_t SCR_HEIGHT = 720;
-static const uint32_t SCR_MODE_WINDOWS = NGN_SCR_WINDOW;                            // Modo de pantalla en Windows
-static const uint32_t SCR_MODE_LINUX = NGN_SCR_WINDOW;                              // Modo de pantalla en Linux
+static const int8_t SCR_MODE_WINDOWS = NGN_SCR_WINDOW;                              // Modo de pantalla en Windows
+static const int8_t SCR_MODE_LINUX = NGN_SCR_WINDOW;                                // Modo de pantalla en Linux
 static const bool SHOW_MOUSE = false;                                               // Estado del puntero del raton
 static const bool BILINEAR_FILTER = false;                                          // Filtrado bi-linear
 static const bool VSYNC = true;                                                     // Sincronismo vertical

@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.12.0-a o superior
+    Requiere N'gine 0.13.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -319,6 +319,18 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
 
 /*** Actualizacion del programa ***/
 void Demo::Update() {
+
+    // Modo de pantalla con F9
+    if (ngn->input->key_F9->down) {
+        if (ngn->graphics->screen_mode != NGN_SCR_FULLSCREEN) {
+            ngn->graphics->SetMode(NGN_SCR_FULLSCREEN);
+        } else {
+            ngn->graphics->SetMode(NGN_SCR_WINDOW);
+        }
+    }
+
+    // Filtrado con F10
+    if (ngn->input->key_F10->down) ngn->graphics->SetFiltering(!ngn->graphics->filtering);
 
     // Mueve a los pajaros
     MoveBirds();

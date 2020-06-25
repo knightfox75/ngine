@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.12.0-a o superior
+    Requiere N'gine 0.13.0-a o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -275,6 +275,17 @@ void Demo::Logic() {
         update_gui = true;
     }
 
+    // Filtado desactivado
+    if (ngn->input->key_ARROW_LEFT->down) {
+        ngn->graphics->SetFiltering(false);
+        update_gui = true;
+    }
+    // Filtado activado
+    if (ngn->input->key_ARROW_RIGHT->down) {
+        ngn->graphics->SetFiltering(true);
+        update_gui = true;
+    }
+
     // GUI
     if (update_gui || ngn->graphics->force_redaw) {
         std::string txt = "";
@@ -302,6 +313,13 @@ void Demo::Logic() {
             case NGN_SCR_FULLSCREEN:
                 txt += "FULL SCREEN";
                 break;
+        }
+        txt += "\n";
+        txt += "FILTERING: ";
+        if (ngn->graphics->filtering) {
+            txt += "ON";
+        } else {
+            txt += "OFF";
         }
         text->Print(txt);
         update_gui = false;

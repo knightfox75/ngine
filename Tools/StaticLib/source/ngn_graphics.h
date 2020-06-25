@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.12.0-a ***
+    *** Version 0.13.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -83,14 +83,17 @@ class NGN_Graphics {
                   bool sync = true                      // VSYNC activo?
                   );
 
-        void SetMode(int8_t mode);      // Cambia el modo de pantalla
+        void SetMode(int8_t mode);          // Cambia el modo de pantalla
+        void SetFiltering(bool enabled);    // Filtrado bilinear de la escena?
 
         SDL_Window* window;             // Puntero a la ventana
         int32_t window_flags;           // Control de los falgs de la ventana
         SDL_Renderer* renderer;         // Puntero al renderer
+        SDL_Texture* backbuffer;        // Backbufer para el renderizado
 
-        int8_t screen_mode;     // Modo de pantalla actual
+        int8_t screen_mode;             // Modo de pantalla actual
         bool vsync;                     // VSYNC Activo?
+        bool filtering;                 // Filtrado bilinear activo?
 
         int32_t native_w;               // Resolucion nativa del juego
         int32_t native_h;
@@ -181,6 +184,7 @@ class NGN_Graphics {
         // Control de la pantalla (verificacion)
         int8_t _screen_mode;        // Modo actual de pantalla?
         bool _vsync;                // VSYNC Activo?
+        bool _filtering;            // Filtrado bilinear activo?
 
         // Cambio del modo de pantalla
         void ChangeScreenMode();
@@ -204,6 +208,13 @@ class NGN_Graphics {
 
         // Genera un ID del frame unico en Runtime
         void GenerateRuntimeFrameId();
+
+        // Crea/actualiza el backbuffer del render
+        void SetBackbuffer();
+        // Manda el backbuffer a la pantalla
+        void RenderBackbuffer();
+        // Limpia el backbuffer
+        void ClearBackbuffer();
 
 };
 

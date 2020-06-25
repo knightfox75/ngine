@@ -2,6 +2,19 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2020-06-25 Ver.0.13.0-a
+--------------------------------------------------------------------------------
+- Actualizados los templates de la librería.
+- Correcciones en los textos informativos de las utilidades.
+- Modificado el motor de render para trabajar con un backbuffer. Esto permite
+  habilitar o deshabilitar el filtrado bilinear de la escena en tiempo real.
+- Añadido el método SetFiltering() en la clase "NGN_Graphics", el cual permite
+  habilitar o deshabilitar el filtrado bilinear. Se ha añadido también la
+  propiedad "filtering" a la clase para consultar el estado del filtrado.
+- Actualizados los ejemplos "Window modes" y "Multiple Viewports", incluyendo
+  ahora la posibilidad de aplicar el filtrado bilinear.
+
+
 2020-06-22 Ver.0.12.0-a
 --------------------------------------------------------------------------------
 - Ahora se detecta el cambio de foco/cambio de modo de pantalla para forzar

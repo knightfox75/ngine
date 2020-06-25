@@ -80,8 +80,8 @@ int32_t main(int32_t argc, char* args[]) {
     std::cout <<
     std::endl << "N'gine PNG to Sprite converter. (v" << program_version << ")." <<
     std::endl << "For N'gine Version " << ngn_version << " or higher." <<
-    std::endl << "(cc) 2016 - 2019 by Cesar Rincon." <<
-    std::endl << "http://www.nightfoxandco.com" <<
+    std::endl << "(cc) 2016 - 2020 by Cesar Rincon." <<
+    std::endl << "https://nightfoxandco.com" <<
     std::endl << "contact@nightfoxandco.com" <<
     std::endl << std::endl;
 

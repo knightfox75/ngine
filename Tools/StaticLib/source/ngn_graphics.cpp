@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.12.0-a ***
+    *** Version 0.13.0-a ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,6 +66,7 @@ NGN_Graphics::NGN_Graphics() {
     // Inicializa las variables de la clase
     window = NULL;
     renderer = NULL;
+    backbuffer = NULL;
     force_redaw = true;
 
     // Inicializa el control de frame rate
@@ -98,6 +99,7 @@ NGN_Graphics::~NGN_Graphics() {
     viewport_list.clear();
 
     // Elimina los contenedores graficos
+    if (backbuffer != NULL) SDL_DestroyTexture(backbuffer);
     SDL_DestroyRenderer(renderer);
     renderer = NULL;
     SDL_DestroyWindow(window);
@@ -161,18 +163,12 @@ bool NGN_Graphics::Init(
     // Selecciona el color por defecto del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 
-    // Filtro bi-linear habilitado?
-    if (bilinear_filter) {
-        // Ahora intenta activar el filtrado bilinear
-        if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
-            std::cout << "SDL unable to enable bilinear filtering setting." << std::endl;
-        }
-    } else {
-        // Ahora intenta desctivar el filtrado bilinear
-        if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0")) {
-            std::cout << "SDL unable to disable bilinear filtering setting." << std::endl;
-        }
-    }
+    // Deshabilita el filtrado bilinear por defecto
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    // Y guarda si debe filtrarse la escena final
+    filtering = bilinear_filter;
+    _filtering = !filtering;
+
 
     // Calcula la relacion de aspecto
     aspect_native = ((float)native_w / (float)native_h);
@@ -198,6 +194,9 @@ bool NGN_Graphics::Init(
 
     // Deshabilita el salvapantallas
     SDL_DisableScreenSaver();
+
+    // Prepara el backbuffer
+    SetBackbuffer();
 
     // Sal con normalidad
     return true;
@@ -230,8 +229,13 @@ void NGN_Graphics::SetMode(int8_t mode) {
             break;
     }
 
-    ChangeScreenMode();
+}
 
+
+
+/*** Activa o desactiva el filtrado bilinear de la escena ***/
+void NGN_Graphics::SetFiltering(bool enabled) {
+    filtering = enabled;
 }
 
 
@@ -245,7 +249,7 @@ void NGN_Graphics::RenderToSelected() {
     } else if (current_viewport >= 0) {
         SDL_SetRenderTarget(renderer, viewport_list[current_viewport].surface);
     } else {
-        SDL_SetRenderTarget(renderer, NULL);
+        SDL_SetRenderTarget(renderer, backbuffer);
     }
     // Restaura el color y alpha del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
@@ -255,13 +259,10 @@ void NGN_Graphics::RenderToSelected() {
 
 
 /*** Actualiza la superficie del renderer ***/
-void NGN_Graphics::Update(void) {
+void NGN_Graphics::Update() {
 
-    // Actualiza los flags del renderer
-    UpdateRendererFlags();
-
-    // Actualiza la escena
-    SDL_RenderPresent(renderer);
+    // Presenta el backbuffer en la pantalla
+    RenderBackbuffer();
 
     // Espera al siguiente frame
     SyncFrame(60);
@@ -273,7 +274,10 @@ void NGN_Graphics::Update(void) {
     ClearViewports();
 
     // Borra el contenido para el siguiente frame
-    SDL_RenderClear(renderer);
+    ClearBackbuffer();
+
+    // Actualiza los flags del renderer
+    UpdateRendererFlags();
 
     // Genera el Runtime Frame ID para el siguiente frame
     GenerateRuntimeFrameId();
@@ -317,6 +321,9 @@ void NGN_Graphics::OpenViewport(
         if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
     }
 
+    // Este viewport ha de disponer de filtrado?
+    if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
     // Crea la textura
     v.surface = SDL_CreateTexture(
                              renderer,                      // Renderer
@@ -325,6 +332,9 @@ void NGN_Graphics::OpenViewport(
                              v.render_w,                    // Ancho de la textura
                              v.render_h                     // Alto de la textura
                              );
+
+    // Restaura el filtrado
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     // Viewport disponible
     v.available = true;
@@ -722,12 +732,12 @@ void NGN_Graphics::GetWindowFocus() {
 /*** Gestion de los parametros del render ***/
 void NGN_Graphics::UpdateRendererFlags() {
 
-    // Modo de pantalla
-    ChangeScreenMode();
     // VSYNC
     SetVsync();
     // Focus
     GetWindowFocus();
+    // Filtering
+    _filtering = filtering;
 
 }
 
@@ -781,6 +791,23 @@ void NGN_Graphics::ClearViewports() {
 
     for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
         if (viewport_list[i].available) {
+            // Si hay un cambio de modo en el filtrado...
+            if (filtering != _filtering) {
+                // Destruye la textura actual
+                if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
+                // Selecciona el modo de filtrado correspondiente
+                if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+                // Crea la textura
+                viewport_list[i].surface = SDL_CreateTexture(
+                     renderer,                      // Renderer
+                     SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                     SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+                     viewport_list[i].render_w,     // Ancho de la textura
+                     viewport_list[i].render_h      // Alto de la textura
+                );
+                // Restaura el filtrado
+                SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+            }
             // Informa al renderer que la textura "backbuffer" es su destino
             SDL_SetRenderTarget(renderer, viewport_list[i].surface);
             // Borra el contenido de la textura actual
@@ -809,4 +836,106 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
     runtime_frame = id;
 
 }
+
+
+
+/*** Crea o actualiza el backbuffer ***/
+void NGN_Graphics::SetBackbuffer() {
+
+    // Si existe un backbuffer, eliminalo
+    if (backbuffer != NULL) SDL_DestroyTexture(backbuffer);
+
+    // Este backbuffer ha de disponer de filtrado?
+    if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
+    // Crea el backbuffer de este fondo
+    backbuffer = SDL_CreateTexture(
+                             renderer,                      // Renderer
+                             SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                             SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+                             native_w,                      // Ancho de la textura
+                             native_h                       // Alto de la textura
+                             );
+
+    SDL_SetRenderTarget(renderer, backbuffer);
+
+    // Borra el contenido de la textura actual
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(backbuffer, 0xFF);
+    SDL_RenderFillRect(renderer, NULL);
+
+    // Desconecta el filtrado
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+
+}
+
+
+
+/*** Renderiza el backbuffer en la pantalla ***/
+void NGN_Graphics::RenderBackbuffer() {
+
+    // Selecciona el renderer principal
+    SDL_SetRenderTarget(renderer, NULL);
+
+    // Datos para renderizar el backbuffer
+    double _rotation = 0.0f;
+    SDL_RendererFlip _flip = SDL_FLIP_NONE;
+    // Centro de la rotacion
+    SDL_Point* _center = new SDL_Point();
+    _center->x = (native_w / 2);
+    _center->y = (native_h / 2);
+
+    // Define el area de render
+    SDL_Rect _src = {
+        0,              // Posicion X
+        0,              // Posicion Y
+        native_w,       // Ancho
+        native_h        // Alto
+    };
+    SDL_Rect _dst = {
+        0,              // Posicion X
+        0,              // Posicion Y
+        native_w,       // Ancho
+        native_h        // Alto
+    };
+
+    // Renderiza la textura
+    SDL_RenderCopyEx(renderer, backbuffer, &_src, &_dst, _rotation, _center, _flip);
+
+    // Paso de limpieza
+    delete _center;
+
+    // Actualiza el cambio de modo grafico
+    ChangeScreenMode();
+
+    // Presenta el resultado final en la pantalla
+    SDL_RenderPresent(renderer);
+
+}
+
+
+
+/*** Borra el backbuffer ***/
+void NGN_Graphics::ClearBackbuffer() {
+
+    // Borra el contenido del renderer
+    SDL_SetRenderTarget(renderer, NULL);
+    SDL_RenderClear(renderer);
+
+    // Informa al renderer que la textura "backbuffer" es su destino
+    SDL_SetRenderTarget(renderer, backbuffer);
+
+    // Borra el backbuffer o vuelvelo a crear si ha cambiado el modo de filtrado
+    if (filtering != _filtering) {
+        SetBackbuffer();
+    } else {
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(backbuffer, 0xFF);
+        SDL_RenderFillRect(renderer, NULL);
+    }
+
+}
+
 
