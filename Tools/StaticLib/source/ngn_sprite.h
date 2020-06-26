@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.13.0-a ***
+    *** Version 1.0.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016

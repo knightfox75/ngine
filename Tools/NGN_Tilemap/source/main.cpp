@@ -33,15 +33,15 @@
 
 
 /*** Version de N'gine ***/
-static const int32_t NGN_VERSION_MAJOR = 0;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 12;                // Version menor
-static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
-static const std::string NGN_VERSION_METADATA = "a";        // Version metadatos
+static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
+static const int32_t NGN_VERSION_MINOR = 0;                     // Version menor
+static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
+static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
 /*** Version del programa ***/
-static const int32_t PROGRAM_VERSION_MAJOR = 0;             // Version mayor
-static const int32_t PROGRAM_VERSION_MINOR = 3;             // Version menor
-static const int32_t PROGRAM_VERSION_PATCH = 2;             // Version parche
-static const std::string PROGRAM_VERSION_METADATA = "a";    // Version metadatos
+static const int32_t PROGRAM_VERSION_MAJOR = 1;                 // Version mayor
+static const int32_t PROGRAM_VERSION_MINOR = 0;                 // Version menor
+static const int32_t PROGRAM_VERSION_PATCH = 0;                 // Version parche
+static const std::string PROGRAM_VERSION_METADATA = "stable";   // Version metadatos
 
 
 
@@ -52,7 +52,7 @@ void ErrorMsg() {
     std::cout << "-o filename   Name for the output file, without extension (.tbg will be added automaticaly)." << std::endl;
     std::cout << "-ts xx        Size of the squared tile in pixels (From 8 to 1024, 32 pixels by default)." << std::endl;
     std::cout << "-lv x         Optimization level   [1] Duplicates   [2] Flips (Default)   [3] Rotations" << std::endl;
-    std::cout << "-ef           Generates extra files with the tileset in PNG and the map in binnary formats." << std::endl << std::endl;
+    std::cout << "-ef           Generates extra files with the tileset in PNG and the map in binary formats." << std::endl << std::endl;
 }
 
 

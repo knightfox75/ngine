@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.13.0-a ***
+    *** Version 1.0.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -111,35 +111,40 @@ class NGN_Graphics {
 
         // Multi-viewport
         struct Viewport_struct {
-            int32_t x;
-            int32_t y;
-            int32_t w;
-            int32_t h;
-            int32_t render_w;
-            int32_t render_h;
-            bool available;
-            SDL_Texture* surface;
+            int32_t x;                              // Posicion X
+            int32_t y;                              // Posicion Y
+            int32_t w;                              // Ancho del viewport
+            int32_t h;                              // Altura del viewport
+            int32_t render_w;                       // Ancho del render
+            int32_t render_h;                       // Altura del render
+            bool local_filter;                      // Filtrado local?
+            bool _local_filter;                     // Estado actual del filtrado
+            bool available;                         // Viewport disponible?
+            SDL_Texture* surface;                   // Textura para usar de backbuffer para el viewport
         };
         std::vector<Viewport_struct> viewport_list;
         int8_t current_viewport;                    // Viewport actual (-1 sin viewport)
 
         // Abre un viewport
         void OpenViewport(
-            uint8_t id,                             // ID del VIEWPORT
-            int32_t pos_x,                          // Posicion del viewport
+            uint8_t id,                                 // ID del VIEWPORT
+            int32_t pos_x,                              // Posicion del viewport
             int32_t pos_y,
-            uint32_t width,                         // Ancho del viewport
-            uint32_t height,                        // Alto del viewport
-            uint32_t h_res = NGN_DEFAULT_VALUE,     // Resolucion del render en el viewport
-            uint32_t v_res = NGN_DEFAULT_VALUE
+            uint32_t width,                             // Ancho del viewport
+            uint32_t height,                            // Alto del viewport
+            uint32_t h_res = NGN_DEFAULT_VALUE,         // Resolucion del render en el viewport
+            uint32_t v_res = NGN_DEFAULT_VALUE,
+            bool local_filter = false                   // Filtrado local?
         );
         // Cierra un viewport
         void CloseViewport(uint8_t id);
         // Selecciona el viewport
         void SelectViewport(uint8_t id);
         // Posiciona un viewport
-        void ViewportPosition(uint8_t id, int32_t x, int32_t y);    // Sobrecarga 1
-        void ViewportPosition(uint8_t id, Vector2I32 position);     // Sobrecarga 2
+        void ViewportPosition(uint8_t id, int32_t x, int32_t y);            // Sobrecarga 1
+        void ViewportPosition(uint8_t id, Vector2I32 position);             // Sobrecarga 2
+        // Cambia el estado local del filtro de un viewport
+        void ViewportLocalFilter(uint8_t id, bool status);
         // Viewport por defecto
         void DefaultViewport();
 

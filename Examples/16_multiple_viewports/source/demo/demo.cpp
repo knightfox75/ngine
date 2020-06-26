@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 0.13.0-a o superior
+    Requiere N'gine 1.0.0-stable o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -259,8 +259,8 @@ void Demo::CreateStage() {
     // Define los Viewports
     ngn->graphics->OpenViewport(0, 0, 0, 1280, 360);
     ngn->graphics->OpenViewport(1, 640, 360, 640, 360);
-    ngn->graphics->OpenViewport(2, 0, 360, 640, 360, 1280, 720);
-    ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120);
+    ngn->graphics->OpenViewport(2, 0, 360, 640, 360, 1280, 720, true);      // Filtro local activo
+    ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, false);    // Filtro local desactivado
 
 }
 
@@ -320,18 +320,6 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
 /*** Actualizacion del programa ***/
 void Demo::Update() {
 
-    // Modo de pantalla con F9
-    if (ngn->input->key_F9->down) {
-        if (ngn->graphics->screen_mode != NGN_SCR_FULLSCREEN) {
-            ngn->graphics->SetMode(NGN_SCR_FULLSCREEN);
-        } else {
-            ngn->graphics->SetMode(NGN_SCR_WINDOW);
-        }
-    }
-
-    // Filtrado con F10
-    if (ngn->input->key_F10->down) ngn->graphics->SetFiltering(!ngn->graphics->filtering);
-
     // Mueve a los pajaros
     MoveBirds();
 
@@ -340,6 +328,9 @@ void Demo::Update() {
 
     // Gestor de los viewports
     ViewportManager();
+
+    // Gestion de los modos de pantalla y filtro
+    ScreenConfig();
 
     // Render de los viewports
     ngn->render->Viewports();
@@ -419,5 +410,33 @@ void Demo::ViewportManager() {
     ngn->camera->Update();
     ngn->graphics->SelectViewport(3);
     ngn->camera->Update();
+
+}
+
+
+
+/*** Configuracion de la pantalla y filtros ***/
+void Demo::ScreenConfig() {
+
+    // Modo de pantalla con F10
+    if (ngn->input->key_F10->down) {
+        if (ngn->graphics->screen_mode != NGN_SCR_FULLSCREEN) {
+            ngn->graphics->SetMode(NGN_SCR_FULLSCREEN);
+        } else {
+            ngn->graphics->SetMode(NGN_SCR_WINDOW);
+        }
+    }
+
+    // Filtrado general con F9
+    if (ngn->input->key_F9->down) ngn->graphics->SetFiltering(!ngn->graphics->filtering);
+
+    // Filtrado local del viewport 0 con F5 (viewport superior)
+    if (ngn->input->key_F5->down) ngn->graphics->ViewportLocalFilter(0, !ngn->graphics->viewport_list[0].local_filter);
+    // Filtrado local del viewport 1 con F6 (viewport inferior derecho)
+    if (ngn->input->key_F6->down) ngn->graphics->ViewportLocalFilter(1, !ngn->graphics->viewport_list[1].local_filter);
+    // Filtrado local del viewport 2 con F7 (viewport inferior izquierdo) (zoom out)
+    if (ngn->input->key_F7->down) ngn->graphics->ViewportLocalFilter(2, !ngn->graphics->viewport_list[2].local_filter);
+    // Filtrado local del viewport 3 con F8 (viewport movil) (zoom in)
+    if (ngn->input->key_F8->down) ngn->graphics->ViewportLocalFilter(3, !ngn->graphics->viewport_list[3].local_filter);
 
 }

@@ -2,6 +2,19 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2020-06-26 Ver.1.0.0-stable
+--------------------------------------------------------------------------------
+- Se añade la posibilidad de forzar el estado filtrado local de los viewports.
+  El filtrado general de la escena se seguirá aplicando si este está activo,
+  pero se ahora se puede escoger si aplicar o no de manera independiente en
+  cada uno de los viewports un filtrado adicional (útil para reducciones).
+  Esta propiedad se puede modificar mediante el método ViewportLocalFilter()
+  de la clase "NGN_Graphics".
+- Se actualiza la documentación y los ejemplos.
+- Después de varios años de desarrollo y pruebas, se abandona el estado
+  "alpha", siendo esta la primera release considerada "estable".
+
+
 2020-06-25 Ver.0.13.0-a
 --------------------------------------------------------------------------------
 - Actualizados los templates de la librería.

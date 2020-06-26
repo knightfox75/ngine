@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 0.13.0-a ***
+    *** Version 1.0.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -288,13 +288,14 @@ void NGN_Graphics::Update() {
 
 /*** Abre un viewport en la ID dada ***/
 void NGN_Graphics::OpenViewport(
-    uint8_t id,         // ID del VIEWPORT
-    int32_t pos_x,      // Posicion del viewport
+    uint8_t id,             // ID del VIEWPORT
+    int32_t pos_x,          // Posicion del viewport
     int32_t pos_y,
-    uint32_t width,     // Ancho del viewport
-    uint32_t height,    // Alto del viewport
-    uint32_t h_res,     // Resolucion del render en el viewport
-    uint32_t v_res
+    uint32_t width,         // Ancho del viewport
+    uint32_t height,        // Alto del viewport
+    uint32_t h_res,         // Resolucion del render en el viewport
+    uint32_t v_res,
+    bool local_filter       // Filtrado local?
 ) {
 
     // Check de ID
@@ -321,8 +322,9 @@ void NGN_Graphics::OpenViewport(
         if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
     }
 
-    // Este viewport ha de disponer de filtrado?
-    if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    // Este viewport ha de disponer de filtrado local?
+    if (local_filter) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    v._local_filter = v.local_filter = local_filter;
 
     // Crea la textura
     v.surface = SDL_CreateTexture(
@@ -367,6 +369,7 @@ void NGN_Graphics::CloseViewport(uint8_t id) {
     v.render_w = 0;
     v.render_h = 0;
     v.surface = NULL;
+    v._local_filter = v.local_filter = false;
 
     // Actualiza los datos del viewport cerrado
     viewport_list[id] = v;
@@ -396,7 +399,7 @@ void NGN_Graphics::SelectViewport(uint8_t id) {
 /*** Posiciona un viewport (Sobrecarga 1) ***/
 void NGN_Graphics::ViewportPosition(uint8_t id, int32_t x, int32_t y) {
 
-    if (id > VIEWPORT_NUMBER) return;
+    if (id >= VIEWPORT_NUMBER) return;
     if (!viewport_list[id].available) return;
 
     viewport_list[id].x = x;
@@ -407,6 +410,16 @@ void NGN_Graphics::ViewportPosition(uint8_t id, int32_t x, int32_t y) {
 void NGN_Graphics::ViewportPosition(uint8_t id, Vector2I32 position) {
 
     ViewportPosition(id, position.x, position.y);
+
+}
+
+
+
+/*** Cambia el estado del filtrado local del viewport ***/
+void NGN_Graphics::ViewportLocalFilter(uint8_t id, bool status) {
+
+    if (id >= VIEWPORT_NUMBER) return;
+    viewport_list[id].local_filter = status;
 
 }
 
@@ -772,6 +785,7 @@ void NGN_Graphics::SetupViewports() {
     v.render_w = 0;
     v.render_h = 0;
     v.surface = NULL;
+    v._local_filter = v.local_filter = false;
 
     viewport_list.clear();
     viewport_list.reserve(VIEWPORT_NUMBER);
@@ -792,11 +806,11 @@ void NGN_Graphics::ClearViewports() {
     for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
         if (viewport_list[i].available) {
             // Si hay un cambio de modo en el filtrado...
-            if (filtering != _filtering) {
+            if (viewport_list[i].local_filter != viewport_list[i]._local_filter) {
                 // Destruye la textura actual
                 if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
                 // Selecciona el modo de filtrado correspondiente
-                if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+                if (viewport_list[i].local_filter) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
                 // Crea la textura
                 viewport_list[i].surface = SDL_CreateTexture(
                      renderer,                      // Renderer
@@ -808,11 +822,13 @@ void NGN_Graphics::ClearViewports() {
                 // Restaura el filtrado
                 SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
             }
-            // Informa al renderer que la textura "backbuffer" es su destino
+            // Informa al renderer que la textura "backbuffer" del viewport es su destino
             SDL_SetRenderTarget(renderer, viewport_list[i].surface);
             // Borra el contenido de la textura actual
             SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
             SDL_RenderFillRect(renderer, NULL);
+            // Actualiza el estado del filtrado local
+            viewport_list[i]._local_filter = viewport_list[i].local_filter;
         }
     }
 
