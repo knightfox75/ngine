@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.0.0-stable o superior
+    Requiere N'gine 1.1.0 o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -119,9 +119,6 @@ class Demo {
         void CreateSnow();  // Crea el canvas con nieve
         void Animation();   // Animacion del canvas
         void Render();      // Renderiza los objetos
-
-        // Bufferes
-        std::vector<CanvasPoint> buffer;
 
         // Variables de control
         bool animate;

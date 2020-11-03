@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016

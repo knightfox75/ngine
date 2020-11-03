@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -70,7 +70,8 @@ NGN_Canvas::NGN_Canvas(
     int32_t position_x,         // Posicion X (0 por defecto)
     int32_t position_y,         // Posicion Y (0 por defecto)
     uint32_t _width,            // Ancho de la capa (Toda la pantalla por defecto)
-    uint32_t _height            // Alto de la capa (Toda la pantalla por defecto)
+    uint32_t _height,           // Alto de la capa (Toda la pantalla por defecto)
+    bool _filtering             // Filtrado bilinear del contenido?
 ) {
 
     // Guarda el tamaño
@@ -86,20 +87,41 @@ NGN_Canvas::NGN_Canvas(
     position.x = position_x;
     position.y = position_y;
 
+    // Guarda el tamaño original en pixeles
+    surface_width = (uint32_t)width;
+    surface_height = (uint32_t)height;
+
+    // Crea la superficie en base al buffer de pixeles
+    surface = NULL;
+    surface = SDL_CreateRGBSurface(
+        0,                      // Flag
+        surface_width,          // Ancho
+        surface_height,         // Alto
+        32,                     // Profuncidad de color 32bpp [RGBA8888]
+        0xFF000000,             // Mascara R
+        0x00FF0000,             // Mascara G
+        0x0000FF00,             // Mascara B
+        0x000000FF              // Mascara A
+    );
+
+
     // Crea el backbuffer del tamaño adecuado
+    if (_filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     backbuffer = NULL;
     backbuffer = SDL_CreateTexture(
-                         ngn->graphics->renderer,       // Renderer
-                         SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                         SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                         width,                         // Ancho de la textura
-                         height                         // Alto de la textura
-                         );
+        ngn->graphics->renderer,       // Renderer
+        SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+        surface_width,                 // Ancho de la textura
+        surface_height                 // Alto de la textura
+    );
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     // Propiedades adicionales
     visible = true;             // Visibilidad
     alpha = 0xFF;               // Alpha
     blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
+    filtering = _filtering;     // Filtrado?
     rotation = 0.0f;            // Rotacion
     center.x = 0.0f;            // Centro de rotacion
     center.y = 0.0f;
@@ -108,8 +130,11 @@ NGN_Canvas::NGN_Canvas(
     scale.width = 1.0f;         // Escala
     scale.height = 1.0f;
 
-    // Borra el contenido del canvas (basura RAM)
-    SurfaceCleanUp();
+    // Borra el contenido de la textura del canvas (basura RAM)
+    BackbufferCleanUp();
+
+    // Control del buffer de pixeles
+    blit = false;
 
 }
 
@@ -121,6 +146,10 @@ NGN_Canvas::~NGN_Canvas() {
     // Destruye el backbuffer
     SDL_DestroyTexture(backbuffer);
     backbuffer = NULL;
+
+    // Destruye el surface
+    SDL_FreeSurface(surface);
+    surface = NULL;
 
 }
 
@@ -168,6 +197,7 @@ void NGN_Canvas::Size(float w, float h) {
     // Aplica el nuevo tamaño
     width = w;
     height = h;
+    blit = true;
 
 }
 
@@ -179,6 +209,7 @@ void NGN_Canvas::Scale(float w, float h) {
     // Guarda la escala
     scale.width = w;
     scale.height = h;
+    blit = true;
 
 }
 
@@ -188,6 +219,7 @@ void NGN_Canvas::Scale(float sc) {
     // Guarda la escala
     scale.width = sc;
     scale.height = sc;
+    blit = true;
 
 }
 
@@ -214,350 +246,310 @@ void NGN_Canvas::SetCenter(float x, float y) {
 
 
 
+/*
+    Funciones de dibujado en el canvas
+*/
+
+
+
 /*** Borra el contenido del canvas ***/
 void NGN_Canvas::Cls(uint32_t color) {
 
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
+    SDL_FillRect(surface, NULL, color);
+
+    // Marca el blit
+    blit = true;
+
+}
 
 
-    // Borra el contenido de la textura actual
-    SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                            ((color & 0xFF000000) >> 24),
-                            ((color & 0x00FF0000) >> 16),
-                            ((color & 0x0000FF00) >> 8),
-                            (color & 0x000000FF)
-                            );
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
-    SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
+/*** Devuelve el tamaño original del lienzo ***/
+Size2I32 NGN_Canvas::GetSize() {
+
+    Size2I32 s;
+    s.width = surface_width;
+    s.height = surface_height;
+    return s;
 
 }
 
 
 
 /*** Dibuja un punto ***/
-void NGN_Canvas::Point(uint32_t x, uint32_t y, uint32_t color) {
+void NGN_Canvas::Point(int32_t x, int32_t y, uint32_t color) {
 
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
+    // Proteccion de coordenadas
+    if ((x < 0) || (x >= surface_width) || (y < 0) || (y >= surface_height)) return;
 
-    // Prepara el dibujado del punto
-    SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                            ((color & 0xFF000000) >> 24),
-                            ((color & 0x00FF0000) >> 16),
-                            ((color & 0x0000FF00) >> 8),
-                            (color & 0x000000FF)
-                            );
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
+    // Bloquea el surface
+    SDL_LockSurface(surface);
 
-    // Dibuja el punto
-    SDL_RenderDrawPoint(ngn->graphics->renderer, x, y);
+    // Dibuja el punto del color dado
+    uint32_t* p = (uint32_t*)surface->pixels;
+    p[((y * surface_width) + x)] = color;
 
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
+    // Desbloquea el surface
+    SDL_UnlockSurface(surface);
+
+    // Indica el blit
+    blit = true;
 
 }
 
 
 
-/*** Dibuja una matriz de puntos ***/
-void NGN_Canvas::Points(const std::vector<CanvasPoint> &points) {
+/*** Dibuja una linea entre dos puntos (Implementacion del algoritmo de Bresenham) ***/
+void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color) {
 
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
+    // Parametros iniciales
+    int32_t right = (surface_width - 1);        // Limites del buffer
+    int32_t bottom = (surface_height - 1);
+    int32_t x = x1;                             // Coordenadas de dibujado
+    int32_t y = y1;
+    int32_t dx = (x2 - x1);                     // Distancias
+    int32_t dy = (y2 - y1);
+    int32_t ix = (dx >= 0) ? 1:-1;              // Sentido del dibujado
+    int32_t iy = (dy >= 0) ? 1:-1;
+    int32_t pk = 0;                             // Precision de la pendiente
 
-    // Prepara el dibujado del punto
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
+    // Valor absoluto de las distancias
+    dx = std::abs(dx);
+    dy = std::abs(dy);
 
-    // Dibuja la matriz de puntos
-    for (uint32_t n = 0; n < points.size(); n ++) {
-        SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                               ((points[n].color & 0xFF000000) >> 24),
-                               ((points[n].color & 0x00FF0000) >> 16),
-                               ((points[n].color & 0x0000FF00) >> 8),
-                               (points[n].color & 0x000000FF)
-                               );
-        SDL_RenderDrawPoint(ngn->graphics->renderer, points[n].x, points[n].y);
+    // Bloquea el surface
+    SDL_LockSurface(surface);
+
+    // Acceso al array de pixeles
+    uint32_t* p = (uint32_t*)surface->pixels;
+
+    // Dibuja el primer pixel
+    if (!((x < 0) || (y < 0) || (x > right) || (y > bottom))) {
+        p[((y * surface_width) + x)] = color;
     }
 
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
+    // Segun la pendiente (mandan la X o mandan las Y)
+    if (dx >= dy) {
 
-}
+        // Calculo de la precision
+        pk = ((dy << 1) - dx);
+        // Bucle de dibujado
+        for (int32_t i = 0; i < dx; i ++) {
+            // Incremento de la X
+            x += ix;
+            // Segun el estado de la precision, recalculala
+            if (pk < 0) {
+                pk += (dy << 1);
+            } else {
+                y += iy;
+                pk += ((dy << 1) - (dx << 1));
+            }
+            // Dibuja el pixel
+            if (!((x < 0) || (y < 0) || (x > right) || (y > bottom))) {
+                p[((y * surface_width) + x)] = color;
+            }
+        }
 
+    } else {
 
+        // Calculo de la precision
+        pk = ((dx << 1) - dy);
+        // Bucle de dibujado
+        for (int32_t i = 0; i < dy; i ++) {
+            // Incremento de la Y
+            y += iy;
+            // Segun el estado de la precision, recalculala
+            if (pk < 0) {
+                pk += (dx << 1);
+            } else {
+                x += ix;
+                pk += ((dx << 1) - (dy << 1));
+            }
+            // Dibuja el pixel
+            if (!((x < 0) || (y < 0) || (x > right) || (y > bottom))) {
+                p[((y * surface_width) + x)] = color;
+            }
+        }
 
-/*** Dibuja una linea entre dos puntos ***/
-void NGN_Canvas::Line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color) {
-
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
-
-    // Prepara el dibujado de la linea
-    SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                            ((color & 0xFF000000) >> 24),
-                            ((color & 0x00FF0000) >> 16),
-                            ((color & 0x0000FF00) >> 8),
-                            (color & 0x000000FF)
-                            );
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
-
-    // Dibuja la linea
-    SDL_RenderDrawLine(ngn->graphics->renderer, x1, y1, x2, y2);
-
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
-
-}
-
-
-
-/*** Dibuja una matriz de lineas ***/
-void NGN_Canvas::Lines(const std::vector<CanvasLine> &lines) {
-
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
-
-    // Prepara el dibujado de la linea
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
-
-    // Dibuja la matriz de lineas
-    for (uint32_t n = 0; n < lines.size(); n ++) {
-        SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                                ((lines[n].color & 0xFF000000) >> 24),
-                                ((lines[n].color & 0x00FF0000) >> 16),
-                                ((lines[n].color & 0x0000FF00) >> 8),
-                                (lines[n].color & 0x000000FF)
-                                );
-        SDL_RenderDrawLine(ngn->graphics->renderer, lines[n].x1, lines[n].y1, lines[n].x2, lines[n].y2);
     }
 
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
+    // Desbloquea el surface
+    SDL_UnlockSurface(surface);
+
+    // Indica el blit
+    blit = true;
 
 }
 
 
 
 /*** Dibuja un cuadrado ***/
-void NGN_Canvas::Box(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, bool paint) {
+void NGN_Canvas::Box(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color, bool paint) {
 
-    // Ordena los vertices
-    int32_t _x1 = 0, _x2 = 0, _y1 = 0, _y2 = 0;
-    if (x2 > x1) {
-        _x1 = x1;
-        _x2 = x2;
+    // Calcula y ordena los puntos del rectangulo
+    int32_t xa = 0, ya = 0, xb = 0, yb = 0;
+    if (x1 <= x2) {
+        xa = x1;
+        xb = x2;
     } else {
-        _x1 = x2;
-        _x2 = x1;
+        xa = x2;
+        xb = x1;
     }
-    if (y2 > y1) {
-        _y1 = y1;
-        _y2 = y2;
+    if (y1 <= y2) {
+        ya = y1;
+        yb = y2;
     } else {
-        _y1 = y2;
-        _y2 = y1;
+        ya = y2;
+        yb = y1;
     }
 
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
-
-    // Prepara el dibujado de la linea
-    SDL_SetRenderDrawColor( ngn->graphics->renderer,
-                            ((color & 0xFF000000) >> 24),
-                            ((color & 0x00FF0000) >> 16),
-                            ((color & 0x0000FF00) >> 8),
-                            (color & 0x000000FF)
-                            );
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
-
-    // Dibuja el cuadrado
     if (paint) {
-        for (int32_t i = _y1; i <= _y2; i ++) SDL_RenderDrawLine(ngn->graphics->renderer, _x1, i, _x2, i);
+        int32_t x = 0, y = 0;
+        // Bloquea el surface
+        SDL_LockSurface(surface);
+        // Acceso al array de pixeles
+        uint32_t* p = (uint32_t*)surface->pixels;
+        uint32_t idx = 0;
+        // Rectangulo con relleno (rellena el buffer de pixeles)
+        for (y = ya; y <= yb; y ++) {
+            // Proteccion de coordenadas
+            if ((y < 0) || (y >= surface_height)) continue;
+            // Calcula la posicion del puntero
+            idx = (y * surface_width);
+            for (x = xa; x <= xb; x ++) {
+                // Proteccion de coordenadas
+                if ((x < 0) || (x >= surface_width)) continue;
+                // Escribe el dato
+                p[(idx + x)] = color;
+            }
+        }
+        // Desbloquea el surface
+        SDL_UnlockSurface(surface);
     } else {
-        SDL_RenderDrawLine(ngn->graphics->renderer, _x1, _y1, _x1, _y2);
-        SDL_RenderDrawLine(ngn->graphics->renderer, _x1, _y2, _x2, _y2);
-        SDL_RenderDrawLine(ngn->graphics->renderer, _x2, _y2, _x2, _y1);
-        SDL_RenderDrawLine(ngn->graphics->renderer, _x2, _y1, _x1, _y1);
+        // Rectangulo sin relleno (usa lineas)
+        Line(xa, ya, xb, ya, color);
+        Line(xb, ya, xb, yb, color);
+        Line(xb, yb, xa, yb, color);
+        Line(xa, yb, xa, ya, color);
     }
 
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
+    // Indica el blit
+    blit = true;
 
 }
 
 
 
 /*** Dibuja un circulo ***/
-void NGN_Canvas::Circle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2, double in_angle, double out_angle) {
+void NGN_Canvas::Circle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry, bool paint) {
 
-    // Asignacion de los radios y proteccion de 0
-    uint32_t _r = (r < 1) ? 1 : r;
-    uint32_t _r2 = ((r2 == NGN_DEFAULT_VALUE) || (r2 < 1)) ? _r : r2;
-
-    // Calculo del arco a dibujar
-    bool arc = false;
-    double st = 0.0f, ed = 0.0f;
-    if ((in_angle == 0.0f) && (out_angle == 0.0f)) {
-        ed = (PI / 2.0f);
+    if (paint) {
+        // Con relleno
+        BresenhamFilledCircle(cx, cy, r, color, ry);
     } else {
-        // Si el angulo de entrada y salida son los mismos
-        if (in_angle == out_angle) return;
-        // Ordena los angulos de entrada y salida
-        if (out_angle > in_angle) {
-            st = in_angle;
-            ed = out_angle;
-        } else {
-            st = out_angle;
-            ed = in_angle;
-        }
-        // Si superan 2PI
-        if ((ed - st) > (PI * 2.0f)) {
-            st = 0.0f;
-            ed = (PI / 2.0f);
-        } else {
-            arc = true;
-        }
+        // Circulo sin relleno
+        BresenhamCircle(cx, cy, r, color, ry);
     }
-
-    // Calculos iniciales para el dibujo del circulo (1/4 del mismo)
-    double step = (_r2 > _r) ? ((((PI / 2.0f) / (double)_r2)) * CIRCLE_PRECISION) : ((((PI / 2.0f) / (double)_r)) * CIRCLE_PRECISION);    // Calculo del numero de segmentos segun el radio
-    int32_t px = 0, py = 0;                                         // Variables de calculo de vertices
-    int32_t _px = 0.0f, _py = 0.0f;
-    int32_t sg = (std::ceil((std::abs((ed - st)) / step)) + 1);      // Numero de segmentos del arco
-
-    // Inicializa el vector contenedor de segmentos (arco * 4)
-    segment.clear();
-    segment.resize((sg << 2));
-    //std::cout << n << " : " << step << std::endl;
-
-    // Calculo del punto inicial
-    _px = std::round((std::cos(st) * (double)_r));
-    _py = std::round((std::sin(st) * (double)_r2));
-    st += step;
-
-    // Calculo del resto de segmentos
-    double a = 0.0f;
-    uint32_t id = 0;
-    CanvasLine line;
-    line.color = color;
-    double angle_end = (ed + step);
-    for (double angle = st; angle < angle_end; angle += step) {
-        a = (angle > ed) ? ed : angle;
-        px = std::round((std::cos(a) * (double)_r));
-        py = std::round((std::sin(a) * (double)_r2));
-        // Segmento A (0 - 90) o arco definido
-        line.x1 = (x + _px); line.y1 = (y + _py); line.x2 = (x + px); line.y2 = (y + py);
-        segment[id] = line; id ++;
-        // Si no es un arco simple...
-        if (!arc) {
-            // Segmento B (90 - 180)
-            line.x1 = (x - _px); line.y1 = (y + _py); line.x2 = (x - px); line.y2 = (y + py);
-            segment[id] = line; id ++;
-            // Segmento C (180 - 270)
-            line.x1 = (x - _px); line.y1 = (y - _py); line.x2 = (x - px); line.y2 = (y - py);
-            segment[id] = line; id ++;
-            // Segmento D (270 - 360)
-            line.x1 = (x + _px); line.y1 = (y - _py); line.x2 = (x + px); line.y2 = (y - py);
-            segment[id] = line; id ++;
-        }
-        _px = px;
-        _py = py;
-    }
-
-    // Dibuja el circulo en base los segmentos
-    segment.resize(id);
-    Lines(segment);
-
-    // Limpia el vector de segmentos
-    segment.clear();
 
 }
 
 
 
-/*** Dibuja un circulo relleno ***/
-void NGN_Canvas::FilledCircle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2) {
+/*** Dibuja un arco ***/
+void NGN_Canvas::Arc(int32_t cx, int32_t cy, int32_t r, double start_angle, double end_angle, uint32_t color, int32_t ry, uint8_t close) {
 
-    // Asignacion de los radios y proteccion de 0
-    uint32_t _r = (r < 1) ? 1 : r;
-    uint32_t _r2 = ((r2 == NGN_DEFAULT_VALUE) || (r2 < 1)) ? _r : r2;
+    // Asignacion de los radios
+    int32_t _rx = r;
+    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx:ry;
 
-    // Angulos de inicio y final
-    double st = -(PI / 2.0f), ed = (PI / 2.0f);
-
-    // Calculos iniciales para el dibujo del circulo
-    double step = (_r2 != _r) ? (PI / ((double)_r2 * 2.0f)) : (PI / ((double)_r * 2.0f));    // Calculo del numero de segmentos segun el radio
-    int32_t px = 0, py = 0;                                             // Variables de calculo de vertices
-    int32_t sg = (std::ceil((std::abs((ed - st)) / step)) + 2);         // Numero de segmentos del circulo
-
-    // Inicializa el vector contenedor de segmentos
-    segment.clear();
-    segment.resize(sg);
-
-    // Calculo de los vertices
-    double a = 0.0f;
-    uint32_t id = 0;
-    CanvasLine line;
-    double angle_end = (ed + step);
-    // Primer segmento
-    py = std::round((std::sin(st) * (double)_r2));
-    px = std::round((std::cos(st) * (double)_r));
-    line.y1 = line.y2 = (y + py);
-    line.x1 = (x + px);
-    line.x2 = (x - px);
-    line.color = color;
-    segment[id] = line;
-    id ++;
-    st += step;
-    int32_t _y = py;
-    // Resto de segmentos
-    for (double angle = st; angle < angle_end; angle += step) {
-        a = (angle > ed) ? ed : angle;
-        py = std::round((std::sin(a) * (double)_r2));
-        if (_y != py) {
-            px = std::round((std::cos(a) * (double)_r));
-            // Define el segmento
-            line.y1 = line.y2 = (y + py);
-            line.x1 = (x + px);
-            line.x2 = (x - px);
-            segment[id] = line;
-            id ++;
-            // Si ha quedado un espacio entre lines
-            if (std::abs(_y - py) > 1) {
-                line.y1 = line.y2 = (y + py - 1);
-                segment[id] = line;
-                id ++;
-            }
-        }
-        _y = py;
+    // Ordena los angulos de inicio y fin
+    double st_angle = 0.0f, ed_angle = 0.0f;
+    if (start_angle == end_angle) {
+        // Si son identicos, sal
+        return;
+    } else if (start_angle > end_angle) {
+        // Si el angulo inicial es mayor que el final
+        st_angle = start_angle;
+        ed_angle = end_angle += (PI * 2.0f);
+    } else {
+        st_angle = start_angle;
+        ed_angle = end_angle;
     }
 
-    // Ajuste del tamaño del buffer
-    segment.resize(id);
-    //std::cout << "Total segments: " << id << std::endl;
+    // Algun ambos radios son 0...
+    if ((_rx == 0) && (_ry == 0)) {
+        return;
+    }
 
-    // Genera el circulo pintado
-    Lines(segment);
+    // Calculos
+    int32_t x = 0, y = 0;                               // Coordenadas
+    int32_t _x = 0, _y = 0;
+    int32_t _fx = 0, _fy = 0;
 
-    // Borra los buffers
-    segment.clear();
+    // Precision
+    double p = 0.0f;
+    if (_rx >= _ry) {
+        p = (PI * 4.0f) / (double)_rx;
+    } else {
+        p = (PI * 4.0f) / (double)_ry;
+    }
+
+    // Primer punto del angulo
+    _fx = _x = (std::round((std::cos(st_angle) * (float)_rx)) + cx);
+    _fy = _y = (std::round((std::sin(st_angle) * (float)_ry)) + cy);
+    // Dibuja los segmentos del arco
+    for (double angle = st_angle; angle <= ed_angle; angle += p) {
+        // Calculos de las coordenadas
+        x = (std::round((std::cos(angle) * (float)_rx)) + cx);
+        y = (std::round((std::sin(angle) * (float)_ry)) + cy);
+        if ((_x != x) || (_y != y)) Line(x, y, _x, _y, color);
+        _x = x;
+        _y = y;
+    }
+    // Ultimo punto del arco
+    x = (std::round((std::cos(ed_angle) * (float)_rx)) + cx);
+    y = (std::round((std::sin(ed_angle) * (float)_ry)) + cy);
+    if ((_x != x) || (_y != y)) Line(x, y, _x, _y, color);
+
+    // Has de cerrar el arco (0 = no, 1 = entre los puntos, 2 = con el centro)
+    switch (close) {
+        // Entre ellos
+        case 1:
+            Line(x, y, _fx, _fy, color);
+            break;
+        // Con el centro
+        case 2:
+            Line(x, y, cx, cy, color);
+            Line(_fx, _fy, cx, cy, color);
+            break;
+    }
 
 }
 
 
 
-/*** Limpieza de la superficie ***/
-void NGN_Canvas::SurfaceCleanUp() {
+/*** Convierte el buffer de pixeles en una textura ***/
+void NGN_Canvas::Blit() {
+
+    // Si no es necesario, ignora el comando
+    if (!blit) return;
+
+    // Convierte la superficie generada en textura
+    SDL_DestroyTexture(backbuffer);
+    backbuffer = NULL;
+    if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    backbuffer = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+
+    // Marca la conversion como realizada
+    blit = false;
+
+}
+
+
+
+/*** Limpieza de la superficie del backbuffer***/
+void NGN_Canvas::BackbufferCleanUp() {
 
     // Informa al renderer que la textura "backbuffer" es su destino
     SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
@@ -566,5 +558,326 @@ void NGN_Canvas::SurfaceCleanUp() {
     SDL_RenderClear(ngn->graphics->renderer);
     // Restaura el render al seleccionado
     ngn->graphics->RenderToSelected();
+
+}
+
+
+
+/*** Dibuja un circulo (Implementacion del algoritmo de Bresenham) ***/
+void NGN_Canvas::BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry) {
+
+    // Asignacion de los radios y proteccion de 0
+    int32_t _rx = r;
+    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx:ry;
+
+    // Algun radio es 0...
+    if ((_rx == 0) && (_ry == 0)) {
+        return;
+    } else if (_ry == 0) {
+        Line((cx - _rx), cy, (cx + _rx), cy, color);
+        return;
+    } else if (_rx == 0) {
+        Line(cx, (cy - _ry), cx, (cy + _ry), color);
+        return;
+    }
+
+    // Calculos
+    int32_t right = (surface_width - 1);                // Limites del buffer
+    int32_t bottom = (surface_height - 1);
+    int32_t x = _rx;                                    // Coordenadas
+    int32_t y = 0;
+    int32_t ix = ((_ry * _ry) * (1 - (_rx << 1)));      // Cambios de coordenada
+    int32_t iy = (_rx * _rx);
+    int32_t square_x = ((_rx * _rx) << 1);              // Cuadrados
+    int32_t square_y = ((_ry * _ry) << 1);
+    int32_t stop_x = (square_y * _rx);                  // Puntos de detencion
+    int32_t stop_y = 0;
+    int32_t ellip_error = 0;                            // Error en el dibujado de la elipse
+
+    // Variables adicionales
+    int32_t _x = 0, _y = 0;
+
+    // Bloquea el surface
+    SDL_LockSurface(surface);
+    // Acceso al array de pixeles
+    uint32_t* p = (uint32_t*)surface->pixels;
+
+    // Primera area de dibujado (izquierda y derecha)
+    while (stop_x >= stop_y) {
+        // Dibuja el pixel del cuadrante 1
+        _x = cx + x;
+        _y = cy + y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Dibuja el pixel del cuadrante 2
+        _x = cx - x;
+        _y = cy + y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Dibuja el pixel del cuadrante 3
+        _x = cx - x;
+        _y = cy - y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Dibuja el pixel del cuadrante 4
+        _x = cx + x;
+        _y = cy - y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Incrementa la Y
+        y ++;
+        // Incrementa stop_y
+        stop_y += square_x;
+        // Incrementa el error de elipse
+        ellip_error += iy;
+        // Incrementa el incremento de Y
+        iy += square_x;
+        // Correccion de valores
+        if (((ellip_error << 1) + ix) > 0) {
+            // Reduce X
+            x --;
+            // Reduce stop_x
+            stop_x -= square_y;
+            // Incrementa el error de elipse
+            ellip_error += ix;
+            // Incremente el incremento de X
+            ix += square_y;
+        }
+    }
+
+    // Prepara la segunda area (arriba y abajo)
+    x = 0;
+    y = _ry;
+    ix = (_ry * _ry);
+    iy = ((_rx * _rx) * (1 - (_ry << 1)));
+    ellip_error = 0;
+    stop_x = 0;
+    stop_y = (square_x * _ry);
+
+    // Segunda area de dibujado (arriba y abajo)
+    while (stop_x <= stop_y) {
+        // Dibuja el pixel del cuadrante 1
+        _x = cx + x;
+        _y = cy + y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Dibuja el pixel del cuadrante 2
+        _x = cx - x;
+        _y = cy + y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Dibuja el pixel del cuadrante 3
+        _x = cx - x;
+        _y = cy - y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Dibuja el pixel del cuadrante 4
+        _x = cx + x;
+        _y = cy - y;
+        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
+            p[((_y * surface_width) + _x)] = color;
+        }
+        // Incrementa la X
+        x ++;
+        // Incrementa stop_x
+        stop_x += square_y;
+        // Incrementa el error de elipse
+        ellip_error += ix;
+        // Incrementa el incremento de X
+        ix += square_y;
+        // Correccion de valores
+        if (((ellip_error << 1) + iy) > 0) {
+            // Reduce Y
+            y --;
+            // Reduce stop_y
+            stop_y -= square_x;
+            // Incrementa el error de elipse
+            ellip_error += iy;
+            // Incremente el incremento de Y
+            iy += square_x;
+        }
+    }
+
+    // Desbloquea el surface
+    SDL_UnlockSurface(surface);
+
+    // Indica el blit
+    blit = true;
+
+}
+
+
+
+/*** Dibuja un circulo relleno (Implementacion del algoritmo de Bresenham) ***/
+void NGN_Canvas::BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry) {
+
+    // Asignacion de los radios y proteccion de 0
+    int32_t _rx = r;
+    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx:ry;
+
+    // Algun radio es 0...
+    if ((_rx == 0) && (_ry == 0)) {
+        return;
+    } else if (_ry == 0) {
+        Line((cx - _rx), cy, (cx + _rx), cy, color);
+        return;
+    } else if (_rx == 0) {
+        Line(cx, (cy - _ry), cx, (cy + _ry), color);
+        return;
+    }
+
+    // Calculos
+    int32_t right = (surface_width - 1);                // Limites del buffer
+    int32_t bottom = (surface_height - 1);
+    int32_t x = _rx;                                    // Coordenadas
+    int32_t y = 0;
+    int32_t ix = ((_ry * _ry) * (1 - (_rx << 1)));      // Cambios de coordenada
+    int32_t iy = (_rx * _rx);
+    int32_t square_x = ((_rx * _rx) << 1);              // Cuadrados
+    int32_t square_y = ((_ry * _ry) << 1);
+    int32_t stop_x = (square_y * _rx);                  // Puntos de detencion
+    int32_t stop_y = 0;
+    int32_t ellip_error = 0;                            // Error en el dibujado de la elipse
+
+    // Variables adicionales
+    int32_t _x = 0, _y = 0;
+    int32_t _start = 0, _end = 0;
+    int32_t _py = 0;
+
+    // Bloquea el surface
+    SDL_LockSurface(surface);
+    // Acceso al array de pixeles
+    uint32_t* p = (uint32_t*)surface->pixels;
+
+    // Primera area de dibujado (izquierda y derecha)
+    while (stop_x >= stop_y) {
+        // Dibuja la linea del cuadrante 1
+        _start = cx - x;
+        _end = cx + x;
+        _y = cy - y;
+        if (!((_y < 0) || (_y > bottom))) {
+            _py = (_y * surface_width);
+            for (_x = _start; _x <= _end; _x ++) {
+                if (!((_x < 0) || (_x > right))) {
+                    p[(_py + _x)] = color;
+                }
+            }
+        }
+        // Dibuja la linea del cuadrante 2
+        _start = cx - x;
+        _end = cx + x;
+        _y = cy + y;
+        if (!((_y < 0) || (_y > bottom))) {
+            _py = (_y * surface_width);
+            for (_x = _start; _x <= _end; _x ++) {
+                if (!((_x < 0) || (_x > right))) {
+                    p[(_py + _x)] = color;
+                }
+            }
+        }
+        // Incrementa la Y
+        y ++;
+        // Incrementa stop_y
+        stop_y += square_x;
+        // Incrementa el error de elipse
+        ellip_error += iy;
+        // Incrementa el incremento de Y
+        iy += square_x;
+        // Correccion de valores
+        if (((ellip_error << 1) + ix) > 0) {
+            // Reduce X
+            x --;
+            // Reduce stop_x
+            stop_x -= square_y;
+            // Incrementa el error de elipse
+            ellip_error += ix;
+            // Incremente el incremento de X
+            ix += square_y;
+        }
+    }
+
+    // Prepara la segunda area (arriba y abajo)
+    x = 0;
+    y = _ry;
+    ix = (_ry * _ry);
+    iy = ((_rx * _rx) * (1 - (_ry << 1)));
+    ellip_error = 0;
+    stop_x = 0;
+    stop_y = (square_x * _ry);
+
+    // Segunda area de dibujado (arriba y abajo)
+    while (stop_x <= stop_y) {
+        // Dibuja la linea del cuadrante 1
+        _start = cx - x;
+        _end = cx + x;
+        _y = cy - y;
+        if (!((_y < 0) || (_y > bottom))) {
+            _py = (_y * surface_width);
+            for (_x = _start; _x <= _end; _x ++) {
+                if (!((_x < 0) || (_x > right))) {
+                    p[(_py + _x)] = color;
+                }
+            }
+        }
+        // Dibuja la linea del cuadrante 2
+        _start = cx - x;
+        _end = cx + x;
+        _y = cy + y;
+        if (!((_y < 0) || (_y > bottom))) {
+            _py = (_y * surface_width);
+            for (_x = _start; _x <= _end; _x ++) {
+                if (!((_x < 0) || (_x > right))) {
+                    p[(_py + _x)] = color;
+                }
+            }
+        }
+        // Incrementa la X
+        x ++;
+        // Incrementa stop_x
+        stop_x += square_y;
+        // Incrementa el error de elipse
+        ellip_error += ix;
+        // Incrementa el incremento de X
+        ix += square_y;
+        // Correccion de valores
+        if (((ellip_error << 1) + iy) > 0) {
+            // Reduce Y
+            y --;
+            // Reduce stop_y
+            stop_y -= square_x;
+            // Incrementa el error de elipse
+            ellip_error += iy;
+            // Incremente el incremento de Y
+            iy += square_x;
+        }
+    }
+
+    // Desbloquea el surface
+    SDL_UnlockSurface(surface);
+
+    // Indica el blit
+    blit = true;
+
+}
+
+
+
+/*** Devuelve un color en formato RGBA ***/
+Rgba NGN_Canvas::GetRgbaColor(uint32_t color) {
+
+    Rgba c;
+    c.r = (color >> 24) & 0x000000FF;
+    c.g = (color >> 16) & 0x000000FF;
+    c.b = (color >> 8) & 0x000000FF;
+    c.a = color & 0x000000FF;
+
+    return c;
 
 }

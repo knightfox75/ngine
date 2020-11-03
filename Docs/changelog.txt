@@ -2,6 +2,28 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2020-11-03 Ver.1.1.0-beta
+--------------------------------------------------------------------------------
+- Corregido el escalado de las capas de texto cuando se cambiaba su tamaño.
+- Añadido el parámetro y propiedad "filtering", que permite activar o
+  desactivar el filtrado bilineal del contenido de la capa de texto.
+- Reescrita toda la clase NGN_Canvas para usar métodos propios de dibujado.
+  Dado que es una clase que solo se solía usar hasta el momento para fines
+  educativos y no debería afectar en gran medida a proyectos anteriores,
+  se han eliminado, modificado y añadido los siguientes métodos:
+	- Se han eliminado de la clase los siguientes métodos:
+		- Points()
+		- Lines()
+		- FilledCircle()
+	- Se han modificado los siguientes métodos:
+		- Circle()
+	- Se han añadido los siguientes métodos:
+		- Arc()
+- Corregida en la clase NGN_Input el método que devuelve las coordenadas
+  del ratón en pantalla, filtrando ahora estos datos y adaptándolos al
+  escalado y resolución de la pantalla en sus diversos modos.
+
+
 2020-06-26 Ver.1.0.0-stable
 --------------------------------------------------------------------------------
 - Se añade la posibilidad de forzar el estado filtrado local de los viewports.

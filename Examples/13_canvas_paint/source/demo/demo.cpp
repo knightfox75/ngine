@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.0.0-stable o superior
+    Requiere N'gine 1.1.0 o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -378,7 +378,7 @@ void Demo::DrawCanvas() {
 
     // Al pulsar el boton del mouse
     if (ngn->input->mouse.LB.held) {
-        canvas->FilledCircle(ngn->input->mouse.x, ngn->input->mouse.y, r, color);
+        canvas->Circle(ngn->input->mouse.x, ngn->input->mouse.y, r, color, r, true);
     }
 
 }

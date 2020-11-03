@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -51,6 +51,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 // SDL
 #include <SDL.h>
@@ -465,10 +466,21 @@ void NGN_Input::MouseInit() {
 void NGN_Input::UpdateMouse() {
 
     // Variable de lectura
-     uint32_t m = 0;
+    uint32_t m = 0;
 
     // Lectura de la informacion del mouse segun SDL
-    m = SDL_GetMouseState(&mouse.x, &mouse.y);
+    Vector2I32 pos = {0, 0};
+    m = SDL_GetMouseState(&pos.x, &pos.y);
+    // Escala las coordenadas al area visible
+    Vector2 spos = {(float)pos.x, (float)pos.y};
+    spos = ngn->graphics->ScaleAndFitCoordinates(spos);
+    mouse.x = std::round(spos.x);
+    mouse.y = std::round(spos.y);
+    // Limita las coordenadas al area visible
+    if (mouse.x < 0) mouse.x = 0;
+    if (mouse.y < 0) mouse.y = 0;
+    if (mouse.x >= ngn->graphics->native_w) mouse.x = (ngn->graphics->native_w - 1);
+    if (mouse.y >= ngn->graphics->native_h) mouse.y = (ngn->graphics->native_h - 1);
 
     // Botones
     mouse.LB.held = m & (1 << 0);

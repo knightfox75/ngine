@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -136,8 +136,8 @@ void NGN_Render::Texture(NGN_Texture* texture, float position_x, float position_
 
     // Define el area de origen
     SDL_Rect source = {
-        0,                  			// Posicion X
-        0,              				// Posicion Y
+        0,                  			    // Posicion X
+        0,              				    // Posicion Y
         (int32_t)texture->data->width,      // Ancho
         (int32_t)texture->data->height      // Alto
     };
@@ -490,10 +490,10 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
 
     // Define el area de origen
     SDL_Rect source = {
-        0,                  			// Posicion X
-        0,              				// Posicion Y
-        (int32_t)layer->width,          // Ancho
-        (int32_t)layer->height          // Alto
+        0,                  		// Posicion X
+        0,              			// Posicion Y
+        layer->GetSize().width,     // Ancho
+        layer->GetSize().height     // Alto
     };
 
     // Define el area de destino
@@ -520,6 +520,9 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
 
     // Si no debe dibujarse...
     if (!canvas->visible) return;
+
+    // Si es necesario realiza el BLIT (convierte el buffer de pixeles en textura)
+    canvas->Blit();
 
     // Calculos
     int32_t _x, _y;
@@ -574,8 +577,8 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
     SDL_Rect source = {
         0,                  			// Posicion X
         0,              				// Posicion Y
-        (int32_t)canvas->width,          // Ancho
-        (int32_t)canvas->height          // Alto
+        canvas->GetSize().width,        // Ancho
+        canvas->GetSize().height        // Alto
     };
 
     // Define el area de destino
@@ -594,7 +597,6 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
     delete _center;
 
 }
-
 
 
 

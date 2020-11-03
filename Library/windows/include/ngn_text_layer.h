@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -79,7 +79,8 @@ class NGN_TextLayer {
             int32_t position_x = 0,                         // Posicion X (0 por defecto)
             int32_t position_y = 0,                         // Posicion Y (0 por defecto)
             uint32_t _width = (uint32_t)NGN_DEFAULT_VALUE,  // Ancho de la capa (Toda la pantalla por defecto)
-            uint32_t _height = (uint32_t)NGN_DEFAULT_VALUE  // Alto de la capa (Toda la pantalla por defecto)
+            uint32_t _height = (uint32_t)NGN_DEFAULT_VALUE, // Alto de la capa (Toda la pantalla por defecto)
+            bool _filtering = false                         // Filtrado?
         );
 
         // Destructor de la clase
@@ -168,6 +169,9 @@ class NGN_TextLayer {
         // Escribe el texto en la capa
         void Print(std::string text);
 
+        // Devuelve el tamaño original del lienzo
+        Size2I32 GetSize();
+
 
 
     // Segmento privado
@@ -175,6 +179,8 @@ class NGN_TextLayer {
 
         NGN_TextFont* font;             // Fuente actual
         NGN_TextureData* background;    // Textura de fondo (opcional)
+        // Tamaño en pixeles del tamaño original de la capa
+        int32_t layer_width, layer_height;
 
         // Limpieza del surface
         void SurfaceCleanUp();

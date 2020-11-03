@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.0.0-stable o superior
+    Requiere N'gine 1.1.0 o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -75,9 +75,6 @@ Demo::Demo() {
     // Inicializa los punteros a objetos
     canvas_bg = NULL;
     canvas_snow = NULL;
-
-    // Inicializa los vectores
-    buffer.clear();
 
     // Variables
     animate = true;
@@ -188,40 +185,25 @@ void Demo::CreateBg() {
     // Crea el canvas
     canvas_bg = new NGN_Canvas();
 
-    // Crea el buffer
-    buffer.clear();
-    buffer.resize((SCR_WIDTH * SCR_HEIGHT));
-
     // Estructura de color
-    struct {
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-        uint8_t a;
-    } color;
+    uint8_t r = 0;
+    uint8_t g = 0;
+    uint8_t b = 0;
+    uint8_t a = 0xFF;
+    uint32_t color = 0;
 
     // Crea un fondo
-    CanvasPoint point;
     uint32_t id = 0;
-    color.a = 0xFF;
     for (uint32_t y = 0; y < SCR_HEIGHT; y ++) {
-        point.y = y;
         for (uint32_t x = 0; x < SCR_WIDTH; x ++) {
-            point.x = x;
-            color.r = (uint32_t)std::sqrt(x * (SCR_HEIGHT - y)) % 0xFF;
-            color.g = (uint32_t)std::sqrt((SCR_WIDTH - x) * y) % 0xFF;
-            color.b = (uint32_t)std::sqrt(x * y) % 0xFF;
-            point.color = (color.r << 24) | (color.g << 16) | (color.b << 8) | color.a;
-            buffer[id] = point;
+            r = (uint32_t)std::sqrt(x * (SCR_HEIGHT - y)) % 0xFF;
+            g = (uint32_t)std::sqrt((SCR_WIDTH - x) * y) % 0xFF;
+            b = (uint32_t)std::sqrt(x * y) % 0xFF;
+            color = (r << 24) | (g << 16) | (b << 8) | a;
+            canvas_bg->Point(x, y, color);
             id ++;
         }
     }
-
-    // Mandalo al canvas
-    canvas_bg->Points(buffer);
-
-    // Limpia el buffer
-    buffer.clear();
 
 }
 
@@ -235,27 +217,18 @@ void Demo::CreateSnow() {
     const uint32_t height = (SCR_HEIGHT / SCREEN_DIVIDER);
     canvas_snow = new NGN_Canvas(0.0f, 0.0f, width, height);
 
-    // Crea el buffer
-    buffer.clear();
-    buffer.resize((width * height));
-
     // Crea un fondo
-    CanvasPoint point;
     uint32_t id = 0;
-    uint8_t color = 0x00;
+    uint8_t gray = 0;
+    uint32_t color = 0;
     for (uint32_t y = 0; y < height; y ++) {
-        point.y = y;
         for (uint32_t x = 0; x < width; x ++) {
-            point.x = x;
-            color = (rand() % 0xFF);
-            point.color = (color << 24) | (color << 16) | (color << 8) | 0xFF;
-            buffer[id] = point;
+            gray = (rand() % 0xFF);
+            color = (gray << 24) | (gray << 16) | (gray << 8) | 0xFF;
+            canvas_snow->Point(x, y, color);
             id ++;
         }
     }
-
-    // Mandalo al canvas
-    canvas_snow->Points(buffer);
 
     // Ajusta el alpha
     canvas_snow->alpha = 200;
@@ -286,22 +259,17 @@ void Demo::Animation() {
     // Crea un fondo
 
     if (animate) {
-        CanvasPoint point;
         uint32_t id = 0;
-        uint8_t color = 0x00;
+        uint8_t gray = 0;
+        uint32_t color = 0;
         for (int32_t y = 0; y < height; y ++) {
-            point.y = y;
             for (int32_t x = 0; x < width; x ++) {
-                point.x = x;
-                color = (rand() % 0xFF);
-                point.color = (color << 24) | (color << 16) | (color << 8) | 0xFF;
-                buffer[id] = point;
+                gray = (rand() % 0xFF);
+                color = (gray << 24) | (gray << 16) | (gray << 8) | 0xFF;
+                canvas_snow->Point(x, y, color);
                 id ++;
             }
         }
-    } else {
-        // Mandalo al canvas
-        canvas_snow->Points(buffer);
     }
 
     // Posicionalo

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -165,7 +165,12 @@ class NGN_Graphics {
         NGN_Sprite* CloneSprite(NGN_Sprite* sprite);
 
         /*** Resolucion del escritorio ***/
-        Size2I32 GetDesktopResolution();
+        Size2I32 GetDesktopResolution();                    // Devuelve la resolucion actual del escritorio
+
+
+        /*** Metodos de uso interno ***/
+        Vector2 ScaleAndFitCoordinates(Vector2 coord);      // Escala las coordenadas al area visible
+
 
 
 
@@ -179,6 +184,7 @@ class NGN_Graphics {
 
         // Control del formato de pantalla
         float aspect_native, aspect_desktop;
+        Vector2 output_scale, output_viewport;
 
         // Control del framerate
         void SyncFrame(int32_t fps);

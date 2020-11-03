@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.0.0-stable o superior
+    Requiere N'gine 1.1.0 o superior
 
     Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -276,7 +276,7 @@ void Demo::Draw() {
                     point = n;
                 } else {
                     // Dibuja el marcador de vertices
-                    canvas->FilledCircle(x[n], y[n], SNAP, 0x00FFFFFF);
+                    canvas->Circle(x[n], y[n], SNAP, 0x00FFFFFF, SNAP, true);
                 }
                 // No analices el resto de vertices
                 break;
@@ -290,7 +290,7 @@ void Demo::Draw() {
         x[point] = ngn->input->mouse.x;
         y[point] = ngn->input->mouse.y;
         // Dibuja el marcador de vertices
-        canvas->FilledCircle(x[point], y[point], SNAP, 0xFF0000FF);
+        canvas->Circle(x[point], y[point], SNAP, 0xFF0000FF, SNAP, true);
     }
 
     // Dibuja el poligono

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -71,7 +71,8 @@ NGN_TextLayer::NGN_TextLayer(
     int32_t position_x,                 // Posicion X (0 por defecto)
     int32_t position_y,                 // Posicion Y (0 por defecto)
     uint32_t _width,                    // Ancho de la capa (Toda la pantalla por defecto)
-    uint32_t _height                    // Alto de la capa (Toda la pantalla por defecto)
+    uint32_t _height,                   // Alto de la capa (Toda la pantalla por defecto)
+    bool _filtering                     // Filtrado
 ) {
 
     // Fuente por defecto
@@ -96,15 +97,21 @@ NGN_TextLayer::NGN_TextLayer(
     position.x = position_x;
     position.y = position_y;
 
+    // Guarda el tamaño original en pixeles
+    layer_width = (uint32_t)width;
+    layer_height = (uint32_t)height;
+
     // Crea el backbuffer del tamaño adecuado
+    if (_filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
     backbuffer = NULL;
     backbuffer = SDL_CreateTexture(
                          ngn->graphics->renderer,       // Renderer
                          SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
                          SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                         width,                         // Ancho de la textura
-                         height                         // Alto de la textura
+                         layer_width,                   // Ancho de la textura
+                         layer_height                   // Alto de la textura
                          );
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     // Propiedades adicionales
     visible = true;             // Visibilidad
@@ -189,8 +196,8 @@ void NGN_TextLayer::Cls() {
         source.w = background->width;
         source.h = background->height;
         // Define el destino
-        destination.w = width;
-        destination.h = height;
+        destination.w = layer_width;
+        destination.h = layer_height;
         // Calcula el centro de la textura
         _center->x = (destination.w / 2);
         _center->y = (destination.h / 2);
@@ -217,6 +224,18 @@ void NGN_TextLayer::Cls() {
 
     // Paso de limpieza
     delete _center;
+
+}
+
+
+
+/*** Devuelve el tamaño original de la capa ***/
+Size2I32 NGN_TextLayer::GetSize() {
+
+    Size2I32 s;
+    s.width = layer_width;
+    s.height = layer_height;
+    return s;
 
 }
 
@@ -323,7 +342,7 @@ void NGN_TextLayer::Print(std::string text) {
         if (c == '\n') {
             locate.x = padding;
             locate.y += font->line_spacing;
-            if ((locate.y > (height - destination.h - padding)) && auto_home) locate.y = padding;
+            if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
         } else {
             // Si el caracter es invalido, selecciona el caracter de espacio
             if (font->character[c]->gfx == NULL) c = 0x20;
@@ -334,10 +353,10 @@ void NGN_TextLayer::Print(std::string text) {
             destination.h = font->character[c]->height;
             // Coordenadas de las texturas
             source.x = 0; source.y = 0;
-            if ((locate.x > (width - destination.w - padding)) && word_wrap) {
+            if ((locate.x > (layer_width - destination.w - padding)) && word_wrap) {
                 locate.x = padding;
                 locate.y += font->line_spacing;
-                if ((locate.y > (height - destination.h - padding)) && auto_home) locate.y = padding;
+                if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
             }
             destination.x = locate.x; destination.y = locate.y;
             // Calcula el centro de la textura

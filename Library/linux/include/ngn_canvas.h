@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -53,13 +53,11 @@
 // C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <vector>
-#include <string>
 
 // Includes de la libreria
 #include "ngn_defines.h"
 
-// Definiciones
-static const float CIRCLE_PRECISION = 2.0f;
+
 
 
 
@@ -80,19 +78,12 @@ class NGN_Canvas {
             int32_t position_x = 0,                     // Posicion X (0 por defecto)
             int32_t position_y = 0,                     // Posicion Y (0 por defecto)
             uint32_t _width = NGN_DEFAULT_VALUE,        // Ancho de la capa (Toda la pantalla por defecto)
-            uint32_t _height = NGN_DEFAULT_VALUE        // Alto de la capa (Toda la pantalla por defecto)
+            uint32_t _height = NGN_DEFAULT_VALUE,       // Alto de la capa (Toda la pantalla por defecto)
+            bool _filtering = false                    // Filtrado bilinear del contenido?
         );
 
         // Destructor de la clase
         ~NGN_Canvas();
-
-        // Prototipos de datos
-        struct RGBA {
-            uint8_t r;
-            uint8_t g;
-            uint8_t b;
-            uint8_t a;
-        };
 
         // Propiedades
         Vector2 position;                   // Posicion de la capa
@@ -103,6 +94,7 @@ class NGN_Canvas {
         bool visible;                       // Visibilidad
         int32_t alpha;                      // Nivel de alpha
         SDL_BlendMode blend_mode;           // Modo de mezcla de color
+        bool filtering;                     // Filtrado del contenido?
 
         double rotation;                    // Rotacion de la capa
 
@@ -133,43 +125,58 @@ class NGN_Canvas {
         void SetCenter(float x, float y);
 
 
-        SDL_Texture* backbuffer;            // Backbufer de la capa para su renderizado
 
+        /*** Metodos y propiedades del lienzo ***/
+
+        // Almacen de datos del lienzo
+        SDL_Surface* surface;               // Surface
+        SDL_Texture* backbuffer;            // Backbufer de la capa para su renderizado
 
         // Borra la capa
         void Cls(uint32_t color = 0x00000000);
 
+        // Devuelve el tamaño original del lienzo
+        Size2I32 GetSize();
+
         // Dibuja un punto
-        void Point(uint32_t x, uint32_t y, uint32_t color);
+        void Point(int32_t x, int32_t y, uint32_t color);
 
-        // Dibuja una matriz de puntos
-        void Points(const std::vector<CanvasPoint> &points);
-
-        // Dibuja una linea
-        void Line(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color);
-
-        // Dibuja una matriz de lineas
-        void Lines(const std::vector<CanvasLine> &lines);
+        // Dibuja una linea (Implementacion del algoritmo de Bresenham)
+        void Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color);
 
         // Dibuja un cuadrado
-        void Box(uint32_t x1, uint32_t y1, uint32_t x2, uint32_t y2, uint32_t color, bool paint = false);
+        void Box(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color, bool paint = false);
 
         // Dibuja un circulo
-        void Circle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2 = NGN_DEFAULT_VALUE, double in_angle = 0.0f, double out_angle = 0.0f);
+        void Circle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry = NGN_DEFAULT_VALUE, bool paint = false);
 
-        // Dibuja un circulo relleno
-        void FilledCircle(uint32_t x, uint32_t y, uint32_t r, uint32_t color, uint32_t r2 = NGN_DEFAULT_VALUE);
+        // Dibuja un arco
+        void Arc(int32_t cx, int32_t cy, int32_t r, double start_angle, double end_angle, uint32_t color, int32_t ry = NGN_DEFAULT_VALUE, uint8_t close = 0);
+
+        // Convierte el buffer a textura
+        void Blit();
 
 
 
     // Segmento privado
     private:
 
-        std::vector<CanvasLine> segment;    // Buffer para almacenar los segmentos de una forma
-        std::vector<CanvasPoint> vertex;    // Buffer para almacenar los vertices de una forma
-
         // Limpieza del surface
-        void SurfaceCleanUp();
+        void BackbufferCleanUp();
+
+        // Dibuja un circulo sin relleno (Implementacion del algoritmo de Bresenham)
+        void BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry = NGN_DEFAULT_VALUE);
+        // Dibuja un circulo con relleno (Implementacion del algoritmo de Bresenham)
+        void BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry = NGN_DEFAULT_VALUE);
+
+        // Devuelve el color en formato RGBA
+        Rgba GetRgbaColor(uint32_t color);
+
+        // Tamaño en pixeles del buffer de pixeles
+        int32_t surface_width, surface_height;
+
+        // Flag de conversion a textura
+        bool blit;
 
 };
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.0.0-stable ***
+    *** Version 1.1.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -84,6 +84,12 @@ NGN_Graphics::NGN_Graphics() {
     // Genera el primer runtime frame
     runtime_frame = 0;
     GenerateRuntimeFrameId();
+
+    // Control de escala
+    output_scale.x = 1.0f;
+    output_scale.y = 1.0f;
+    output_viewport.x = 0.0f;
+    output_viewport.y = 0.0f;
 
 }
 
@@ -542,6 +548,27 @@ Size2I32 NGN_Graphics::GetDesktopResolution() {
 
 
 
+/*** Escala y adapta las coordenadas al area visible ***/
+Vector2 NGN_Graphics::ScaleAndFitCoordinates(Vector2 coord) {
+
+    // Resultado
+    Vector2 r;
+
+    // Escala las coordenadas
+    r.x = (coord.x / output_scale.x);
+    r.y = (coord.y / output_scale.y);
+
+    // Ajusta el aspect ratio
+    r.x -= output_viewport.x;
+    r.y -= output_viewport.y;
+
+    // Devuelve el resultado
+    return r;
+
+}
+
+
+
 
 /*** Sincronizacion de velocidad del framerate ***/
 void NGN_Graphics::SyncFrame(int32_t fps) {
@@ -691,6 +718,10 @@ void NGN_Graphics::ChangeScreenMode() {
 
         // Ajusta el escalado
         SDL_RenderSetScale(renderer, scale_x, scale_y);
+        output_scale.x = scale_x;
+        output_scale.y = scale_y;
+        output_viewport.x = (float)viewport.x;
+        output_viewport.y = (float)viewport.y;
 
         // Ajusta el viewport del renderer a la resolucion nativa
         SDL_RenderSetViewport(renderer, &viewport);
