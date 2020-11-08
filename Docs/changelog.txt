@@ -12,6 +12,8 @@ N'gine Changelog
 - Los binarios de la librería se compilan con el compilador
   GCC 8.1.0 MinGW (SEH) - 64-bits
   Los archivos DLL de SFML se actualizan para funcionar con esta versión.
+- Se recompilan las herramientas y se añaden protecciones adicionales en la
+  generación del nombre de archivo.
 
 
 2020-11-03 Ver.1.1.0-beta

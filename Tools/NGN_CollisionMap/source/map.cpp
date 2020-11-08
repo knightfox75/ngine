@@ -118,6 +118,12 @@ int32_t CollisionMap::ReadPNG(std::string filename, std::vector<uint8_t> &data) 
 /*** Graba el archivo empaquetado ***/
 int32_t CollisionMap::WriteFile(std::string filename) {
 
+    // Proteccion de path
+    if (filename.length() >= 252) {
+        std::cout << "Error saving " << filename << "." << std::endl;
+        std::cout << "Path too long." << std::endl;
+        return 1;
+    }
     // Variables
     uint32_t i = 0;
 
@@ -125,7 +131,7 @@ int32_t CollisionMap::WriteFile(std::string filename) {
 
     // Genera el nombre de archivo
     char f[256];
-    char basename[256];
+    char basename[252];
     for (i = 0; i < filename.length(); i ++) basename[i] = filename[i];     // Nombre base
     basename[i] = '\0';     // Terminador
 
