@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.1.0-beta ***
+    *** Version 1.2.0-beta ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -283,14 +283,14 @@ void NGN_Canvas::Point(int32_t x, int32_t y, uint32_t color) {
     if ((x < 0) || (x >= surface_width) || (y < 0) || (y >= surface_height)) return;
 
     // Bloquea el surface
-    SDL_LockSurface(surface);
+    //SDL_LockSurface(surface);
 
     // Dibuja el punto del color dado
     uint32_t* p = (uint32_t*)surface->pixels;
     p[((y * surface_width) + x)] = color;
 
     // Desbloquea el surface
-    SDL_UnlockSurface(surface);
+    //SDL_UnlockSurface(surface);
 
     // Indica el blit
     blit = true;
@@ -318,7 +318,7 @@ void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t c
     dy = std::abs(dy);
 
     // Bloquea el surface
-    SDL_LockSurface(surface);
+    //SDL_LockSurface(surface);
 
     // Acceso al array de pixeles
     uint32_t* p = (uint32_t*)surface->pixels;
@@ -374,7 +374,7 @@ void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t c
     }
 
     // Desbloquea el surface
-    SDL_UnlockSurface(surface);
+    //SDL_UnlockSurface(surface);
 
     // Indica el blit
     blit = true;
@@ -406,7 +406,7 @@ void NGN_Canvas::Box(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t co
     if (paint) {
         int32_t x = 0, y = 0;
         // Bloquea el surface
-        SDL_LockSurface(surface);
+        //SDL_LockSurface(surface);
         // Acceso al array de pixeles
         uint32_t* p = (uint32_t*)surface->pixels;
         uint32_t idx = 0;
@@ -424,7 +424,7 @@ void NGN_Canvas::Box(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t co
             }
         }
         // Desbloquea el surface
-        SDL_UnlockSurface(surface);
+        //SDL_UnlockSurface(surface);
     } else {
         // Rectangulo sin relleno (usa lineas)
         Line(xa, ya, xb, ya, color);
@@ -528,6 +528,44 @@ void NGN_Canvas::Arc(int32_t cx, int32_t cy, int32_t r, double start_angle, doub
 
 
 
+/*** Obten el color del pixel de las coordenadas proporcionadas (Formato 0xRRGGBBAA) ***/
+uint32_t NGN_Canvas::GetPixelColor(int32_t x, int32_t y) {
+
+    // Desborde de buffer
+    if ((x < 0) || (y < 0) || (x >= surface_width) || (y >= surface_height)) return 0x00000000;
+
+    // Acceso al puntero del surface
+    uint32_t* p = (uint32_t*)surface->pixels;
+    uint32_t i = (y * surface_width) + x;
+
+    // Devuelve el pixel
+    return p[i];
+
+}
+
+
+
+/*** Obten el color del pixel de las coordenadas proporcionadas (Formato RGBA) ***/
+Rgba NGN_Canvas::GetPixelRgba(int32_t x, int32_t y) {
+
+    // Pixel a devolver
+    Rgba pixel = {0, 0, 0, 0};
+
+    // Desborde de buffer
+    if ((x < 0) || (y < 0) || (x >= surface_width) || (y >= surface_height)) return pixel;
+
+    // Acceso al puntero del surface
+    uint32_t* p = (uint32_t*)surface->pixels;
+    uint32_t i = (y * surface_width) + x;
+
+    // Devuelve el pixel
+    pixel = GetRgbaColor(p[i]);
+    return pixel;
+
+}
+
+
+
 /*** Convierte el buffer de pixeles en una textura ***/
 void NGN_Canvas::Blit() {
 
@@ -598,7 +636,7 @@ void NGN_Canvas::BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t col
     int32_t _x = 0, _y = 0;
 
     // Bloquea el surface
-    SDL_LockSurface(surface);
+    //SDL_LockSurface(surface);
     // Acceso al array de pixeles
     uint32_t* p = (uint32_t*)surface->pixels;
 
@@ -706,7 +744,7 @@ void NGN_Canvas::BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t col
     }
 
     // Desbloquea el surface
-    SDL_UnlockSurface(surface);
+    //SDL_UnlockSurface(surface);
 
     // Indica el blit
     blit = true;
@@ -752,7 +790,7 @@ void NGN_Canvas::BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32
     int32_t _py = 0;
 
     // Bloquea el surface
-    SDL_LockSurface(surface);
+    //SDL_LockSurface(surface);
     // Acceso al array de pixeles
     uint32_t* p = (uint32_t*)surface->pixels;
 
@@ -860,7 +898,7 @@ void NGN_Canvas::BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32
     }
 
     // Desbloquea el surface
-    SDL_UnlockSurface(surface);
+    //SDL_UnlockSurface(surface);
 
     // Indica el blit
     blit = true;

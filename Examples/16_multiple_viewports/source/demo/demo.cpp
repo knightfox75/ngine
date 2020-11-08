@@ -8,9 +8,9 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.1.0 o superior
+    Requiere N'gine 1.2.0-beta o superior
 
-    Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
+    Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
     Requiere SDL2 (2.0.12) - 64-bits
@@ -60,7 +60,9 @@
 /*** Includes ***/
 // c++
 #include <cstdio>
+#include <ctime>
 #include <iostream>
+#include <string>
 // Includes de la libreria
 #include <ngn.h>
 // Includes del programa
@@ -85,6 +87,11 @@ Demo::Demo() {
     aim = NULL;
     bird.clear();
 
+    // GUI
+    mono = NULL;
+    text = NULL;
+    shutter = NULL;
+
 }
 
 
@@ -108,6 +115,11 @@ Demo::~Demo() {
     delete bg2_data; bg2_data = NULL;
     delete aim_data; aim_data = NULL;
     delete bird_data; bird_data = NULL;
+
+    // GUI
+    delete text; text = NULL;
+    delete mono; mono = NULL;
+    delete shutter; shutter = NULL;
 
 }
 
@@ -182,6 +194,9 @@ int8_t Demo::Run() {
         // Actualizacion del programa
         Update();
 
+        // Render de los elementos adicionales
+        Render();
+
         // Actualiza el contenido de la pantalla
         ngn->graphics->Update();
         // Actualiza el sonido
@@ -208,17 +223,25 @@ bool Demo::Load() {
 
     // Carga los datos de los fondos
     bg0_data = ngn->load->TiledBg("data/bg0.tbg");
-    if (bg0_data == NULL) return false;
+    if (!bg0_data) return false;
     bg1_data = ngn->load->TiledBg("data/bg1.tbg");
-    if (bg1_data == NULL) return false;
+    if (!bg1_data) return false;
     bg2_data = ngn->load->TiledBg("data/bg2.tbg");
-    if (bg2_data == NULL) return false;
+    if (!bg2_data) return false;
 
     // Carga los sprites
     bird_data = ngn->load->Sprite("data/bird_small.spr");
-    if (bird_data == NULL) return false;
+    if (!bird_data) return false;
     aim_data = ngn->load->Sprite("data/aim.spr");
-    if (aim_data == NULL) return false;
+    if (!aim_data) return false;
+
+    // Carga la tipografia
+    mono = ngn->load->TrueTypeFont("data/monofonto.ttf", 16, true, 0xFFFFFF, 1, 0x202020);
+    if (!mono) return false;
+
+    // Carga los efectos de sonido
+    shutter = ngn->load->AudioClip("data/shutter.wav");
+    if (!shutter) return false;
 
     // Carga correcta
     return true;
@@ -261,6 +284,11 @@ void Demo::CreateStage() {
     ngn->graphics->OpenViewport(1, 640, 360, 640, 360);
     ngn->graphics->OpenViewport(2, 0, 360, 640, 360, 1280, 720, true);      // Filtro local activo
     ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, false);    // Filtro local desactivado
+
+    // Crea la capa de texto para la GUI
+    text = new NGN_TextLayer(mono, NULL, 16, 16, 352, 192);
+    text->Padding(16);
+    text->CanvasColor(0x20202080);
 
 }
 
@@ -332,8 +360,24 @@ void Demo::Update() {
     // Gestion de los modos de pantalla y filtro
     ScreenConfig();
 
+    // GUI
+    Gui();
+
+    // Captura de pantalla
+    TakeScreenshot();
+
+}
+
+
+
+/*** Render de los elementos ***/
+void Demo::Render() {
+
     // Render de los viewports
     ngn->render->Viewports();
+
+    // GUI
+    ngn->render->TextLayer(text);
 
 }
 
@@ -440,3 +484,68 @@ void Demo::ScreenConfig() {
     if (ngn->input->key_F8->down) ngn->graphics->ViewportLocalFilter(3, !ngn->graphics->viewport_list[3].local_filter);
 
 }
+
+
+
+/*** GUI ***/
+void Demo::Gui() {
+
+    // Borra la capa
+    text->Cls();
+
+    // Prepara el texto
+    std::string t = "";
+    t +=  "F5 - TOP VIEWPORT FILTER: ";
+    t += (ngn->graphics->viewport_list[0].local_filter) ? "ON":"OFF";
+    t += "\n";
+    t +=  "F6 - RIGHT VIEWPORT FILTER: ";
+    t += (ngn->graphics->viewport_list[1].local_filter) ? "ON":"OFF";
+    t += "\n";
+    t +=  "F7 - LEFT VIEWPORT FILTER: ";
+    t += (ngn->graphics->viewport_list[2].local_filter) ? "ON":"OFF";
+    t += "\n";
+    t +=  "F8 - FLOATING VIEWPORT FILTER: ";
+    t += (ngn->graphics->viewport_list[3].local_filter) ? "ON":"OFF";
+    t += "\n";
+    t +=  "F9 - MAIN FILTER: ";
+    t += (ngn->graphics->filtering) ? "ON":"OFF";
+    t += "\n";
+    t +=  "F10 - FULL SCREEN: ";
+    t += (ngn->graphics->screen_mode == NGN_SCR_FULLSCREEN) ? "ON":"OFF";
+    t += "\n";
+    t +=  "F12 - TAKE SCREENSHOT";
+    t += "\n";
+
+    // Imprime el texto
+    text->Print(t);
+
+}
+
+
+
+/*** Realiza una captura de pantalla ***/
+void Demo::TakeScreenshot() {
+
+    if (ngn->input->key_F12->down) {
+        // Lee la marca de tiempo
+        current_time = time(NULL);
+        // Conviertela al formato TM
+        datetime = localtime(&current_time);
+        // Crea el nombre de archivo
+        std::string filename = "screenshots/scr_";
+        filename += ngn->toolbox->Int2String((datetime->tm_year + 1900), 4, "0");
+        filename += ngn->toolbox->Int2String((datetime->tm_mon + 1), 2, "0");
+        filename += ngn->toolbox->Int2String(datetime->tm_mday, 2, "0");
+        filename += "_";
+        filename += ngn->toolbox->Int2String(datetime->tm_hour, 2, "0");
+        filename += ngn->toolbox->Int2String(datetime->tm_min, 2, "0");
+        filename += ngn->toolbox->Int2String(datetime->tm_sec, 2, "0");
+        filename += ".png";
+        ngn->graphics->ScreenShot(filename);
+        // Efecto de sonido
+        ngn->sound->PlaySfx(shutter);
+    }
+
+}
+
+

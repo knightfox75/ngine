@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.1.0-beta ***
+    *** Version 1.2.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -55,6 +55,9 @@
 // SDL
 #include <SDL.h>
 
+// LodePNG
+#include "lodepng.h"
+
 // Libreria
 #include "ngn.h"
 
@@ -91,6 +94,12 @@ NGN_Graphics::NGN_Graphics() {
     output_viewport.x = 0.0f;
     output_viewport.y = 0.0f;
 
+    // Grabacion de la pantalla a PNG
+    png_pixels.clear();
+    png_buffer.clear();
+    screenshoot_filename = "";
+    take_screenshoot = false;
+
 }
 
 
@@ -103,6 +112,10 @@ NGN_Graphics::~NGN_Graphics() {
         if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
     }
     viewport_list.clear();
+
+    png_pixels.clear();
+    png_buffer.clear();
+
 
     // Elimina los contenedores graficos
     if (backbuffer != NULL) SDL_DestroyTexture(backbuffer);
@@ -269,6 +282,9 @@ void NGN_Graphics::Update() {
 
     // Presenta el backbuffer en la pantalla
     RenderBackbuffer();
+
+    // Si es necesario, realiza la captura de pantalla
+    SaveCurrentFrameToPng();
 
     // Espera al siguiente frame
     SyncFrame(60);
@@ -485,6 +501,18 @@ void NGN_Graphics::ShowMouse(bool visible) {
     } else {
         SDL_ShowCursor(SDL_DISABLE);
     }
+
+}
+
+
+
+/*** Crea una imagen PNG con el contenido de la pantalla ***/
+void NGN_Graphics::ScreenShot(std::string path) {
+
+    // Guarda el nombre de archivo
+    screenshoot_filename = path;
+    // Indica que debe de realizarse el screenshoot
+    take_screenshoot = true;
 
 }
 
@@ -985,4 +1013,94 @@ void NGN_Graphics::ClearBackbuffer() {
 
 }
 
+
+
+/*** Realiza un screenshoot si se solicita ***/
+void NGN_Graphics::SaveCurrentFrameToPng() {
+
+    // Si no esta marcado el flag
+    if (!take_screenshoot) return;
+
+    // Si la ruta esta vacia
+    if (screenshoot_filename == "") return;
+
+    // Borra los buffers
+    png_buffer.clear();
+    png_pixels.clear();
+
+    // Consulta el tamaño del renderer
+    int32_t _width;
+    int32_t _height;
+    SDL_GetRendererOutputSize(renderer, &_width, &_height);
+
+    // Crea un surface para copiar los pixeles del renderer
+    SDL_Surface* png_surface = SDL_CreateRGBSurface(
+        0,                      // Flag
+        _width,                 // Ancho
+        _height,                // Alto
+        32,                     // Profuncidad de color 32bpp [RGBA8888]
+        0xFF000000,             // Mascara R
+        0x00FF0000,             // Mascara G
+        0x0000FF00,             // Mascara B
+        0x000000FF              // Mascara A
+    );
+
+    // Copia los pixeles del renderer al surface
+    if (SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA8888, png_surface->pixels, png_surface->pitch) != 0) {
+        std::cout << "PNG Screenshoot: Error creating surface." << std::endl;
+        SDL_FreeSurface(png_surface);
+        take_screenshoot = false;
+        screenshoot_filename = "";
+        return;
+    }
+
+    // Prepara el backbuffer de destino
+    uint32_t pnum = (_width * _height);
+    png_buffer.resize((pnum << 2), 0);
+    uint32_t* p = (uint32_t*)png_surface->pixels;
+
+    // Copia los datos
+    uint32_t n = 0;
+    for (uint32_t idx = 0; idx < pnum; idx ++) {
+        // RED
+        png_buffer[n] = ((p[idx] >> 24) & 0x000000FF);
+        n ++;
+        // GREEN
+        png_buffer[n] = ((p[idx] >> 16) & 0x000000FF);
+        n ++;
+        // BLUE
+        png_buffer[n] = ((p[idx] >> 8) & 0x000000FF);
+        n ++;
+        // ALPHA
+        png_buffer[n] = (p[idx] & 0x000000FF);
+        n ++;
+    }
+
+    // Libera el surface temporal
+    SDL_FreeSurface(png_surface);
+
+    // Intenta codificar el buffer de la textura a PNG
+    uint32_t _error = lodepng::encode(png_pixels, png_buffer, _width, _height);
+
+    // Si se ha codificado correctamente, graba el archivo
+    if (_error == 0) {
+        // Grabacion del archivo
+        _error = lodepng::save_file(png_pixels, screenshoot_filename);
+        // Si hay algun error en la grabacion del PNG
+        if (_error != 0) {
+            std::cout << "PNG Screenshoot:  Error saving " << screenshoot_filename << "." << std::endl;
+        }
+    } else {    // Fallo en la codificacion del PNG
+        std::cout << "PNG Screenshoot: Error encoding the PNG data." << std::endl;
+    }
+
+    // Libera los buffers
+    png_buffer.clear();
+    png_pixels.clear();
+
+    // Resetea los parametros del screenshoot
+    take_screenshoot = false;
+    screenshoot_filename = "";
+
+}
 

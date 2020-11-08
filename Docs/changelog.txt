@@ -2,6 +2,18 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2020-11-08 Ver.1.2.0-beta
+--------------------------------------------------------------------------------
+- Añadidos los métodos GetPixelColor() y GetPixelRgba() a la clase NGN_Canvas.
+- Añadido el método ScreenShot(); a la clase NGN_Graphics, el cual realiza
+  una captura del frame actual y la guarda en el disco en formato PNG.
+- Añadidos los ejemplos de uso de los nuevos métodos.
+- Documentación actualizada.
+- Los binarios de la librería se compilan con el compilador
+  GCC 8.1.0 MinGW (SEH) - 64-bits
+  Los archivos DLL de SFML se actualizan para funcionar con esta versión.
+
+
 2020-11-03 Ver.1.1.0-beta
 --------------------------------------------------------------------------------
 - Corregido el escalado de las capas de texto cuando se cambiaba su tamaño.
@@ -19,7 +31,7 @@ N'gine Changelog
 		- Circle()
 	- Se han añadido los siguientes métodos:
 		- Arc()
-- Corregida en la clase NGN_Input el método que devuelve las coordenadas
+- Corregido en la clase NGN_Input el método que devuelve las coordenadas
   del ratón en pantalla, filtrando ahora estos datos y adaptándolos al
   escalado y resolución de la pantalla en sus diversos modos.
 

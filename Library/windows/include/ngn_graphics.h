@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.1.0-beta ***
+    *** Version 1.2.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -156,6 +156,9 @@ class NGN_Graphics {
         // Ajusta la visibilidad del cursor del raton
         void ShowMouse(bool visible);
 
+        // Crea una captura del frame actual en formato PNG
+        void ScreenShot(std::string path);
+
         // ID del frame en tiempo de ejecucion
         uint32_t runtime_frame;
 
@@ -226,6 +229,13 @@ class NGN_Graphics {
         void RenderBackbuffer();
         // Limpia el backbuffer
         void ClearBackbuffer();
+
+        // Graba el frame actual en formato PNG
+        std::vector<uint8_t> png_pixels;        // Pixeles para formar el PNG
+        std::vector<uint8_t> png_buffer;        // Datos del backbuffer para formar el PNG
+        std::string screenshoot_filename;       // Ruta y nombre del archivo para el screen shoot
+        bool take_screenshoot;                  // Debes de realizar un screenshoot?
+        void SaveCurrentFrameToPng();              // Realiza una captura de pantalla al final del frame si se solicita
 
 };
 

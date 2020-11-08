@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.1.0-beta ***
+    *** Version 1.2.0-beta ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016

@@ -8,9 +8,9 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.1.0 o superior
+    Requiere N'gine 1.2.0-beta o superior
 
-    Requiere GCC 7.3.0 MinGW (SEH) - 64-bits
+    Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
 
     Requiere SDL2 (2.0.12) - 64-bits
@@ -64,6 +64,7 @@
 
 /*** Includes ***/
 // Includes de C++
+#include <ctime>
 #include <vector>
 // Includes de la libreria
 #include <ngn.h>
@@ -143,6 +144,9 @@ class Demo {
         // Update
         void Update();
 
+        // Render
+        void Render();
+
         // Mueve a los pajaros
         void MoveBirds();
 
@@ -154,6 +158,20 @@ class Demo {
 
         // Modos de pantalla y filtros
         void ScreenConfig();
+
+        // GUI
+        NGN_TextFont* mono;             // Tipografia
+        NGN_TextLayer* text;            // Capa de texto
+        void Gui();                     // Imprime la informacion
+
+        // Captura de pantalla
+        void TakeScreenshot();
+        NGN_AudioClipData* shutter;     // Efecto del obturador
+
+        // Acceso a la fecha y hora
+        time_t current_time;
+        struct  tm* datetime;
+
 
 };
 

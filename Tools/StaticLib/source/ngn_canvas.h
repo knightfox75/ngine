@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.1.0-beta ***
+    *** Version 1.2.0-beta ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -152,6 +152,10 @@ class NGN_Canvas {
 
         // Dibuja un arco
         void Arc(int32_t cx, int32_t cy, int32_t r, double start_angle, double end_angle, uint32_t color, int32_t ry = NGN_DEFAULT_VALUE, uint8_t close = 0);
+
+        // Obten el color del pixel de las coordenadas proporcionadas
+        uint32_t GetPixelColor(int32_t x, int32_t y);
+        Rgba GetPixelRgba(int32_t x, int32_t y);
 
         // Convierte el buffer a textura
         void Blit();
