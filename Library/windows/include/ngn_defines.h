@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -59,7 +59,7 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 2;                 // Version menor
+static const int32_t NGN_VERSION_MINOR = 3;                 // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
 static const std::string NGN_VERSION_METADATA = "beta";     // Version metadatos
 
@@ -87,35 +87,23 @@ static const SDL_BlendMode NGN_BLENDMODE_MODULATE = SDL_BLENDMODE_MOD;       // 
 
 /*** Prototipos de datos ***/
 
-struct Vector2 {
-    float x;
-    float y;
-};
-
-struct Vector2I32 {
-    int32_t x;
-    int32_t y;
-};
-
-struct Vector2I64 {
-    int64_t x;
-    int64_t y;
-};
-
 struct Size2 {
     float width;
     float height;
 };
+
 
 struct Size2I32 {
     int32_t width;
     int32_t height;
 };
 
+
 struct Size2I64 {
     int64_t width;
     int64_t height;
 };
+
 
 struct Rgba {
     uint8_t r;
@@ -133,6 +121,7 @@ struct CanvasPoint {
     int32_t y;
     int32_t color;
 };
+
 
 struct CanvasLine {
     int32_t x1;

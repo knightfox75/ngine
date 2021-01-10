@@ -121,6 +121,8 @@
 		<Unit filename="source/ngn_input.h" />
 		<Unit filename="source/ngn_load.cpp" />
 		<Unit filename="source/ngn_load.h" />
+		<Unit filename="source/ngn_math.cpp" />
+		<Unit filename="source/ngn_math.h" />
 		<Unit filename="source/ngn_music_clip.cpp" />
 		<Unit filename="source/ngn_music_clip.h" />
 		<Unit filename="source/ngn_render.cpp" />
@@ -139,10 +141,6 @@
 		<Unit filename="source/ngn_tiledbg.h" />
 		<Unit filename="source/ngn_toolbox.cpp" />
 		<Unit filename="source/ngn_toolbox.h" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

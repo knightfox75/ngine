@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 

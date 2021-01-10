@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -80,6 +80,7 @@ NGN::NGN() {
 
     // Crea los objetos de la libreria
     system = NULL;          // Funciones del sistema
+    math = NULL;            // Funciones matematicas
     toolbox = NULL;         // Caja de herramientas
     input = NULL;           // Metodos de entrada
     graphics = NULL;        // Gestion del Renderer de SDL
@@ -105,6 +106,7 @@ NGN::~NGN() {
     delete graphics; graphics = NULL;
     delete input; input = NULL;
     delete toolbox; toolbox = NULL;
+    delete math; math = NULL;
     delete system; system = NULL;
 
     // Cierra los subsistemas de SDL

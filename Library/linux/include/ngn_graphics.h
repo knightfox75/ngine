@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -53,6 +53,7 @@
 #include <string>
 // N'gine
 #include "ngn_defines.h"
+#include "ngn_sprite.h"
 
 
 
@@ -157,7 +158,7 @@ class NGN_Graphics {
         void ShowMouse(bool visible);
 
         // Crea una captura del frame actual en formato PNG
-        void ScreenShot(std::string path);
+        void ScreenShot(std::string path, NGN_TextureData* overlay = NULL, uint8_t alpha = 0xFF);
 
         // ID del frame en tiempo de ejecucion
         uint32_t runtime_frame;
@@ -233,9 +234,11 @@ class NGN_Graphics {
         // Graba el frame actual en formato PNG
         std::vector<uint8_t> png_pixels;        // Pixeles para formar el PNG
         std::vector<uint8_t> png_buffer;        // Datos del backbuffer para formar el PNG
-        std::string screenshoot_filename;       // Ruta y nombre del archivo para el screen shoot
-        bool take_screenshoot;                  // Debes de realizar un screenshoot?
-        void SaveCurrentFrameToPng();              // Realiza una captura de pantalla al final del frame si se solicita
+        std::string screenshot_filename;       // Ruta y nombre del archivo para el screen shoot
+        bool take_screenshot;                  // Debes de realizar un screenshoot?
+        NGN_TextureData* screenshot_overlay;   // Overlay del screenshoot
+        uint8_t screenshot_overlay_alpha;      // Alpha del overlay
+        void SaveCurrentFrameToPng();           // Realiza una captura de pantalla al final del frame si se solicita
 
 };
 

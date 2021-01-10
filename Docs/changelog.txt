@@ -2,6 +2,24 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2021-01-10 Ver.1.3.0-beta
+--------------------------------------------------------------------------------
+- Se han reescrito los tipos de dato Vector2, pasando de ser una estructura a
+  ser una clase, añadiendo además las funcionalidades de las operaciones de
+  suma y resta entre vectores y las de multiplicación y división por un
+  escalar. Se han añadido los métodos Magnitude() a todos los tipos de vector
+  y el método Normalize() a los vectores de punto flotante.
+- Se ha creado la clase NGN_Math con funciones matemáticas comunes, como los
+  cálculos de distancia, cálculos de ángulos entre 2 puntos, etc.
+- Los Métodos GetDistance() de la clase NGN_Toolbox se mueve a la clase
+  NGN_Math. Si algún proyecto las usa, deberá de reemplazar la orden
+  ngn->toolbox->GetDistance() por ngn->math->GetDistance();
+- El método ScreenShot() de la clase "NGN_Graphics" ahora soporta la inclusión
+  de la superposición de una textura como marca de agua, con ajuste de su
+  opacidad.
+- Actualizada la documentación correspondiente y los ejemplos.
+
+
 2020-11-08 Ver.1.2.0-beta
 --------------------------------------------------------------------------------
 - Añadidos los métodos GetPixelColor() y GetPixelRgba() a la clase NGN_Canvas.

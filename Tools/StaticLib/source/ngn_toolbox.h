@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     TOOL BOX - Caja de herramientas
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -87,22 +87,6 @@ class NGN_ToolBox {
 
         // Convierte un numero decimal a cadena de texto con formato
         std::string Float2String(float number, uint8_t min_width, uint8_t precision, const char* chr);
-
-
-
-        /*** Funciones matematicas ***/
-
-        // Distancia entre 2 puntos (4 parametros, punto flotante, 1a sobrecarga)
-        float GetDistance(float x1, float y1, float x2, float y2);
-
-        // Distancia entre 2 puntos (2 parametros, punto flotante, 2a sobrecarga)
-        float GetDistance(Vector2 a, Vector2 b);
-
-        // Distancia entre 2 puntos (4 parametros, entero, 3a sobrecarga)
-        uint32_t GetDistance(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
-
-        // Distancia entre 2 puntos (2 parametros, entero, 4a sobrecarga)
-        uint32_t GetDistance(Vector2I32 a, Vector2I32 b);
 
 
 

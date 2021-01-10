@@ -4,11 +4,11 @@
     Archivo de Demo (Programa)
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.2.0-beta o superior
+    Requiere N'gine 1.3.0-beta o superior
 
     Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -90,7 +90,10 @@ Demo::Demo() {
     // GUI
     mono = NULL;
     text = NULL;
+
+    // Screenshoot
     shutter = NULL;
+    overlay = NULL;
 
 }
 
@@ -119,7 +122,10 @@ Demo::~Demo() {
     // GUI
     delete text; text = NULL;
     delete mono; mono = NULL;
+
+    // Screenshoot
     delete shutter; shutter = NULL;
+    delete overlay; overlay = NULL;
 
 }
 
@@ -242,6 +248,10 @@ bool Demo::Load() {
     // Carga los efectos de sonido
     shutter = ngn->load->AudioClip("data/shutter.wav");
     if (!shutter) return false;
+
+    // Carga el overlay del screenshoot
+    overlay = ngn->load->Texture("data/logo_overlay.png");
+    if (!overlay) return false;
 
     // Carga correcta
     return true;
@@ -541,7 +551,7 @@ void Demo::TakeScreenshot() {
         filename += ngn->toolbox->Int2String(datetime->tm_min, 2, "0");
         filename += ngn->toolbox->Int2String(datetime->tm_sec, 2, "0");
         filename += ".png";
-        ngn->graphics->ScreenShot(filename);
+        ngn->graphics->ScreenShot(filename, overlay, 0XD0);
         // Efecto de sonido
         ngn->sound->PlaySfx(shutter);
     }

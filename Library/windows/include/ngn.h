@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -74,6 +74,7 @@
 
 // Libreria
 #include "ngn_defines.h"            // Definiciones
+#include "ngn_math.h"               // Funciones matematicas
 #include "ngn_system.h"             // Funciones del sistema
 #include "ngn_toolbox.h"            // Caja de herramientas (metodos diversos y utiles)
 #include "ngn_input.h"              // Metodos de entrada
@@ -107,6 +108,7 @@ class NGN {
 
         // Punteros a las clases
         NGN_System* system;             // Funciones del sistema
+        NGN_Math* math;                 // Funciones matematicas
         NGN_ToolBox* toolbox;           // Caja de herramientas
         NGN_Input* input;               // Metodos de entrada
         NGN_Graphics* graphics;         // Gestion del Renderer de SDL

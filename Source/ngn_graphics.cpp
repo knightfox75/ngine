@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.2.0-beta ***
+    *** Version 1.3.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -97,8 +97,10 @@ NGN_Graphics::NGN_Graphics() {
     // Grabacion de la pantalla a PNG
     png_pixels.clear();
     png_buffer.clear();
-    screenshoot_filename = "";
-    take_screenshoot = false;
+    screenshot_filename = "";
+    screenshot_overlay = NULL;
+    screenshot_overlay_alpha = 0xFF;
+    take_screenshot = false;
 
 }
 
@@ -507,12 +509,15 @@ void NGN_Graphics::ShowMouse(bool visible) {
 
 
 /*** Crea una imagen PNG con el contenido de la pantalla ***/
-void NGN_Graphics::ScreenShot(std::string path) {
+void NGN_Graphics::ScreenShot(std::string path,  NGN_TextureData* overlay, uint8_t alpha) {
 
     // Guarda el nombre de archivo
-    screenshoot_filename = path;
+    screenshot_filename = path;
+    // Guarda el overlay
+    screenshot_overlay = overlay;
+    screenshot_overlay_alpha = alpha;
     // Indica que debe de realizarse el screenshoot
-    take_screenshoot = true;
+    take_screenshot = true;
 
 }
 
@@ -1019,10 +1024,54 @@ void NGN_Graphics::ClearBackbuffer() {
 void NGN_Graphics::SaveCurrentFrameToPng() {
 
     // Si no esta marcado el flag
-    if (!take_screenshoot) return;
+    if (!take_screenshot) return;
 
     // Si la ruta esta vacia
-    if (screenshoot_filename == "") return;
+    if (screenshot_filename == "") return;
+
+    // Selecciona el renderer principal
+    SDL_SetRenderTarget(renderer, NULL);
+
+    // Borra el contenido actual
+    SDL_RenderClear(renderer);
+
+    // Datos para renderizar el frame actual (una vez presentado en pantalla)
+    double _rotation = 0.0f;
+    SDL_RendererFlip _flip = SDL_FLIP_NONE;
+    // Centro de la rotacion
+    SDL_Point* _center = new SDL_Point();
+    _center->x = (native_w / 2);
+    _center->y = (native_h / 2);
+
+    // Define el area de render
+    SDL_Rect _src = {
+        0,              // Posicion X
+        0,              // Posicion Y
+        native_w,       // Ancho
+        native_h        // Alto
+    };
+    SDL_Rect _dst = {
+        0,              // Posicion X
+        0,              // Posicion Y
+        native_w,       // Ancho
+        native_h        // Alto
+    };
+
+    // Renderiza el contenido del frame
+    SDL_RenderCopyEx(renderer, backbuffer, &_src, &_dst, _rotation, _center, _flip);
+
+    // Overlay en la captura?
+    if (screenshot_overlay != NULL) {
+        // Tamaño de origen (textura)
+        _src.w = screenshot_overlay->width;
+        _src.h = screenshot_overlay->height;
+        SDL_SetTextureBlendMode(screenshot_overlay->gfx, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(screenshot_overlay->gfx, screenshot_overlay_alpha);
+        SDL_RenderCopyEx(renderer, screenshot_overlay->gfx, &_src, &_dst, _rotation, _center, _flip);
+    }
+
+    // Paso de limpieza
+    delete _center;
 
     // Borra los buffers
     png_buffer.clear();
@@ -1049,8 +1098,8 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     if (SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA8888, png_surface->pixels, png_surface->pitch) != 0) {
         std::cout << "PNG Screenshoot: Error creating surface." << std::endl;
         SDL_FreeSurface(png_surface);
-        take_screenshoot = false;
-        screenshoot_filename = "";
+        take_screenshot = false;
+        screenshot_filename = "";
         return;
     }
 
@@ -1085,10 +1134,10 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     // Si se ha codificado correctamente, graba el archivo
     if (_error == 0) {
         // Grabacion del archivo
-        _error = lodepng::save_file(png_pixels, screenshoot_filename);
+        _error = lodepng::save_file(png_pixels, screenshot_filename);
         // Si hay algun error en la grabacion del PNG
         if (_error != 0) {
-            std::cout << "PNG Screenshoot:  Error saving " << screenshoot_filename << "." << std::endl;
+            std::cout << "PNG Screenshoot:  Error saving " << screenshot_filename << "." << std::endl;
         }
     } else {    // Fallo en la codificacion del PNG
         std::cout << "PNG Screenshoot: Error encoding the PNG data." << std::endl;
@@ -1099,8 +1148,9 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     png_pixels.clear();
 
     // Resetea los parametros del screenshoot
-    take_screenshoot = false;
-    screenshoot_filename = "";
+    take_screenshot = false;
+    screenshot_filename = "";
+    RenderToSelected();
 
 }
 
