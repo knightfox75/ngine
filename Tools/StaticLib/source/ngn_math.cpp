@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016

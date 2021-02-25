@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,7 +59,7 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 3;                 // Version menor
+static const int32_t NGN_VERSION_MINOR = 4;                 // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
 static const std::string NGN_VERSION_METADATA = "beta";     // Version metadatos
 

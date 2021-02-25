@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -72,24 +72,20 @@ NGN_Sound::NGN_Sound() {
 NGN_Sound::~NGN_Sound() {
 
     // Limpia la cola de sonidos
-    if (sfx_cue.size() > 0) {
-        for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-            // Deten el sonido
-            sfx_cue[i]->Stop();
-            // Borralo
-            delete sfx_cue[i];
-        }
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        // Deten el sonido
+        sfx_cue[i]->Stop();
+        // Borralo
+        delete sfx_cue[i];
     }
     sfx_cue.clear();
 
     // Limpia la cola de musicas
-    if (music_cue.size() > 0) {
-        for (uint32_t i = 0; i < music_cue.size(); i ++) {
-            // Deten el sonido
-            music_cue[i]->Stop();
-            // Borralo
-            delete music_cue[i];
-        }
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        // Deten el sonido
+        music_cue[i]->Stop();
+        // Borralo
+        delete music_cue[i];
     }
     music_cue.clear();
 
@@ -136,16 +132,14 @@ NGN_AudioClip* NGN_Sound::PlaySfx(
 /*** Continua la reproduccion de un sonido ***/
 void NGN_Sound::ResumeSfx(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Resume();
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Resume();
+            break;
         }
     }
 
@@ -156,16 +150,14 @@ void NGN_Sound::ResumeSfx(NGN_AudioClip* sound) {
 /*** Pausa un sonido ***/
 void NGN_Sound::PauseSfx(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Pause();
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Pause();
+            break;
         }
     }
 
@@ -176,16 +168,14 @@ void NGN_Sound::PauseSfx(NGN_AudioClip* sound) {
 /*** Deten un sonido ***/
 void NGN_Sound::StopSfx(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Stop();
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Stop();
+            break;
         }
     }
 
@@ -196,16 +186,14 @@ void NGN_Sound::StopSfx(NGN_AudioClip* sound) {
 /*** Cambia el volumen de un sonido ***/
 void NGN_Sound::SfxVolume(NGN_AudioClip* sound, int32_t volume) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Volume(volume);
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Volume(volume);
+            break;
         }
     }
 
@@ -216,19 +204,15 @@ void NGN_Sound::SfxVolume(NGN_AudioClip* sound, int32_t volume) {
 /*** Devuelve el nivel de volumen de un sonido ***/
 uint32_t NGN_Sound::SfxGetVolume(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    return sound->GetVolume();
-                }
-            }
-        }
+    // Si no es un sonido valido...
+    if (!sound) return 0;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) return sound->GetVolume();
     }
 
-    // Si no lo es, o no se encuentra, devuelve 0
+    // Si no se encuentra, devuelve 0
     return 0;
 
 }
@@ -238,18 +222,17 @@ uint32_t NGN_Sound::SfxGetVolume(NGN_AudioClip* sound) {
 /*** Cambia el pitch de un sonido ***/
 void NGN_Sound::SfxPitch(NGN_AudioClip* sound, float pitch) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Pitch(pitch);
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Pitch(pitch);
+            break;
         }
     }
+
 }
 
 
@@ -257,19 +240,15 @@ void NGN_Sound::SfxPitch(NGN_AudioClip* sound, float pitch) {
 /*** Devuelve el pitch actual de un sonido ***/
 float NGN_Sound::SfxGetPitch(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    return sound->GetPitch();
-                }
-            }
-        }
+    // Si no es un sonido valido...
+    if (!sound) return 0.0f;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) return sound->GetPitch();
     }
 
-    // Si no lo es, o no se encuentra, devuelve 0
+    // Si no se encuentra, devuelve 0
     return 0.0f;
 
 }
@@ -279,16 +258,14 @@ float NGN_Sound::SfxGetPitch(NGN_AudioClip* sound) {
 /*** Cambia el loop ***/
 void NGN_Sound::SfxLoop(NGN_AudioClip* sound, bool loop) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Loop(loop);
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Loop(loop);
+            break;
         }
     }
 
@@ -299,19 +276,15 @@ void NGN_Sound::SfxLoop(NGN_AudioClip* sound, bool loop) {
 /*** Devuelve el loop actual de un sonido ***/
 bool NGN_Sound::SfxGetLoop(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    return sound->GetLoop();
-                }
-            }
-        }
+    // Si no es un sonido valido...
+    if (!sound) return false;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) return sound->GetLoop();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
+    // Si no se encuentra, devuelve FALSE
     return false;
 
 }
@@ -321,16 +294,14 @@ bool NGN_Sound::SfxGetLoop(NGN_AudioClip* sound) {
 /*** Cambia el panning ***/
 void NGN_Sound::SfxPanning(NGN_AudioClip* sound, int32_t panning) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    sound->Panning(panning);
-                    break;
-                }
-            }
+    // Si no es un sonido valido...
+    if (!sound) return;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) {
+            sound->Panning(panning);
+            break;
         }
     }
 
@@ -341,20 +312,16 @@ void NGN_Sound::SfxPanning(NGN_AudioClip* sound, int32_t panning) {
 /*** Devuelve el panning actual de un sonido ***/
 int32_t NGN_Sound::SfxGetPanning(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    return sound->GetPanning();
-                }
-            }
-        }
+    // Si no es un sonido valido...
+    if (!sound) return 0;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) return sound->GetPanning();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
-    return false;
+    // Si no se encuentra, devuelve 0
+    return 0;
 
 }
 
@@ -363,19 +330,15 @@ int32_t NGN_Sound::SfxGetPanning(NGN_AudioClip* sound) {
 /*** Devuelve si se esta reproduciendo un sonido ***/
 bool NGN_Sound::SfxIsPlaying(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    return sound->IsPlaying();
-                }
-            }
-        }
+    // Si no es un sonido valido...
+    if (!sound) return false;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) return sound->IsPlaying();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
+    // Si no se encuentra, devuelve FALSE
     return false;
 
 }
@@ -385,19 +348,15 @@ bool NGN_Sound::SfxIsPlaying(NGN_AudioClip* sound) {
 /*** Devuelve si se esta reproduciendo un sonido ***/
 bool NGN_Sound::SfxIsAlive(NGN_AudioClip* sound) {
 
-    // Si el sonido es valido
-    if (sound != NULL) {
-        if (sfx_cue.size() > 0) {
-            // Buscalo en la cola de sonidos
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                if (sfx_cue[i] == sound) {
-                    return sound->IsAlive();
-                }
-            }
-        }
+    // Si no es un sonido valido...
+    if (!sound) return false;
+
+    // Buscalo en la cola de sonidos
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] == sound) return sound->IsAlive();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
+    // Si no se encuentra, devuelve FALSE
     return false;
 
 }
@@ -412,17 +371,14 @@ void NGN_Sound::SfxUpdate() {
     do {
         // No repitas por defecto
         repeat = false;
-        // Si hay sonidos en cola...
-        if (sfx_cue.size() > 0) {
-            for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-                // Si el sonido, ya no esta activo, eliminalo
-                if (!sfx_cue[i]->IsAlive()) {
-                    delete sfx_cue[i];
-                    sfx_cue[i] = NULL;
-                    sfx_cue.erase(sfx_cue.begin() + i);
-                    repeat = true;
-                    break;
-                }
+        // Recorre la cola de sonidos
+        for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+            // Si el sonido, ya no esta activo, eliminalo
+            if (!sfx_cue[i]->IsAlive()) {
+                delete sfx_cue[i];
+                sfx_cue.erase(sfx_cue.begin() + i);
+                repeat = true;
+                break;
             }
         }
     } while (repeat);
@@ -453,7 +409,8 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
         // Abre el archivo
         if (!music_cue[id]->Open(filepath)) {
             // Si hay un error, eliminalo y sal
-            sfx_cue.erase(sfx_cue.begin() + id);
+            delete music_cue[id];
+            music_cue.erase(music_cue.begin() + id);
             return NULL;
         }
 
@@ -495,7 +452,8 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
         // Abre el archivo
         if (!music_cue[id]->Open(filepath)) {
             // Si hay un error, eliminalo y sal
-            sfx_cue.erase(sfx_cue.begin() + id);
+            delete music_cue[id];
+            music_cue.erase(music_cue.begin() + id);
             return NULL;
         }
 
@@ -521,21 +479,19 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
 /*** Reproduce una musica desde el principio o quita la pausa ***/
 void NGN_Sound::PlayMusic(
-                        NGN_MusicClip* music,
-                        int32_t volume,    // Volumen
-                        bool loop               // Loop ?
-                        ) {
+    NGN_MusicClip* music,   // Stream de audio
+    int32_t volume,         // Volumen
+    bool loop               // Loop ?
+) {
 
-    // Si la musica es valida
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Play(volume, loop);
-                    break;
-                }
-            }
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Play(volume, loop);
+            break;
         }
     }
 
@@ -546,7 +502,19 @@ void NGN_Sound::PlayMusic(
 /*** Cierra el stream de audio abierto ***/
 void NGN_Sound::CloseMusic(NGN_MusicClip* music) {
 
-    if (MusicIsAlive(music)) music->Stop();
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Si la musica esta sonando, detenla
+    if (MusicIsAlive(music)) {
+        music->Stop();
+    }
+
+    // Elimina el archivo del buffer
+    music->buffer.clear();
+
+    // Actualiza la cola de musicas
+    MusicUpdate();
 
 }
 
@@ -554,55 +522,55 @@ void NGN_Sound::CloseMusic(NGN_MusicClip* music) {
 
 /*** Continua con la reproduccion de una musica ***/
 void NGN_Sound::ResumeMusic(NGN_MusicClip* music) {
-    // Si la musica es valida
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Resume();
-                    break;
-                }
-            }
+
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Resume();
+            break;
         }
     }
+
 }
 
 
 
 /*** Pausa la musica ***/
 void NGN_Sound::PauseMusic(NGN_MusicClip* music) {
-    // Si la musica es valida
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Pause();
-                    break;
-                }
-            }
+
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Pause();
+            break;
         }
     }
+
 }
 
 
 
 /*** Deten la musica ***/
 void NGN_Sound::StopMusic(NGN_MusicClip* music) {
-    // Si la musica es valida
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Pause();
-                    music->Rewind();
-                    break;
-                }
-            }
+
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Pause();
+            music->Rewind();
+            break;
         }
     }
+
 }
 
 
@@ -610,16 +578,14 @@ void NGN_Sound::StopMusic(NGN_MusicClip* music) {
 /*** Cambia el volumen de una musica ***/
 void NGN_Sound::MusicVolume(NGN_MusicClip* music, int32_t volume) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Volume(volume);
-                    break;
-                }
-            }
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Volume(volume);
+            break;
         }
     }
 
@@ -630,19 +596,15 @@ void NGN_Sound::MusicVolume(NGN_MusicClip* music, int32_t volume) {
 /*** Devuelve el nivel de volumen de una musica ***/
 uint32_t NGN_Sound::MusicGetVolume(NGN_MusicClip* music) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    return music->GetVolume();
-                }
-            }
-        }
+    // Si el stream no es valido
+    if (!music) return 0;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) return music->GetVolume();
     }
 
-    // Si no lo es, o no se encuentra, devuelve 0
+    // Si no se encuentra, devuelve 0
     return 0;
 
 }
@@ -652,16 +614,14 @@ uint32_t NGN_Sound::MusicGetVolume(NGN_MusicClip* music) {
 /*** Cambia el pitch de una musica ***/
 void NGN_Sound::MusicPitch(NGN_MusicClip* music, float pitch) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Pitch(pitch);
-                    break;
-                }
-            }
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Pitch(pitch);
+            break;
         }
     }
 
@@ -672,20 +632,16 @@ void NGN_Sound::MusicPitch(NGN_MusicClip* music, float pitch) {
 /*** Devuelve el pitch actual de una musica ***/
 float NGN_Sound::MusicGetPitch(NGN_MusicClip* music) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    return music->GetPitch();
-                }
-            }
-        }
+    // Si el stream no es valido
+    if (!music) return 0.0f;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) return music->GetPitch();
     }
 
-    // Si no lo es, o no se encuentra, devuelve 0
-    return 0;
+    // Si no se encuentra, devuelve 0
+    return 0.0f;
 
 }
 
@@ -694,16 +650,14 @@ float NGN_Sound::MusicGetPitch(NGN_MusicClip* music) {
 /*** Cambia el loop de una musica ***/
 void NGN_Sound::MusicLoop(NGN_MusicClip* music, bool loop) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    music->Loop(loop);
-                    break;
-                }
-            }
+    // Si el stream no es valido
+    if (!music) return;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) {
+            music->Loop(loop);
+            break;
         }
     }
 
@@ -714,19 +668,15 @@ void NGN_Sound::MusicLoop(NGN_MusicClip* music, bool loop) {
 /*** Devuelve el loop actual de una musica ***/
 bool NGN_Sound::MusicGetLoop(NGN_MusicClip* music) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    return music->GetLoop();
-                }
-            }
-        }
+    // Si el stream no es valido
+    if (!music) return false;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) return music->GetLoop();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
+    // Si no se encuentra, devuelve FALSE
     return false;
 
 }
@@ -736,19 +686,15 @@ bool NGN_Sound::MusicGetLoop(NGN_MusicClip* music) {
 /*** Devuelve si se esta reproduciendo ***/
 bool NGN_Sound::MusicIsPlaying(NGN_MusicClip* music) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    return music->IsPlaying();
-                }
-            }
-        }
+    // Si el stream no es valido
+    if (!music) return false;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) return music->IsPlaying();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
+    // Si no se encuentra, devuelve FALSE
     return false;
 
 }
@@ -758,19 +704,15 @@ bool NGN_Sound::MusicIsPlaying(NGN_MusicClip* music) {
 /*** Devuelve si aun existe ***/
 bool NGN_Sound::MusicIsAlive(NGN_MusicClip* music) {
 
-    // Si el sonido es valido
-    if (music != NULL) {
-        if (music_cue.size() > 0) {
-            // Buscalo en la cola de musicas
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                if (music_cue[i] == music) {
-                    return music->IsAlive();
-                }
-            }
-        }
+    // Si el stream no es valido
+    if (!music) return false;
+
+    // Buscalo en la cola de musicas
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] == music) return music->IsAlive();
     }
 
-    // Si no lo es, o no se encuentra, devuelve FALSE
+    // Si no se encuentra, devuelve FALSE
     return false;
 
 }
@@ -785,17 +727,14 @@ void NGN_Sound::MusicUpdate() {
     do {
         // No repitas por defecto
         repeat = false;
-        // Si hay sonidos en cola...
-        if (music_cue.size() > 0) {
-            for (uint32_t i = 0; i < music_cue.size(); i ++) {
-                // Si el sonido, ya no esta activo, eliminalo
-                if (!music_cue[i]->IsAlive()) {
-                    delete music_cue[i];
-                    music_cue[i] = NULL;
-                    music_cue.erase(music_cue.begin() + i);
-                    repeat = true;
-                    break;
-                }
+        // Recorre la cola de streams de sonido
+        for (uint32_t i = 0; i < music_cue.size(); i ++) {
+            // Si el sonido, ya no esta activo, eliminalo
+            if (!music_cue[i]->IsAlive()) {
+                delete music_cue[i];
+                music_cue.erase(music_cue.begin() + i);
+                repeat = true;
+                break;
             }
         }
     } while (repeat);
@@ -810,17 +749,13 @@ void NGN_Sound::MusicUpdate() {
 void NGN_Sound::PauseAll() {
 
     // Intenta pausar los SFX
-    if (sfx_cue.size() > 0) {
-        for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-            if (sfx_cue[i] != NULL) sfx_cue[i]->Pause();
-        }
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] != NULL) sfx_cue[i]->Pause();
     }
 
-    // Intenta pausar las musicas
-    if (music_cue.size() > 0) {
-        for (uint32_t i = 0; i < music_cue.size(); i ++) {
-            if (music_cue[i] != NULL) music_cue[i]->Pause();
-        }
+    // Intenta pausar los streams de sonido
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] != NULL) music_cue[i]->Pause();
     }
 
 }
@@ -830,18 +765,14 @@ void NGN_Sound::PauseAll() {
 /*** Continua la reproduccion de todos los sonidos ***/
 void NGN_Sound::ResumeAll() {
 
-    // Intenta pausar los SFX
-    if (sfx_cue.size() > 0) {
-        for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-            if (sfx_cue[i] != NULL) sfx_cue[i]->Resume();
-        }
+    // Intenta quitar la pausa a los SFX
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] != NULL) sfx_cue[i]->Resume();
     }
 
-    // Intenta pausar las musicas
-    if (music_cue.size() > 0) {
-        for (uint32_t i = 0; i < music_cue.size(); i ++) {
-            if (music_cue[i] != NULL) music_cue[i]->Resume();
-        }
+    // Intenta quitar la pausa a los streams de sonido
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] != NULL) music_cue[i]->Resume();
     }
 
 }
@@ -852,17 +783,13 @@ void NGN_Sound::ResumeAll() {
 void NGN_Sound::StopAll() {
 
     // Intenta detener los SFX
-    if (sfx_cue.size() > 0) {
-        for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-            if (sfx_cue[i] != NULL) sfx_cue[i]->Stop();
-        }
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        if (sfx_cue[i] != NULL) sfx_cue[i]->Stop();
     }
 
-    // Intenta cerrar los strams de musica
-    if (music_cue.size() > 0) {
-        for (uint32_t i = 0; i < music_cue.size(); i ++) {
-            if (music_cue[i] != NULL) music_cue[i]->Stop();
-        }
+    // Intenta cerrar los streams de musica
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        if (music_cue[i] != NULL) music_cue[i]->Stop();
     }
 
 }

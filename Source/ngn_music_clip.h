@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -119,9 +119,11 @@ class NGN_MusicClip {
         // Devuelve el loop
         bool GetLoop();
 
-        // Revobina el stream de audio
+        // Rebobina el stream de audio
         void Rewind();
 
+        // Buffer para el archivo
+        std::vector<uint8_t> buffer;
 
 
     // Private

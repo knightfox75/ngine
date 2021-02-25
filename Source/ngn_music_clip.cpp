@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -75,11 +75,24 @@ NGN_MusicClip::~NGN_MusicClip() {
 /*** Abre un archivo para su streaming ***/
 bool NGN_MusicClip::Open(const char* filepath) {
 
-    // Abre el archivo para hacer streaming
-    if (music.openFromFile(filepath)) {
+    // Prepara el buffer temporal para la carga del archivo
+    buffer.clear();
+
+    // Intenta cargar el archivo
+    int32_t file_length = ngn->load->LoadFile(filepath, buffer);
+    if (file_length <= 0) {
+        // Error leyendo el archivo solicitado
+        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        buffer.clear();
+        return false;
+    }
+
+    // Transfiere los datos en RAM para el stream
+    if (music.openFromMemory((uint8_t*)&buffer[0], file_length)) {
         return true;
     } else {
-        std::cout << "Error opening " << filepath << "  for streaming." << std::endl;
+        std::cout << "Error opening " << filepath << " from memory." << std::endl;
+        buffer.clear();
         return false;
     }
 
@@ -90,7 +103,7 @@ bool NGN_MusicClip::Open(const char* filepath) {
 /*** Reproduce una musica por streaming de un archivo ***/
 void NGN_MusicClip::Play(
         int32_t volume,        // Volumen inicial
-        bool loop               // Loop?
+        bool loop              // Loop?
     ) {
 
     _volume = volume;

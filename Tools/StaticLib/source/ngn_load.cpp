@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -55,7 +55,7 @@
 #include <SDL_ttf.h>
 
 // LodePNG
-#include "lodepng.h"
+#include "lodepng/lodepng.h"
 
 // Libreria
 #include "ngn.h"
@@ -64,12 +64,24 @@
 
 /*** Contructor ***/
 NGN_Load::NGN_Load() {
+
+    // Objeto para el acceso al file system
+    file_system = new NGN_FileSystem();
+
+    // Por defecto no uses un archivo empaquetado (usa el disco)
+    use_package = false;
+
 }
 
 
 
 /*** Destructor ***/
 NGN_Load::~NGN_Load() {
+
+    // Objeto para el acceso al file system
+    delete file_system;
+    file_system = NULL;
+
 }
 
 
@@ -77,35 +89,35 @@ NGN_Load::~NGN_Load() {
 /*** Carga una textura ***/
 NGN_TextureData* NGN_Load::Texture(std::string filepath) {
 
-    const char* _filepath = filepath.c_str();
-
-    // Crea una textura temporal que se usara como buffer
-    NGN_TextureData* texture = new NGN_TextureData();
-    // Crea un surface temporal para guardar la imagen cargada
-    SDL_Surface* surface = NULL;
-
-    // Crea un buffer temporal para la descompresion del PNG
-    std::vector<uint8_t> png;
+    // Crea los buffers temporales para la descompresion del PNG
+    std::vector<uint8_t> buffer;
     std::vector<uint8_t> pixels;
 
-    // Tamaño
+    // Tamaño de la imagen
     uint32_t w, h;
 
-    // Carga el archivo PNG
-    uint32_t error = lodepng::load_file(png, _filepath);
-
-    // Si se ha cargado correctamente, decodifica la imagen
-    if (error == 0) {
-        error = lodepng::decode(pixels, w, h, png);
+    // Intenta abrir el archivo
+    if (LoadFile(filepath, buffer) > 0) {
+        // Si se ha abierto correctamente, intenta decodificarlo
+        if (lodepng::decode(pixels, w, h, buffer) > 0) {
+            // Si no puedes decodificarlo, error
+            std::cout << "Error decoding " << filepath << " texture." << std::endl;
+            buffer.clear();
+            pixels.clear();
+            return NULL;
+        }
     } else {
         std::cout << "Error loading " << filepath << "." << std::endl;
-        png.clear();
+        buffer.clear();
         return NULL;
     }
 
+    // Crea un surface temporal para guardar la imagen cargada
+    SDL_Surface* surface = NULL;
+
     // Crea la superficie en base a los pixeles cargados
     surface = SDL_CreateRGBSurfaceFrom(
-                                        (char*)&pixels[0],     // Datos
+                                        (uint8_t*)&pixels[0],   // Datos
                                         w,                      // Ancho
                                         h,                      // Alto
                                         32,                     // Profuncidad de color 32bpp [RGBA8888]
@@ -117,20 +129,25 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
                                         );
 
     // Elimina los buffers temporales
-    png.clear();
+    buffer.clear();
     pixels.clear();
 
     // Verifica si el archivo se ha creado correctamente
     if (surface == NULL) {
-         std::cout << "Unable to convert [" << filepath << "] to a surface." << std::endl;
+         std::cout << "Unable to convert " << filepath << " to a surface." << std::endl;
          return NULL;
     }
 
+
+    // Crea una textura temporal que se usara como buffer
+    NGN_TextureData* texture = new NGN_TextureData();
+
     // Convierte la imagen cargada a textura
     texture->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+
     // Verifica que la conversion ha sido correcta
     if (texture == NULL) {
-         std::cout << "Unable to convert [" << filepath << "] to a texture." << std::endl;
+         std::cout << "Unable to convert " << filepath << " to a texture." << std::endl;
          SDL_FreeSurface(surface);
          return NULL;
     }
@@ -152,36 +169,48 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
 /*** Carga un fondo de tiles ***/
 NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 
-    const char* _filepath = filepath.c_str();
-
     // Crea un objeto temporal para procesar el fondo cargado
     NGN_TiledBgData* bg = new NGN_TiledBgData();
+
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+    uint32_t file_pos = 0;
 
     // Crea un buffer temporal para la descompresion del Tileset
     std::vector<uint8_t> tiles;
 
     // Intenta cargar el archivo
-    std::ifstream file;
-    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
-    if (file.is_open()) {
-        // Carga la cabecera del archivo
-        file.read((char*)&bg->header, sizeof(bg->header));
+    if (LoadFile(filepath, buffer) > 0) {
+
+        // Cabecera del archivo
+        memcpy((uint8_t*)&bg->header, (uint8_t*)&buffer[0], sizeof(bg->header));
+        file_pos += sizeof(bg->header);
+
         // Tileset
         tiles.resize(bg->header.tileset_length);
-        file.read((char*)&tiles[0], bg->header.tileset_length);
+        memcpy((uint8_t*)&tiles[0], (uint8_t*)&buffer[file_pos], bg->header.tileset_length);
+        file_pos += bg->header.tileset_length;
+
         // Mapa
         bg->tmap.resize(bg->header.map_length);
-        file.read((char*)&bg->tmap[0], bg->header.map_length);
-        file.close();
+        memcpy((uint8_t*)&bg->tmap[0], (uint8_t*)&buffer[file_pos], bg->header.map_length);
+
     } else {
-        std::cout << "Error opening " << filepath << "  for read." << std::endl;
+
+        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        buffer.clear();
         delete bg;
         return NULL;
+
     }
+
+    // Elimina los datos del buffer temporal de archivo
+    buffer.clear();
+
 
     // Verifica que el archivo es compatible
     if (std::string(bg->header.magic) != MAGIC_STRING_TBG) {
-        std::cout << "File " << filepath << "  is in unknow format." << std::endl;
+        std::cout << "File " << filepath << " is in unknow format." << std::endl;
         delete bg;
         return NULL;
     }
@@ -190,7 +219,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
     std::vector<uint8_t> pixels;
     uint32_t w, h;
     if (lodepng::decode(pixels, w, h, tiles) > 0) {
-        std::cout << "Error decoding " << filepath << "  tileset." << std::endl;
+        std::cout << "Error decoding " << filepath << " tileset." << std::endl;
         tiles.clear();
         pixels.clear();
         delete bg;
@@ -235,7 +264,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
             }
             // Genera una surface con los datos de esa tile
             surface = SDL_CreateRGBSurfaceFrom(
-                    (char*)&tile_pixels[0],     // Datos
+                    (uint8_t*)&tile_pixels[0],     // Datos
                     tw,                         // Ancho
                     th,                         // Alto
                     32,                         // Profuncidad de color 32bpp [RGBA8888]
@@ -247,7 +276,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
             );
             // Verifica si se ha generado el surface
             if (surface == NULL) {
-                 std::cout << "Unable to convert [" << filepath << "] tileset to a surface." << std::endl;
+                 std::cout << "Unable to convert " << filepath << " tileset to a surface." << std::endl;
                  pixels.clear();
                  tile_pixels.clear();
                  delete bg;
@@ -257,7 +286,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
             bg->tiles[tl] = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
             // Verifica si se ha creado con exito
             if (bg->tiles[tl] == NULL) {
-                 std::cout << "Unable to create [" << filepath << "] tileset." << std::endl;
+                 std::cout << "Unable to create " << filepath << " tileset." << std::endl;
                  pixels.clear();
                  tile_pixels.clear();
                  SDL_FreeSurface(surface);
@@ -284,39 +313,48 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 /*** Carga un sprite ***/
 NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
-    const char* _filepath = filepath.c_str();
-
     // Crea un objeto temporal para procesar el sprite
     NGN_SpriteData* spr = new NGN_SpriteData();
+
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+    uint32_t file_pos = 0;
 
     // Crea un buffer temporal para la descompresion del Tileset
     std::vector<uint8_t> raw;
     std::vector<uint8_t> pixels;
 
-    // Crea una superficie temporal para la generacion del tileset
-    SDL_Surface* surface = NULL;
-
     // Intenta cargar el archivo
-    std::ifstream file;
-    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
-    if (file.is_open()) {
-        // Carga la cabecera del archivo
-        file.read((char*)&spr->header, sizeof(spr->header));
+    if (LoadFile(filepath, buffer) > 0) {
+
+        // Cabecera del archivo
+        memcpy((uint8_t*)&spr->header, (uint8_t*)&buffer[0], sizeof(spr->header));
+        file_pos += sizeof(spr->header);
+
         // Calcula el tamaño del buffer
         uint32_t buffer_size = ((spr->header.sheet_width * spr->header.sheet_height) << 2);      // * 4
         // Frames del sprite
         raw.resize(buffer_size);
-        file.read((char*)&raw[0], buffer_size);
-        file.close();
+        // Lee los datos del spritesheet
+        memcpy((uint8_t*)&raw[0], (uint8_t*)&buffer[file_pos], buffer_size);
+
     } else {
-        std::cout << "Error opening " << filepath << "  for read." << std::endl;
+
+        // Error leyendo el archivo solicitado
+        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        buffer.clear();
         delete spr;
         return NULL;
+
     }
+
+    // Elimina los datos del buffer temporal de archivo
+    buffer.clear();
+
 
     // Verifica que el archivo es compatible
     if (std::string(spr->header.magic) != MAGIC_STRING_SPR) {
-        std::cout << "File " << filepath << "  is in unknow format." << std::endl;
+        std::cout << "File " << filepath << " is in unknow format." << std::endl;
         delete spr;
         return NULL;
     }
@@ -325,7 +363,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     // Decodifica los datos del sprite en PNG a pixeles.
     uint32_t w, h;
     if (lodepng::decode(pixels, w, h, raw) > 0) {
-        std::cout << "Error decoding " << filepath << "  tileset." << std::endl;
+        std::cout << "Error decoding " << filepath << " tileset." << std::endl;
         raw.clear();
         delete spr;
         return NULL;
@@ -338,12 +376,15 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     for (uint32_t i = 0; i < spr->gfx.size(); i ++) spr->gfx[i] = NULL;
     uint32_t frame_data_size = (spr->header.frame_width * spr->header.frame_height);
 
+    // Crea una superficie temporal para la generacion del spritesheet
+    SDL_Surface* surface = NULL;
+
     // Crea una textura por cada fotograma
     for (uint32_t i = 0; i < spr->header.total_frames; i ++) {
 
         // Crea la superficie en base a los pixeles cargados
         surface = SDL_CreateRGBSurfaceFrom(
-                                            (char*)&pixels[((frame_data_size * i) << 2)],   // Datos [frame * datos del frame * 4bpp]
+                                            (uint8_t*)&pixels[((frame_data_size * i) << 2)],   // Datos [frame * datos del frame * 4bpp]
                                             spr->header.frame_width,                        // Ancho
                                             spr->header.frame_height,                       // Alto
                                             32,                     // Profuncidad de color 32bpp [RGBA8888]
@@ -356,7 +397,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
 
         if (surface == NULL) {
-             std::cout << "Unable to convert [" << filepath << "] to a surface." << std::endl;
+             std::cout << "Unable to convert " << filepath << " to a surface." << std::endl;
              pixels.clear();
              return NULL;
         }
@@ -366,7 +407,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
         // Verifica que la conversion ha sido correcta
         if (spr->gfx[i] == NULL) {
-             std::cout << "Unable to load [" << filepath << "] as a sprite." << std::endl;
+             std::cout << "Unable to load " << filepath << " as a sprite." << std::endl;
              SDL_FreeSurface(surface);
              pixels.clear();
              return NULL;
@@ -390,37 +431,51 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 /*** Carga un mapa de colisiones ***/
 NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
 
-    const char* _filepath = filepath.c_str();
-
     // Crea un objeto temporal para procesar el archivo
     NGN_CollisionMapData* collision = new NGN_CollisionMapData();
 
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+    uint32_t file_pos = 0;
+
     // Intenta cargar el archivo
-    std::ifstream file;
-    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
-    if (file.is_open()) {
-        // Carga la cabecera del archivo
-        file.read((char*)&collision->header, sizeof(collision->header));
-        // Carga la paleta
+    if (LoadFile(filepath, buffer) > 0) {
+
+        // Cabecera del archivo
+        memcpy((uint8_t*)&collision->header, (uint8_t*)&buffer[0], sizeof(collision->header));
+        file_pos += sizeof(collision->header);
+
+        // Paleta
         collision->palette.resize(collision->header.pal_length, 0);
-        file.read((char*)&collision->palette[0], (collision->header.pal_length * sizeof(int32_t)));
-        // Carga los tiles
+        memcpy((uint8_t*)&collision->palette[0], (uint8_t*)&buffer[file_pos], (collision->header.pal_length * sizeof(int32_t)));
+        file_pos += (collision->header.pal_length * sizeof(int32_t));
+
+        // Tileset
         collision->tiles.resize(collision->header.tileset_length, 0);
-        file.read((char*)&collision->tiles[0], collision->header.tileset_length);
-        // Carga el mapa
+        memcpy((uint8_t*)&collision->tiles[0], (uint8_t*)&buffer[file_pos], collision->header.tileset_length);
+        file_pos += collision->header.tileset_length;
+
+        // Mapa
         collision->tmap.resize(collision->header.map_length, 0);
-        file.read((char*)&collision->tmap[0], (collision->header.map_length * sizeof(int32_t)));
-        // Cierra el archivo
-        file.close();
+        memcpy((uint8_t*)&collision->tmap[0], (uint8_t*)&buffer[file_pos], (collision->header.map_length * sizeof(int32_t)));
+
     } else {
-        std::cout << "Error opening " << filepath << "  for read." << std::endl;
+
+        // Error leyendo el archivo solicitado
+        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        buffer.clear();
         delete collision;
         return NULL;
+
     }
+
+    // Elimina los datos del buffer temporal de archivo
+    buffer.clear();
+
 
     // Verifica que el archivo es compatible
     if (std::string(collision->header.magic) != MAGIC_STRING_CMAP) {
-        std::cout << "File " << filepath << "  is in unknow format." << std::endl;
+        std::cout << "File " << filepath << " is in unknow format." << std::endl;
         delete collision;
         return NULL;
     }
@@ -446,6 +501,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
     std::cout << "Tile space: " << collision->tile_bytes << std::endl;
     */
 
+
     // Devuelve el mapa cargado
     return collision;
 
@@ -456,16 +512,33 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
 /*** Carga un archivo de audio ***/
 NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
 
-    const char* _filepath = filepath.c_str();
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+
+    // Intenta cargar el archivo
+    int32_t file_length = LoadFile(filepath, buffer);
+    if (file_length <= 0) {
+        // Error leyendo el archivo solicitado
+        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        buffer.clear();
+        return NULL;
+    }
 
     // Crea un archivo temporal con el audio
     NGN_AudioClipData* clip = new NGN_AudioClipData();
 
-    // Carga el archivo
-    if (clip->data.loadFromFile(_filepath)) {
+    // Transfiere el archivo desde el buffer de RAM al subsistema de sonido
+    if (clip->data.loadFromMemory((uint8_t*)&buffer[0], file_length)) {
+        // Elimina los datos del buffer del archivo temporal
+        buffer.clear();
+        // Devuelve el clip
         return clip;
     } else {
-        std::cout << "Error opening " << filepath << "  for read." << std::endl;
+        // Error en la carga desde RAM
+        std::cout << "Error opening " << filepath << " from memory." << std::endl;
+        // Elimina los datos del buffer del archivo temporal
+        buffer.clear();
+        // Error en la carga
         return NULL;
     }
 
@@ -483,11 +556,22 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     uint32_t outline_color                  // Color del borde
 ) {
 
-    const char* _filepath = filepath.c_str();
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+
+    // Intenta cargar el archivo
+    int32_t file_length = LoadFile(filepath, buffer);
+    if (file_length <= 0) {
+        // Error leyendo el archivo solicitado
+        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        buffer.clear();
+        return NULL;
+    }
 
     // Intenta iniciar el subsitema de TTF para SDL
     if (TTF_Init() < 0) {
         std::cout << "SDL TTF initialization failed." << std::endl;
+        buffer.clear();
         return NULL;
     }
 
@@ -495,11 +579,16 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     NGN_TextFont* font = new NGN_TextFont();
 
     // Intenta cargar la tipografia
-    TTF_Font* ttf = TTF_OpenFont(_filepath, height);
+    TTF_Font* ttf = TTF_OpenFontRW(SDL_RWFromMem((uint8_t*)&buffer[0], file_length), 0, height);
     if (ttf == NULL) {
-        std::cout << "Error opening " << filepath << "  for read." << std::endl;
+        std::cout << "Error opening " << filepath << " from memory." << std::endl;
+        buffer.clear();
+        delete font;
         return NULL;
     }
+
+    // Elimina los datos del buffer del archivo temporal
+    buffer.clear();
 
     // Ajuste del outline
     if (outline > 0) {
@@ -621,5 +710,44 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
 
     // Devuelve la fuente cargada y convertida
     return font;
+
+}
+
+
+
+/*** Metodo para cargar un archivo desde el origen predeterminado. El archivo se desencriptara en el caso de estarlo ***/
+int32_t NGN_Load::LoadFile(std::string filepath, std::vector<uint8_t> &data) {
+
+    if (use_package) {
+        // Lee el archivo desde un paquete
+        return file_system->LoadFileFromPakage(filepath, data);
+    } else {
+        // Lee el archivo desde el disco
+        return file_system->LoadFileFromDisk(filepath, data);
+    }
+
+}
+
+
+
+/*** Establece el disco como el origen de datos ***/
+void NGN_Load::SetDisk() {
+
+    use_package = false;
+
+}
+
+
+
+/*** Establece un archivo empaquetado como el origen de datos ***/
+bool NGN_Load::SetPackage(std::string pkg_file, std::string key) {
+
+    if (file_system->SetPackage(pkg_file, key)) {
+        use_package = true;
+        return true;
+    } else {
+        use_package = false;
+        return false;
+    }
 
 }

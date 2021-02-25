@@ -101,8 +101,8 @@
 		<Linker>
 			<Add option="-m64" />
 		</Linker>
-		<Unit filename="source/lodepng.cpp" />
-		<Unit filename="source/lodepng.h" />
+		<Unit filename="source/lodepng/lodepng.cpp" />
+		<Unit filename="source/lodepng/lodepng.h" />
 		<Unit filename="source/ngn.cpp" />
 		<Unit filename="source/ngn.h" />
 		<Unit filename="source/ngn_audio_clip.cpp" />
@@ -115,6 +115,8 @@
 		<Unit filename="source/ngn_collisions.h" />
 		<Unit filename="source/ngn_defines.cpp" />
 		<Unit filename="source/ngn_defines.h" />
+		<Unit filename="source/ngn_filesystem.cpp" />
+		<Unit filename="source/ngn_filesystem.h" />
 		<Unit filename="source/ngn_graphics.cpp" />
 		<Unit filename="source/ngn_graphics.h" />
 		<Unit filename="source/ngn_input.cpp" />
