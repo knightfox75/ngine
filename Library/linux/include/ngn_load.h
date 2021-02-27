@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.3.0-beta ***
+    *** Version 1.4.0-beta ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -54,6 +54,8 @@
 #include <string>
 // Includes de SDL TTF
 #include <SDL_ttf.h>
+// Includes de la libreria
+#include "ngn_filesystem.h"
 
 
 /*** Defines ***/
@@ -102,9 +104,24 @@ class NGN_Load {
         );
 
 
+        // Metodo para cargar un archivo desde de el origen predeterminado, en caso de estar encriptado, se desencriptara.
+        int32_t LoadFile(std::string filepath, std::vector<uint8_t> &data);
+
+        // Establece el disco como el origen de datos
+        void SetDisk();
+
+        // Establece un archivo empaquetado como el origen de datos
+        bool SetPackage(std::string pkg_file, std::string key = "");
+
 
     // Private
     private:
+
+        // Objeto para el acceso al sistema de archivos
+        NGN_FileSystem* file_system;
+
+        // Guarda el origen de los datos (Disco o empaquetado)
+        bool use_package;
 
 
 };

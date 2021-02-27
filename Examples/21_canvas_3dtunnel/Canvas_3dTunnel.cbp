@@ -117,10 +117,8 @@
 		<Linker>
 			<Add option="-m64" />
 		</Linker>
-		<Unit filename="resource/recource.rc">
+		<Unit filename="resource/resource.rc">
 			<Option compilerVar="WINDRES" />
-			<Option target="WIN - Debug" />
-			<Option target="WIN - Release" />
 		</Unit>
 		<Unit filename="source/demo/demo.cpp" />
 		<Unit filename="source/demo/demo.h" />

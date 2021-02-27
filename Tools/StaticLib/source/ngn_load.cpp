@@ -332,9 +332,9 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
         file_pos += sizeof(spr->header);
 
         // Calcula el tamaño del buffer
-        uint32_t buffer_size = ((spr->header.sheet_width * spr->header.sheet_height) << 2);      // * 4
-        // Frames del sprite
+        uint32_t buffer_size = (buffer.size() - sizeof(spr->header));
         raw.resize(buffer_size);
+
         // Lee los datos del spritesheet
         memcpy((uint8_t*)&raw[0], (uint8_t*)&buffer[file_pos], buffer_size);
 

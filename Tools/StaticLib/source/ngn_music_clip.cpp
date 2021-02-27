@@ -68,6 +68,9 @@ NGN_MusicClip::NGN_MusicClip() {
 /*** Destructor de la clase ***/
 NGN_MusicClip::~NGN_MusicClip() {
 
+    // Asegurate de que se ha vaciado el buffer de archivo antes de salir
+    buffer.clear();
+
 }
 
 

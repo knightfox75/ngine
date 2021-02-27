@@ -2,6 +2,31 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2021-02-27 Ver.1.4.0-beta
+--------------------------------------------------------------------------------
+- Reescrita la clase de carga de archivos, usando funciones propias para
+  la carga previa de todos los archivos en un buffer de datos en RAM.
+- Corregido un bug que en caso de que fallara la abertura de un stream de
+  música, este eliminaba la instancia de la cola de efectos de sonido en vez
+  de la cola de streams de música.
+- Optimizaciones menores de código en diversas clases.
+- Añadido el soporte para empaquetado de archivos. Se incluyen las funciones
+  para su uso en N'gine, así como la herramienta necesaria para crear estos
+  paquetes de archivos (NGN_FileSystem). La herramienta permite el empaquetado
+  y desempaquetado de archivos, con y sin encriptación. La librería detecta
+  que se quiere hacer uso de la carga de archivos a través de un paquete
+  mediante el uso del comando SetPackage() de la clase NGN_Load.
+- Añadido el método LoadFile(); en la clase NGN_Load para la carga de un
+  archivo a un vector de datos.
+- Reorganización de los archivos del código fuente de la librería, separando
+  en diferentes carpetas los archivos pertenecientes a librerías externas.
+- Corregido un bug del día 0 en la clase NGN_Load que sobredimensionaba el 
+  buffer de RAM para cargar los sprites.
+- Se ha actualizado la documentación.
+- Corregido el nombre del archivo "resource.rc".
+- Se han actualizado los templates de la librería.
+  
+
 2021-01-10 Ver.1.3.0-beta
 --------------------------------------------------------------------------------
 - Se han reescrito los tipos de dato Vector2, pasando de ser una estructura a
