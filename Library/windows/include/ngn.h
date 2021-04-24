@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -64,6 +64,14 @@
 
 
 
+/*** Defines del proyecto (usar SOLO si no se usan los defines del proyecto de code::blocks ***/
+//#define OS_WINDOWS
+//#define OS_LINUX
+//#define MODE_DEBUG
+//#define MODE_RELEASE
+
+
+
 /*** Includes ***/
 
 // C++
@@ -74,13 +82,16 @@
 
 // Libreria
 #include "ngn_defines.h"            // Definiciones
+#include "ngn_log.h"                // Mensages de depuracion
 #include "ngn_math.h"               // Funciones matematicas
 #include "ngn_system.h"             // Funciones del sistema
 #include "ngn_toolbox.h"            // Caja de herramientas (metodos diversos y utiles)
 #include "ngn_input.h"              // Metodos de entrada
 #include "ngn_graphics.h"           // Gestion del Renderer de SDL
 #include "ngn_render.h"             // Renderiza los diferentes elementos graficos
+#include "ngn_filesystem.h"         // Funciones del sistema de archivos
 #include "ngn_load.h"               // Carga de archivos
+#include "ngn_image.h"              // Manipulacion de imagenes en RAW
 #include "ngn_sprite.h"             // Clase Sprite
 #include "ngn_tiledbg.h"            // Clase Fondos Tileados
 #include "ngn_texture.h"            // Clase para los fondos con texturas
@@ -91,6 +102,7 @@
 #include "ngn_audio_clip.h"         // Clase para los clips de audio
 #include "ngn_music_clip.h"         // Clase para los clips de musica
 #include "ngn_canvas.h"             // Clase para el lienzo de dibujo
+#include "ngn_disk.h"               // Clase para la gestion de archivos en disco
 
 
 
@@ -107,6 +119,7 @@ class NGN {
         ~NGN();
 
         // Punteros a las clases
+        NGN_Log* log;                   // Mensages de depuracion
         NGN_System* system;             // Funciones del sistema
         NGN_Math* math;                 // Funciones matematicas
         NGN_ToolBox* toolbox;           // Caja de herramientas
@@ -117,6 +130,8 @@ class NGN {
         NGN_Load* load;                 // Funciones para la carga de archivos
         NGN_Collisions* collisions;     // Funciones del sistema de colisiones
         NGN_Sound* sound;               // Gestion de los efectos de sonido
+        NGN_Image* image;               // Manipulacion de imagenes en RAW
+        NGN_Disk* disk;                 // Gestion de archivos en el disco
 
         // Iniciliaza la libreria
         bool Init();

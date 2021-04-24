@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -52,7 +52,7 @@
 #include <string>
 
 // Libreria
-#include "ngn_filesystem.h"
+#include "ngn.h"
 
 
 
@@ -87,43 +87,6 @@ NGN_FileSystem::~NGN_FileSystem() {
 
 
 
-/*** Metodo para cargar un archivo desde el sistema de archivos a un buffer temporal en RAM ***/
-int32_t NGN_FileSystem::LoadFileFromDisk(std::string filepath, std::vector<uint8_t> &buffer) {
-
-    // Convierte la ruta de archivo a constante
-    const char* _filepath = filepath.c_str();
-
-    // Prepara el buffer temporal para cargar el archivo
-    buffer.clear();
-    int32_t length = -1;
-
-    // Intenta abrir el archivo en modo binario
-    std::ifstream file;
-    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
-
-    // Si has abierto el archivo con exito...
-    if (file.is_open()) {
-        // Calcula el tamaño del archivo
-        file.seekg(0, file.end);        // Avanza hasta el final del archivo
-        length = file.tellg();          // Consulta el numero de bytes recorridos
-        file.seekg(0, file.beg);        // Rebobina el archivo
-        // Dimensiona el buffer
-        buffer.resize(length);
-        // Lee el archivo y coloca los datos en el buffer
-        file.read((char*)&buffer[0], length);
-        // Cierra el archivo
-        file.close();
-    } else {
-        std::cout << _filepath << " not found." << std::endl;
-    }
-
-    // Devuelve el numero de bytes leidos (0 == no se ha podido abrir el archivo)
-    return length;
-
-}
-
-
-
 /*** Metodo para cargar un archivo desde un archivo empaquetado a un buffer temporal en RAM ***/
 int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uint8_t> &buffer) {
 
@@ -142,7 +105,7 @@ int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uin
 
     // Si el nodo no se ha encontrado, error
     if (_id < 0) {
-        std::cout << filepath << " not found." << std::endl;
+        ngn->log->Message("[NGN_FileSystem error] <" + filepath + "> not found.");
         return -1;
     }
 
@@ -158,7 +121,7 @@ int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uin
     const char* filename = package_file.c_str();                        // General el nombre de archivo
     file.open(filename, std::ifstream::in | std::ifstream::binary);     // Abre el archivo en modo lectura
     if (!file.is_open()) {
-        std::cout << "Can't open [" << filename << "] package for read." << std::endl;
+        ngn->log->Message("[NGN_FileSystem error] Can't open <" + package_file + "> package for read.");
         return -1;   // Si el archivo no puede abrirse, sal
     }
 
@@ -178,7 +141,7 @@ int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uin
     checksum = Checksum(buffer);                            // Calcula el checksum del archivo
     for (uint8_t n = 0; n < CHK_SIZE; n ++) {               // Verifica que el checksum sea correcto
         if (checksum[n] != fat[node_id].checksum[n]) {      // Si hay error de checksum
-            std::cout << "Warning: [" << filepath << "] checksum failed." << std::endl;
+            ngn->log->Message("[NGN_FileSystem warning] <" + filepath + "> checksum failed.");
             checksum.clear();
             return -1;
         }
@@ -210,12 +173,12 @@ bool NGN_FileSystem::SetPackage(std::string pkg_file, std::string key) {
     switch (ReadPackageHeader()) {
         // Error abriendo el archivo
         case -1:
-            std::cout << "Can't open [" << package_file << "] package file for read." << std::endl;
+            ngn->log->Message("[NGN_FileSystem error] Can't open <" + package_file + "> package file for read.");
             return false;
             break;
         // Error de compatibilidad
         case -2:
-            std::cout << "[" << package_file << "] package file not compatible." << std::endl;
+            ngn->log->Message("[NGN_FileSystem error] <" + package_file + "> package file not compatible.");
             return false;
             break;
     }
@@ -224,12 +187,12 @@ bool NGN_FileSystem::SetPackage(std::string pkg_file, std::string key) {
     switch (CreateFatFromPackage()) {
         // Error abriendo el archivo
         case -1:
-            std::cout << "Can't open [" << package_file << "] package file for read." << std::endl;
+            ngn->log->Message("[NGN_FileSystem error] Can't open <" + package_file + "> package file for read.");
             return false;
             break;
         // Error de compatibilidad
         case 0:
-            std::cout << "[" << package_file << "] is empty." << std::endl;
+            ngn->log->Message("[NGN_FileSystem warning] <" + package_file + "> is empty.");
             return false;
             break;
     }

@@ -8,7 +8,7 @@
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.3.0-beta o superior
+    Requiere N'gine 1.5.0-beta o superior
 
     Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -110,11 +110,14 @@ bool Demo::Awake() {
         return false;
     }
 
+    // Habilita el archivo de registro
+    ngn->log->OpenLogFile("debug_log.txt");
+
     // Crea la ventana con la resolucion nativa
     if (!ngn->graphics->Init(WINDOW_TITLE, SCR_WIDTH, SCR_HEIGHT, NGN_SCR_WINDOW, BILINEAR_FILTER, VSYNC)) return false;
     ngn->graphics->Update();
 
-    // visibilidad del cursor del raton
+    // Visibilidad del cursor del raton
     ngn->graphics->ShowMouse(SHOW_MOUSE);
 
     // Contador de FPS activo?
@@ -128,10 +131,10 @@ bool Demo::Awake() {
     #endif
     ngn->graphics->Update();
 
-    // Muestra la version de la libreria en la consola
-    #if defined (MODE_DEBUG)
-        std::cout << ngn->system->GetVersion() << std::endl;
-    #endif
+	// Muestra la version de la libreria en la consola
+	#if defined (MODE_DEBUG)
+		ngn->log->Message(ngn->system->GetVersion() + " started successfully!");
+	#endif
 
     // Inicializacion completada con exito
     return true;

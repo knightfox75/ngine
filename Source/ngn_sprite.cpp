@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -123,15 +123,16 @@ NGN_Sprite::NGN_Sprite(
     }
 
     // Valores por defecto
-    frame = 0;                  // Primer fotograma
-    visible = true;             // Visibilidad
-    alpha = 0xFF;               // Alpha
-    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
-    on_screen = false;          // Reset del flag
-    rotation = 0.0f;            // Rotacion
-    center.x = 0.0f;            // Centro de rotacion
+    frame = 0;                                  // Primer fotograma
+    total_frames = data->header.total_frames;   // Nº total de fotogramas
+    visible = true;                             // Visibilidad
+    alpha = 0xFF;                               // Alpha
+    blend_mode = NGN_BLENDMODE_ALPHA;           // Modo de mezcla
+    on_screen = false;                          // Reset del flag
+    rotation = 0.0f;                            // Rotacion
+    center.x = 0.0f;                            // Centro de rotacion
     center.y = 0.0f;
-    flip_h = false;             // Flip
+    flip_h = false;                             // Flip
     flip_v = false;
     screen.x = (uint32_t)position.x;
     screen.y = (uint32_t)position.y;
@@ -349,6 +350,15 @@ int32_t NGN_Sprite::AddAnimation(
     // Verifica el nombre
     if ((name.length() < 1) || (name.length() > 255)) return 1;
     for (uint32_t i = 0; i < animation.size(); i ++) if (animation[i].name == name) return 2;
+
+    // Proteccion de frames
+    if (
+        (first_frame < 0) || (first_frame >= total_frames)
+        ||
+        (last_frame < 0) || (last_frame >= total_frames)
+        ||
+        (loop < 0) || (loop >= total_frames)
+    ) return 1;
 
 
     // Variable temporal con la animacion

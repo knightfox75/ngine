@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -70,6 +70,12 @@
 /*** Definiciones ***/
 static const uint8_t MAX_SFX_CHANNELS = 64;     // Numero maximo de efectos simultaneos
 static const uint8_t MAX_MUSIC_CHANNELS = 4;    // Numero maximo de musicas por streaming simultaneas
+static const uint8_t MIXER_CHANNELS = 5;        // Numero de canales del mixer
+static const uint8_t MIXER_MASTER_CH = 0;       // Canal maestro del mixer
+static const uint8_t MIXER_MUSIC_CH = 1;        // Canal de musica del mixer
+static const uint8_t MIXER_EFFECTS_CH = 2;      // Canal de efectos del mixer
+static const uint8_t MIXER_AUX1_CH = 3;         // Canal de efectos del mixer
+static const uint8_t MIXER_AUX2_CH = 4;         // Canal de efectos del mixer
 
 
 
@@ -91,10 +97,11 @@ class NGN_Sound {
 
         // Reproduce un sonido
         NGN_AudioClip* PlaySfx(
-                               NGN_AudioClipData* sound,        // Clip de audio
-                               int32_t volume = 100,       // Volumen
-                               int32_t panning = 0,                 // Panning (-100 a 100)
-                               bool loop = false                // Loop ?
+                               NGN_AudioClipData* sound,                    // Clip de audio
+                               int32_t volume = 100,                        // Volumen
+                               int32_t panning = 0,                         // Panning (-100 a 100)
+                               bool loop = false,                           // Loop ?
+                               uint8_t mixer_channel = MIXER_EFFECTS_CH     // Canal por defecto en el mixer
                                );
 
         // Continua la reproduccion de un sonido
@@ -142,10 +149,11 @@ class NGN_Sound {
 
         // Abre una musica para streaming (Sobrecarga 1)
         NGN_MusicClip* OpenMusic(
-                                const char* filepath,           // Archivo de audio
-                                bool auto_start = true,         // Reproduccion automatica
-                                int32_t volume = 100,           // Volumen
-                                bool loop = true                // Loop ?
+                                const char* filepath,                   // Archivo de audio
+                                bool auto_start = true,                 // Reproduccion automatica
+                                int32_t volume = 100,                   // Volumen
+                                bool loop = true,                       // Loop ?
+                                uint8_t mixer_channel = MIXER_MUSIC_CH  // Canal por defecto en el mixer
                                 );
 
         // Abre una musica para streaming (Sobrecarga 2)
@@ -154,7 +162,8 @@ class NGN_Sound {
                                 int32_t loop_start,                     // Inicio del loop (milisegundos)
                                 int32_t loop_end = NGN_DEFAULT_VALUE,   // Fin del loop (milisegundos)
                                 bool auto_start = true,                 // Reproduccion automatica
-                                int32_t volume = 100                    // Volumen
+                                int32_t volume = 100,                   // Volumen
+                                uint8_t mixer_channel = MIXER_MUSIC_CH  // Canal por defecto en el mixer
                                 );
 
         // Cierra el stream de audio
@@ -216,6 +225,9 @@ class NGN_Sound {
         // Actualiza la cola del audio
         void Update();
 
+        // Ajusta el volumen del canal del mixer
+        void SetMixerLevel(uint8_t channel, int32_t level);
+        int32_t GetMixerLevel(uint8_t channel);
 
 
     // Private
@@ -233,6 +245,10 @@ class NGN_Sound {
 
         // Actualiza la cola de musicas
         void MusicUpdate();
+
+        // Parametros globales del volumen del sonido (mezclador de sonido)
+        int32_t mixer_channel_level[MIXER_CHANNELS];
+        int32_t last_mixer_channel_level[MIXER_CHANNELS];
 
 };
 

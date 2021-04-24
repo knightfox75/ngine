@@ -7,7 +7,7 @@
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.3.0-beta o superior
+    Requiere N'gine 1.5.0-beta o superior
 
     Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/

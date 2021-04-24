@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,6 +66,12 @@ NGN_Sound::NGN_Sound() {
     // Limpia la cola de musicas
     music_cue.clear();
 
+    // Valores por defecto del mixer
+    for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) {
+        mixer_channel_level[i] = 100;
+        last_mixer_channel_level[i] = 100;
+    }
+
 }
 
 /*** Destructor de la clase NGN_Sound ***/
@@ -96,9 +102,10 @@ NGN_Sound::~NGN_Sound() {
 /*** Reproduce un sonido ***/
 NGN_AudioClip* NGN_Sound::PlaySfx(
         NGN_AudioClipData* sound,       // Clip de audio
-        int32_t volume,            // Volumen
-        int32_t panning,                    // Panning (-100 a 100)
-        bool loop                       // Loop ?
+        int32_t volume,                 // Volumen
+        int32_t panning,                // Panning (-100 a 100)
+        bool loop,                      // Loop ?
+        uint8_t mixer_channel           // Canal asignado en el mixer
     ) {
 
     // Si no se ha alcanzado el limite de SFX simultaneos...
@@ -109,6 +116,8 @@ NGN_AudioClip* NGN_Sound::PlaySfx(
 
         // ID
         uint32_t id = (sfx_cue.size() - 1);
+
+        if ((mixer_channel > 0) && (mixer_channel < MIXER_CHANNELS)) sfx_cue[id]->SetMixerChannel(mixer_channel);
 
         // Asignale el sonido a la instancia creada
         sfx_cue[id]->Clip(sound);
@@ -368,6 +377,16 @@ void NGN_Sound::SfxUpdate() {
 
     bool repeat = false;
 
+    // Ajuste de volumen si hay cambios en el mixer
+    uint8_t ch = 0;
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        ch = sfx_cue[i]->GetMixerChannel();
+        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
+            sfx_cue[i]->Volume(sfx_cue[i]->GetVolume());
+        }
+    }
+
+    // Eliminacion de sonidos finalizados
     do {
         // No repitas por defecto
         repeat = false;
@@ -394,7 +413,8 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
         const char* filepath,   // Archivo de audio
         bool auto_start,        // Reproduccion automatica
         int32_t volume,         // Volumen
-        bool loop               // Loop ?
+        bool loop,              // Loop ?
+        uint8_t mixer_channel   // Canal por defecto en el mixer
     ) {
 
     // Si no se ha alcanzado el numero
@@ -405,6 +425,9 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
         // ID
         uint32_t id = (music_cue.size() - 1);
+
+        // Canal del mixer
+        if ((mixer_channel > 0) && (mixer_channel < MIXER_CHANNELS)) music_cue[id]->SetMixerChannel(mixer_channel);
 
         // Abre el archivo
         if (!music_cue[id]->Open(filepath)) {
@@ -437,7 +460,8 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
         int32_t loop_start,             // Inicio del loop (milisegundos)
         int32_t loop_end,               // Fin del loop (milisegundos)
         bool auto_start,                // Reproduccion automatica
-        int32_t volume                  // Volumen
+        int32_t volume,                 // Volumen
+        uint8_t mixer_channel           // Canal por defecto en el mixer
     ) {
 
     // Si no se ha alcanzado el numero
@@ -448,6 +472,9 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
         // ID
         uint32_t id = (music_cue.size() - 1);
+
+        // Canal del mixer
+        if ((mixer_channel > 0) && (mixer_channel < MIXER_CHANNELS)) music_cue[id]->SetMixerChannel(mixer_channel);
 
         // Abre el archivo
         if (!music_cue[id]->Open(filepath)) {
@@ -724,6 +751,16 @@ void NGN_Sound::MusicUpdate() {
 
     bool repeat = false;
 
+    // Ajuste de volumen si hay cambios en el mixer
+    uint8_t ch = 0;
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        ch = music_cue[i]->GetMixerChannel();
+        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
+            music_cue[i]->Volume(music_cue[i]->GetVolume());
+        }
+    }
+
+    // Control de la cola de las musicas
     do {
         // No repitas por defecto
         repeat = false;
@@ -801,5 +838,31 @@ void NGN_Sound::Update() {
 
     SfxUpdate();
     MusicUpdate();
+
+    for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) last_mixer_channel_level[i] = mixer_channel_level[i];
+
+}
+
+
+
+/*** Ajusta el volumen de un canal del mixer ***/
+void NGN_Sound::SetMixerLevel(uint8_t channel, int32_t level) {
+
+    if (channel >= MIXER_CHANNELS) return;
+
+    mixer_channel_level[channel] = level;
+    if (mixer_channel_level[channel] < 0) mixer_channel_level[channel] = 0;
+    if (mixer_channel_level[channel] > 100) mixer_channel_level[channel] = 100;
+
+}
+
+
+
+/*** Obten el volumen de un canal del mixer ***/
+int32_t NGN_Sound::GetMixerLevel(uint8_t channel) {
+
+    if (channel >= MIXER_CHANNELS) return 0;
+
+    return mixer_channel_level[channel];
 
 }

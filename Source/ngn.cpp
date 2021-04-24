@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -79,6 +79,7 @@ NGN* ngn;                                       // Clase principal
 NGN::NGN() {
 
     // Crea los objetos de la libreria
+    log = NULL;             // Mensages de depuracion
     system = NULL;          // Funciones del sistema
     math = NULL;            // Funciones matematicas
     toolbox = NULL;         // Caja de herramientas
@@ -89,6 +90,8 @@ NGN::NGN() {
     load = NULL;            // Carga de archivos
     collisions = NULL;      // Sistema de colisiones
     sound = NULL;           // Efectos de sonido
+    image = NULL;           // Manipulacion de imagenes en RAW
+    disk = NULL;            // Gestion de archivos en el disco
 
 }
 
@@ -98,6 +101,8 @@ NGN::NGN() {
 NGN::~NGN() {
 
     // Elimina todos los objetos creados
+    delete disk; disk = NULL;
+    delete image; image = NULL;
     delete sound; sound = NULL;
     delete collisions; collisions = NULL;
     delete load; load = NULL;
@@ -108,6 +113,7 @@ NGN::~NGN() {
     delete toolbox; toolbox = NULL;
     delete math; math = NULL;
     delete system; system = NULL;
+    delete log; log = NULL;
 
     // Cierra los subsistemas de SDL
     SDL_Quit();     // Cierra la libreria SDL correctamente
@@ -120,6 +126,8 @@ NGN::~NGN() {
 bool NGN::Init() {
 
     // Crea los objetos de la libreria
+    log = new NGN_Log();                    // Mensages de depuracion
+    if (!log) return false;
     system = new NGN_System();              // Funciones del sistema
     if (!system) return false;
     toolbox = new NGN_ToolBox();            // Caja de herramientas
@@ -138,6 +146,10 @@ bool NGN::Init() {
     if (!collisions) return false;
     sound = new NGN_Sound();                // Efectos de sonido
     if (!sound) return false;
+    image = new NGN_Image();                // Manipulacion de imagenes en RAW
+    if (!image) return false;
+    disk = new NGN_Disk();                  // Gestion de archivos en el disco
+    if (!disk) return false;
 
     // Inicializa la libreria SDL
     if (!system->Init()) return false;

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -154,6 +154,7 @@ NGN_AudioClipData::~NGN_AudioClipData() {
 
 
 /*** Prototipo de datos de las fuentes de texto ***/
+
 // Constructor
 NGN_TextFont::NGN_TextFont() {
 
@@ -178,5 +179,51 @@ NGN_TextFont::~NGN_TextFont() {
     character.clear();
 
 }
+
+
+
+/*** Prototipo de datos de las imagenes en RAW [NGN_RawImage] ***/
+
+// Constructor
+NGN_RawImage::NGN_RawImage() {
+
+    pixels.clear();
+    width = 0;
+    height = 0;
+
+}
+
+// Destructor
+NGN_RawImage::~NGN_RawImage() {
+
+    pixels.clear();
+
+}
+
+
+
+/*** Prototipo de datos de una superficie [NGN_RendererSurface] ***/
+
+// Constructor
+NGN_RendererSurface::NGN_RendererSurface() {
+
+    // Surface
+    surface = NULL;
+
+    // Guarda el tamaño
+    width = -1;
+    height = -1;
+
+}
+
+// Destructor
+NGN_RendererSurface::~NGN_RendererSurface() {
+
+    // Elimina el surface
+    SDL_FreeSurface(surface);
+    surface = NULL;
+
+}
+
 
 

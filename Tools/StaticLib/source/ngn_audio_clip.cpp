@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -69,6 +69,9 @@ NGN_AudioClip::NGN_AudioClip() {
 
     // Multiplicador de volumen para la atenuacion panoramica
     _panning_attenuation = 1.0f;
+
+    // Canal por defecto
+    _mixer_channel = MIXER_EFFECTS_CH;
 
 }
 
@@ -160,7 +163,8 @@ void NGN_AudioClip::Volume(int32_t volume) {
     _volume = volume;
     if (_volume < 0) _volume = 0;
     if (_volume > 100) _volume = 100;
-    int32_t v = (int32_t)((float)_volume * _panning_attenuation);
+    float mixer = ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) * ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);
+    int32_t v = (int32_t)((float)_volume * _panning_attenuation * mixer);
     sound.setVolume(v);
 }
 
@@ -219,7 +223,8 @@ void NGN_AudioClip::Panning(int32_t pan) {
     _panning_attenuation = (1.0f - (std::abs(x) / 2.0f));
 
     // Reajusta el nivel de volumen
-    int32_t v = (int32_t)((float)_volume * _panning_attenuation);
+    float mixer = ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) * ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);
+    int32_t v = (int32_t)((float)_volume * _panning_attenuation * mixer);
     sound.setVolume(v);
 
 }
@@ -238,5 +243,24 @@ void NGN_AudioClip::Rewind() {
 
     sf::Time t;
     sound.setPlayingOffset(t.Zero);
+
+}
+
+
+/*** Asigna un canal del mixer ***/
+void NGN_AudioClip::SetMixerChannel(uint8_t channel) {
+
+    _mixer_channel = channel;
+    if ((_mixer_channel < 1) || (_mixer_channel >= MIXER_CHANNELS)) _mixer_channel = MIXER_EFFECTS_CH;
+    Volume(_volume);
+
+}
+
+
+
+/*** Devuelve el canal asignado en el mixer ***/
+uint8_t NGN_AudioClip::GetMixerChannel() {
+
+    return _mixer_channel;
 
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -48,6 +48,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <string>
 
 // SFML
 #include <SFML/Audio.hpp>
@@ -60,6 +61,7 @@
 NGN_MusicClip::NGN_MusicClip() {
 
     _volume = 0;
+    _mixer_channel = MIXER_MUSIC_CH;
 
 }
 
@@ -76,7 +78,7 @@ NGN_MusicClip::~NGN_MusicClip() {
 
 
 /*** Abre un archivo para su streaming ***/
-bool NGN_MusicClip::Open(const char* filepath) {
+bool NGN_MusicClip::Open(std::string filepath) {
 
     // Prepara el buffer temporal para la carga del archivo
     buffer.clear();
@@ -85,7 +87,7 @@ bool NGN_MusicClip::Open(const char* filepath) {
     int32_t file_length = ngn->load->LoadFile(filepath, buffer);
     if (file_length <= 0) {
         // Error leyendo el archivo solicitado
-        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        ngn->log->Message("[NGN_MusicClip error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         return false;
     }
@@ -94,7 +96,7 @@ bool NGN_MusicClip::Open(const char* filepath) {
     if (music.openFromMemory((uint8_t*)&buffer[0], file_length)) {
         return true;
     } else {
-        std::cout << "Error opening " << filepath << " from memory." << std::endl;
+        ngn->log->Message("[NGN_MusicClip error] Error opening <" + filepath + "> from memory.");
         buffer.clear();
         return false;
     }
@@ -206,7 +208,8 @@ void NGN_MusicClip::Volume(int32_t volume) {
     _volume = volume;
     if (_volume < 0) _volume = 0;
     if (_volume > 100) _volume = 100;
-    music.setVolume(_volume);
+    float v = (float)_volume * ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) * ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);
+    music.setVolume(v);
 }
 
 
@@ -251,6 +254,26 @@ void NGN_MusicClip::Rewind() {
 
     sf::Time t;
     music.setPlayingOffset(t.Zero);
+
+}
+
+
+
+/*** Asigna un canal del mixer ***/
+void NGN_MusicClip::SetMixerChannel(uint8_t channel) {
+
+    _mixer_channel = channel;
+    if ((_mixer_channel < 1) || (_mixer_channel >= MIXER_CHANNELS)) _mixer_channel = MIXER_MUSIC_CH;
+    Volume(_volume);
+
+}
+
+
+
+/*** Devuelve el canal asignado en el mixer ***/
+uint8_t NGN_MusicClip::GetMixerChannel() {
+
+    return _mixer_channel;
 
 }
 

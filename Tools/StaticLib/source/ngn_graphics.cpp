@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -50,6 +50,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <fstream>
 
 
 // SDL
@@ -148,14 +149,14 @@ bool NGN_Graphics::Init(
         ngn->camera->world.width = render_resolution.width = native_w = native_width;
         ngn->camera->world.height = render_resolution.height = native_h = native_height;
     } else {
-        std::cout << "Native resolution must be greather than 0." << std::endl;
+        ngn->log->Message("[NGN_Graphics error] Native resolution must be greather than 0.");
         return false;
     }
 
     // Guarda la resolucion del escritorio
     SDL_DisplayMode display;
     if (SDL_GetDesktopDisplayMode(0, &display) < 0) {
-        std::cout << "Can't get current desktop resolution." << std::endl;
+        ngn->log->Message("[NGN_Graphics error] Can't get current desktop resolution.");
         return false;
     }
     desktop_w = display.w;
@@ -166,7 +167,7 @@ bool NGN_Graphics::Init(
     window = SDL_CreateWindow((const char*)window_caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, native_w, native_h, SDL_WINDOW_SHOWN);
     // Verifica si ha ocurrido un error en la creacion de la ventana
     if (window == NULL) {
-        std::cout << "SDL unable to create the main Window." << std::endl;
+        ngn->log->Message("[NGN_Graphics error] SDL is unable to create the main Window.");
         return false;
     }
     window_flags = SDL_GetWindowFlags(window);
@@ -177,7 +178,7 @@ bool NGN_Graphics::Init(
     if (renderer == NULL) {
         SDL_DestroyWindow(window);
         window = NULL;
-        std::cout << "SDL unable to create the rendering surface." << std::endl;
+        ngn->log->Message("[NGN_Graphics error] SDL is unable to create the rendering surface.");
         return false;
     }
 
@@ -257,6 +258,13 @@ void NGN_Graphics::SetMode(int8_t mode) {
 /*** Activa o desactiva el filtrado bilinear de la escena ***/
 void NGN_Graphics::SetFiltering(bool enabled) {
     filtering = enabled;
+}
+
+
+
+/*** Activa o desactiva el sincronismo vertical ***/
+void NGN_Graphics::SetVerticalSync(bool enabled) {
+    vsync = enabled;
 }
 
 
@@ -607,7 +615,7 @@ Vector2 NGN_Graphics::ScaleAndFitCoordinates(Vector2 coord) {
 void NGN_Graphics::SyncFrame(int32_t fps) {
 
     // Calcula el time gap entre frames
-    time_gap = floor(1000 / fps);
+    time_gap = std::floor(1000 / fps);
 
     // Control del framerate
     time_elapsed = (SDL_GetTicks() - time_last_frame);      // Lapso de tiempo desde el frame anterior
@@ -1096,7 +1104,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
 
     // Copia los pixeles del renderer al surface
     if (SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA8888, png_surface->pixels, png_surface->pitch) != 0) {
-        std::cout << "PNG Screenshoot: Error creating surface." << std::endl;
+        ngn->log->Message("[NGN_Graphics error] PNG Screenshot: Error creating surface.");
         SDL_FreeSurface(png_surface);
         take_screenshot = false;
         screenshot_filename = "";
@@ -1133,14 +1141,31 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
 
     // Si se ha codificado correctamente, graba el archivo
     if (_error == 0) {
+        // Intenta abrir el archivo en modo escritura
+        const char* _filepath = screenshot_filename.c_str();
+        std::ofstream file;
+        file.open(_filepath, std::ofstream::out | std::ofstream::binary);
+        // Si no puedes abrir el archivo, intenta crear antes la ruta
+        if (!file.is_open()) {
+            // Intenta generar la estructura de directorios, en caso de no existir
+            ngn->disk->MakePath(screenshot_filename);
+            // Y vuelve a intentar abrir el archivo para su escritura
+            file.open(_filepath, std::ofstream::out | std::ofstream::binary);
+            // Si continua sin poder abrirse, sal informando del error
+            if (!file.is_open()) {
+                ngn->log->Message("[NGN_Graphics error] PNG Screenshot: Error, can't create <" + screenshot_filename + "> file.");
+            }
+        }
+        // Cierra el archivo de estar abierto
+        if (file.is_open()) file.close();
         // Grabacion del archivo
         _error = lodepng::save_file(png_pixels, screenshot_filename);
         // Si hay algun error en la grabacion del PNG
         if (_error != 0) {
-            std::cout << "PNG Screenshoot:  Error saving " << screenshot_filename << "." << std::endl;
+            ngn->log->Message("[NGN_Graphics error] PNG Screenshot: Error saving <" + screenshot_filename + ">.");
         }
     } else {    // Fallo en la codificacion del PNG
-        std::cout << "PNG Screenshoot: Error encoding the PNG data." << std::endl;
+        ngn->log->Message("[NGN_Graphics error] PNG Screenshot: Error encoding the PNG data.");
     }
 
     // Libera los buffers

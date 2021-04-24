@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -65,7 +65,7 @@ static const uint8_t VIEWPORT_NUMBER = 8;       // Numero de viewports configura
 /*** Definicion de la clase ***/
 class NGN_Graphics {
 
-   // Public
+    // Public
     public:
 
         // Contructor
@@ -84,8 +84,9 @@ class NGN_Graphics {
                   bool sync = true                      // VSYNC activo?
                   );
 
-        void SetMode(int8_t mode);          // Cambia el modo de pantalla
-        void SetFiltering(bool enabled);    // Filtrado bilinear de la escena?
+        void SetMode(int8_t mode);              // Cambia el modo de pantalla
+        void SetFiltering(bool enabled);        // Filtrado bilinear de la escena?
+        void SetVerticalSync(bool enabled);     // Sincronismo vertical?
 
         SDL_Window* window;             // Puntero a la ventana
         int32_t window_flags;           // Control de los falgs de la ventana

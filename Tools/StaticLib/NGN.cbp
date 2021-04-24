@@ -14,6 +14,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DOS_WINDOWS" />
+					<Add option="-DMODE_DEBUG" />
 					<Add directory="$(CODEBLOCKS)/Libs/sdl2/include" />
 					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
 				</Compiler>
@@ -36,6 +38,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DOS_WINDOWS" />
+					<Add option="-DMODE_RELEASE" />
 					<Add directory="$(CODEBLOCKS)/Libs/sdl2/include" />
 					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
 				</Compiler>
@@ -59,6 +63,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_DEBUG" />
 					<Add directory="/usr/include/SDL2" />
 					<Add directory="/usr/include" />
 				</Compiler>
@@ -79,6 +85,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_RELEASE" />
 					<Add directory="/usr/include/SDL2" />
 					<Add directory="/usr/include" />
 				</Compiler>
@@ -115,14 +123,20 @@
 		<Unit filename="source/ngn_collisions.h" />
 		<Unit filename="source/ngn_defines.cpp" />
 		<Unit filename="source/ngn_defines.h" />
+		<Unit filename="source/ngn_disk.cpp" />
+		<Unit filename="source/ngn_disk.h" />
 		<Unit filename="source/ngn_filesystem.cpp" />
 		<Unit filename="source/ngn_filesystem.h" />
 		<Unit filename="source/ngn_graphics.cpp" />
 		<Unit filename="source/ngn_graphics.h" />
+		<Unit filename="source/ngn_image.cpp" />
+		<Unit filename="source/ngn_image.h" />
 		<Unit filename="source/ngn_input.cpp" />
 		<Unit filename="source/ngn_input.h" />
 		<Unit filename="source/ngn_load.cpp" />
 		<Unit filename="source/ngn_load.h" />
+		<Unit filename="source/ngn_log.cpp" />
+		<Unit filename="source/ngn_log.h" />
 		<Unit filename="source/ngn_math.cpp" />
 		<Unit filename="source/ngn_math.h" />
 		<Unit filename="source/ngn_music_clip.cpp" />

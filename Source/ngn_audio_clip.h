@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -79,9 +79,9 @@ class NGN_AudioClip {
 
         // Reproduce el sonido
         void Play(
-                  int32_t volume,              // Volumen inicial
-                  int32_t pan,                          // Nivel de panning (-100 a 100)
-                  bool loop                         // Loop?
+                  int32_t volume,           // Volumen inicial
+                  int32_t pan,              // Nivel de panning (-100 a 100)
+                  bool loop                 // Loop?
                   );
 
         // Continua la reproduccion de un sonido
@@ -126,6 +126,12 @@ class NGN_AudioClip {
         // Revobina el archivo de audio
         void Rewind();
 
+        // Asigna un canal del mixer
+        void SetMixerChannel(uint8_t channel);
+
+        // Devuelve el canal asignado actualmente
+        uint8_t GetMixerChannel();
+
 
 
     // Private
@@ -138,6 +144,7 @@ class NGN_AudioClip {
         int32_t _panning;
         int32_t _volume;
         float _panning_attenuation;
+        uint8_t _mixer_channel;
 
 };
 

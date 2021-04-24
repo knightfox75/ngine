@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-wip3 ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -101,13 +101,13 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
         // Si se ha abierto correctamente, intenta decodificarlo
         if (lodepng::decode(pixels, w, h, buffer) > 0) {
             // Si no puedes decodificarlo, error
-            std::cout << "Error decoding " << filepath << " texture." << std::endl;
+            ngn->log->Message("[NGN_Load error] Error decoding <" + filepath + "> texture.");
             buffer.clear();
             pixels.clear();
             return NULL;
         }
     } else {
-        std::cout << "Error loading " << filepath << "." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error loading <" + filepath + ">.");
         buffer.clear();
         return NULL;
     }
@@ -133,8 +133,8 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
     pixels.clear();
 
     // Verifica si el archivo se ha creado correctamente
-    if (surface == NULL) {
-         std::cout << "Unable to convert " << filepath << " to a surface." << std::endl;
+    if (!surface) {
+         ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a surface.");
          return NULL;
     }
 
@@ -146,8 +146,8 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
     texture->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
 
     // Verifica que la conversion ha sido correcta
-    if (texture == NULL) {
-         std::cout << "Unable to convert " << filepath << " to a texture." << std::endl;
+    if (!texture->gfx) {
+         ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a texture.");
          SDL_FreeSurface(surface);
          return NULL;
     }
@@ -197,7 +197,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 
     } else {
 
-        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         delete bg;
         return NULL;
@@ -210,7 +210,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 
     // Verifica que el archivo es compatible
     if (std::string(bg->header.magic) != MAGIC_STRING_TBG) {
-        std::cout << "File " << filepath << " is in unknow format." << std::endl;
+        ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
         delete bg;
         return NULL;
     }
@@ -219,7 +219,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
     std::vector<uint8_t> pixels;
     uint32_t w, h;
     if (lodepng::decode(pixels, w, h, tiles) > 0) {
-        std::cout << "Error decoding " << filepath << " tileset." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error decoding <" + filepath + "> tileset.");
         tiles.clear();
         pixels.clear();
         delete bg;
@@ -276,7 +276,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
             );
             // Verifica si se ha generado el surface
             if (surface == NULL) {
-                 std::cout << "Unable to convert " << filepath << " tileset to a surface." << std::endl;
+                 ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> tileset to a surface.");
                  pixels.clear();
                  tile_pixels.clear();
                  delete bg;
@@ -286,7 +286,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
             bg->tiles[tl] = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
             // Verifica si se ha creado con exito
             if (bg->tiles[tl] == NULL) {
-                 std::cout << "Unable to create " << filepath << " tileset." << std::endl;
+                 ngn->log->Message("[NGN_Load error] Unable to create <" + filepath + "> tileset.");
                  pixels.clear();
                  tile_pixels.clear();
                  SDL_FreeSurface(surface);
@@ -316,60 +316,15 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     // Crea un objeto temporal para procesar el sprite
     NGN_SpriteData* spr = new NGN_SpriteData();
 
-    // Crea un buffer temporal para la carga del archivo
-    std::vector<uint8_t> buffer;
-    uint32_t file_pos = 0;
-
-    // Crea un buffer temporal para la descompresion del Tileset
-    std::vector<uint8_t> raw;
+    // Crea un buffer temporal para la descompresion de los pixeles
     std::vector<uint8_t> pixels;
 
-    // Intenta cargar el archivo
-    if (LoadFile(filepath, buffer) > 0) {
-
-        // Cabecera del archivo
-        memcpy((uint8_t*)&spr->header, (uint8_t*)&buffer[0], sizeof(spr->header));
-        file_pos += sizeof(spr->header);
-
-        // Calcula el tamaño del buffer
-        uint32_t buffer_size = (buffer.size() - sizeof(spr->header));
-        raw.resize(buffer_size);
-
-        // Lee los datos del spritesheet
-        memcpy((uint8_t*)&raw[0], (uint8_t*)&buffer[file_pos], buffer_size);
-
-    } else {
-
-        // Error leyendo el archivo solicitado
-        std::cout << "Error opening " << filepath << " for read." << std::endl;
-        buffer.clear();
+    // Carga los datos del sprite
+    if (!LoadSpriteData(filepath, pixels, spr)) {
         delete spr;
-        return NULL;
-
-    }
-
-    // Elimina los datos del buffer temporal de archivo
-    buffer.clear();
-
-
-    // Verifica que el archivo es compatible
-    if (std::string(spr->header.magic) != MAGIC_STRING_SPR) {
-        std::cout << "File " << filepath << " is in unknow format." << std::endl;
-        delete spr;
+        pixels.clear();
         return NULL;
     }
-
-
-    // Decodifica los datos del sprite en PNG a pixeles.
-    uint32_t w, h;
-    if (lodepng::decode(pixels, w, h, raw) > 0) {
-        std::cout << "Error decoding " << filepath << " tileset." << std::endl;
-        raw.clear();
-        delete spr;
-        return NULL;
-    }
-    // Borra el buffer temporal
-    raw.clear();
 
     // Redimensiona el vector
     spr->gfx.resize(spr->header.total_frames);
@@ -384,11 +339,11 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
         // Crea la superficie en base a los pixeles cargados
         surface = SDL_CreateRGBSurfaceFrom(
-                                            (uint8_t*)&pixels[((frame_data_size * i) << 2)],   // Datos [frame * datos del frame * 4bpp]
-                                            spr->header.frame_width,                        // Ancho
-                                            spr->header.frame_height,                       // Alto
-                                            32,                     // Profuncidad de color 32bpp [RGBA8888]
-                                            (spr->header.frame_width << 2),                 // Longitud de una fila de pixeles en bytes
+                                            (uint8_t*)&pixels[((frame_data_size * i) << 2)],    // Datos [frame * datos del frame * 4bpp]
+                                            spr->header.frame_width,                            // Ancho
+                                            spr->header.frame_height,                           // Alto
+                                            32,                                                 // Profuncidad de color 32bpp [RGBA8888]
+                                            (spr->header.frame_width << 2),                     // Longitud de una fila de pixeles en bytes
                                             0x000000ff,             // Mascara R
                                             0x0000ff00,             // Mascara G
                                             0x00ff0000,             // Mascara B
@@ -397,9 +352,9 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
 
         if (surface == NULL) {
-             std::cout << "Unable to convert " << filepath << " to a surface." << std::endl;
-             pixels.clear();
-             return NULL;
+            ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a surface.");
+            pixels.clear();
+            return NULL;
         }
 
         // Si se ha creado la superficie con exito, conviertela a textura
@@ -407,10 +362,10 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
         // Verifica que la conversion ha sido correcta
         if (spr->gfx[i] == NULL) {
-             std::cout << "Unable to load " << filepath << " as a sprite." << std::endl;
-             SDL_FreeSurface(surface);
-             pixels.clear();
-             return NULL;
+            ngn->log->Message("[NGN_Load error] Unable to load <" + filepath + "> as a sprite.");
+            SDL_FreeSurface(surface);
+            pixels.clear();
+            return NULL;
         }
 
         // Borra el surface creado
@@ -462,7 +417,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
     } else {
 
         // Error leyendo el archivo solicitado
-        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         delete collision;
         return NULL;
@@ -475,7 +430,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
 
     // Verifica que el archivo es compatible
     if (std::string(collision->header.magic) != MAGIC_STRING_CMAP) {
-        std::cout << "File " << filepath << " is in unknow format." << std::endl;
+        ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
         delete collision;
         return NULL;
     }
@@ -519,7 +474,7 @@ NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
     int32_t file_length = LoadFile(filepath, buffer);
     if (file_length <= 0) {
         // Error leyendo el archivo solicitado
-        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         return NULL;
     }
@@ -535,7 +490,7 @@ NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
         return clip;
     } else {
         // Error en la carga desde RAM
-        std::cout << "Error opening " << filepath << " from memory." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> from memory.");
         // Elimina los datos del buffer del archivo temporal
         buffer.clear();
         // Error en la carga
@@ -563,14 +518,14 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     int32_t file_length = LoadFile(filepath, buffer);
     if (file_length <= 0) {
         // Error leyendo el archivo solicitado
-        std::cout << "Error opening " << filepath << " for read." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         return NULL;
     }
 
     // Intenta iniciar el subsitema de TTF para SDL
     if (TTF_Init() < 0) {
-        std::cout << "SDL TTF initialization failed." << std::endl;
+        ngn->log->Message("[NGN_Load error] SDL TTF initialization failed.");
         buffer.clear();
         return NULL;
     }
@@ -581,7 +536,7 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     // Intenta cargar la tipografia
     TTF_Font* ttf = TTF_OpenFontRW(SDL_RWFromMem((uint8_t*)&buffer[0], file_length), 0, height);
     if (ttf == NULL) {
-        std::cout << "Error opening " << filepath << " from memory." << std::endl;
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> from memory.");
         buffer.clear();
         delete font;
         return NULL;
@@ -715,6 +670,159 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
 
 
 
+/*** Carga una imagen en formato PNG como RAW ***/
+NGN_RawImage* NGN_Load::PngAsRaw(std::string filepath) {
+
+    // Crea los buffers temporales para la descompresion del PNG
+    std::vector<uint8_t> buffer;
+
+    // Prepara el destino de los pixeles en RAW
+    NGN_RawImage* raw = new NGN_RawImage();
+
+    // Intenta abrir el archivo
+    if (LoadFile(filepath, buffer) > 0) {
+        // Si se ha abierto correctamente, intenta decodificarlo
+        if (lodepng::decode(raw->pixels, raw->width, raw->height, buffer) > 0) {
+            // Si no puedes decodificarlo, error
+            ngn->log->Message("[NGN_Load error] Error decoding <" + filepath + "> image.");
+            buffer.clear();
+            delete raw;
+            return NULL;
+        }
+    } else {
+        ngn->log->Message("[NGN_Load error] Error loading <" + filepath + ">.");
+        buffer.clear();
+        delete raw;
+        return NULL;
+    }
+
+    // Devuelve el PNG en RAW
+    return raw;
+
+}
+
+
+
+/*** Carga un fotograma de un sprite como RAW ***/
+NGN_RawImage* NGN_Load::SpriteAsRaw(std::string filepath, uint32_t frame) {
+
+    // Crea un objeto temporal para procesar el sprite
+    NGN_SpriteData* spr = new NGN_SpriteData();
+
+    // Crea un buffer temporal para la descompresion de los pixeles
+    std::vector<uint8_t> pixels;
+
+    // Carga los datos del sprite
+    if (!LoadSpriteData(filepath, pixels, spr)) {
+        delete spr;
+        pixels.clear();
+        return NULL;
+    }
+
+    // Proteccion de frame
+    if (frame >= spr->header.total_frames) frame = (spr->header.total_frames - 1);
+
+    // Crea el objeto temporal de la imagen
+    NGN_RawImage* raw = new NGN_RawImage();
+
+    // Valores iniciales
+    raw->width = spr->header.frame_width;
+    raw->height = spr->header.frame_height;
+
+    // Calcula el tamaño de cada frame en memoria
+    uint32_t frame_size = ((raw->width * raw->height) << 2);        // WIDTH * HEIGHT * 4
+    // Calcula el offset con el origen de los datos
+    uint32_t offset = (frame_size * frame);
+
+    // Dimensiona el vector de destino
+    raw->pixels.resize(frame_size);
+    // Copia los datos del buffer de pixeles al vector de destino
+    memcpy((uint8_t*)&raw->pixels[0], (uint8_t*)&pixels[offset], frame_size);
+
+    // Vacia el buffer de pixeles temporal
+    pixels.clear();
+    // Elimina el sprite data temporal
+    delete spr;
+
+    // Devuelve los datos en RAW
+    return raw;
+
+}
+
+
+
+/*** Carga los fotogramas de un sprite como un vector de RAWs ***/
+bool NGN_Load::SpriteAsRawVector(
+    std::string filepath,                       // Archivo a cargar
+    std::vector<NGN_RawImage*> &raw_frames,     // Vector de destino con los frames
+    uint32_t first_frame,                       // Frame inicial (0 por defecto)
+    uint32_t last_frame                         // Frame final (ultimo por defecto)
+) {
+
+    // Crea un objeto temporal para procesar el sprite
+    NGN_SpriteData* spr = new NGN_SpriteData();
+
+    // Crea un buffer temporal para la descompresion de los pixeles
+    std::vector<uint8_t> pixels;
+
+    // Carga los datos del sprite
+    if (!LoadSpriteData(filepath, pixels, spr)) {
+        delete spr;
+        pixels.clear();
+        return false;
+    }
+
+    // Rango de frames
+    uint32_t _last_frame = (last_frame >= spr->header.total_frames) ? (spr->header.total_frames - 1):last_frame;
+    uint32_t _first_frame = (first_frame > _last_frame) ? _last_frame:first_frame;
+
+    // Valores iniciales
+    uint32_t width = spr->header.frame_width;
+    uint32_t height = spr->header.frame_height;
+    uint32_t total_frames = ((_last_frame - _first_frame) + 1);
+
+    // Calcula el tamaño de cada frame en memoria
+    uint32_t frame_size = ((width * height) << 2);        // WIDTH * HEIGHT * 4
+    // Calcula el offset con el origen de los datos
+    uint32_t offset = 0;
+
+    // Elimina el contenido previo del vector si es necesario
+    for (uint32_t i = 0; i < raw_frames.size(); i ++) {
+        delete raw_frames[i];
+    }
+    raw_frames.clear();
+
+    // Prepara el vector para almacenar todos los fotogramas
+    raw_frames.resize(total_frames);
+
+    // Copia los datos de cada frame al vector
+    uint32_t cnt = 0;
+    for (uint32_t i = _first_frame; i <= _last_frame; i ++) {
+        // Genera el espacio para el frame
+        raw_frames[cnt] = new NGN_RawImage();
+        raw_frames[cnt]->pixels.resize(frame_size);
+        raw_frames[cnt]->width = width;
+        raw_frames[cnt]->height = height;
+        // Copia los datos del buffer de pixeles al vector de destino
+        memcpy((uint8_t*)&raw_frames[cnt]->pixels[0], (uint8_t*)&pixels[offset], frame_size);
+        // Siguiente offset
+        offset += frame_size;
+        // Siguiente frame
+        cnt ++;
+    }
+
+    // Vacia el buffer de pixeles temporal
+    pixels.clear();
+    // Elimina el sprite data temporal
+    delete spr;
+
+    // Carga correcta
+    return true;
+
+}
+
+
+
 /*** Metodo para cargar un archivo desde el origen predeterminado. El archivo se desencriptara en el caso de estarlo ***/
 int32_t NGN_Load::LoadFile(std::string filepath, std::vector<uint8_t> &data) {
 
@@ -723,7 +831,7 @@ int32_t NGN_Load::LoadFile(std::string filepath, std::vector<uint8_t> &data) {
         return file_system->LoadFileFromPakage(filepath, data);
     } else {
         // Lee el archivo desde el disco
-        return file_system->LoadFileFromDisk(filepath, data);
+        return ngn->disk->ReadBinaryFile(filepath, data);
     }
 
 }
@@ -749,5 +857,68 @@ bool NGN_Load::SetPackage(std::string pkg_file, std::string key) {
         use_package = false;
         return false;
     }
+
+}
+
+
+
+
+/*** Carga los datos de un sprite ***/
+bool NGN_Load::LoadSpriteData(std::string filepath, std::vector<uint8_t> &img_pixels, NGN_SpriteData* spr) {
+
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+    uint32_t file_pos = 0;
+
+    // Crea un buffer temporal para la descompresion de los pixeles
+    std::vector<uint8_t> raw;
+
+    // Intenta cargar el archivo
+    if (LoadFile(filepath, buffer) > 0) {
+
+        // Cabecera del archivo
+        memcpy((uint8_t*)&spr->header, (uint8_t*)&buffer[0], sizeof(spr->header));
+        file_pos += sizeof(spr->header);
+
+        // Calcula el tamaño del buffer
+        uint32_t buffer_size = (buffer.size() - sizeof(spr->header));
+        raw.resize(buffer_size);
+
+        // Lee los datos del spritesheet
+        memcpy((uint8_t*)&raw[0], (uint8_t*)&buffer[file_pos], buffer_size);
+
+    } else {
+
+        // Error leyendo el archivo solicitado
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
+        buffer.clear();
+        return false;
+
+    }
+
+    // Elimina los datos del buffer temporal de archivo
+    buffer.clear();
+
+
+    // Verifica que el archivo es compatible
+    if (std::string(spr->header.magic) != MAGIC_STRING_SPR) {
+        ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
+        return false;
+    }
+
+
+    // Decodifica los datos del sprite en PNG a pixeles.
+    uint32_t w, h;
+    if (lodepng::decode(img_pixels, w, h, raw) > 0) {
+        ngn->log->Message("[NGN_Load error] Error decoding <" + filepath + "> sprite.");
+        raw.clear();
+        return false;
+    }
+    // Borra el buffer temporal
+    raw.clear();
+
+
+    // Carga correcta
+    return true;
 
 }
