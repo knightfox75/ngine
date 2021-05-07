@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip3 ***
+    *** Version 1.5.0-wip4 ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -79,7 +79,8 @@ class NGN_Disk {
         int32_t WriteBinaryFile(std::string filepath, std::vector<uint8_t> &buffer);
 
         // Lee un archivo en formato de texto desde el disco y almacenalo en un string
-        std::string ReadTextFile(std::string filepath);
+        std::string ReadTextFile(std::string filepath);                                 // Primera sobrecarga
+        bool ReadTextFile(std::string filepath, std::vector<std::string> &lines);       // Segunda sobrecarga
 
         // Escribe un archivo en formato de texto al disco desde un string
         int32_t WriteTextFile(std::string filepath, std::string text, bool append = false);

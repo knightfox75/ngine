@@ -93,9 +93,12 @@ int main(int argc, char* args[]) {
             demo->Run();
         } else {
             // Error al inicializar el juego
-            std::cout << "Game Start-up failed!" << std::endl;
+            ngn->log->Message("Game start-up failed!");
             r = 0x02;
         }
+        #if defined (MODE_DEBUG)
+            ngn->log->Message("Execution terminated.");
+        #endif
     } else {
         // Error al inicializar la libreria
         std::cout << "N'GINE boot-up failed!" << std::endl;

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip3 ***
+    *** Version 1.5.0-wip4 ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -160,7 +160,7 @@ int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &bu
 
 
 
-/*** Lee un archivo en formato de texto desde el disco y almacenalo en un string ***/
+/*** Lee un archivo en formato de texto desde el disco y almacenalo en un string (Primera sobrecarga) ***/
 std::string NGN_Disk::ReadTextFile(std::string filepath) {
 
     // Convierte la ruta de archivo a constante
@@ -191,6 +191,37 @@ std::string NGN_Disk::ReadTextFile(std::string filepath) {
 
     // Y devuelve los datos
     return text;
+
+}
+
+
+
+/*** Lee un archivo en formato de texto desde el disco y almacena las lineas en un vector de strings (Segunda sobrecarga) ***/
+bool NGN_Disk::ReadTextFile(std::string filepath, std::vector<std::string> &lines) {
+
+    // Convierte la ruta de archivo a constante
+    const char* _filepath = filepath.c_str();
+
+    // Intenta abrir el archivo en modo texto
+    std::fstream file;
+    file.open(_filepath, std::fstream::in);
+
+    // Si no puedes abrir el archivo, informa del error y sal
+    if (!file.is_open()) {
+        ngn->log->Message("[NGN_Disk error] <" + filepath + "> not found.");
+        return false;
+    }
+
+    // Lee los datos del archivo
+    std::string line = "";
+    lines.clear();
+    while (std::getline(file, line)) lines.push_back(line);
+
+    // Cierra el archivo
+    file.close();
+
+    // Y devuelve los datos
+    return true;
 
 }
 

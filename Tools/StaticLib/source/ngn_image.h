@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip3 ***
+    *** Version 1.5.0-wip4 ***
     Funciones para la manipulacion de imagenes en RAW
 
     Proyecto iniciado el 1 de Febrero del 2016
