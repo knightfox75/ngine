@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip4 ***
+    *** Version 1.5.0-wip5 ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -316,7 +316,7 @@ void NGN_TextLayer::CanvasColor(uint32_t rgba) {    // 0xRRGGBBAA
 void NGN_TextLayer::Print(std::string text) {
 
     // Si no hay texto o fuente definida, sal
-    if ((text == "") || (font == NULL)) return;
+    if ((text.size() ==  0) || (font == NULL)) return;
 
     // Prepara el render al backbuffer
     // Centro de la rotacion
@@ -334,12 +334,14 @@ void NGN_TextLayer::Print(std::string text) {
     SDL_SetTextureAlphaMod(backbuffer, 0x00);
 
     // Lee la cadena de texto
-    unsigned char c = 0;
-    for (char& t : text) {
-        // Conversion de char a unsigned char
-        c = ((t < 0) ? (0xFF - ~t) : t) & 0xFF;
+    std::string character;
+    uint8_t c = 0;
+    for (uint32_t i = 0; i < text.size(); i ++) {
+        // Lee un caracter y conviertelo a su codigo ASCII
+        character = text.at(i);
+        c = (uint8_t)character[0];
         // Salto de linea
-        if (c == '\n') {
+        if (c == 0x0A) {
             locate.x = padding;
             locate.y += font->line_spacing;
             if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;

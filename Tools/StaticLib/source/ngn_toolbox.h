@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip4 ***
+    *** Version 1.5.0-wip5 ***
     TOOL BOX - Caja de herramientas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -88,10 +88,24 @@ class NGN_ToolBox {
         // Convierte un numero decimal a cadena de texto con formato
         std::string Float2String(float number, uint8_t min_width, uint8_t precision, const char* chr);
 
+        // Convierte una cadena de texto de UTF-8 (2 bytes) a ANSI
+        std::string Utf8ToAnsi(std::string text);
+
+        // Convierte una cadena de texto de ANSI a UTF-8 (2 bytes)
+        std::string AnsiToUtf8(std::string text);
+
 
 
     // Segmento privado
     private:
+
+        // Constantes de conversion a UTF-8 (2 bytes)
+        // El primer byte en la codificacion en 2 bytes empieza con 110 y contiene 5 bits de datos
+        const uint8_t utf8_b0_head = 0xC0;      // 1100 0000
+        const uint8_t utf8_b0_mask = 0x1F;      // 0001 1111
+        // El siguiente byte en la codificacion en 2 bytes empieza con 10 y contiene 6 bits de datos
+        const uint8_t utf8_b1_head = 0x80;      // 1000 0000
+        const uint8_t utf8_b1_mask = 0x3F;      // 0011 1111
 
 };
 
