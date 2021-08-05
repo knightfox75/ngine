@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-stable ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,9 +66,6 @@ class NGN_FileSystem {
 
         // Destructor
         ~NGN_FileSystem();
-
-        // Metodo para cargar un archivo desde el sistema de archivos a un buffer temporal en RAM
-        int32_t LoadFileFromDisk(std::string filepath, std::vector<uint8_t> &buffer);
 
         // Metodo para cargar un archivo desde un archivo empaquetado a un buffer temporal en RAM
         int32_t LoadFileFromPakage(std::string filepath, std::vector<uint8_t> &buffer);

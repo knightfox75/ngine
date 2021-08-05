@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-stable ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -52,6 +52,7 @@
 // C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <vector>
+#include <string>
 
 // SFML
 #include <SFML/Audio.hpp>
@@ -73,7 +74,7 @@ class NGN_MusicClip {
         ~NGN_MusicClip();
 
         // Abre un archivo para su streaming
-        bool Open(const char* filepath);
+        bool Open(std::string filepath);
 
         // Reproduce la musica [1ª sobrecarga]
         void Play(
@@ -122,6 +123,12 @@ class NGN_MusicClip {
         // Rebobina el stream de audio
         void Rewind();
 
+        // Asigna un canal del mixer
+        void SetMixerChannel(uint8_t channel);
+
+        // Devuelve el canal asignado actualmente
+        uint8_t GetMixerChannel();
+
         // Buffer para el archivo
         std::vector<uint8_t> buffer;
 
@@ -134,6 +141,7 @@ class NGN_MusicClip {
 
         // Parametros;
         int32_t _volume;
+        uint8_t _mixer_channel;
 
 
 };

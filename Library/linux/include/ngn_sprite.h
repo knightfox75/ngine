@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -168,6 +168,7 @@ class NGN_Sprite {
 
         // Gestor de animaciones
         int32_t frame;                          // Fotograma actual
+        int32_t total_frames;                   // Numero total de fotogramas
         struct animation_data{
             std::string name;                   // Nombre de la animacion
             int32_t id;                         // ID de la animacion

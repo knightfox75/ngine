@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -104,6 +104,20 @@ class NGN_Load {
         );
 
 
+        // Carga una imagen PNG como RAW
+        NGN_RawImage* PngAsRaw(std::string filepath);
+
+        // Carga un fotograma de un sprite como RAW
+        NGN_RawImage* SpriteAsRaw(std::string filepath, uint32_t frame = 0);
+
+        // Carga los fotogramas de un sprite como un vector de RAWs
+        bool SpriteAsRawVector(
+            std::string filepath,                       // Archivo a cargar
+            std::vector<NGN_RawImage*> &raw_frames,     // Vector de destino con los frames
+            uint32_t first_frame = 0,                   // Frame inicial (0 por defecto)
+            uint32_t last_frame = NGN_DEFAULT_VALUE     // Frame final (ultimo por defecto)
+        );
+
         // Metodo para cargar un archivo desde de el origen predeterminado, en caso de estar encriptado, se desencriptara.
         int32_t LoadFile(std::string filepath, std::vector<uint8_t> &data);
 
@@ -122,6 +136,10 @@ class NGN_Load {
 
         // Guarda el origen de los datos (Disco o empaquetado)
         bool use_package;
+
+
+        // Carga los datos de un sprite
+        bool LoadSpriteData(std::string filepath, std::vector<uint8_t> &img_pixels, NGN_SpriteData* spr);
 
 
 };

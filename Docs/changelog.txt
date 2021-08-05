@@ -2,6 +2,46 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2021-08-04 Ver.1.5.0-stable
+--------------------------------------------------------------------------------
+- Correcciones menores en algunos mensajes de alerta.
+- Añadida la propiedad "total_frames" a la clase NGN_Sprite;
+- Añadida la clase NGN_Image para la manipulación de imágenes en formato RAW
+  y la creación de máscaras.
+- Añadidos los métodos PngAsRaw(), SpriteAsRaw() y SpriteAsRawVector() a la
+  clase NGN_Load para la carga de texturas y sprites y su conversión a RAW.
+- Añadidos los ejemplos de uso de las nuevas funcionalidades.
+- Añadido un mixer de audio en la clase "NGN_Sound" para ajustar el volumen
+  maestro, del canal de músicas, del canal de efectos de sonido y dos canales
+  auxiliares. Los métodos que incluye la clase son: SetMixerLevel() y
+  GetMixerLevel(). Además, se han modificado los métodos PlaySfx() y
+  OpenMusic() para poder asignar un canal del mixer al llamarlos. Tambien se
+  han definido las constantes MIXER_MASTER_CH, MIXER_MUSIC_CH,
+  MIXER_EFFECTS_CH, MIXER_AUX1_CH y MIXER_AUX2_CH para identificar los
+  distintos canales.
+- Añadida la clase NGN_Disk para el acceso a los archivos del disco duro.
+- El método ScreenShot() de la clase NGN_Graphics ahora crea el directorio de
+  destino si este no existe.
+- Añadido el método SetVerticalSync() a la clase NGN_Graphics.
+- Añadida la clase NGN_Log para la creación de mensajes y archivos de registro
+  de la actividad del programa. Todos los errores y alertas de N'gine a partir
+  de esta versión utilizaran este método.
+- Pequeños cambios en la lectura de caracteres en el método Print() de la
+  clase NGN_TextLayer.
+- Añadidos los métodos Utf8ToAnsi() y AnsiToUtf8() en la clase NGN_ToolBox
+  para convertir una cadena texto en formato UTF-8 (de dos bytes) a ANSI y
+  viceversa.
+- Corregido un BUG en el método Reset() de la clase NGN_Camera, el cual no
+  reiniciaba como es debido la posición y el target.
+- Añadido el soporte para los operadores == y != a las clases Vector2.
+- Corregido el error de división entre 0 en el método Normalize() de la clase
+  Vector2, el cual se producía si ambos componentes del vector eran 0.
+- Se ha actualizado la versión de SDL2 a la 2.0.14.
+
+  
+  
+
+
 2021-02-27 Ver.1.4.0-beta
 --------------------------------------------------------------------------------
 - Reescrita la clase de carga de archivos, usando funciones propias para

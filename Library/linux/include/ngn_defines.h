@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.4.0-beta ***
+    *** Version 1.5.0-stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,9 +59,9 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 4;                 // Version menor
+static const int32_t NGN_VERSION_MINOR = 5;                 // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
-static const std::string NGN_VERSION_METADATA = "beta";     // Version metadatos
+static const std::string NGN_VERSION_METADATA = "stable";   // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;        // Valor de "defecto"
@@ -81,6 +81,9 @@ static const SDL_BlendMode NGN_BLENDMODE_NONE = SDL_BLENDMODE_NONE;          // 
 static const SDL_BlendMode NGN_BLENDMODE_ALPHA = SDL_BLENDMODE_BLEND;        // Por nivel de alpha
 static const SDL_BlendMode NGN_BLENDMODE_ADDITIVE = SDL_BLENDMODE_ADD;       // Mezcla aditiva
 static const SDL_BlendMode NGN_BLENDMODE_MODULATE = SDL_BLENDMODE_MOD;       // Modulacion por color
+/*** Definiciones de los modos de mascara ***/
+static const uint8_t NGN_MASKMODE_CUTOUT = 0;       // Recorta el origen con la forma de la mascara
+static const uint8_t NGN_MASKMODE_HOLLOW = 1;       // Extrae la mascara del origien
 
 
 
@@ -316,6 +319,59 @@ class NGN_TextFont {
 
         // Separacion entre lineas
         uint32_t  line_spacing;
+
+    // Private
+    private:
+
+};
+
+
+
+/*** Prototipo de datos de las imagenes en RAW [NGN_RawImage] ***/
+class NGN_RawImage {
+
+    // Public
+    public:
+
+        // Constructor
+        NGN_RawImage();
+
+        // Destructor
+        ~NGN_RawImage();
+
+        // Buffer de pixeles
+        std::vector<uint8_t> pixels;
+
+        // Datos de la imagen
+        uint32_t width;             // Ancho de la imagen
+        uint32_t height;            // Alto de la imagen
+
+
+    // Private
+    private:
+
+};
+
+
+
+/*** Prototipo de datos de una superficie [NGN_RendererSurface] ***/
+class NGN_RendererSurface {
+
+    // Public
+    public:
+
+        // Constructor
+        NGN_RendererSurface();
+
+        // Destructor
+        ~NGN_RendererSurface();
+
+        // Superficie
+        SDL_Surface* surface;
+
+        int32_t width;          // Ancho de la superficie
+        int32_t height;         // Alto de la superficie
+
 
     // Private
     private:

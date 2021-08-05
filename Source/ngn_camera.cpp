@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip5 ***
+    *** Version 1.5.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,10 +68,9 @@ NGN_Camera::NGN_Camera() {
 
     // Limpia los vectores
     layer.clear();
+
     // Parametros iniciales
     target = NULL;
-    //world.width = ngn->graphics->native_w;     // Se autoconfigura en ngn_graphics.cpp
-    //world.height = ngn->graphics->native_h;
     position.x = position.y = 0.0f;
     scroll.width = scroll.height = 0.0f;
     animation_pause = false;
@@ -927,7 +926,10 @@ void NGN_Camera::Reset() {
     }
     layer.clear();
 
-    // Quita la pausa de la animacion
+    // Parametros iniciales
+    target = NULL;
+    position.x = position.y = 0.0f;
+    scroll.width = scroll.height = 0.0f;
     animation_pause = false;
 
 }

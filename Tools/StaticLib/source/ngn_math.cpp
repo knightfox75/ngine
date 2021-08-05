@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-wip5 ***
+    *** Version 1.5.0-stable ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -70,12 +70,17 @@ float Vector2::Magnitude() {
 
 }
 
-/*** Clase Vector2 (float) - Calcula la magnitud del vector ***/
+/*** Clase Vector2 (float) - Normaliza el vector ***/
 void Vector2::Normalize() {
 
     float m = Magnitude();
-    x /= m;
-    y /= m;
+    if (m > 0.0f) {
+        x /= m;
+        y /= m;
+    } else {
+        x = 0.0f;
+        y = 0.0f;
+    }
 
 }
 
@@ -113,6 +118,18 @@ Vector2 Vector2::operator/(float p) {
     v.x /= p;
     v.y /= p;
     return v;
+
+}
+
+bool Vector2::operator==(Vector2 p) {
+
+    if ((x == p.x) && (y == p.y)) return true; else return false;
+
+}
+
+bool Vector2::operator!=(Vector2 p) {
+
+    if ((x != p.x) || (y != p.y)) return true; else return false;
 
 }
 
@@ -162,6 +179,18 @@ Vector2I32 Vector2I32::operator/(int32_t p) {
 
 }
 
+bool Vector2I32::operator==(Vector2I32 p) {
+
+    if ((x == p.x) && (y == p.y)) return true; else return false;
+
+}
+
+bool Vector2I32::operator!=(Vector2I32 p) {
+
+    if ((x != p.x) || (y != p.y)) return true; else return false;
+
+}
+
 
 
 /*** Clase Vector2I64 (int64_t) - Calcula la magnitud del vector ***/
@@ -205,6 +234,18 @@ Vector2I64 Vector2I64::operator/(int64_t p) {
     v.x /= p;
     v.y /= p;
     return v;
+
+}
+
+bool Vector2I64::operator==(Vector2I64 p) {
+
+    if ((x == p.x) && (y == p.y)) return true; else return false;
+
+}
+
+bool Vector2I64::operator!=(Vector2I64 p) {
+
+    if ((x != p.x) || (y != p.y)) return true; else return false;
 
 }
 
