@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.6.0-beta ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -101,6 +101,8 @@ class NGN_FileSystem {
 
         // Magic string
         const std::string MAGIC_STRING = "NGN FILE SYSTEM";
+        // Version del programa de empaquetado
+        const uint8_t VERSION = 2;
 
 
         //Define la estructura de un nodo de la FAT
@@ -143,8 +145,6 @@ class NGN_FileSystem {
         int32_t ReadPackageHeader();
         // Crea una tabla de asignacion de archivos de un archivo empaquetado
         int32_t CreateFatFromPackage();
-        // Extrae los archivos de un empaquetado a un directorio
-        int32_t ExtractFile();
 
         // Desencriptado de los datos contenidos en un vector
         int32_t DecryptData(std::vector<uint8_t> &data);

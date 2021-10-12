@@ -20,6 +20,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
+#include <algorithm>
 
 // Includes del proyecto
 #include "file_system.h"
@@ -254,7 +256,7 @@ int32_t FileSystem::CreateFatFromDir() {
     buffer.clear();
 
     // Recore la lista de archivos, analizando el tamaño de cada uno de ellos y creando el nodo correspondiente en la FAT
-    std::cout << "FAT creation started..." << std::endl;
+    std::cout << "FAT creation started... ";
     for (uint32_t i = 0; i < file_list.size(); i ++) {
 
         // Prepara el nodo
@@ -292,6 +294,7 @@ int32_t FileSystem::CreateFatFromDir() {
         } else {
             // Error, borra la FAT e informa
             fat.clear();
+            std::cout << std::endl;
             std::cout << "Error opening [" << node.file_name << "] for read." << std::endl << "FAT creation aborted." << std::endl;
             return -1;
         }
@@ -303,6 +306,18 @@ int32_t FileSystem::CreateFatFromDir() {
         fat.push_back(node);
 
     }
+    std::cout << "Ok." << std::endl;
+
+    // Ordena la FAT alfabeticamente en orden ascendente (A-Z)
+    struct {
+        bool operator() (FatNode node_a, FatNode node_b) {
+            return ((node_a.file_name.compare(node_b.file_name)) < 0);
+        }
+    } comp;
+    std::cout << "Sorting FAT entries in ascending order (A to Z)... ";
+    std::sort(fat.begin(), fat.end(), comp);
+    std::cout << "Ok." << std::endl;
+    //for (uint32_t k = 0; k < fat.size(); k ++) std::cout << fat[k].file_name << std::endl;
 
     // Con la FAT creada y los datos analizados, calcula ahora la posicion que ocupara cada archivo en la seccion de datos
     uint32_t offset = sizeof(file_header) + fat_size;
@@ -675,7 +690,7 @@ int32_t FileSystem::ExtractPackage() {
 
         // Borra el buffer
         buffer.clear();
-		
+
 		// Borra el checksum
 		checksum.clear();
 

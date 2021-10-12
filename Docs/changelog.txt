@@ -2,6 +2,15 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2021-10-12 Ver.1.6.0-beta
+--------------------------------------------------------------------------------
+- Modificaciones en la utilidad NGN_FileSystem, la cual ahora se asegura de
+  que la FAT creada este en ordenada alfabéticamente en orden ascendente.
+- Cambiado el método de búsqueda de la clase NGN_FileSystem. Ahora busca los
+  archivos dentro del empaquetado en modo indexado en vez de secuencial. Esto
+  significa que, en un empaquetado con 20,000 archivos, puede localizar el
+  archivo solicitado con aproximadamente 14 consultas.
+
 2021-08-04 Ver.1.5.0-stable
 --------------------------------------------------------------------------------
 - Correcciones menores en algunos mensajes de alerta.
