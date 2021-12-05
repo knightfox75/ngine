@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.6.0-beta ***
+    *** Version 1.7.0-beta ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,12 +59,13 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 6;                 // Version menor
+static const int32_t NGN_VERSION_MINOR = 7;                 // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
 static const std::string NGN_VERSION_METADATA = "beta";     // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;        // Valor de "defecto"
+static const uint32_t NGN_FPS_LIMIT = 60;                   // Limite del motor de render en FPS
 /*** Definiciones de modos de pantalla ***/
 static const int8_t NGN_SCR_WINDOW = 1;                     // "Modo ventana x1"
 static const int8_t NGN_SCR_WINDOW_X2 = 2;                  // "Modo ventana x2"

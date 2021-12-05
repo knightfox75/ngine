@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.6.0-beta ***
+    *** Version 1.7.0-beta ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -77,6 +77,10 @@ class NGN_Collisions {
 
         // Consulta si hay colision por "pixel perfect" entre 2 sprites
         bool PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2);
+
+        // Consulta si has tocado un punto de un sprite (Raycast point)
+        bool RaycastPoint(NGN_Sprite* spr, float position_x, float position_y);
+        bool RaycastPoint(NGN_Sprite* spr, Vector2 position);
 
 
     // Private

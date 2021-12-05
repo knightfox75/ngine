@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.6.0-beta ***
+    *** Version 1.7.0-beta ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -172,6 +172,16 @@ class NGN_TextLayer {
         // Devuelve el tamaño original del lienzo
         Size2I32 GetSize();
 
+        // Limites del texto escrito en la capa
+        struct {
+            int32_t top;
+            int32_t bottom;
+            int32_t left;
+            int32_t right;
+            int32_t width;
+            int32_t height;
+        } text_boundaries;
+
 
 
     // Segmento privado
@@ -184,6 +194,9 @@ class NGN_TextLayer {
 
         // Limpieza del surface
         void SurfaceCleanUp();
+
+        // Calcula el tamaño del texto escrito
+        void GetTextBoundaries(int32_t x, int32_t y);
 
 };
 

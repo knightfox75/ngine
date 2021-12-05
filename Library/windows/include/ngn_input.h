@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.6.0-beta ***
+    *** Version 1.7.0-beta ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016

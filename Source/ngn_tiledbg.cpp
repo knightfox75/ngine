@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.6.0-beta ***
+    *** Version 1.7.0-beta ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -142,8 +142,7 @@ void NGN_TiledBg::Position(float position_x, float position_y) {
 void NGN_TiledBg::Position(Vector2 pos) {
 
     // Asigna la posicion
-    position.x = pos.x;
-    position.y = pos.y;
+    Position(pos.x, pos.y);
 
 }
 
@@ -160,8 +159,7 @@ void NGN_TiledBg::Translate(float speed_x, float speed_y) {
 void NGN_TiledBg::Translate(Vector2 spd) {
 
     // Calcula la nueva posicion
-    position.x += spd.x;
-    position.y += spd.y;
+    Translate(spd.x, spd.y);
 
 }
 
@@ -175,13 +173,11 @@ void NGN_TiledBg::Scale(float w, float h) {
     scale.y = h;
 
 }
-
 /*** Escala el fondo [Sobrecarga 2 - Ambos ejes a la vez] ***/
 void NGN_TiledBg::Scale(float factor) {
 
     // Aplica la escala
-    scale.x = factor;
-    scale.y = factor;
+    Scale(factor, factor);
 
 }
 

@@ -1,0 +1,2 @@
+[2021-08-05 11:53:50] N'gine version 1.5.0-stable started successfully!
+[2021-08-05 11:53:52] Execution terminated.

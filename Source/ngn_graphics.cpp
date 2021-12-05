@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.6.0-beta ***
+    *** Version 1.7.0-beta ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -74,13 +74,12 @@ NGN_Graphics::NGN_Graphics() {
     force_redaw = true;
 
     // Inicializa el control de frame rate
-    time_gap = 0;                           // Duracion de 1 frame
-    time_elapsed = 0;                       // Duracion del frame actual
-    time_last_frame = SDL_GetTicks();       // Duracion del ultimo frame
+    last_frame_count = SDL_GetPerformanceCounter();     // Duracion del ultimo frame
 
     // Inicializa el control del contador FPS
     fps_frames = 0;
-    fps_timer = SDL_GetTicks() + 1000;
+    fps = 0;
+    fps_last_time = SDL_GetPerformanceCounter();
 
     // Inicia los viewports
     SetupViewports();
@@ -296,10 +295,13 @@ void NGN_Graphics::Update() {
     // Si es necesario, realiza la captura de pantalla
     SaveCurrentFrameToPng();
 
-    // Espera al siguiente frame
-    SyncFrame(60);
+    // Espera al siguiente frame (60fps soft limit, definido en NGN_FPS_LIMIT)
+    SyncFrame();
 
-    // Contador de FPS [ *** Debug ***]
+    // Contador de frames por segundo
+    CountFramesPerSecond();
+
+    // Contador de FPS en la consola [*** Debug ***]
     if (ngn->system->fps_counter) FpsCounter();
 
     // Borra los viewports de existir estos
@@ -589,6 +591,15 @@ Size2I32 NGN_Graphics::GetDesktopResolution() {
 
 
 
+/*** Devuelve el numero de FPS actual ***/
+uint32_t NGN_Graphics::GetFps() {
+
+    return fps;
+
+}
+
+
+
 /*** Escala y adapta las coordenadas al area visible ***/
 Vector2 NGN_Graphics::ScaleAndFitCoordinates(Vector2 coord) {
 
@@ -612,19 +623,19 @@ Vector2 NGN_Graphics::ScaleAndFitCoordinates(Vector2 coord) {
 
 
 /*** Sincronizacion de velocidad del framerate ***/
-void NGN_Graphics::SyncFrame(int32_t fps) {
+void NGN_Graphics::SyncFrame() {
 
-    // Calcula el time gap entre frames
-    time_gap = std::floor(1000 / fps);
+    // Calcula el tiempo actual
+    uint64_t current_frame_count = SDL_GetPerformanceCounter();
 
-    // Control del framerate
-    time_elapsed = (SDL_GetTicks() - time_last_frame);      // Lapso de tiempo desde el frame anterior
+    // Calcula el diferencial
+    float time_elapsed = ((float)(current_frame_count - last_frame_count) / (float)SDL_GetPerformanceFrequency());
 
     // Si es necesario, esperate los ticks necesarios
-    if (time_elapsed < time_gap) SDL_Delay((time_gap - time_elapsed));
+    if (time_elapsed < frame_time) SDL_Delay((uint32_t)((frame_time - time_elapsed) * 1000));
 
     // Guarda la marca de tiempo de este frame
-    time_last_frame = SDL_GetTicks();
+    last_frame_count = SDL_GetPerformanceCounter();
 
 }
 
@@ -828,14 +839,29 @@ void NGN_Graphics::UpdateRendererFlags() {
 
 
 
-/*** Contador de Frames por segundo ***/
+/*** Muestra los frames por segundo [DEBUG] ***/
 void NGN_Graphics::FpsCounter() {
 
-    // Contador
-    if (SDL_GetTicks() > fps_timer) {
-        std::cout << "Render Speed: " << fps_frames << " fps.     \x0d";
-        fps_timer = SDL_GetTicks() + 1000;
+    std::cout << "Render Speed: " << fps << " fps.     \x0d";
+
+}
+
+
+
+/*** Cuenta el numero de frames por segundo ***/
+void NGN_Graphics::CountFramesPerSecond() {
+
+    // Marca actual
+    uint64_t current_time = SDL_GetPerformanceCounter();
+
+    // Tiempo transcurrido
+    float time_elapsed = ((float)(current_time - fps_last_time) / (float)SDL_GetPerformanceFrequency());
+
+    // Contador de fps
+    if (time_elapsed >= 1.0f) {
+        fps = fps_frames;
         fps_frames = 0;
+        fps_last_time = SDL_GetPerformanceCounter();
     } else {
         fps_frames ++;
     }

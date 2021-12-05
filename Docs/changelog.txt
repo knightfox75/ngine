@@ -2,6 +2,21 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2021-12-05 Ver.1.7.0-beta
+--------------------------------------------------------------------------------
+- Añadido el método GetFps() a la clase NGN_Graphics, el cual devuelve el
+  numero actual de fotogramas por segundo del render.
+- Actualizado el método que limita el framerate por software, siendo ahora
+  mas preciso y estable con pantallas con un refresco superior a 60hz.
+- Añadida la propiedad text_boundaries a la clase NGN_TextLayer, la cual
+  almacena el tamaño del texto escrito en la capa desde el uso de la
+  instrucción Print(). Si no hay texto en la capa, devuelve -1.
+- Añadido el método RaycastPoint() a la clase NGN_Collisions, el cual devuelve
+  si en la coordenada especificada hay o no un pixel visible del sprite dado.
+  Este sprite puede estar rotado o escalado.
+- Optimizaciones menores en las sobrecargas de alguna clases.
+- Documentación del manual del usuario actualizada.
+
 2021-10-12 Ver.1.6.0-beta
 --------------------------------------------------------------------------------
 - Modificaciones en la utilidad NGN_FileSystem, la cual ahora se asegura de
