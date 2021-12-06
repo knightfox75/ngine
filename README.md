@@ -24,3 +24,7 @@ En este momento el motor tiene implementadas todas las funciones básicas para l
 - ¿Que contiene el paquete de distribución del motor?<br>
 El archivo contiene el código fuente del motor, así como las librerías del mismo compiladas para Windows y Linux Mint, documentación de instalación y uso, ejemplos comentados y un pack con demos ya compiladas mostrando las principales funcionalidades del motor.<br>
 <br>
+
+Aquí tenéis una demo reel con la mayoría de características del motor:<br>
+https://www.youtube.com/watch?v=kIcG9lp1oI0
+<br>
