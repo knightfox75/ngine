@@ -2,6 +2,25 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2022-04-17 Ver.1.8.0-stable
+--------------------------------------------------------------------------------
+- Templates para code::blocks actualizados.
+- Añadido el método TextFile(); a la clase NGN_Load, el cual permite abrir un
+  archivo de texto para almacenarlo en un string o en un vector de string con
+  las líneas por separado.
+- Añadidos los métodos ClearSfx(); y ClearMusic(); a la clase NGN_Sound, los
+  cuales eliminan todos los efectos de sonido o músicas en la cola de
+  reproducción.
+- Añadidos los métodos PushMixer(); y PopMixer(); a la clase NGN_Sound, los
+  cuales guardan y restauran los valores actuales de todos los canales
+  del mixer.
+- *** BUGFIX *** Solucionado el BUG que causaba desbordamientos de memoria
+  al intentar detener un stream de música sin el loop activado una vez este
+  había finalizado su reproducción.
+- Mejorada la detección de cambios en las propiedades de la ventana para
+  forzar el redibujado en algunas funciones.
+
+
 2021-12-05 Ver.1.7.0-beta
 --------------------------------------------------------------------------------
 - Añadido el método GetFps() a la clase NGN_Graphics, el cual devuelve el
@@ -17,6 +36,7 @@ N'gine Changelog
 - Optimizaciones menores en las sobrecargas de alguna clases.
 - Documentación del manual del usuario actualizada.
 
+
 2021-10-12 Ver.1.6.0-beta
 --------------------------------------------------------------------------------
 - Modificaciones en la utilidad NGN_FileSystem, la cual ahora se asegura de
@@ -25,6 +45,7 @@ N'gine Changelog
   archivos dentro del empaquetado en modo indexado en vez de secuencial. Esto
   significa que, en un empaquetado con 20,000 archivos, puede localizar el
   archivo solicitado con aproximadamente 14 consultas.
+
 
 2021-08-04 Ver.1.5.0-stable
 --------------------------------------------------------------------------------
@@ -61,9 +82,6 @@ N'gine Changelog
 - Corregido el error de división entre 0 en el método Normalize() de la clase
   Vector2, el cual se producía si ambos componentes del vector eran 0.
 - Se ha actualizado la versión de SDL2 a la 2.0.14.
-
-  
-  
 
 
 2021-02-27 Ver.1.4.0-beta

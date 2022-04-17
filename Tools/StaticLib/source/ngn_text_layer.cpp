@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -132,6 +132,11 @@ NGN_TextLayer::NGN_TextLayer(
     locate.x = 0;               // Posicion del cabezal de escritura
     locate.y = 0;
 
+    text_boundaries.top = 0;
+    text_boundaries.bottom = 0;
+    text_boundaries.left = 0;
+    text_boundaries.right = 0;
+
     ink.b = 0xFF;               // Color por defecto (Tinta)
     ink.g = 0xFF;
     ink.r = 0xFF;
@@ -221,6 +226,14 @@ void NGN_TextLayer::Cls() {
 
     // Resetea el cabezal de escritura
     locate.x = locate.y = padding;
+
+    // Resetea los limites del texto
+    text_boundaries.top = -1;
+    text_boundaries.bottom = -1;
+    text_boundaries.left = -1;
+    text_boundaries.right = -1;
+    text_boundaries.width = 0;
+    text_boundaries.height = 0;
 
     // Paso de limpieza
     delete _center;
@@ -346,6 +359,8 @@ void NGN_TextLayer::Print(std::string text) {
             locate.y += font->line_spacing;
             if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
         } else {
+            // Calculo del tamaño del texto escrito
+            GetTextBoundaries(locate.x, locate.y);
             // Si el caracter es invalido, selecciona el caracter de espacio
             if (font->character[c]->gfx == NULL) c = 0x20;
             // Prepara las dimensiones de la copia de la textura
@@ -370,6 +385,8 @@ void NGN_TextLayer::Print(std::string text) {
             SDL_RenderCopyEx(ngn->graphics->renderer, font->character[c]->gfx, &source, &destination, 0.0f, _center, SDL_FLIP_NONE);
             // Actualiza la posicion del cabezal de escritura
             locate.x += destination.w;
+            // Calculo del tamaño del texto escrito
+            GetTextBoundaries(locate.x, (locate.y + destination.h));
         }
     }
 
@@ -394,8 +411,7 @@ void NGN_TextLayer::Position(float position_x, float position_y) {
 void NGN_TextLayer::Position(Vector2 pos) {
 
     // Asigna la posicion a la capa
-    position.x = pos.x;
-    position.y = pos.y;
+    Position(pos.x, pos.y);
 
 }
 
@@ -412,8 +428,7 @@ void NGN_TextLayer::Translate(float speed_x, float speed_y) {
 void NGN_TextLayer::Translate(Vector2 spd) {
 
     // Calcula la nueva posicion
-    position.x += spd.x;
-    position.y += spd.y;
+    Translate(spd.x, spd.y);
 
 }
 
@@ -438,13 +453,11 @@ void NGN_TextLayer::Scale(float w, float h) {
     scale.height = h;
 
 }
-
 /*** Escala una capa [Sobrecarga 2 - Ambos ejes a la vez] ***/
 void NGN_TextLayer::Scale(float sc) {
 
     // Guarda la escala
-    scale.width = sc;
-    scale.height = sc;
+    Scale(sc, sc);
 
 }
 
@@ -481,5 +494,22 @@ void NGN_TextLayer::SurfaceCleanUp() {
     SDL_RenderClear(ngn->graphics->renderer);
     // Restaura el render al seleccionado
     ngn->graphics->RenderToSelected();
+
+}
+
+
+
+/*** Calcula el tamaño del texto escrito en la capa ***/
+void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
+
+    // Calcula los limites
+    if ((x < text_boundaries.left) || (text_boundaries.left < 0)) text_boundaries.left = x;
+    if ((x > text_boundaries.right) || (text_boundaries.right < 0)) text_boundaries.right = x;
+    if ((y < text_boundaries.top)  || (text_boundaries.top < 0)) text_boundaries.top = y;
+    if ((y > text_boundaries.bottom) || (text_boundaries.bottom < 0)) text_boundaries.bottom = y;
+
+    // Calcula el tamaño de texto escrito
+    text_boundaries.width = (text_boundaries.right - text_boundaries.left);
+    text_boundaries.height = (text_boundaries.bottom - text_boundaries.top);
 
 }

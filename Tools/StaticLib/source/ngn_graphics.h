@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -172,6 +172,8 @@ class NGN_Graphics {
         /*** Resolucion del escritorio ***/
         Size2I32 GetDesktopResolution();                    // Devuelve la resolucion actual del escritorio
 
+        /*** Devuelve el numero de FPS actual ***/
+        uint32_t GetFps();                                  // Devuelve el nº de fotogramas renderizado en el ultimo segundo
 
         /*** Metodos de uso interno ***/
         Vector2 ScaleAndFitCoordinates(Vector2 coord);      // Escala las coordenadas al area visible
@@ -191,11 +193,10 @@ class NGN_Graphics {
         float aspect_native, aspect_desktop;
         Vector2 output_scale, output_viewport;
 
-        // Control del framerate
-        void SyncFrame(int32_t fps);
-        int32_t time_gap;
-        int32_t time_elapsed;
-        int32_t time_last_frame;
+        // Control del framerate (definido el framerate maximo en NGN_FPS_LIMIT)
+        void SyncFrame();
+        uint64_t last_frame_count;
+        const float frame_time = (1.0f / (float)NGN_FPS_LIMIT);
 
         // Control de la pantalla (verificacion)
         int8_t _screen_mode;        // Modo actual de pantalla?
@@ -206,15 +207,15 @@ class NGN_Graphics {
         void ChangeScreenMode();
         // Cambio del VSYNC
         void SetVsync();
-        // Deteccion del cambio de foco
-        void GetWindowFocus();
         // Gestion de los parametros del render
         void UpdateRendererFlags();
 
         // Contador de FPS (Debug)
-        uint32_t fps_frames;
-        uint32_t fps_timer;
+        uint64_t fps_last_time;         // Marca de tiempo
+        uint32_t fps_frames;            // Contador de frames renderizados desde el ultimo conteo
+        uint32_t fps;                   // Guarda el numero actual de FPS del ultimo segundo
         void FpsCounter();
+        void CountFramesPerSecond();
 
         // Inicializa los viewports
         void SetupViewports();
@@ -235,10 +236,10 @@ class NGN_Graphics {
         // Graba el frame actual en formato PNG
         std::vector<uint8_t> png_pixels;        // Pixeles para formar el PNG
         std::vector<uint8_t> png_buffer;        // Datos del backbuffer para formar el PNG
-        std::string screenshot_filename;       // Ruta y nombre del archivo para el screen shoot
-        bool take_screenshot;                  // Debes de realizar un screenshoot?
-        NGN_TextureData* screenshot_overlay;   // Overlay del screenshoot
-        uint8_t screenshot_overlay_alpha;      // Alpha del overlay
+        std::string screenshot_filename;        // Ruta y nombre del archivo para el screen shoot
+        bool take_screenshot;                   // Debes de realizar un screenshoot?
+        NGN_TextureData* screenshot_overlay;    // Overlay del screenshoot
+        uint8_t screenshot_overlay_alpha;       // Alpha del overlay
         void SaveCurrentFrameToPng();           // Realiza una captura de pantalla al final del frame si se solicita
 
 };

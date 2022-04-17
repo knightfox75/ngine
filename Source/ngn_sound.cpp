@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.7.0-beta ***
+    *** Version 1.8.0-stable ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -70,6 +70,7 @@ NGN_Sound::NGN_Sound() {
     for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) {
         mixer_channel_level[i] = 100;
         last_mixer_channel_level[i] = 100;
+        backup_mixer_channel_level[i] = 100;
     }
 
 }
@@ -78,22 +79,9 @@ NGN_Sound::NGN_Sound() {
 NGN_Sound::~NGN_Sound() {
 
     // Limpia la cola de sonidos
-    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-        // Deten el sonido
-        sfx_cue[i]->Stop();
-        // Borralo
-        delete sfx_cue[i];
-    }
-    sfx_cue.clear();
-
+    ClearSfx();
     // Limpia la cola de musicas
-    for (uint32_t i = 0; i < music_cue.size(); i ++) {
-        // Deten el sonido
-        music_cue[i]->Stop();
-        // Borralo
-        delete music_cue[i];
-    }
-    music_cue.clear();
+    ClearMusic();
 
 }
 
@@ -377,15 +365,6 @@ void NGN_Sound::SfxUpdate() {
 
     bool repeat = false;
 
-    // Ajuste de volumen si hay cambios en el mixer
-    uint8_t ch = 0;
-    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-        ch = sfx_cue[i]->GetMixerChannel();
-        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
-            sfx_cue[i]->Volume(sfx_cue[i]->GetVolume());
-        }
-    }
-
     // Eliminacion de sonidos finalizados
     do {
         // No repitas por defecto
@@ -402,7 +381,30 @@ void NGN_Sound::SfxUpdate() {
         }
     } while (repeat);
 
+    // Ajuste de volumen si hay cambios en el mixer
+    uint8_t ch = 0;
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        ch = sfx_cue[i]->GetMixerChannel();
+        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
+            sfx_cue[i]->Volume(sfx_cue[i]->GetVolume());
+        }
+    }
+
     //std::cout << "SFX cue: " << sfx_cue.size() << std::endl;
+
+}
+
+
+/*** Elimina todos los SFX en la cola ***/
+void NGN_Sound::ClearSfx() {
+
+    for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
+        // Deten el sonido
+        sfx_cue[i]->Stop();
+        // Borralo
+        delete sfx_cue[i];
+    }
+    sfx_cue.clear();
 
 }
 
@@ -537,11 +539,11 @@ void NGN_Sound::CloseMusic(NGN_MusicClip* music) {
         music->Stop();
     }
 
-    // Elimina el archivo del buffer
-    music->buffer.clear();
-
     // Actualiza la cola de musicas
     MusicUpdate();
+
+    // Anula la referencia a al stream
+    music = NULL;
 
 }
 
@@ -751,15 +753,6 @@ void NGN_Sound::MusicUpdate() {
 
     bool repeat = false;
 
-    // Ajuste de volumen si hay cambios en el mixer
-    uint8_t ch = 0;
-    for (uint32_t i = 0; i < music_cue.size(); i ++) {
-        ch = music_cue[i]->GetMixerChannel();
-        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
-            music_cue[i]->Volume(music_cue[i]->GetVolume());
-        }
-    }
-
     // Control de la cola de las musicas
     do {
         // No repitas por defecto
@@ -776,7 +769,30 @@ void NGN_Sound::MusicUpdate() {
         }
     } while (repeat);
 
+    // Ajuste de volumen si hay cambios en el mixer
+    uint8_t ch = 0;
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        ch = music_cue[i]->GetMixerChannel();
+        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
+            music_cue[i]->Volume(music_cue[i]->GetVolume());
+        }
+    }
+
     //std::cout << "Music cue: " << music_cue.size() << std::endl;
+
+}
+
+
+/*** Elimina todas las musicas en la cola ***/
+void NGN_Sound::ClearMusic() {
+
+    for (uint32_t i = 0; i < music_cue.size(); i ++) {
+        // Deten el sonido
+        music_cue[i]->Stop();
+        // Borralo
+        delete music_cue[i];
+    }
+    music_cue.clear();
 
 }
 
@@ -864,5 +880,27 @@ int32_t NGN_Sound::GetMixerLevel(uint8_t channel) {
     if (channel >= MIXER_CHANNELS) return 0;
 
     return mixer_channel_level[channel];
+
+}
+
+
+
+/*** Guarda los valores actuales del mixer ***/
+void NGN_Sound::PushMixer() {
+
+    for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) {
+        backup_mixer_channel_level[i] = mixer_channel_level[i];
+    }
+
+}
+
+
+
+/*** Restaura los valores del mixer guardados ***/
+void NGN_Sound::PopMixer() {
+
+    for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) {
+        mixer_channel_level[i] = backup_mixer_channel_level[i];
+    }
 
 }

@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.7.0-beta ***
+    *** Version 1.8.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -780,11 +780,7 @@ void NGN_Graphics::ChangeScreenMode() {
 
         // Actualiza los flags
         _screen_mode = screen_mode;
-        force_redaw = true;
-
-    } else {
-
-        force_redaw = false;
+        force_redaw |= true;
 
     }
 
@@ -809,29 +805,13 @@ void NGN_Graphics::SetVsync() {
 
 
 
-/*** Obten el estado del foco de la ventana ***/
-void NGN_Graphics::GetWindowFocus() {
-
-    // Has perdido el foco?
-    int32_t flags = SDL_GetWindowFlags(window);
-    if (flags == window_flags) return;
-
-    // Si has cambiado alguna caracteristica de la ventana (foco), fuerza el redibujado
-    force_redaw = true;
-    if (screen_mode == NGN_SCR_FULLSCREEN) _screen_mode = 127;
-    window_flags = flags;
-
-}
-
-
-
 /*** Gestion de los parametros del render ***/
 void NGN_Graphics::UpdateRendererFlags() {
 
     // VSYNC
     SetVsync();
     // Focus
-    GetWindowFocus();
+    //GetWindowFocus();
     // Filtering
     _filtering = filtering;
 

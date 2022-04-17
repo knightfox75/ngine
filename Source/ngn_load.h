@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.7.0-beta ***
+    *** Version 1.8.0-stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -117,6 +117,10 @@ class NGN_Load {
             uint32_t first_frame = 0,                   // Frame inicial (0 por defecto)
             uint32_t last_frame = NGN_DEFAULT_VALUE     // Frame final (ultimo por defecto)
         );
+
+        // Metodos para cargar archivos de texto
+        std::string TextFile(std::string filepath);                                     // Primera sobrecarga
+        bool TextFile(std::string filepath, std::vector<std::string> &text_lines);      // Segunda sobrecarga
 
         // Metodo para cargar un archivo desde de el origen predeterminado, en caso de estar encriptado, se desencriptara.
         int32_t LoadFile(std::string filepath, std::vector<uint8_t> &data);

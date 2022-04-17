@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -172,8 +172,7 @@ void NGN_Sprite::Position(float position_x, float position_y) {
 void NGN_Sprite::Position(Vector2 pos) {
 
     // Asigna la posicion al Sprite
-    position.x = pos.x;
-    position.y = pos.y;
+    Position(pos.x, pos.y);
 
 }
 
@@ -190,8 +189,7 @@ void NGN_Sprite::Translate(float speed_x, float speed_y) {
 void NGN_Sprite::Translate(Vector2 spd) {
 
     // Calcula la nueva posicion
-    position.x += spd.x;
-    position.y += spd.y;
+    Translate(spd.x, spd.y);
 
 }
 
@@ -218,13 +216,11 @@ void NGN_Sprite::Scale(float w, float h) {
     height = original.height * h;
 
 }
-
 /*** Escala un sprite [Sobrecarga 2 - Ambos ejes a la vez] ***/
 void NGN_Sprite::Scale(float scale) {
 
     // Aplica la escala
-    width = original.width * scale;
-    height = original.height * scale;
+    Scale(scale, scale);
 
 }
 

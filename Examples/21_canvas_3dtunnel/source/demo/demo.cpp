@@ -4,11 +4,11 @@
     Ejemplo del uso del Canvas: Tunel 3D (Programa)
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.5.0-beta o superior
+    Requiere N'gine 1.8.0-stable o superior
 
     Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/
@@ -91,7 +91,7 @@ Demo::~Demo() {
     // Elimina los canvas
     delete bg; bg = NULL;       // Fondo
 
-    // Vacia el vecto de datos
+    // Vacia el vector de datos
     deep.clear();
 
 }

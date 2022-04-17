@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.7.0-beta ***
+    *** Version 1.8.0-stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -58,10 +58,10 @@
 
 
 /*** Version de N'gine ***/
-static const int32_t NGN_VERSION_MAJOR = 1;                 // Version mayor
-static const int32_t NGN_VERSION_MINOR = 7;                 // Version menor
-static const int32_t NGN_VERSION_PATCH = 0;                 // Version parche
-static const std::string NGN_VERSION_METADATA = "beta";     // Version metadatos
+static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
+static const int32_t NGN_VERSION_MINOR = 8;                     // Version menor
+static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
+static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;        // Valor de "defecto"

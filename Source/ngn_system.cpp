@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.7.0-beta ***
+    *** Version 1.8.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -134,6 +134,22 @@ void NGN_System::EventUpdate() {
                 JoyAxisMotion();
                 break;
 
+            // Evento
+            case SDL_WINDOWEVENT:
+                switch (sdl_event.window.event) {
+                    case SDL_WINDOWEVENT_SHOWN:
+                    case SDL_WINDOWEVENT_EXPOSED:
+                    case SDL_WINDOWEVENT_MOVED:
+                    case SDL_WINDOWEVENT_RESIZED:
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    case SDL_WINDOWEVENT_MAXIMIZED:
+                    case SDL_WINDOWEVENT_RESTORED:
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                        ngn->graphics->force_redaw |= true;
+                        break;
+                }
+                break;
+
             default:
                 break;
 
@@ -179,6 +195,9 @@ void NGN_System::ResetFlags() {
     // Mouse RAW
     ngn->input->mouse.raw_x = 0;
     ngn->input->mouse.raw_y = 0;
+
+    // Redibujado de la pantalla
+    ngn->graphics->force_redaw = false;
 
 }
 

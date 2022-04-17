@@ -4,11 +4,11 @@
     Archivo de Demo (Programa)
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.5.0-beta o superior
+    Requiere N'gine 1.8.0-stable o superior
 
     Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
     http://downloads.sourceforge.net/project/mingw-w64/

@@ -1,2 +1,2 @@
-[2021-12-05 12:13:02] N'gine version 1.7.0-beta started successfully!
-[2021-12-05 12:13:07] Execution terminated.
+[2022-04-17 22:07:52] N'gine version 1.8.0-stable started successfully!
+[2022-04-17 22:07:54] Execution terminated.

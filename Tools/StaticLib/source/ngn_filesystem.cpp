@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -50,6 +50,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cmath>
+//#include <algorithm>
 
 // Libreria
 #include "ngn.h"
@@ -94,12 +96,55 @@ int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uin
     buffer.clear();
 
     // Busca el archivo en la FAT
+    /*
     int32_t _id = -1;
     for (uint32_t i = 0; i < fat.size(); i ++) {
         // Si el archivo coincide...
         if (filepath == fat[i].file_name) {
             _id = (int32_t)i;
             break;
+        }
+    }
+    */
+
+    // Busca el archivo en la FAT (modo indexado)
+    int32_t _id = -1;
+    int32_t r = 0;
+    uint32_t p_begin = 0;
+    uint32_t p_end = 0;
+    uint32_t position = 0;
+
+    // Hay al menos un elemento valido en la FAT?
+    if (fat.size() > 0) {
+        // Parametros iniciales de la busqueda
+        p_begin = 0;
+        p_end = (fat.size() - 1);
+        position = p_begin + (uint32_t)((p_end - p_begin) / 2);
+        // Busqueda indexada del archivo
+        do {
+            // Analisis del archivo
+            r = filepath.compare(fat[position].file_name);
+            if (r == 0) {
+                // Archivo encontrado
+                _id = (int32_t)position;
+                break;
+            } else {
+                // Nueva posicion, dependiendo de si el nombre esta por detras o por delante en el orden de la FAT
+                if (r > 0) {
+                    p_begin = position;
+                } else {
+                    p_end = position;
+                }
+                position = p_begin + (uint32_t)((p_end - p_begin) / 2);
+            }
+        } while ((p_end - p_begin) > 1);
+        // Paso adicional (ultimas 2 opciones)
+        if (_id < 0) {
+            if (filepath.compare(fat[p_begin].file_name) == 0) {
+                _id = (int32_t)p_begin;
+            } else if (filepath.compare(fat[p_end].file_name) == 0) {
+                _id = (int32_t)p_end;
+            }
         }
     }
 
@@ -181,6 +226,11 @@ bool NGN_FileSystem::SetPackage(std::string pkg_file, std::string key) {
             ngn->log->Message("[NGN_FileSystem error] <" + package_file + "> package file not compatible.");
             return false;
             break;
+        // Error de version
+        case -3:
+            ngn->log->Message("[NGN_FileSystem error] <" + package_file + "> package file version mismatch.");
+            return false;
+            break;
     }
 
     // Extrae la informacion de la FAT y conviertela en nodos
@@ -213,6 +263,9 @@ bool NGN_FileSystem::SetPackage(std::string pkg_file, std::string key) {
 /*** Lee el encabezado del archivo empaquetado ***/
 int32_t NGN_FileSystem::ReadPackageHeader() {
 
+    // Resultado de la ejecucion
+    int32_t r = 0;
+
     // Borra el contenido de la estructura
     memset(&file_header, 0, sizeof(file_header));
 
@@ -226,14 +279,18 @@ int32_t NGN_FileSystem::ReadPackageHeader() {
 
     // Lee la cabecera del archivo
     file.read((char*)&file_header, sizeof(file_header));
+
     // Verifica que el archivo sea compatible
-    if (std::string(file_header.magic) != MAGIC_STRING) return -2;
+    if (std::string(file_header.magic) != MAGIC_STRING) r = -2;
+
+    // Verifica que la version del programa coincida
+    if (file_header.version != VERSION) r = -3;
 
     // Cierra el archivo
     file.close();
 
-    // Lectura correcta
-    return 0;
+    // Resultado de la lectura
+    return r;
 
 }
 

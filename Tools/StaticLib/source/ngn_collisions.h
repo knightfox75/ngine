@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -77,6 +77,10 @@ class NGN_Collisions {
 
         // Consulta si hay colision por "pixel perfect" entre 2 sprites
         bool PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2);
+
+        // Consulta si has tocado un punto de un sprite (Raycast point)
+        bool RaycastPoint(NGN_Sprite* spr, float position_x, float position_y);
+        bool RaycastPoint(NGN_Sprite* spr, Vector2 position);
 
 
     // Private

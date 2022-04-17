@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.7.0-beta ***
+    *** Version 1.8.0-stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -696,6 +696,9 @@ NGN_RawImage* NGN_Load::PngAsRaw(std::string filepath) {
         return NULL;
     }
 
+    // Elimina el buffer temporal
+    buffer.clear();
+
     // Devuelve el PNG en RAW
     return raw;
 
@@ -815,6 +818,89 @@ bool NGN_Load::SpriteAsRawVector(
     pixels.clear();
     // Elimina el sprite data temporal
     delete spr;
+
+    // Carga correcta
+    return true;
+
+}
+
+
+
+/*** Metodo para cargar un archivo de texto: Primera sobrecarga, archivo a string ***/
+std::string NGN_Load::TextFile(std::string filepath) {
+
+    // Prepara los datos
+    std::vector<uint8_t> buffer;
+    buffer.clear();
+    std::string text = "";          // Destino del texto
+
+    // Intenta cargar el archivo
+    if (ngn->load->LoadFile(filepath, buffer) < 0) return text;
+
+    // Si no hay contenido, sal
+    if (buffer.size() == 0) {
+        buffer.clear();
+        return text;
+    }
+
+    // Procesa el archivo
+    for (uint32_t i = 0; i < buffer.size(); i ++) {
+        if (
+            (
+                (buffer[i] >= 0x20)     // Dentro del rango de caracteres validos
+                &&
+                (buffer[i] != 0x7F)     // No es DEL
+                &&
+                (buffer[i] != 0xFF)     // No es BLANK
+            )
+            ||
+            (buffer[i] == 0x0A)         // Salto de linea
+            ) {
+            // Si el caracter esta dentro del rango, almacenalo
+            text += buffer[i];
+        }
+    }
+
+    // Elimina el buffer de datos
+    buffer.clear();
+
+    // Carga correcta
+    return text;
+
+}
+
+/*** Metodo para cargar un archivo de texto: Segunda sobrecarga, archivo a vector de lineas ***/
+bool NGN_Load::TextFile(std::string filepath, std::vector<std::string> &text_lines) {
+
+    // Prepara el vector de destino
+    text_lines.clear();
+    std::string character = "";     // Caracter leido
+    uint8_t ascii = 0;              // Codigo ASCII del caracter leido
+    std::string line = "";          // Linea actual
+
+    // Intenta cargar el archivo
+    std::string text = TextFile(filepath);
+
+    // Si no hay texto, sal
+    if (text.size() == 0) return false;
+
+    // Procesa el archivo
+    for (uint32_t i = 0; i < text.size(); i ++) {
+        character = text.at(i);
+        ascii = (uint8_t)character[0];
+        // Si el caracter es final de linea
+        if (ascii == 0x0A) {
+            // Almacena la linea actual
+            text_lines.push_back(line);
+            // Nueva linea
+            line = "";
+        } else if ((ascii >= 0x20) && (ascii != 0x7F) && (ascii != 0xFF)) {
+            // Si el caracter esta dentro del rango, almacenalo
+            line += character;
+        }
+    }
+    // Verifica si hay datos pendientes (ultima linea sin \n)
+    if (line.size() > 0) text_lines.push_back(line);
 
     // Carga correcta
     return true;

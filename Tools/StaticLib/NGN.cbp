@@ -7,6 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="WIN - Debug">
+				<Option platforms="Windows;" />
 				<Option output="./lib_windows/ngn_d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/win_debug/" />
@@ -31,6 +32,7 @@
 				</Linker>
 			</Target>
 			<Target title="WIN - Release">
+				<Option platforms="Windows;" />
 				<Option output="./lib_windows/ngn" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/win_release/" />
@@ -56,6 +58,7 @@
 				</Linker>
 			</Target>
 			<Target title="LINUX - Debug">
+				<Option platforms="Unix;" />
 				<Option output="./lib_linux/ngn_d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/linux_debug/" />
@@ -78,6 +81,7 @@
 				</Linker>
 			</Target>
 			<Target title="LINUX - Release">
+				<Option platforms="Unix;" />
 				<Option output="./lib_linux/ngn" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/linux_release/" />

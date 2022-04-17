@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -143,6 +143,9 @@ class NGN_Sound {
         // Devuelve si el sonido aun existe
         bool SfxIsAlive(NGN_AudioClip* sound);
 
+        // Elimina todos los SFX en la cola
+        void ClearSfx();
+
 
 
         /*** Musicas por streaming (BGM) [4 simultaneas maximo por defecto] ***/
@@ -209,6 +212,9 @@ class NGN_Sound {
         // Devuelve si aun existe
         bool MusicIsAlive(NGN_MusicClip* music);
 
+        // Elimina todas las musicas en la cola
+        void ClearMusic();
+
 
 
         /*** Procesos comunes ***/
@@ -228,6 +234,9 @@ class NGN_Sound {
         // Ajusta el volumen del canal del mixer
         void SetMixerLevel(uint8_t channel, int32_t level);
         int32_t GetMixerLevel(uint8_t channel);
+        // Guarda o restaura los valores del mixer
+        void PushMixer();
+        void PopMixer();
 
 
     // Private
@@ -249,6 +258,7 @@ class NGN_Sound {
         // Parametros globales del volumen del sonido (mezclador de sonido)
         int32_t mixer_channel_level[MIXER_CHANNELS];
         int32_t last_mixer_channel_level[MIXER_CHANNELS];
+        int32_t backup_mixer_channel_level[MIXER_CHANNELS];
 
 };
 

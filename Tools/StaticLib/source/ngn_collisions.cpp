@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.5.0-stable ***
+    *** Version 1.8.0-stable ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2021 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -330,7 +330,7 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
     // Renderiza las dos subtexturas para la comparacion
     int32_t area_w = std::abs(xa - xb) + 1;     // Calcula el tamaño de los buffers
     int32_t area_h = std::abs(ya - yb) + 1;
-    int32_t x = 0, y = 0;                   // Posicion del sprite en la textura
+    int32_t x = 0, y = 0;                       // Posicion del sprite en la textura
     // Sprite 1
     x = ((int32_t)spr1->position.x - xa);
     y = ((int32_t)spr1->position.y - ya);
@@ -362,6 +362,59 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
     // Resultado de la colision
     return collision;
+
+}
+
+
+
+/*** Consulta si has tocado un punto de un sprite (Raycast point) [1ra sobrecarga] ***/
+bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, float position_x, float position_y) {
+
+    // Sprite invalido
+    if (spr == NULL) return false;
+    // Sprite invisible
+    if (!spr->visible) return false;
+
+    // Decide el metodo para la primera comprobacion
+    int32_t r = 0.0f;
+    int32_t d = 0.0f;
+    Vector2I32 distance;
+    if (spr->rotation != 0.0f) {
+        // Si esta rotado, colision por circulos
+        r = (int32_t)(std::sqrt(std::pow(spr->width, 2.0f) + std::pow(spr->height, 2.0f)) / 2.0f);
+        d = (int32_t)std::sqrt(std::pow((spr->position.x - position_x), 2.0f) + std::pow((spr->position.y - position_y), 2.0f));
+        if (d > r) return false;
+    } else {
+        // Si no lo estan, colision por cajas
+        distance.x = (int32_t)(std::abs(spr->position.x - position_x));
+        distance.y = (int32_t)(std::abs(spr->position.y - position_y));
+        if ((distance.x > (int32_t)(spr->width / 2.0f)) || (distance.y > (int32_t)(spr->height / 2.0f))) return false;
+    }
+
+    // Renderiza una textura de 1x1 para la comprobacion
+    int32_t x = (int32_t)(spr->position.x - position_x);
+    int32_t y = (int32_t)(spr->position.y - position_y);
+    SDL_Surface* srf = NULL;
+    srf = RenderSpriteInSurface(spr, x, y, 1, 1);
+
+    // Analiza si hay datos en el pixel solicitado
+    bool collision = false;
+    uint32_t* pixels = (uint32_t*)srf->pixels;
+    if ((pixels[0] & 0x000000FF)) collision = true;
+
+    // Paso de limpieza
+    SDL_FreeSurface(srf);
+    srf = NULL;
+
+    // Resultado final
+    return collision;
+
+}
+
+/*** Consulta si has tocado un punto de un sprite (Raycast point) [1ra sobrecarga] ***/
+bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, Vector2 position) {
+
+    return RaycastPoint(spr, position.x, position.y);
 
 }
 
