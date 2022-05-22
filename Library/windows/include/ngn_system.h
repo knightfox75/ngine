@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.8.0-stable ***
+    *** Version 1.9.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -86,6 +86,9 @@ class NGN_System {
         // Contador de FPS por consola de debug habilitado
         bool fps_counter;
 
+        // Estado del foco de la aplicacion
+        bool GetApplicationFocus();
+
 
     // Private
     private:
@@ -104,6 +107,9 @@ class NGN_System {
 
         // Tiempo delta
         uint32_t _delta_time;
+
+        // Estado del foco de la aplicacion
+        bool _focus;
 
 };
 

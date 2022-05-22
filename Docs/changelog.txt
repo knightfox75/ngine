@@ -2,6 +2,14 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2022-05-22 Ver.1.9.0-stable
+--------------------------------------------------------------------------------
+- Añadido el método GetApplicationFocus(); a la clase NGN_System, el cual
+  devuelve si el foco está sobre la aplicación o no.
+- [Windows] Actualizado el compilador GCC de la versión 8.1.0 a la 11.3.0.
+- [Windows] Actualizada la versión de SDL2 a la 2.0.22.
+
+
 2022-04-17 Ver.1.8.0-stable
 --------------------------------------------------------------------------------
 - Templates para code::blocks actualizados.

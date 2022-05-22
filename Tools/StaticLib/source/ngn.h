@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.8.0-stable ***
+    *** Version 1.9.0-stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -9,10 +9,10 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere GCC 8.1.0 MinGW (SEH) - 64-bits
-    http://downloads.sourceforge.net/project/mingw-w64/
+    Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
+    https://www.mingw-w64.org/
 
-    Requiere SDL2 (2.0.12) - 64-bits
+    Requiere SDL2 (2.0.22) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SDL2_TTF (2.0.15) - 64-bits

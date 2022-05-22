@@ -1,2 +1,0 @@
-[2022-04-17 22:07:52] N'gine version 1.8.0-stable started successfully!
-[2022-04-17 22:07:54] Execution terminated.

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.8.0-stable ***
+    *** Version 1.9.0-stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -40,6 +40,11 @@
         legally restrict others from doing anything the license permits.
 
 ******************************************************************************/
+
+
+
+/*** Definiciones para la depuracion ***/
+#define NGN_LOAD_DEBUG
 
 
 
@@ -587,6 +592,7 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
 
     // Renderiza todos los caracteres de la tabla ASCII >= 32 (<32 reservados)
     for (uint32_t i = 0x20; i <= 0xFF; i ++) {
+
         // Vacia el contenido previo del surface
         SDL_FreeSurface(surface);
         if (outline > 0) SDL_FreeSurface(surface_outline);
@@ -607,6 +613,26 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
                 TTF_SetFontOutline(ttf, 0);
             }
         }
+
+        // Proteccion contra caracteres ilegales
+        if (!surface || ((outline > 0) && !surface_outline)) {
+            #if defined (MODE_DEBUG) && defined (NGN_LOAD_DEBUG)
+                ngn->log->Message(
+                    "Error creating the ["
+                    +
+                    ngn->toolbox->Int2String(i, 3, "0")
+                    +
+                    "] character from the ["
+                    +
+                    filepath
+                    +
+                    "] file."
+                );
+            #endif
+            // Saltate la creacion de este caracter
+            continue;
+        }
+
         // Si hay outline, haz la mezcla
         if (outline > 0) {
             // Mezcla las dos surfaces
@@ -627,9 +653,9 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
             // Pasalo a la textura
             TTF_SetFontOutline(ttf, outline);
             if (
-                (surface_outline != NULL)
+                (surface_outline)
                 &&
-                (surface != NULL)
+                (surface)
                 &&
                 (TTF_SizeText(ttf, (const char*)t, &font->character[i]->width, &font->character[i]->height) == 0)
             ) {
@@ -639,7 +665,7 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
         } else {
             // Pasalo a la textura
             if (
-                (surface != NULL)
+                (surface)
                 &&
                 (TTF_SizeText(ttf, (const char*)t, &font->character[i]->width, &font->character[i]->height) == 0)
             ) {

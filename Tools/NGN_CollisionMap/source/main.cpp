@@ -40,7 +40,7 @@ static const std::string NGN_VERSION_METADATA = "stable";       // Version metad
 /*** Version del programa ***/
 static const int32_t PROGRAM_VERSION_MAJOR = 1;                 // Version mayor
 static const int32_t PROGRAM_VERSION_MINOR = 0;                 // Version menor
-static const int32_t PROGRAM_VERSION_PATCH = 1;                 // Version parche
+static const int32_t PROGRAM_VERSION_PATCH = 2;                 // Version parche
 static const std::string PROGRAM_VERSION_METADATA = "stable";   // Version metadatos
 
 
@@ -75,7 +75,7 @@ int32_t main(int32_t argc, char* args[]) {
     std::cout <<
     std::endl << "N'gine PNG to Collision Map converter. (v" << program_version << ")." <<
     std::endl << "For N'gine Version " << ngn_version << " or higher." <<
-    std::endl << "(cc) 2016 - 2020 by Cesar Rincon." <<
+    std::endl << "(cc) 2016 - 2022 by Cesar Rincon." <<
     std::endl << "https://nightfoxandco.com" <<
     std::endl << "contact@nightfoxandco.com" <<
     std::endl << std::endl;

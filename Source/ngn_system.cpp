@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.8.0-stable ***
+    *** Version 1.9.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -64,6 +64,7 @@ NGN_System::NGN_System() {
     // Inicializa los flags por defecto
     quit = false;
     fps_counter = false;
+    _focus = true;
 
     // Tiempo delta
     _delta_time = SDL_GetTicks();
@@ -148,6 +149,14 @@ void NGN_System::EventUpdate() {
                         ngn->graphics->force_redaw |= true;
                         break;
                 }
+                switch (sdl_event.window.event) {
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                        _focus = true;
+                        break;
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
+                        _focus = false;
+                        break;
+                }
                 break;
 
             default:
@@ -177,6 +186,15 @@ std::string NGN_System::GetVersion() {
     version += NGN_VERSION_METADATA;
 
     return version;
+
+}
+
+
+
+/*** Devuelve el estado del foco actual de la aplicacion ***/
+bool NGN_System::GetApplicationFocus() {
+
+    return _focus;
 
 }
 

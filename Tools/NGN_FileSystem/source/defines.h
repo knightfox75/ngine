@@ -41,11 +41,11 @@ static const std::string NGN_VERSION_METADATA = "beta";                     // V
 
 /*** Version del programa ***/
 static const std::string PROGRAM_NAME = "N'gine file system manager";       // Nombre del programa
-static const std::string CC_YEARS = "2021";                                 // Años en el texto CREATIVE COMMONS
+static const std::string CC_YEARS = "2021-2022";                            // Años en el texto CREATIVE COMMONS
 static const int32_t PROGRAM_VERSION_MAJOR = 1;                             // Version mayor
 static const int32_t PROGRAM_VERSION_MINOR = 1;                             // Version menor
-static const int32_t PROGRAM_VERSION_PATCH = 0;                             // Version parche
-static const std::string PROGRAM_VERSION_METADATA = "beta";                 // Version metadatos
+static const int32_t PROGRAM_VERSION_PATCH = 1;                             // Version parche
+static const std::string PROGRAM_VERSION_METADATA = "stable";               // Version metadatos
 static const std::string MAGIC_STRING = "NGN FILE SYSTEM";    	            // Magic string
 static const uint8_t MS_LENGTH = 15;                                        // Logitud del magic string
 static const uint8_t VERSION = 2;                                           // Version del archivo

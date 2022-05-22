@@ -1,2 +1,0 @@
-[2022-03-20 20:29:44] N'gine version 1.8.0-wip-0x01 started successfully!
-[2022-03-20 20:30:04] Execution terminated.
