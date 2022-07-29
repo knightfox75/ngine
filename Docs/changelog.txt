@@ -2,6 +2,19 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2022-07-29 Ver.1.10.0-beta
+--------------------------------------------------------------------------------
+- Optimizaciones en las rutinas de renderizado, en especial en las de fondos
+  de tiles las cuales, de media, son un 30% más eficientes.
+- Corregido el error que causaba un renderizado erróneo de en los fondos de
+  tiles si estos se usaban de múltiples viewports y alguno se colocaba en las
+  coordenadas 0,0.
+- Modificadas las rutinas de apertura de los streams de música. Ahora si no se
+  está utilizando un archivo de empaquetado de datos, no se realizará la
+  precarga en RAM del archivo, realizando el stream directamente desde el
+  sistema de archivos.
+
+
 2022-05-22 Ver.1.9.0-stable
 --------------------------------------------------------------------------------
 - Añadido el método GetApplicationFocus(); a la clase NGN_System, el cual

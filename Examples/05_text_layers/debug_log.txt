@@ -1,0 +1,2 @@
+[2022-05-27 13:09:50] N'gine version 1.9.1-beta started successfully!
+[2022-05-27 13:09:56] Execution terminated.

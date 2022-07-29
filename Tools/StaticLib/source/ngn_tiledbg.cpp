@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.9.0-stable ***
+    *** Version 1.10.0-beta ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,9 +66,15 @@ NGN_TiledBg::NGN_TiledBg(
     // Copia del fondo
     bgdata = bg;
 
+    // Guarda el tamaño del tile
+    tile_size = bg->header.tile_size;
+    // Guarda el tamaño del mapa
+    map_size.width = bg->header.map_width;
+    map_size.height = bg->header.map_height;
+
     // Tamaño del backbuffer
-    bb_size.width = ngn->graphics->native_w;
-    bb_size.height = ngn->graphics->native_h;
+    bb_size.width = ngn->graphics->native_w + (tile_size << 1);
+    bb_size.height = ngn->graphics->native_h + (tile_size << 1);
     // Tamaño del fondo completo
     width = bgdata->header.bg_width;
     height = bgdata->header.bg_height;
@@ -79,6 +85,8 @@ NGN_TiledBg::NGN_TiledBg(
 
     last_position.x = NGN_DEFAULT_VALUE;
     last_position.y = NGN_DEFAULT_VALUE;
+    last_viewport = -1;
+    tile_mode = true;
 
     center.x = 0;
     center.y = 0;

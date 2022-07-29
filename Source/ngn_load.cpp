@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.9.0-stable ***
+    *** Version 1.10.0-beta ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -969,6 +969,15 @@ bool NGN_Load::SetPackage(std::string pkg_file, std::string key) {
         use_package = false;
         return false;
     }
+
+}
+
+
+
+/*** Devuelve si se esta usando actualmente un archivo de empaquetado de datos ***/
+bool NGN_Load::PackageEnabled() {
+
+    return use_package;
 
 }
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.9.0-stable ***
+    *** Version 1.10.0-beta ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -412,7 +412,7 @@ void NGN_Sound::ClearSfx() {
 
 /*** Abre una musica para streaming (sobrecarga 1) ***/
 NGN_MusicClip* NGN_Sound::OpenMusic(
-        const char* filepath,   // Archivo de audio
+        std::string filepath,   // Archivo de audio
         bool auto_start,        // Reproduccion automatica
         int32_t volume,         // Volumen
         bool loop,              // Loop ?
@@ -458,7 +458,7 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
 /*** Abre una musica para streaming (sobrecarga 2) ***/
 NGN_MusicClip* NGN_Sound::OpenMusic(
-        const char* filepath,           // Archivo de audio
+        std::string filepath,           // Archivo de audio
         int32_t loop_start,             // Inicio del loop (milisegundos)
         int32_t loop_end,               // Fin del loop (milisegundos)
         bool auto_start,                // Reproduccion automatica

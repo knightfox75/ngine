@@ -1,0 +1,2 @@
+[2022-06-07 12:50:53] N'gine version 1.10.0-wip_0x01 started successfully!
+[2022-06-07 12:51:04] Execution terminated.

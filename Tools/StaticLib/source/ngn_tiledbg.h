@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.9.0-stable ***
+    *** Version 1.10.0-beta ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -77,6 +77,9 @@ class NGN_TiledBg {
         float width;                        // Tamaño
         float height;
 
+        uint32_t tile_size;                 // Tamaño del tile
+        Size2I32 map_size;                  // Tamaño del mapa de tiles
+
         Vector2 center;                     // Centro del fondo para su rotacion
 
         double rotation;                    // Rotacion del fondo
@@ -92,8 +95,12 @@ class NGN_TiledBg {
         // Tamaño del backbuffer
         Size2I32 bb_size;
 
-        // Posicion en el ultimo frame
+        // Ubicacion en el ultimo frame
         Vector2 last_position;
+        int8_t last_viewport;
+
+        // Modo de render en el ultimo frame
+        bool tile_mode;
 
         // Posiciona el fondo
         void Position(float position_x, float position_y);

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.9.0-stable ***
+    *** Version 1.10.0-beta ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -80,25 +80,40 @@ NGN_MusicClip::~NGN_MusicClip() {
 /*** Abre un archivo para su streaming ***/
 bool NGN_MusicClip::Open(std::string filepath) {
 
-    // Prepara el buffer temporal para la carga del archivo
-    buffer.clear();
+    // Segun se use o no el empaquetado de datos...
+    if (ngn->load->PackageEnabled()) {
 
-    // Intenta cargar el archivo
-    int32_t file_length = ngn->load->LoadFile(filepath, buffer);
-    if (file_length <= 0) {
-        // Error leyendo el archivo solicitado
-        ngn->log->Message("[NGN_MusicClip error] Error opening <" + filepath + "> for read.");
+        // Prepara el buffer temporal para la carga del archivo
         buffer.clear();
-        return false;
-    }
 
-    // Transfiere los datos en RAM para el stream
-    if (music.openFromMemory((uint8_t*)&buffer[0], file_length)) {
-        return true;
+        // Intenta cargar el archivo
+        int32_t file_length = ngn->load->LoadFile(filepath, buffer);
+        if (file_length <= 0) {
+            // Error leyendo el archivo solicitado
+            ngn->log->Message("[NGN_MusicClip error] Error opening <" + filepath + "> for read.");
+            buffer.clear();
+            return false;
+        }
+
+        // Transfiere los datos en RAM para el stream
+        if (music.openFromMemory((uint8_t*)&buffer[0], file_length)) {
+            return true;
+        } else {
+            ngn->log->Message("[NGN_MusicClip error] Error opening <" + filepath + "> from memory.");
+            buffer.clear();
+            return false;
+        }
+
     } else {
-        ngn->log->Message("[NGN_MusicClip error] Error opening <" + filepath + "> from memory.");
-        buffer.clear();
-        return false;
+
+        // Abre el archivo para hacer streaming
+        if (music.openFromFile(filepath.c_str())) {
+            return true;
+        } else {
+            std::cout << "Error opening " << filepath << "  for streaming." << std::endl;
+            return false;
+        }
+
     }
 
 }
@@ -222,7 +237,7 @@ int32_t NGN_MusicClip::GetVolume() {
 
 
 /*** Cambia el pitch de la musica ***/
-void NGN_MusicClip::Pitch(float pitch = 1.0f) {
+void NGN_MusicClip::Pitch(float pitch) {
     music.setPitch(pitch);
 }
 
