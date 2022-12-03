@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -82,6 +82,8 @@ class Vector2 {
         Vector2 operator/(float);
         bool operator==(Vector2);
         bool operator!=(Vector2);
+        void operator+=(Vector2);
+        void operator-=(Vector2);
 
 
     private:
@@ -109,6 +111,8 @@ class Vector2I32 {
         Vector2I32 operator/(int32_t);
         bool operator==(Vector2I32);
         bool operator!=(Vector2I32);
+        void operator+=(Vector2I32);
+        void operator-=(Vector2I32);
 
 
     private:
@@ -136,6 +140,8 @@ class Vector2I64 {
         Vector2I64 operator/(int64_t);
         bool operator==(Vector2I64);
         bool operator!=(Vector2I64);
+        void operator+=(Vector2I64);
+        void operator-=(Vector2I64);
 
 
     private:

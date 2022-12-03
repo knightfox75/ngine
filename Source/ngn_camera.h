@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016

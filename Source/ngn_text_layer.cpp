@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -102,7 +102,11 @@ NGN_TextLayer::NGN_TextLayer(
     layer_height = (uint32_t)height;
 
     // Crea el backbuffer del tamaño adecuado
-    if (_filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    #if !defined (DISABLE_BACKBUFFER)
+        if (_filtering) {
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+        }
+    #endif
     backbuffer = NULL;
     backbuffer = SDL_CreateTexture(
                          ngn->graphics->renderer,       // Renderer
@@ -111,7 +115,9 @@ NGN_TextLayer::NGN_TextLayer(
                          layer_width,                   // Ancho de la textura
                          layer_height                   // Alto de la textura
                          );
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #if !defined (DISABLE_BACKBUFFER)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #endif
 
     // Propiedades adicionales
     visible = true;             // Visibilidad

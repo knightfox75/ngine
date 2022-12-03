@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -91,7 +91,9 @@ class NGN_Graphics {
         SDL_Window* window;             // Puntero a la ventana
         int32_t window_flags;           // Control de los falgs de la ventana
         SDL_Renderer* renderer;         // Puntero al renderer
-        SDL_Texture* backbuffer;        // Backbufer para el renderizado
+        #if !defined (DISABLE_BACKBUFFER)
+            SDL_Texture* backbuffer;    // Backbufer para el renderizado
+        #endif
 
         int8_t screen_mode;             // Modo de pantalla actual
         bool vsync;                     // VSYNC Activo?
@@ -180,7 +182,6 @@ class NGN_Graphics {
 
 
 
-
     // Private
     private:
 
@@ -207,6 +208,8 @@ class NGN_Graphics {
         void ChangeScreenMode();
         // Cambio del VSYNC
         void SetVsync();
+        // Cambio del modo de filtrado
+        void SetRenderScaleQuality();
         // Gestion de los parametros del render
         void UpdateRendererFlags();
 
@@ -227,7 +230,9 @@ class NGN_Graphics {
         void GenerateRuntimeFrameId();
 
         // Crea/actualiza el backbuffer del render
-        void SetBackbuffer();
+        #if !defined (DISABLE_BACKBUFFER)
+            void SetBackbuffer();
+        #endif
         // Manda el backbuffer a la pantalla
         void RenderBackbuffer();
         // Limpia el backbuffer

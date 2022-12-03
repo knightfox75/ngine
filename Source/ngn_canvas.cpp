@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -106,7 +106,11 @@ NGN_Canvas::NGN_Canvas(
 
 
     // Crea el backbuffer del tamaño adecuado
-    if (_filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    #if !defined (DISABLE_BACKBUFFER)
+        if (_filtering) {
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+        }
+    #endif
     backbuffer = NULL;
     backbuffer = SDL_CreateTexture(
         ngn->graphics->renderer,       // Renderer
@@ -115,7 +119,9 @@ NGN_Canvas::NGN_Canvas(
         surface_width,                 // Ancho de la textura
         surface_height                 // Alto de la textura
     );
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #if !defined (DISABLE_BACKBUFFER)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #endif
 
     // Propiedades adicionales
     visible = true;             // Visibilidad
@@ -570,9 +576,15 @@ void NGN_Canvas::Blit() {
     // Convierte la superficie generada en textura
     SDL_DestroyTexture(backbuffer);
     backbuffer = NULL;
-    if (filtering) SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    #if !defined (DISABLE_BACKBUFFER)
+        if (filtering) {
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+        }
+    #endif
     backbuffer = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #if !defined (DISABLE_BACKBUFFER)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #endif
 
     // Marca la conversion como realizada
     blit = false;

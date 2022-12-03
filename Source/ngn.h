@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -64,15 +64,12 @@
 
 
 
-/*** Defines del proyecto (usar SOLO si no se usan los defines del proyecto de code::blocks ***/
-//#define OS_WINDOWS
-//#define OS_LINUX
-//#define MODE_DEBUG
-//#define MODE_RELEASE
-
 
 
 /*** Includes ***/
+
+// FLAGS de configuracion de la libreria
+#include "config_flags.h"
 
 // C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11

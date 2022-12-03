@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-wip0x02 ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -133,6 +133,20 @@ bool Vector2::operator!=(Vector2 p) {
 
 }
 
+void Vector2::operator+=(Vector2 p) {
+
+    x += p.x;
+    y += p.y;
+
+}
+
+void Vector2::operator-=(Vector2 p) {
+
+    x -= p.x;
+    y -= p.y;
+
+}
+
 
 
 /*** Clase Vector2I32 (int32_t) - Calcula la magnitud del vector ***/
@@ -191,6 +205,20 @@ bool Vector2I32::operator!=(Vector2I32 p) {
 
 }
 
+void Vector2I32::operator+=(Vector2I32 p) {
+
+    x += p.x;
+    y += p.y;
+
+}
+
+void Vector2I32::operator-=(Vector2I32 p) {
+
+    x -= p.x;
+    y -= p.y;
+
+}
+
 
 
 /*** Clase Vector2I64 (int64_t) - Calcula la magnitud del vector ***/
@@ -246,6 +274,20 @@ bool Vector2I64::operator==(Vector2I64 p) {
 bool Vector2I64::operator!=(Vector2I64 p) {
 
     if ((x != p.x) || (y != p.y)) return true; else return false;
+
+}
+
+void Vector2I64::operator+=(Vector2I64 p) {
+
+    x += p.x;
+    y += p.y;
+
+}
+
+void Vector2I64::operator-=(Vector2I64 p) {
+
+    x -= p.x;
+    y -= p.y;
 
 }
 
