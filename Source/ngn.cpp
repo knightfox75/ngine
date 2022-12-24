@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -18,8 +18,8 @@
     Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG (20200306)
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
@@ -78,7 +78,7 @@ NGN* ngn;                                       // Clase principal
 /*** Contructor ***/
 NGN::NGN() {
 
-    // Crea los objetos de la libreria
+    // Prepara los singletons de los objetos de la libreria
     log = NULL;             // Mensages de depuracion
     system = NULL;          // Funciones del sistema
     math = NULL;            // Funciones matematicas
@@ -86,12 +86,14 @@ NGN::NGN() {
     input = NULL;           // Metodos de entrada
     graphics = NULL;        // Gestion del Renderer de SDL
     render = NULL;          // Dibuja los diferentes elementos graficos
-    camera = NULL;          // Crea la camara virtual 2D
     load = NULL;            // Carga de archivos
     collisions = NULL;      // Sistema de colisiones
     sound = NULL;           // Efectos de sonido
     image = NULL;           // Manipulacion de imagenes en RAW
     disk = NULL;            // Gestion de archivos en el disco
+
+    // Prepara los objetos de la libreria
+    camera = NULL;          // Crea la camara virtual 2D
 
 }
 
@@ -100,20 +102,22 @@ NGN::NGN() {
 /*** Destructor ***/
 NGN::~NGN() {
 
-    // Elimina todos los objetos creados
-    delete disk; disk = NULL;
-    delete image; image = NULL;
-    delete sound; sound = NULL;
-    delete collisions; collisions = NULL;
-    delete load; load = NULL;
+    // Elimina los objetos
     delete camera; camera = NULL;
-    delete render; render = NULL;
-    delete graphics; graphics = NULL;
-    delete input; input = NULL;
-    delete toolbox; toolbox = NULL;
-    delete math; math = NULL;
-    delete system; system = NULL;
-    delete log; log = NULL;
+
+    // Elimina todas las instancias a los singletons
+    NGN_Disk::RemoveInstance(); disk = NULL;
+    NGN_Image::RemoveInstance(); image = NULL;
+    NGN_Sound::RemoveInstance(); sound = NULL;
+    NGN_Collisions::RemoveInstance(); collisions = NULL;
+    NGN_Load::RemoveInstance(); load = NULL;
+    NGN_Render::RemoveInstance(); render = NULL;
+    NGN_Graphics::RemoveInstance(); graphics = NULL;
+    NGN_Input::RemoveInstance(); input = NULL;
+    NGN_ToolBox::RemoveInstance(); toolbox = NULL;
+    NGN_Math::RemoveInstance(); math = NULL;
+    NGN_System::RemoveInstance(); system = NULL;
+    NGN_Log::RemoveInstance(); log = NULL;
 
     // Cierra los subsistemas de SDL
     SDL_Quit();     // Cierra la libreria SDL correctamente
@@ -125,31 +129,36 @@ NGN::~NGN() {
 /*** Inicializa la libreria ***/
 bool NGN::Init() {
 
-    // Crea los objetos de la libreria
-    log = new NGN_Log();                    // Mensages de depuracion
-    if (!log) return false;
-    system = new NGN_System();              // Funciones del sistema
-    if (!system) return false;
-    toolbox = new NGN_ToolBox();            // Caja de herramientas
-    if (!toolbox) return false;
-    input = new NGN_Input();                // Metodos de entrada
-    if (!input) return false;
-    graphics = new NGN_Graphics();          // Gestion del Renderer de SDL
-    if (!graphics) return false;
-    render = new NGN_Render();              // Dibuja los diferentes elementos graficos
-    if (!render) return false;
-    camera = new NGN_Camera();              // Crea la camara virtual 2D
-    if (!camera) return false;
-    load = new NGN_Load();                  // Carga de archivos
-    if (!load) return false;
-    collisions = new NGN_Collisions();      // Sistema de colisiones
-    if (!collisions) return false;
-    sound = new NGN_Sound();                // Efectos de sonido
-    if (!sound) return false;
-    image = new NGN_Image();                // Manipulacion de imagenes en RAW
-    if (!image) return false;
-    disk = new NGN_Disk();                  // Gestion de archivos en el disco
-    if (!disk) return false;
+    // Crea las instancias a los singletons de los modulos de la libreria
+    log = NGN_Log::GetInstance();                   // Mensages de depuracion
+    system = NGN_System::GetInstance();             // Funciones del sistema
+    math = NGN_Math::GetInstance();                 // Funciones matematicas
+    toolbox = NGN_ToolBox::GetInstance();           // Caja de herramientas
+    input = NGN_Input::GetInstance();               // Metodos de entrada
+    graphics = NGN_Graphics::GetInstance();         // Gestion del Renderer de SDL
+    render = NGN_Render::GetInstance();             // Dibuja los diferentes elementos graficos
+    load = NGN_Load::GetInstance();                 // Carga de archivos
+    collisions = NGN_Collisions::GetInstance();     // Sistema de colisiones
+    sound = NGN_Sound::GetInstance();               // Efectos de sonido
+    image = NGN_Image::GetInstance();               // Manipulacion de imagenes en RAW
+    disk = NGN_Disk::GetInstance();                 // Gestion de archivos en el disco
+
+    // Inicia los singletons de la libreria
+    log->BootUp();                      // Mensages de depuracion
+    system->BootUp();                   // Funciones del sistema
+    math->BootUp();                     // Funciones matematicas
+    toolbox->BootUp();                  // Caja de herramientas
+    input->BootUp();                    // Metodos de entrada
+    graphics->BootUp();                 // Gestion del Renderer de SDL
+    render->BootUp();                   // Dibuja los diferentes elementos graficos
+    load->BootUp();                     // Carga de archivos
+    collisions->BootUp();               // Sistema de colisiones
+    sound->BootUp();                    // Efectos de sonido
+    image->BootUp();                    // Manipulacion de imagenes en RAW
+    disk->BootUp();                     // Gestion de archivos en el disco
+
+    // Crea los objetos adicionales de a libreria
+    camera = new NGN_Camera();          // Crea la camara virtual 2D
 
     // Inicializa la libreria SDL
     if (!system->Init()) return false;

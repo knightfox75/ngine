@@ -1,15 +1,15 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Conversor de PNG a Sprite sheet (.spr)
+    Conversor de PNG a Sprite (.spr) para N'gine
+    - Archivo principal -
 
-    Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    Proyecto iniciado el 11 de Febrero del 2016
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere LodePNG
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -22,170 +22,29 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
-#include <string>
 
-// LodePNG
-#include "lodepng/lodepng.h"
-
-// Sprite class
+// Programa
 #include "sprite.h"
-
-
-
-/*** Version de N'gine ***/
-static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
-static const int32_t NGN_VERSION_MINOR = 0;                     // Version menor
-static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
-static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
-/*** Version del programa ***/
-static const int32_t PROGRAM_VERSION_MAJOR = 1;                 // Version mayor
-static const int32_t PROGRAM_VERSION_MINOR = 0;                 // Version menor
-static const int32_t PROGRAM_VERSION_PATCH = 2;                 // Version parche
-static const std::string PROGRAM_VERSION_METADATA = "stable";   // Version metadatos
-
-
-
-/*** Mensages de error ***/
-void ErrorMsg() {
-    std::cout << "Command line error." << std::endl;
-    std::cout << "Usage: NGN_Sprite INPUT_FILE.PNG -w xx -h xx [-o filename] [-s]" << std::endl;
-    std::cout << "-w xx         Width of the sprite frame." << std::endl;
-    std::cout << "-h xx         Height of the sprite frame." << std::endl;
-    std::cout << "-o filename   Name for the output file, without extension (.spr will be added automaticaly)." << std::endl;
-    std::cout << "-s            Generates a PNG file with the sprite strip." << std::endl << std::endl;
-}
-
+#include "defines.h"
 
 
 
 /*** Main ***/
 int32_t main(int32_t argc, char* args[]) {
 
-    // Variables
-    std::string in_file = "";       // Nombre del archivo de entrada
-    std::string out_file = "";      // Nombre base de los archivos de salida
-    int32_t width = -1;             // Ancho del frame
-    int32_t height = -1;            // Altura del frame
+    // Crea el objeto principal del programa
+    Sprite* spr = new Sprite(argc, args);
 
-    // Variables de control
-    bool _out_file = false;
-    bool _width = false;
-    bool _height = false;
-    bool _strip = false;
-    bool _err = false;
+    // Si no se crea con exito, sal del programa
+    if (!spr) return ERR_CODE_BOOTFAILURE;
 
-    // Texto de bienvenida
-    std::string ngn_version = std::to_string(NGN_VERSION_MAJOR) + "." + std::to_string(NGN_VERSION_MINOR) + "." + std::to_string(NGN_VERSION_PATCH) + "-" + NGN_VERSION_METADATA;
-    std::string program_version = std::to_string(PROGRAM_VERSION_MAJOR) + "." + std::to_string(PROGRAM_VERSION_MINOR) + "." + std::to_string(PROGRAM_VERSION_PATCH) + "-" + NGN_VERSION_METADATA;
-    std::cout <<
-    std::endl << "N'gine PNG to Sprite converter. (v" << program_version << ")." <<
-    std::endl << "For N'gine Version " << ngn_version << " or higher." <<
-    std::endl << "(cc) 2016 - 2022 by Cesar Rincon." <<
-    std::endl << "https://nightfoxandco.com" <<
-    std::endl << "contact@nightfoxandco.com" <<
-    std::endl << std::endl;
+    // Transfiere el control del objeto principal
+    int32_t r = spr->Run();
 
-    // Verifica la linea de comandos
-    if ((argc < 2) || (argc > 9)) {     // Nº de argumentos incorrecto
-
-        ErrorMsg();
-        return 1;
-
-    } else {
-
-        // Archivo de entrada
-        in_file = args[1];
-        if ((in_file.length() < 5) || (in_file.length() > 240)) {
-            ErrorMsg();
-            return 1;
-        }
-
-        // Analiza los argumentos extra
-        for (int32_t i = 2; i < argc; i ++) {
-            _err = true;
-            if (strcmp(args[i], "-o") == 0) {      // Comando -O
-                if (((i + 1) < argc) && !_out_file) {
-                    _out_file = true;
-                    _err = false;
-                    out_file = args[(i + 1)];
-                    i ++;
-                    if ((out_file.length() < 1) || (out_file.length() > 240)) {
-                        ErrorMsg();
-                        return 1;
-                    }
-                } else {
-                    ErrorMsg();
-                    return 1;
-                }
-            } else if (strcmp(args[i], "-w") == 0) {      // Comando -W
-                if (((i + 1) < argc) && !_width) {
-                    _width = true;
-                    _err = false;
-                    width = atoi(args[(i + 1)]);
-                    i ++;
-                    if (width < 1) {
-                        ErrorMsg();
-                        return 1;
-                    }
-                } else {
-                    ErrorMsg();
-                    return 1;
-                }
-            } else if (strcmp(args[i], "-h") == 0) {      // Comando -H
-                if (((i + 1) < argc) && !_height) {
-                    _height = true;
-                    _err = false;
-                    height = atoi(args[(i + 1)]);
-                    i ++;
-                    if (height < 1) {
-                        ErrorMsg();
-                        return 1;
-                    }
-                } else {
-                    ErrorMsg();
-                    return 1;
-                }
-            } else if (strcmp(args[i], "-s") == 0) {    // Comando -S
-                _strip = true;
-                _err = false;
-            }
-        }
-        // Error de uso incorrecto de argumentos
-        if (_err) {
-            ErrorMsg();
-            return 1;
-        }
-    }
-    std::cout << std::endl;
-
-    // Analiza si hay el minimo de parametros requeridos introducidos correctamente
-    if (!_width || !_height) {
-        ErrorMsg();
-        return 1;
-    }
-
-    // Nombre del archivo de salida
-    if (out_file == "") out_file = in_file.substr(0, (in_file.length() - 4));
-
-
-    /*** Parametros aceptados, crea el objeto principal ***/
-    SpriteSheet* spr = new SpriteSheet();
-
-    // Registra los parametros del Sprite a convertir
-    spr->input_filename = in_file;
-    spr->output_filename = out_file;
-    spr->frame_width = width;
-    spr->frame_height = height;
-    if (_strip) spr->strip = true;
-
-    // Carga y convierte la imagen PNG en una tira de sprites
-    spr->ConvertPng();
-
-    /*** Proceso completado, destruye el objeto principal ***/
+    // Elimina el objeto principal
     delete spr;
 
-
-    // Fin del programa
-    return 0;
+    // Devuelve el resultado de ejecucion del programa
+    return r;
 
 }

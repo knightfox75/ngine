@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -58,6 +58,38 @@
 
 
 
+/*** Puntero de la instancia a NULL ***/
+NGN_Sound* NGN_Sound::instance = NULL;
+
+
+
+/*** Metodo para crear/obtener la instancia ***/
+NGN_Sound* NGN_Sound::GetInstance() {
+
+    // Verifica si la instancia ya se ha creado
+    // Si no es asi, creala
+    if (!instance) instance = new NGN_Sound();
+
+    // Devuelve la instancia
+    return instance;
+
+}
+
+
+
+/*** Metodo para eliminar la instancia ***/
+void NGN_Sound::RemoveInstance() {
+
+    // Si la instancia aun existe, eliminala
+    if (instance) {
+        delete instance;
+        instance = NULL;
+    }
+
+}
+
+
+
 /*** Constructor de la clase  NGN_Sound ***/
 NGN_Sound::NGN_Sound() {
 
@@ -83,6 +115,12 @@ NGN_Sound::~NGN_Sound() {
     // Limpia la cola de musicas
     ClearMusic();
 
+}
+
+
+
+/*** Procesos iniciales despues de crear la instancia ***/
+void NGN_Sound::BootUp() {
 }
 
 

@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -21,8 +21,8 @@
     Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG (20200306)
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
@@ -64,15 +64,12 @@
 
 
 
-/*** Defines del proyecto (usar SOLO si no se usan los defines del proyecto de code::blocks ***/
-//#define OS_WINDOWS
-//#define OS_LINUX
-//#define MODE_DEBUG
-//#define MODE_RELEASE
-
 
 
 /*** Includes ***/
+
+// FLAGS de configuracion de la libreria
+#include "config_flags.h"
 
 // C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
@@ -118,7 +115,7 @@ class NGN {
         // Destructor
         ~NGN();
 
-        // Punteros a las clases
+        // Punteros a los singletons de las clases
         NGN_Log* log;                   // Mensages de depuracion
         NGN_System* system;             // Funciones del sistema
         NGN_Math* math;                 // Funciones matematicas
@@ -126,12 +123,14 @@ class NGN {
         NGN_Input* input;               // Metodos de entrada
         NGN_Graphics* graphics;         // Gestion del Renderer de SDL
         NGN_Render* render;             // Dibuja los diferentes elementos graficos
-        NGN_Camera* camera;             // Camara virtual 2D integrada
         NGN_Load* load;                 // Funciones para la carga de archivos
         NGN_Collisions* collisions;     // Funciones del sistema de colisiones
         NGN_Sound* sound;               // Gestion de los efectos de sonido
         NGN_Image* image;               // Manipulacion de imagenes en RAW
         NGN_Disk* disk;                 // Gestion de archivos en el disco
+
+        // Punteros a los objetos
+        NGN_Camera* camera;             // Camara virtual 2D integrada
 
         // Iniciliaza la libreria
         bool Init();

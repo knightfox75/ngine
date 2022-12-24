@@ -2,6 +2,31 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2022-12-24 Ver.1.11.0-stable
+--------------------------------------------------------------------------------
+- Añadido el archivo de configuración de flags de compilación de N'gine.
+  Esto permite compilar la librería desconectando ciertas funcionalidades o 
+  usando otras alternativas si se ha de desarrollar para plataformas con GPU's
+  de bajo rendimiento o dispositivos portátiles o en sistemas donde no se
+  dispone de las últimas versiones de las librerías usadas por N'gine.
+  Entre otros, es posible desconectar el uso del backbuffer (perdiendo ciertas
+  opciones de filtrado bilineal) o desconectar las funciones avanzadas de
+  audio de SFML, disponibles solo en las últimas versiones de la misma.
+- Actualizada la versión de LodePNG.
+- Añadidos los operadores += y -= a la clase Vector2 y sus derivadas.
+- Añadidos los operadores *= y /= a la clase Vector2 y sus derivadas.
+- Reescritura parcial de todas las herramientas para N'gine, para una mejor
+  detección de los parámetros y una apariencia más homogénea.
+- Reescritura parcial de todas las clases internas de N'gine, convirtiéndolas
+  en singletons al fin de evitar conflictos por algún descuido. La clase
+  NGN_Camera no se ha convertido, dado que en algún proyecto puede ser
+  necesario disponer de más de una instancia de esta clase.
+- N'gine, los templates y los ejemplos se han configurado para seguir la
+  norma C++ 17 (estándar).
+- Actualizados los ejemplos de sonido.
+
+
+
 2022-07-29 Ver.1.10.0-beta
 --------------------------------------------------------------------------------
 - Optimizaciones en las rutinas de renderizado, en especial en las de fondos

@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -60,11 +60,14 @@ class NGN_Collisions {
     // Public
     public:
 
-        // Constructor
-        NGN_Collisions();
+        // Devuelve la instancia
+        static NGN_Collisions* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Collisions();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
         // Consulta el color de un pixel del mapa de colisiones
         uint32_t GetPixel(NGN_CollisionMapData* cmap, int32_t position_x, int32_t position_y);
@@ -86,8 +89,18 @@ class NGN_Collisions {
     // Private
     private:
 
+        // Constructor
+        NGN_Collisions();
+
+        // Destructor
+        ~NGN_Collisions();
+
+        // Puntero de memoria a la instancia
+        static NGN_Collisions* instance;
+
+
         // Algoritmo de colision por cajas
-        bool CheckColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
+        bool CheckBoxColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2);
 
         // Deteccion de colisiones entre sprites por "pixel perfect"
         SDL_Surface* RenderSpriteInSurface(

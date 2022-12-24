@@ -3,11 +3,11 @@
     Ejemplo de uso de los mapas de colisiones y hitbox de sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.9.0-stable o superior
+    Requiere N'gine 1.11.0-stable o superior
 
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
@@ -18,8 +18,8 @@
     Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG (20200306)
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 

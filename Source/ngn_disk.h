@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -66,11 +66,14 @@ class NGN_Disk {
 
     public:
 
-        // Constructor
-        NGN_Disk();
+        // Devuelve la instancia
+        static NGN_Disk* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Disk();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
         // Lee un archivo en formato binario desde el disco y almacenalo en un buffer en RAM
         int32_t ReadBinaryFile(std::string filepath, std::vector<uint8_t> &buffer);
@@ -90,6 +93,16 @@ class NGN_Disk {
 
 
     private:
+
+        // Constructor
+        NGN_Disk();
+
+        // Destructor
+        ~NGN_Disk();
+
+        // Puntero de memoria a la instancia
+        static NGN_Disk* instance;
+
 
         // Genera una estructura de directorios
         int32_t MakePath(std::string path);

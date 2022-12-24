@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -147,6 +147,20 @@ void Vector2::operator-=(Vector2 p) {
 
 }
 
+void Vector2::operator*=(float p) {
+
+    x *= p;
+    y *= p;
+
+}
+
+void Vector2::operator/=(float p) {
+
+    x /= p;
+    y /= p;
+
+}
+
 
 
 /*** Clase Vector2I32 (int32_t) - Calcula la magnitud del vector ***/
@@ -216,6 +230,20 @@ void Vector2I32::operator-=(Vector2I32 p) {
 
     x -= p.x;
     y -= p.y;
+
+}
+
+void Vector2I32::operator*=(int32_t p) {
+
+    x *= p;
+    y *= p;
+
+}
+
+void Vector2I32::operator/=(int32_t p) {
+
+    x /= p;
+    y /= p;
 
 }
 
@@ -291,6 +319,22 @@ void Vector2I64::operator-=(Vector2I64 p) {
 
 }
 
+void Vector2I64::operator*=(int64_t p) {
+
+    x *= p;
+    y *= p;
+
+}
+
+void Vector2I64::operator/=(int64_t p) {
+
+    x /= p;
+    y /= p;
+
+}
+
+
+
 
 
 /******************************************************************************
@@ -298,6 +342,38 @@ void Vector2I64::operator-=(Vector2I64 p) {
     Metodos de la clase NGN_Math
 
 ******************************************************************************/
+
+/*** Puntero de la instancia a NULL ***/
+NGN_Math* NGN_Math::instance = NULL;
+
+
+
+/*** Metodo para crear/obtener la instancia ***/
+NGN_Math* NGN_Math::GetInstance() {
+
+    // Verifica si la instancia ya se ha creado
+    // Si no es asi, creala
+    if (!instance) instance = new NGN_Math();
+
+    // Devuelve la instancia
+    return instance;
+
+}
+
+
+
+/*** Metodo para eliminar la instancia ***/
+void NGN_Math::RemoveInstance() {
+
+    // Si la instancia aun existe, eliminala
+    if (instance) {
+        delete instance;
+        instance = NULL;
+    }
+
+}
+
+
 
 /*** Constructor ***/
 NGN_Math::NGN_Math() {
@@ -309,6 +385,12 @@ NGN_Math::NGN_Math() {
 /*** Destructor ***/
 NGN_Math::~NGN_Math() {
 
+}
+
+
+
+/*** Procesos iniciales despues de crear la instancia ***/
+void NGN_Math::BootUp() {
 }
 
 

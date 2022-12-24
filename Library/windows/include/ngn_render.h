@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -66,11 +66,14 @@ class NGN_Render {
     // Public
     public:
 
-        // Constructor
-        NGN_Render();
+        // Devuelve la instancia
+        static NGN_Render* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Render();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
         // Dibuja una textura en la surface del renderer
         void Texture(NGN_Texture* texture, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
@@ -104,6 +107,16 @@ class NGN_Render {
 
     // Private
     private:
+
+        // Constructor
+        NGN_Render();
+
+        // Destructor
+        ~NGN_Render();
+
+        // Puntero de memoria a la instancia
+        static NGN_Render* instance;
+
 
         bool render2texture;        // Flag de render to texture
         NGN_Texture* rend2text;     // Textura de destino del render

@@ -1,15 +1,15 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Conversor de PNG a Sprite sheet (.spr)
+    Conversor de PNG a Sprite (.spr) para N'gine
+    - Nucleo del programa -
 
-    Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    Proyecto iniciado el 11 de Febrero del 2016
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere LodePNG
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -20,294 +20,293 @@
 
 // C++
 #include <cstdio>
+#include <cstring>
 #include <iostream>
-#include <cmath>
 #include <fstream>
 #include <string>
+#include <vector>
 
-// LodePNG
-#include "lodepng/lodepng.h"
 
-// Sprite class
+// Includes del proyecto
 #include "sprite.h"
+#include "defines.h"
+#include "message.h"
+
 
 
 
 /*** Constructor ***/
-SpriteSheet::SpriteSheet() {
+Sprite::Sprite(int32_t argc, char* args[]) {
 
-    // Inicializa variables
-    strip = false;
+
+    // Guarda el numero de argumentos
+    argument_count = argc;
+
+    // General al lista de argumentos
+    argument_list.clear();
+    argument_list.resize(argument_count);
+    for (int32_t i = 0; i < argument_count; i ++) argument_list[i] = args[i];
+
+    // Parametros
+    parameter.in_file = "";
+    parameter.out_file = "";
+    parameter.width = 0;
+    parameter.height = 0;
+    parameter.generate_strip = false;
+
+    // Crea los objetos adicionales
+    msg = new Message(argument_list[0]);
+    fs = new FsManager();
+    png2sprite = new ConvertToSprite();
+
+    // Flags de argumentos
+    arg_help.state = false; arg_help.value = "";
+    arg_in_file.state = false; arg_in_file.value = "";
+    arg_out_file.state = false; arg_out_file.value = "";
+    arg_width.state = false; arg_width.value = "";
+    arg_height.state = false; arg_height.value = "";
+    arg_strip.state = false; arg_strip.value = "";
 
 }
 
 
 
 /*** Destructor ***/
-SpriteSheet::~SpriteSheet() {
+Sprite::~Sprite() {
 
-    // Borra los buffers de memoria
-    png.clear();
-    raw.clear();
-    sheet.clear();
-    out.clear();
+    // Elimina la lista de argumentos
+    argument_list.clear();
 
-}
-
-
-
-/*** Convierte el archivo a un Sprite Sheet del tamaño solicitado ***/
-int32_t SpriteSheet::ConvertPng() {
-
-    // Intenta cargar el archivo PNG, si hay error sal e informa.
-    if (ReadPNG(input_filename, raw) > 0) return 1;
-
-    // Genera la plantilla
-    GenerateSpriteSheet();
-
-    // Graba los archivos de salida
-    if (WriteFile(output_filename) > 0) return 1;
-
-    // Devuelve el resultado
-    return 0;
+    // Elimina los objetos adicionales
+    delete png2sprite; png2sprite = NULL;
+    delete fs; fs = NULL;
+    delete msg; msg = NULL;
 
 }
 
 
 
-/*** Lee el archivo PNG y almacena los pixeles de la imagen en el buffer ***/
-int32_t SpriteSheet::ReadPNG(std::string filename, std::vector<uint8_t> &data) {
+/*** Programa principal ***/
+int32_t Sprite::Run() {
 
-    // Borra los buffers
-    png.clear();
+    // Resultado de la ejecucion
+    int32_t r = ERR_CODE_OK;
 
-    // Carga el archivo PNG
-    uint32_t _error = lodepng::load_file(png, filename);
+    // Texto de cabecera
+    msg->AppHeader();
 
-    // Si se ha cargado correctamente, decodifica la imagen
-    if (_error == 0) {
-        _error = lodepng::decode(raw, in_width, in_height, png);
+    // Analiza la lista de argumentos
+    int32_t arglist = CheckArguments();
+    //DebugArgList();
+
+    // Analisis de los posibles errores en la linea de comandos / peticion de ayuda
+    if (arglist == 0) {
+        // Si no se ha especificado ningun argumento
+        msg->QuestionMarkForHelp();
+    } else if (arglist < 0) {
+        // Uso incorrecto
+        msg->UseError();
+        msg->UserManual();
+        r = ERR_CODE_ARG_INVALID;
+    } else if (arg_help.state) {
+        // Manual en pantalla
+        msg->UserManual();
     } else {
-        std::cout << "Error loading " << filename << "." << std::endl;
-        png.clear();
-        return 1;
-    }
-
-    // Verifica que la decodificacion sea la correcta
-    if (_error == 0) {
-        std::cout << "File " << filename << " loaded & decoded successfully." << std::endl;
-        std::cout << "Image size is " << in_width << "x" << in_height << " pixels." << std::endl;
-        // Aviso de tamaño no exacto
-        if (((in_width % frame_width) != 0) || ((in_height % frame_height) != 0)) {
-            std::cout << "WARNING: Image size doesn't fits the sprite frame size." << std::endl;
-        }
-        png.clear();
-        return 0;
-    } else {
-        std::cout << "Error decoding " << filename << "." << std::endl;
-        png.clear();
-        return 1;
-    }
-
-
-}
-
-
-/*** Graba el buffer a un archivo PNG ***/
-int32_t SpriteSheet::WritePNG(std::string filename, std::vector<uint8_t> &data) {
-
-    // Borra los bufferes
-    out.clear();
-
-    uint32_t _error = lodepng::encode(out, data, out_width, out_height);
-
-    // Si se ha codificado correctamente, graba el archivo
-    if (_error == 0) {
-        _error = lodepng::save_file(out, filename);
-        if (_error == 0) {
-            std::cout << "File " << filename << " successfully saved." << std::endl;
-            out.clear();
-            return 0;
+        // Valida los parametros de entrada
+        if (ValidateParameters()) {
+            Report();
+            if (
+                !png2sprite->Convert(
+                    parameter.in_file,
+                    parameter.out_file,
+                    parameter.width,
+                    parameter.height,
+                    parameter.generate_strip
+                )
+            ) r = ERR_CODE_CONVERSION_FAILURE;
         } else {
-            std::cout << "Error saving " << filename << "." << std::endl;
-            out.clear();
-            return 1;
-        }
-    } else {
-        std::cout << "Error encoding the RAW data." << std::endl;
-        out.clear();
-        return 1;
-    }
-
-}
-
-
-
-/*** Graba el archivo empaquetado ***/
-int32_t SpriteSheet::WriteFile(std::string filename) {
-
-    // Proteccion de path
-    if (filename.length() >= 246) {
-        std::cout << "Error saving " << filename << "." << std::endl;
-        std::cout << "Path too long." << std::endl;
-        return 1;
-    }
-
-    // Variables
-    uint32_t i = 0;
-
-    // Intenta codificar el Tileset a PNG
-    out.clear();
-    if (lodepng::encode(out, sheet, out_width, out_height) > 0) return 1;
-
-    for (i = 0; i < sizeof(header.reserve); i ++) header.reserve[i] = 0;
-
-    // Genera el nombre de archivo
-    char f[256];
-    char basename[246];
-    for (i = 0; i < filename.length(); i ++) basename[i] = filename[i];     // Nombre base
-    basename[i] = '\0';     // Terminador
-
-    //std::cout << filename << std::endl;
-    //std::cout << basename << std::endl;
-
-    // Graba el archivo principal
-    sprintf(f, "%s.spr", basename);
-    std::ofstream file;
-    file.open(f, std::ofstream::out | std::ofstream::binary);
-    if (file.is_open()) {
-        file.write((char*)&header, sizeof(header));         // Cabecera
-        file.write((char*)&out[0], out.capacity());         // Sprite sheet en PNG
-        file.close();
-        std::cout << "File " << f << " successfully saved." << std::endl;
-    } else {
-        std::cout << "Error saving " << f << "." << std::endl;
-        return 1;
-    }
-
-    // Si es necesario, guarda el archivo PNG extra
-    if (strip) {
-        sprintf(f, "%s_sheet.png", basename);
-        if (WritePNG(f, sheet) > 0) return 1;
-    }
-
-    // Todo correcto
-    return 0;
-
-}
-
-
-
-
-/*** Lee un pixel del buffer especificado ***/
-rgba_pixel SpriteSheet::GetPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w) {
-
-    // Variables
-    rgba_pixel pixel;
-
-    // Calcula el offset
-    uint32_t offset = (((y * w) + x) << 2);     // * 4
-
-    // Lee los bits del pixel
-    /*if ((offset + 3) < data.capacity()) {*/
-        pixel.r = data[offset];
-        pixel.g = data[(offset + 1)];
-        pixel.b = data[(offset + 2)];
-        pixel.a = data[(offset + 3)];
-    /*} else {
-        pixel.r = pixel.g = pixel.b = pixel.a = 0;
-        std::cout << "Pixel read out of range." << std::endl;
-    }*/
-
-    return pixel;
-
-}
-
-
-
-/*** Escribe el pixel en el buffer especificado ***/
-void SpriteSheet::PutPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w, rgba_pixel pixel) {
-
-    // Variables
-    uint32_t offset = (((y * w) + x) << 2);     // * 4
-
-    /*if ((offset + 3) < data.capacity()) {*/
-        data[offset] = pixel.r;
-        data[(offset + 1)] = pixel.g;
-        data[(offset + 2)] = pixel.b;
-        data[(offset + 3)] = pixel.a;
-    /*} else {
-        std::cout << "Pixel write out of range." << std::endl;
-    }*/
-
-}
-
-
-
-
-/*** Genera la plantilla de frames del sprite ***/
-void SpriteSheet::GenerateSpriteSheet() {
-
-    // Variables
-    uint32_t img_x = 0, img_y = 0;      // Punto de corte
-    uint32_t _frames_w = (uint32_t)floor(in_width / frame_width);       // Numero de columnas de frames
-    uint32_t _frames_h = (uint32_t)floor(in_height / frame_height);     // Numero de filas de frames
-    uint32_t _total_frames = (_frames_w * _frames_h);                       // Numero total de frames
-    uint32_t _current_frame = 0;
-
-    // Calcula el tamaño del archivo de salida
-    out_width = frame_width;
-    out_height = (_total_frames * frame_height);
-
-    // Prepara los bufferes a usar
-    sheet.clear();
-    sheet.resize(((out_width * out_height) << 2), 0);  // * 4
-
-    // Marcador
-    std::cout << "This image contains " << _total_frames << " frames of " << frame_width << "x" << frame_height << " pixels." << std::endl;
-
-    // Variables del control de corte del frame
-    uint32_t src_pointer = 0, dst_pointer = 0;
-    uint32_t cut_x = 0, cut_y = 0;
-    uint32_t cut_start_x = 0, cut_end_x = 0, cut_start_y = 0, cut_end_y = 0;
-
-    // Corta la imagen en una tira de frames
-    for (img_y = 0; img_y <= (in_height - frame_height); img_y += frame_height) {
-            // Calcula el punto de corte (Y)
-            cut_start_y = img_y; cut_end_y = (cut_start_y + frame_height);
-        for (img_x = 0; img_x <= (in_width - frame_width); img_x += frame_width) {
-            // Contador de frames cortados
-            _current_frame ++;
-            std::cout << "\x0d" << "Cutting off " << _current_frame << " of " << _total_frames << " frames... ";
-            // Calcula el punto de corte (X)
-            cut_start_x = img_x; cut_end_x = (cut_start_x + frame_width);
-            // Bucle de corte
-            for (cut_y = cut_start_y; cut_y < cut_end_y; cut_y ++) {
-                for (cut_x = cut_start_x; cut_x < cut_end_x; cut_x ++) {
-                    // Calcula el puntero de lectura
-                    src_pointer = (((cut_y * in_width) + cut_x) << 2);
-                    // Copia los 4 bytes del pixel de origen al buffer de destino
-                    for (uint32_t n = src_pointer; n < (src_pointer + 4); n ++) {
-                        sheet[dst_pointer] = raw[n];
-                        dst_pointer ++;
-                    }
-                }
-            }
+            msg->QuestionMarkForHelp();
+            r = ERR_CODE_ARG_INVALID;
         }
     }
 
-    // Ok
-    std::cout << "done!" << std::endl;
-    std::cout << "Output sprite sheet size is " << out_width << "x" << out_height << " pixels." << std::endl;
+    // Resultado de la ejecucion
+    return r;
 
-    // Actualiza la informacion de la cabecera
-    header.version = VERSION;                               // Version del programa
-    sprintf(header.magic, "%s", MAGIC_STRING.c_str());      // Magic String
-    header.sheet_width = out_width;                         // Dimensiones del strip
-    header.sheet_height = out_height;
-    header.frame_width = frame_width;                       // Dimensiones del frame
-    header.frame_height = frame_height;
-    header.total_frames = _total_frames;                    // Numero de frames del sprite
-    for (uint32_t i = 0; i < sizeof(header.reserve); i ++) header.reserve[i] = 0;    // Espacio reservado
+}
+
+
+
+/*** Analiza la lista de argumentos proporcionados ***/
+int32_t Sprite::CheckArguments() {
+
+    // Si no hay argumentos, muestra el texto de ayuda
+    if (argument_count == 1) return 0;
+
+    // Si el numero de argumentos es incorrecto
+    if ((argument_count < ARG_MIN_NUM) || (argument_count > ARG_MAX_NUM)) return -1;
+
+    // Flag de argumentos validos
+    bool arg = false;
+    bool valid = false;
+
+    // Analiza la lista de argumentos
+    for (uint32_t i = 1; i < argument_list.size(); i ++) {
+
+        valid = false;
+
+        if (argument_list[i] == ARG_HELP) {                         // Texto de ayuda
+
+            if (arg_help.state) return -1;
+            arg_help.state = true;
+            valid = true;
+
+        } else if (argument_list[i] == ARG_OUT_FILE) {              // Archivo de salida
+
+            if (arg_out_file.state) return -1;
+            if ((i + 1) >= argument_list.size()) return -1;
+            arg_out_file.state = true;
+            i ++;
+            arg_out_file.value = argument_list[i];
+            valid = true;
+
+        } else if (argument_list[i] == ARG_WIDTH) {                 // Ancho del fotograma
+
+            if (arg_width.state) return -1;
+            if ((i + 1) >= argument_list.size()) return -1;
+            arg_width.state = true;
+            i ++;
+            arg_width.value = argument_list[i];
+            valid = true;
+
+        } else if (argument_list[i] == ARG_HEIGHT) {                // Altura del fotograma
+
+            if (arg_height.state) return -1;
+            if ((i + 1) >= argument_list.size()) return -1;
+            arg_height.state = true;
+            i ++;
+            arg_height.value = argument_list[i];
+            valid = true;
+
+        } else if (argument_list[i] == ARG_STRIP) {                 // Genera la tira de fotogramas?
+
+            if (arg_strip.state) return -1;
+            arg_strip.state = true;
+            valid = true;
+
+        } else if (i == 1) {
+
+            if (arg_in_file.state) return -1;
+            arg_in_file.state = true;
+            arg_in_file.value = argument_list[i];
+            valid = true;
+
+        }
+
+        // Si el argumento no se reconoce...
+        if (!valid) return -1;
+
+        // Argumento valido?
+        arg |= valid;
+
+    }
+
+    // Indica los argumentos se han leido correctamente
+    return (arg) ? 1:-1;
+
+}
+
+
+
+/*** Valida los parametros de entrada ***/
+bool Sprite::ValidateParameters() {
+
+    // Resultado
+    bool r = true;
+
+    // Verifica si el archivo de origen existe
+    if (!fs->CheckIfFileExist(arg_in_file.value)) {
+        std::cout << arg_in_file.value << " file not found." << std::endl;
+        r = false;
+    } else {
+        parameter.in_file = arg_in_file.value;
+    }
+
+
+    // Nombre base de los archivos de salida
+    if (arg_out_file.state) {
+        parameter.out_file = arg_out_file.value;
+    } else {
+        parameter.out_file = parameter.in_file.substr(0, (parameter.in_file.length() - 4));
+    }
+
+
+    // Tamaño del fotograma (ancho)
+    if (arg_width.state) {
+        parameter.width = std::stoi(arg_width.value);
+        if ((parameter.width < MIN_FRAME_SIZE) || (parameter.width > MAX_FRAME_SIZE)) {
+            std::cout << "Frame WIDTH out of range." << std::endl;
+            r = false;
+        }
+    } else {
+        std::cout << "Frame WIDTH not set." << std::endl;
+        r = false;
+    }
+
+    // Tamaño del fotograma (altura)
+    if (arg_height.state) {
+        parameter.height = std::stoi(arg_height.value);
+        if ((parameter.height < MIN_FRAME_SIZE) || (parameter.height > MAX_FRAME_SIZE)) {
+            std::cout << "Frame HEIGHT out of range." << std::endl;
+            r = false;
+        }
+    } else {
+        std::cout << "Frame HEIGHT not set." << std::endl;
+        r = false;
+    }
+
+    // Generacion de la tira de fotogramas en un PNG
+    parameter.generate_strip = arg_strip.state;
+
+    // Parametros validados
+    return r;
+
+}
+
+
+
+/*** Resumen de los datos recopilados ***/
+void Sprite::Report() {
+
+    // Informacion de los parametros introducidos
+    std::cout << "Output filename: " << parameter.out_file << SPR_EXTENSION << std::endl;
+    std::cout << "Frame size: " << parameter.width << "x" << parameter.height << " pixels." << std::endl;
+    std::cout << "Generation of sprite strip: ";
+    if (parameter.generate_strip) {
+        std::cout << "enabled." << std::endl;
+    } else {
+        std::cout << "disabled." << std::endl;
+    }
+    std::cout << std::endl;
+
+}
+
+
+
+/*** DEBUG: Imprime la lista de argumentos introducidos ***/
+void Sprite::DebugArgList() {
+
+    std::cout << std::endl;
+    std::cout << "Argument list" << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << "Executable name: " << argument_list[0] << std::endl;
+    std::cout << "Input file: " << arg_in_file.state << " " << arg_in_file.value << std::endl;
+    std::cout << ARG_HELP << " " << arg_help.state << " " << arg_help.value << std::endl;
+    std::cout << ARG_OUT_FILE << " " << arg_out_file.state << " " << arg_out_file.value << std::endl;
+    std::cout << ARG_WIDTH << " " << arg_width.state << " " << arg_width.value << std::endl;
+    std::cout << ARG_HEIGHT << " " << arg_height.state << " " << arg_height.value << std::endl;
+    std::cout << ARG_STRIP << " " << arg_strip.state << " " << arg_strip.value << std::endl;
+    std::cout << "----------------------------------------" << std::endl;
+    std::cout << std::endl;
 
 }

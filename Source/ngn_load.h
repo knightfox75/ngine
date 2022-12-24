@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -72,11 +72,14 @@ class NGN_Load {
    // Public
     public:
 
-        // Contructor
-        NGN_Load();
+        // Devuelve la instancia
+        static NGN_Load* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Load();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
         // Carga de texturas
         NGN_TextureData* Texture(std::string filepath);
@@ -137,6 +140,16 @@ class NGN_Load {
 
     // Private
     private:
+
+        // Contructor
+        NGN_Load();
+
+        // Destructor
+        ~NGN_Load();
+
+        // Puntero de memoria a la instancia
+        static NGN_Load* instance;
+
 
         // Objeto para el acceso al sistema de archivos
         NGN_FileSystem* file_system;

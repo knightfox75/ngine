@@ -1,2 +1,0 @@
-[2022-07-28 18:59:33] N'gine version 1.10.0-beta started successfully!
-[2022-07-28 18:59:40] Execution terminated.

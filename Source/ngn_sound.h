@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -86,11 +86,14 @@ class NGN_Sound {
     // Public
     public:
 
-        // Constructor de la clase
-        NGN_Sound();
+        // Devuelve la instancia
+        static NGN_Sound* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor de la clase
-        ~NGN_Sound();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
 
         /*** Efectos de sonido (SFX) [64 simultaneos maximo por defecto] ***/
@@ -241,6 +244,16 @@ class NGN_Sound {
 
     // Private
     private:
+
+        // Constructor de la clase
+        NGN_Sound();
+
+        // Destructor de la clase
+        ~NGN_Sound();
+
+        // Puntero de memoria a la instancia
+        static NGN_Sound* instance;
+
 
         // Lista de sonidos disponibles
         std::vector <NGN_AudioClip*> sfx_cue;

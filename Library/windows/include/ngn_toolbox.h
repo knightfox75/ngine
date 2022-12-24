@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     TOOL BOX - Caja de herramientas
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -73,11 +73,13 @@ class NGN_ToolBox {
     // Segmento publico
     public:
 
-        // Constructor de la clase
-        NGN_ToolBox();
+        // Devuelve la instancia
+        static NGN_ToolBox* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor de la clase
-        ~NGN_ToolBox();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
 
 
         /*** Cadenas de texto ***/
@@ -97,6 +99,15 @@ class NGN_ToolBox {
 
     // Segmento privado
     private:
+
+        // Constructor de la clase
+        NGN_ToolBox();
+
+        // Destructor de la clase
+        ~NGN_ToolBox();
+
+        // Puntero de memoria a la instancia
+        static NGN_ToolBox* instance;
 
         // Constantes de conversion a UTF-8 (2 bytes)
         // El primer byte en la codificacion en 2 bytes empieza con 110 y contiene 5 bits de datos

@@ -1,11 +1,10 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Sistema de archivos
-	Funciones criptograficas
+    Sistema de empaquetado de archivos para N'gine
+	- Funciones criptograficas -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (cc) 2021 by Cesar Rincon "NightFox"
+    (cc) 2021 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 

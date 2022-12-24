@@ -1,11 +1,10 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Sistema de archivos
+    Sistema de empaquetado de archivos para N'gine
 	- Sistema de mensages -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (cc) 2021 by Cesar Rincon "NightFox"
+    (cc) 2021 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -56,11 +55,11 @@ void Message::AppHeader() {
     std::endl <<
     std::endl << TEXT_DASHED_LINE <<
     std::endl <<
-    std::endl << "    " << PROGRAM_NAME << ". (v" << program_version << ")." <<
-    std::endl << "    For N'gine Version " << ngn_version << " or higher." <<
-    std::endl << "    (cc) " << CC_YEARS << " by Cesar Rincon." <<
-    std::endl << "    https://nightfoxandco.com" <<
-    std::endl << "    contact@nightfoxandco.com" <<
+    std::endl << "  " << PROGRAM_NAME << ". (v" << program_version << ")." <<
+    std::endl << "  For N'gine Version " << ngn_version << " or higher." <<
+    std::endl << "  (cc) " << CC_YEARS << " by Cesar Rincon." <<
+    std::endl << "  https://nightfoxandco.com" <<
+    std::endl << "  contact@nightfoxandco.com" <<
     std::endl <<
     std::endl << TEXT_DASHED_LINE <<
     std::endl << std::endl;
@@ -91,8 +90,8 @@ void Message::UseError() {
 void Message::UserManual() {
 
     std::cout << std::endl;
-    std::cout << program_name << " -idir DIRECTORY -ofile FILE [-key ENCRYPTION_KEY]" << std::endl;
-    std::cout << program_name << " -ifile FILE -odir DIRECTORY [-key ENCRYPTION_KEY]" << std::endl;
+    std::cout << program_name << " " << ARG_IN_DIR << " DIRECTORY " << ARG_OUT_FILE << " FILE [" << ARG_KEY << " ENCRYPTION_KEY]" << std::endl;
+    std::cout << program_name << " " << ARG_IN_FILE << " FILE " << ARG_OUT_DIR << " DIRECTORY [" << ARG_KEY << " ENCRYPTION_KEY]" << std::endl;
     std::cout << std::endl;
     std::cout << ARG_HELP << " Displays the on-screen user manual (this screen)." << std::endl;
     std::cout << ARG_IN_DIR << " Source folder with the files to add (and encrypt)." << std::endl;

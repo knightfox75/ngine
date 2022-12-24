@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Funciones de mensages de depuracion
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -61,11 +61,13 @@ class NGN_Log {
 
     public:
 
-        // Constructor
-        NGN_Log();
+        // Devuelve la instancia
+        static NGN_Log* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Log();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
 
         // Abre el archivo de registro
         bool OpenLogFile(std::string log_file, bool overwrite = true);
@@ -79,10 +81,19 @@ class NGN_Log {
 
     private:
 
+        // Constructor
+        NGN_Log();
+
+        // Destructor
+        ~NGN_Log();
+
+        // Puntero de memoria a la instancia
+        static NGN_Log* instance;
+
         std::string _log_file;  // Nombre del archivo de registro
         bool _log_enabled;      // Archivo de registro habilitado
 
-        std::fstream file;     // Stream de gestion del archivo de registro
+        std::fstream file;      // Stream de gestion del archivo de registro
 
         // Genera la marca de tiempo actual
         std::string GetTimeStamp();

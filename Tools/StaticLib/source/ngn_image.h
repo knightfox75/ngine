@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Funciones para la manipulacion de imagenes en RAW
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -65,11 +65,14 @@ class NGN_Image {
 
     public:
 
-        // Constructor
-        NGN_Image();
+        // Devuelve la instancia
+        static NGN_Image* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Image();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
         // Convierte una imagen RAW a datos de textura
         NGN_TextureData* ConvertRawToTextureData(NGN_RawImage* raw);
@@ -97,6 +100,15 @@ class NGN_Image {
 
 
     private:
+
+        // Constructor
+        NGN_Image();
+
+        // Destructor
+        ~NGN_Image();
+
+        // Puntero de memoria a la instancia
+        static NGN_Image* instance;
 
 
 };

@@ -107,12 +107,13 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++14" />
+			<Add option="-std=c++17" />
 			<Add option="-m64" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
 		</Linker>
+		<Unit filename="source/config_flags.h" />
 		<Unit filename="source/lodepng/lodepng.cpp" />
 		<Unit filename="source/lodepng/lodepng.h" />
 		<Unit filename="source/ngn.cpp" />

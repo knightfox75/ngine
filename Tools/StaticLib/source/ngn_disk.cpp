@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -60,6 +60,38 @@
 
 
 
+/*** Puntero de la instancia a NULL ***/
+NGN_Disk* NGN_Disk::instance = NULL;
+
+
+
+/*** Metodo para crear/obtener la instancia ***/
+NGN_Disk* NGN_Disk::GetInstance() {
+
+    // Verifica si la instancia ya se ha creado
+    // Si no es asi, creala
+    if (!instance) instance = new NGN_Disk();
+
+    // Devuelve la instancia
+    return instance;
+
+}
+
+
+
+/*** Metodo para eliminar la instancia ***/
+void NGN_Disk::RemoveInstance() {
+
+    // Si la instancia aun existe, eliminala
+    if (instance) {
+        delete instance;
+        instance = NULL;
+    }
+
+}
+
+
+
 /*** Constructor ***/
 NGN_Disk::NGN_Disk() {
 
@@ -74,6 +106,12 @@ NGN_Disk::~NGN_Disk() {
 
 
 
+}
+
+
+
+/*** Procesos iniciales despues de crear la instancia ***/
+void NGN_Disk::BootUp() {
 }
 
 

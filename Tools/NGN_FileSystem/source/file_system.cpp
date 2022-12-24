@@ -1,10 +1,10 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Sistema de archivos
+    Sistema de empaquetado de archivos para N'gine
+    - Sistema de archivos -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (cc) 2021 by Cesar Rincon "NightFox"
+    (cc) 2021 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -370,7 +370,7 @@ int32_t FileSystem::CreatePackage() {
 void FileSystem::GenerateFileHeader() {
 
     // Borra el contenido de la estructura
-    memset(&file_header, 0, sizeof(file_header));
+    memset((void*)&file_header, 0, sizeof(file_header));
 
     // Datos de la cabecera
     file_header.version = VERSION;
@@ -721,7 +721,7 @@ int32_t FileSystem::ExtractPackage() {
 int32_t FileSystem::ReadFileHeader() {
 
     // Borra el contenido de la estructura
-    memset(&file_header, 0, sizeof(file_header));
+    memset((void*)&file_header, 0, sizeof(file_header));
 
     // Intenta abrir el archivo en modo binario
     const char* path = arg_in_file.value.c_str();

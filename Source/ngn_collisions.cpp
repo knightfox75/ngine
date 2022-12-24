@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -58,6 +58,37 @@
 
 
 
+/*** Puntero de la instancia a NULL ***/
+NGN_Collisions* NGN_Collisions::instance = NULL;
+
+
+
+/*** Metodo para crear/obtener la instancia ***/
+NGN_Collisions* NGN_Collisions::GetInstance() {
+
+    // Verifica si la instancia ya se ha creado
+    // Si no es asi, creala
+    if (!instance) instance = new NGN_Collisions();
+
+    // Devuelve la instancia
+    return instance;
+
+}
+
+
+
+/*** Metodo para eliminar la instancia ***/
+void NGN_Collisions::RemoveInstance() {
+
+    // Si la instancia aun existe, eliminala
+    if (instance) {
+        delete instance;
+        instance = NULL;
+    }
+
+}
+
+
 
 /*** Contructor ***/
 NGN_Collisions::NGN_Collisions() {
@@ -67,6 +98,12 @@ NGN_Collisions::NGN_Collisions() {
 
 /*** Destructor ***/
 NGN_Collisions::~NGN_Collisions() {
+}
+
+
+
+/*** Procesos iniciales despues de crear la instancia ***/
+void NGN_Collisions::BootUp() {
 }
 
 
@@ -142,7 +179,7 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
         w2 = spr2->box.width;
         h2 = spr2->box.height;
         // Colision entre las cajas principales
-        r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+        r |= CheckBoxColliders(x1, y1, w1, h1, x2, y2, w2, h2);
     }
 
     // Fase 2 - Si la caja principal del Sprite 1 esta habilitada, verifica la colision con los colliders del Sprite 2, si estos existen
@@ -162,7 +199,7 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
                 w2 = spr2->colliders[i].width;
                 h2 = spr2->colliders[i].height;
                 // Verifica la colision
-                r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+                r |= CheckBoxColliders(x1, y1, w1, h1, x2, y2, w2, h2);
             }
         }
     }
@@ -184,7 +221,7 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
                 w1 = spr1->colliders[i].width;
                 h1 = spr1->colliders[i].height;
                 // Verifica la colision
-                r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+                r |= CheckBoxColliders(x1, y1, w1, h1, x2, y2, w2, h2);
             }
         }
     }
@@ -210,7 +247,7 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
                         w2 = spr2->colliders[i].width;
                         h2 = spr2->colliders[i].height;
                         // Verifica la colision
-                        r |= CheckColliders(x1, y1, w1, h1, x2, y2, w2, h2);
+                        r |= CheckBoxColliders(x1, y1, w1, h1, x2, y2, w2, h2);
                     }
                 }
             }
@@ -225,7 +262,7 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
 
 /*** Algoritmo de colision por cajas ***/
-bool NGN_Collisions::CheckColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
+bool NGN_Collisions::CheckBoxColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
 
     // Calculos previos (distancia entre sprites)
     Vector2 distance;

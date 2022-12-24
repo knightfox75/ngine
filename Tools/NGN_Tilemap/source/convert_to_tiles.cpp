@@ -1,15 +1,15 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Conversor de PNG a TILES + MAP [Funciones]
+    Conversor de PNG a Fondo de Tiles (.tbg) para N'gine
+    - Convierte un archivo PNG en tiles -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere LodePNG
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
@@ -21,32 +21,35 @@
 // C++
 #include <cstdio>
 #include <iostream>
-#include <cmath>
 #include <fstream>
 #include <string>
-
+#include <vector>
+#include <cmath>
 
 // LodePNG
 #include "lodepng/lodepng.h"
 
-// Tilemap
-#include "tilemap.h"
+// Includes del proyecto
+#include "convert_to_tiles.h"
+#include "defines.h"
 
 
 
-/*** Contructor ***/
-PngToTiles::PngToTiles() {
-}
+/*** Constructor ***/
+ConvertToTiles::ConvertToTiles() {
 
+    size_of_tile = 0;
+    optimize = 0;
+    extra_files = false;
 
+    bg_width = 0;
+    bg_height = 0;
+    map_width = 0;
+    map_height = 0;
+    out_width = 0;
+    out_height = 0;
+    tileset_length = 0;
 
-/*** Destructor ***/
-PngToTiles::~PngToTiles() {
-
-    // Borra todos los vectores de memoria
-    png.clear();
-    raw.clear();
-    out.clear();
     tiles.clear();
     tmap.clear();
     img_tile.clear();
@@ -57,163 +60,62 @@ PngToTiles::~PngToTiles() {
 
 
 
-/*** Convierte el archivo ***/
-int32_t PngToTiles::ConvertPng() {
+/*** Destructor ***/
+ConvertToTiles::~ConvertToTiles() {
 
-    // Intenta cargar el archivo PNG, si hay error sal e informa.
-    if (ReadPNG(input_filename, raw) > 0) return 1;
-
-    // Convierte la imagen a tiles
-    GenerateTileset();
-
-    // Graba los archivos de salida
-    if (WriteFile(output_filename) > 0) return 1;
-
-    return 0;
+    tiles.clear();
+    tmap.clear();
+    img_tile.clear();
+    map_tile.clear();
+    buffer.clear();
 
 }
 
 
 
-/*** Lee el archivo PNG y almacena los pixeles de la imagen en el buffer ***/
-int32_t PngToTiles::ReadPNG(std::string filename, std::vector<uint8_t> &data) {
+/*** Convierte un archivo PNG en tiles ***/
+bool ConvertToTiles::Convert(
+    std::string in_file,        // Archivo PNG a convertir
+    std::string out_file,       // Nombre base de los archivos de salida
+    uint32_t tile_size,         // Tamaño del tile
+    uint32_t op_level,          // Nivel de optimizacion
+    bool ex_files               // Generar archivos adicionales?
+) {
 
-    // Variables
-    uint32_t width, height;     // Tamaño del archivo cargado
+    // Guarda los parametros
+    size_of_tile = tile_size;
+    optimize = op_level;
+    extra_files = ex_files;
 
-    // Borra los buffers
-    png.clear();
+    // Prepara el buffer para los pixeles de la imagen
+    std::vector<uint8_t> png_pixels;
+    png_pixels.clear();
 
-    // Carga el archivo PNG
-    uint32_t _error = lodepng::load_file(png, filename);
+    // Intenta abrir y decodificar el archivo PNG
+    if (!ReadPng(in_file, png_pixels)) return false;
 
-    // Si se ha cargado correctamente, decodifica la imagen
-    if (_error == 0) {
-        _error = lodepng::decode(raw, width, height, png);
-    } else {
-        std::cout << "Error loading " << filename << "." << std::endl;
-        png.clear();
-        return 1;
-    }
+    // Convierte la imagen cargada a un conjunto de TILES + MAPA, guardado los datos en sus correspondientes buffers
+    GenerateTileset(png_pixels);
 
-    // Guarda los tamaños de la imagen a convertir
-    bg_width = width;
-    bg_height = height;
+    // Guarda en el archivo empaquetado los datos generados
+    bool r = WriteFile(out_file);
 
-    // Calcula el tamaño del mapa necesario
-    if ((width % size_of_tile) == 0) {
-        map_width = width;
-    } else {
-        map_width = ((((uint32_t)(width / size_of_tile)) + 1) * size_of_tile);
-    }
-    if ((height % size_of_tile) == 0) {
-        map_height = height;
-    } else {
-        map_height = ((((uint32_t)(height / size_of_tile)) + 1) * size_of_tile);
-    }
+    // Elimina los datos de todos los buffers usados
+    tiles.clear();
+    tmap.clear();
+    img_tile.clear();
+    map_tile.clear();
+    buffer.clear();
 
-
-    // Verifica que la decodificacion sea la correcta
-    if (_error == 0) {
-        std::cout << "File " << filename << " loaded & decoded successfully." << std::endl;
-        std::cout << "Image size is " << width << "x" << height << " pixels." << std::endl;
-        // Aviso de tamaño no exacto
-        if (((width % size_of_tile) != 0) || ((height % size_of_tile) != 0)) {
-            std::cout << std::endl;
-            std::cout << "WARNING: Image size doesn't fits the tile size." << std::endl;
-            std::cout << "Half tiles will be filled with blank spaces." << std::endl;
-            std::cout << "New image size is " << map_width << "x" << map_height << " pixels." << std::endl;
-            std::cout << std::endl;
-        }
-        png.clear();
-        return 0;
-    } else {
-        std::cout << "Error decoding " << filename << "." << std::endl;
-        png.clear();
-        return 1;
-    }
-
-
-}
-
-
-/*** Graba el buffer a un archivo PNG ***/
-int32_t PngToTiles::WritePNG(std::string filename, std::vector<uint8_t> &data) {
-
-    // Borra los bufferes
-    out.clear();
-
-    uint32_t _error = lodepng::encode(out, data, out_width, out_height);
-
-    // Si se ha codificado correctamente, graba el archivo
-    if (_error == 0) {
-        _error = lodepng::save_file(out, filename);
-        if (_error == 0) {
-            std::cout << "File " << filename << " successfully saved." << std::endl;
-            out.clear();
-            return 0;
-        } else {
-            std::cout << "Error saving " << filename << "." << std::endl;
-            out.clear();
-            return 1;
-        }
-    } else {
-        std::cout << "Error encoding the RAW data." << std::endl;
-        out.clear();
-        return 1;
-    }
-
-}
-
-
-
-/*** Lee un pixel del buffer especificado ***/
-rgba_pixel PngToTiles::GetPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w) {
-
-    // Variables
-    rgba_pixel pixel;
-
-    // Calcula el offset
-    uint32_t offset = (((y * w) + x) << 2);     // * 4
-
-    // Lee los bits del pixel
-    /*if ((offset + 3) < data.capacity()) {*/
-        pixel.r = data[offset];
-        pixel.g = data[(offset + 1)];
-        pixel.b = data[(offset + 2)];
-        pixel.a = data[(offset + 3)];
-    /*} else {
-        pixel.r = pixel.g = pixel.b = pixel.a = 0;
-        std::cout << "Pixel read out of range." << std::endl;
-    }*/
-
-    return pixel;
-
-}
-
-
-
-/*** Escribe el pixel en el buffer especificado ***/
-void PngToTiles::PutPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w, rgba_pixel pixel) {
-
-    // Variables
-    uint32_t offset = (((y * w) + x) << 2);     // * 4
-
-    /*if ((offset + 3) < data.capacity()) {*/
-        data[offset] = pixel.r;
-        data[(offset + 1)] = pixel.g;
-        data[(offset + 2)] = pixel.b;
-        data[(offset + 3)] = pixel.a;
-    /*} else {
-        std::cout << "Pixel write out of range." << std::endl;
-    }*/
+    // Conversion correcta
+    return r;
 
 }
 
 
 
 /*** Convierte la imagen en tiles + mapa ***/
-void PngToTiles::GenerateTileset() {
+void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
 
     // Inicializa las variables
     tileset_length = 0;
@@ -260,7 +162,7 @@ void PngToTiles::GenerateTileset() {
     for (img_y = 0; img_y <= (map_height - size_of_tile); img_y += size_of_tile) {
         for (img_x = 0; img_x <= (map_width - size_of_tile); img_x += size_of_tile) {
             // Obten un tile
-            GetTile(img_tile, raw, img_x, img_y, bg_width, bg_height);
+            GetTile(img_tile, data, img_x, img_y, bg_width, bg_height);
             // Comparalo con los tiles existentes y añadelo si no existe. Registra el resultado en el mapa
             t = OptimizeTiles();
             // Codifica el WORD con la info del tile
@@ -325,98 +227,229 @@ void PngToTiles::GenerateTileset() {
 
 
 /*** Graba el archivo empaquetado ***/
-int32_t PngToTiles::WriteFile(std::string filename) {
+bool ConvertToTiles::WriteFile(std::string filename) {
 
-    // Proteccion de path
-    if (filename.length() >= 244) {
-        std::cout << "Error saving " << filename << "." << std::endl;
-        std::cout << "Path too long." << std::endl;
-        return 1;
-    }
-
-    // Variables
-    uint32_t i = 0;
+    // Prepara el buffer temporal
+    std::vector<uint8_t> tileset_png;
+    tileset_png.clear();
 
     // Intenta codificar el Tileset a PNG
-    out.clear();
-    if (lodepng::encode(out, tiles, out_width, out_height) > 0) return 1;
-
+    if (lodepng::encode(tileset_png, tiles, out_width, out_height) != 0) {
+        std::cout << "Error encoding the tileset image data." << std::endl;
+        tileset_png.clear();
+        return false;
+    }
 
     // Guarda la informacion para la cabecera del archivo
-
+    FileHeader header;
+    memset((void*)&header, 0, sizeof(header));
+    // Datos de version
     header.version = VERSION;
-
-    sprintf(header.magic, "%s", MAGIC_STRING.c_str());
-
+    strncpy(header.magic, MAGIC_STRING.c_str(), MAGIC_STRING.length());
+    // Datos del fondo original
     header.bg_width = bg_width;
     header.bg_height = bg_height;
-
+    // Datos del mapa
     header.map_width = map_width;
     header.map_height = map_height;
     header.map_length = tmap.capacity();
-
+    // Datos del tileset
     header.tileset_width = out_width;
     header.tileset_height = out_height;
-    header.tileset_length = out.capacity();
+    header.tileset_length = tileset_png.capacity();
     header.tile_size = size_of_tile;
 
-    for (i = 0; i < sizeof(header.reserve); i ++) header.reserve[i] = 0;
-
-    // Genera el nombre de archivo
-    char f[256];
-    char basename[244];
-    for (i = 0; i < filename.length(); i ++) basename[i] = filename[i];     // Nombre base
-    basename[i] = '\0';     // Terminador
-
-    //std::cout << filename << std::endl;
-    //std::cout << basename << std::endl;
+    // Genera el nombres de archivo
+    std::string fname = filename + TBG_EXTENSION;
+    const char* tilemap_filename = fname.c_str();
 
     // Graba el archivo principal
-    sprintf(f, "%s.tbg", basename);
     std::ofstream file;
-    file.open(f, std::ofstream::out | std::ofstream::binary);
+    file.open(tilemap_filename, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
-        file.write((char*)&header, sizeof(header));         // Cabecera
-        file.write((char*)&out[0], out.capacity());         // Tileset en PNG
-        file.write((char*)&tmap[0], tmap.capacity());       // Mapa
+        file.write((char*)&header, sizeof(header));                     // Cabecera
+        file.write((char*)&tileset_png[0], tileset_png.capacity());     // Tileset en PNG
+        file.write((char*)&tmap[0], tmap.capacity());                   // Mapa
         file.close();
-        std::cout << "File " << f << " successfully saved." << std::endl;
+        std::cout << "File " << fname << " successfully saved." << std::endl;
     } else {
-        std::cout << "Error saving " << f << "." << std::endl;
-        return 1;
+        std::cout << "Error saving " << fname << "." << std::endl;
+        return false;
     }
 
+    // Elimia los datos del PNG del tileset
+    tileset_png.clear();
 
-    // Si se han pedido los archivos extra...
-    if (extra_files) {
+    // Si no se requieren los archivos adicionales, termina
+    if (!extra_files) return true;
 
-        // Graba la imagen con el tileset
-        sprintf(f, "%s_tileset.png", basename);
-        if (WritePNG(f, tiles) > 0) return 1;
+    // Guarda el tileset en PNG
+    fname = (filename + TILESET_EXTENSION);
+    if (!WritePng(fname, tiles, out_width, out_height)) return false;
 
-        // Graba el mapa del tileset en formato binario
-        sprintf(f, "%s_map.bin", basename);
-        file.open(f, std::ofstream::out | std::ofstream::binary);
-        if (file.is_open()) {
-            file.write((char*)&tmap[0], tmap.capacity());
-            file.close();
-            std::cout << "File " << f << " successfully saved." << std::endl;
-        } else {
-            std::cout << "Error saving " << f << "." << std::endl;
-            return 1;
-        }
-
+    // Guarda el mapa en formato binario
+    fname = (filename + MAP_EXTENSION);
+    const char* map_filename = fname.c_str();
+    file.open(map_filename, std::ofstream::out | std::ofstream::binary);
+    if (file.is_open()) {
+        file.write((char*)&tmap[0], tmap.capacity());
+        file.close();
+        std::cout << "File " << fname << " successfully saved." << std::endl;
+    } else {
+        std::cout << "Error saving " << fname << "." << std::endl;
+        return false;
     }
 
     // Todo correcto
-    return 0;
+    return true;
+
+}
+
+
+
+/*** Lee un archivo .PNG y coloca los pixeles en un buffer ***/
+bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
+
+    // Variables
+    uint32_t width = 0, height = 0;     // Tamaño del archivo cargado
+
+    // Prepara el buffer temporal
+    std::vector<uint8_t> png_data;
+    png_data.clear();
+
+    // Prepara el buffer para los datos decodificados
+    data.clear();
+
+    // Carga el archivo PNG
+    if (lodepng::load_file(png_data, filename) != 0) {
+        std::cout << "Error loading " << filename << "." << std::endl;
+        png_data.clear();
+        return false;
+    }
+
+    // Si se ha cargado correctamente, decodifica la imagen
+    if (lodepng::decode(data, width, height, png_data) != 0) {
+        std::cout << "Error decoding " << filename << "." << std::endl;
+        png_data.clear();
+        data.clear();
+        return false;
+    }
+
+    // Guarda los tamaños de la imagen a convertir
+    bg_width = width;
+    bg_height = height;
+
+    // Calcula el tamaño del mapa necesario
+    if ((width % size_of_tile) == 0) {
+        map_width = width;
+    } else {
+        map_width = ((((uint32_t)(width / size_of_tile)) + 1) * size_of_tile);
+    }
+    if ((height % size_of_tile) == 0) {
+        map_height = height;
+    } else {
+        map_height = ((((uint32_t)(height / size_of_tile)) + 1) * size_of_tile);
+    }
+
+    // Informacion del archivo cargado
+    std::cout << "File " << filename << " loaded & decoded successfully." << std::endl;
+    std::cout << "Image size is " << width << "x" << height << " pixels." << std::endl;
+    // Aviso de tamaño no exacto
+    if (((width % size_of_tile) != 0) || ((height % size_of_tile) != 0)) {
+        std::cout << std::endl;
+        std::cout << "WARNING: Image size doesn't fits the tile size." << std::endl;
+        std::cout << "Half tiles will be filled with blank space." << std::endl;
+        std::cout << "New image size is " << map_width << "x" << map_height << " pixels." << std::endl;
+        std::cout << std::endl;
+    }
+
+    // Limpia el buffer temporal
+    png_data.clear();
+
+    // Fin de la funcion de carga
+    return true;
+
+}
+
+
+
+/*** Graba un buffer de pixeles en un archivo PNG ***/
+bool ConvertToTiles::WritePng(std::string filename, std::vector<uint8_t> &data, uint32_t width, uint32_t height) {
+
+    // Prepara el buffer temporal
+    std::vector<uint8_t> png_data;
+    png_data.clear();
+
+    // Intenta codificar los pixeles del buffer a PNG
+    if (lodepng::encode(png_data, data, width, height) != 0) {
+        std::cout << "Error encoding the .PNG image data." << std::endl;
+        png_data.clear();
+        return false;
+    }
+
+    // Intenta guardar el archivo .PNG
+    if (lodepng::save_file(png_data, filename) != 0) {
+        std::cout << "Error saving " << filename << " file." << std::endl;
+        png_data.clear();
+        return false;
+    }
+
+    // Grabacion correcta
+    std::cout << "File " << filename << " successfully saved." << std::endl;
+    png_data.clear();
+    return true;
+
+}
+
+
+
+/*** Lee un pixel del buffer especificado ***/
+RgbaPixel ConvertToTiles::GetPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w) {
+
+    // Variables
+    RgbaPixel pixel;
+
+    // Calcula el offset
+    uint32_t offset = (((y * w) + x) << 2);     // * 4
+
+    // Lee los bits del pixel
+    /*if ((offset + 3) < data.capacity()) {*/
+        pixel.r = data[offset];
+        pixel.g = data[(offset + 1)];
+        pixel.b = data[(offset + 2)];
+        pixel.a = data[(offset + 3)];
+    /*} else {
+        pixel.r = pixel.g = pixel.b = pixel.a = 0;
+        std::cout << "Pixel read out of range." << std::endl;
+    }*/
+
+    return pixel;
+
+}
+
+
+
+/*** Escribe el pixel en el buffer especificado ***/
+void ConvertToTiles::PutPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w, RgbaPixel pixel) {
+
+    // Variables
+    uint32_t offset = (((y * w) + x) << 2);     // * 4
+
+    /*if ((offset + 3) < data.capacity()) {*/
+        data[offset] = pixel.r;
+        data[(offset + 1)] = pixel.g;
+        data[(offset + 2)] = pixel.b;
+        data[(offset + 3)] = pixel.a;
+    /*} else {
+        std::cout << "Pixel write out of range." << std::endl;
+    }*/
 
 }
 
 
 
 /*** Genera un tile del buffer especificado ***/
-void PngToTiles::GetTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img, uint32_t x, uint32_t y, uint32_t max_w, uint32_t max_h) {
+void ConvertToTiles::GetTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img, uint32_t x, uint32_t y, uint32_t max_w, uint32_t max_h) {
 
     // Borra el buffer de salida
     //tl.clear();
@@ -454,7 +487,7 @@ void PngToTiles::GetTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img, ui
 
 
 /*** Escribe un tile en el buffer especificado ***/
-void PngToTiles::PutTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img, uint32_t x, uint32_t y, uint32_t w) {
+void ConvertToTiles::PutTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img, uint32_t x, uint32_t y, uint32_t w) {
 
     // Lee el tile del buffer de origen y guardalo en el de destino
     uint32_t o_offset = 0, d_offset = 0;
@@ -476,9 +509,8 @@ void PngToTiles::PutTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img, ui
 }
 
 
-
 /*** Realiza la optimizacion de tiles unicos ***/
-uint32_t PngToTiles::OptimizeTiles() {
+uint32_t ConvertToTiles::OptimizeTiles() {
 
     // Variables
     uint32_t i = 0;
@@ -537,7 +569,7 @@ uint32_t PngToTiles::OptimizeTiles() {
 
 
 /*** Compara si 2 tiles son identicos (img_tile vs map_tile) ***/
-bool PngToTiles::CompareNormal() {
+bool ConvertToTiles::CompareNormal() {
 
     //bool r = true;              // Son iguales?
     uint32_t i = 0;
@@ -559,7 +591,7 @@ bool PngToTiles::CompareNormal() {
 
 
 /*** Compara si 2 tiles estan en espejo horizontal (H FLIP) ***/
-bool PngToTiles::CompareFlipH() {
+bool ConvertToTiles::CompareFlipH() {
 
     //bool r = true;          // Son iguales?
 
@@ -568,7 +600,7 @@ bool PngToTiles::CompareFlipH() {
 
     uint32_t x, y, _x;
     uint32_t last = size_of_tile - 1;
-    rgba_pixel p, _p;
+    RgbaPixel p, _p;
 
     // Compara todos los pixels de las tiles
     for (y = 0; y < size_of_tile; y ++) {
@@ -600,7 +632,7 @@ bool PngToTiles::CompareFlipH() {
 
 
 /*** Compara si 2 tiles estan en espejo vertical (V FLIP) ***/
-bool PngToTiles::CompareFlipV() {
+bool ConvertToTiles::CompareFlipV() {
 
     //bool r = true;          // Son iguales?
 
@@ -609,7 +641,7 @@ bool PngToTiles::CompareFlipV() {
 
     uint32_t x, y, _y;
     uint32_t last = size_of_tile - 1;
-    rgba_pixel p, _p;
+    RgbaPixel p, _p;
 
     // Compara todos los pixels de las tiles
     for (y = 0; y < size_of_tile; y ++) {
@@ -641,7 +673,7 @@ bool PngToTiles::CompareFlipV() {
 
 
 /*** Compara si 2 tiles estan en espejo completo (H & V FLIP) ***/
-bool PngToTiles::Compare180deg() {
+bool ConvertToTiles::Compare180deg() {
 
     //bool r = true;          // Son iguales?
 
@@ -650,7 +682,7 @@ bool PngToTiles::Compare180deg() {
 
     uint32_t x, y, _x, _y;
     uint32_t last = size_of_tile - 1;
-    rgba_pixel p, _p;
+    RgbaPixel p, _p;
 
     // Compara todos los pixels de las tiles
     for (y = 0; y < size_of_tile; y ++) {
@@ -683,7 +715,7 @@ bool PngToTiles::Compare180deg() {
 
 
 /*** Compara si 2 tiles estan rotadas 90º a la derecha (90º Clock Wise) ***/
-bool PngToTiles::Compare90degCW() {
+bool ConvertToTiles::Compare90degCW() {
 
     //bool r = true;          // Son iguales?
 
@@ -692,7 +724,7 @@ bool PngToTiles::Compare90degCW() {
 
     uint32_t x, y, _x, _y;
     uint32_t last = size_of_tile - 1;
-    rgba_pixel p, _p;
+    RgbaPixel p, _p;
 
     // Compara todos los pixels de las tiles
     for (y = 0; y < size_of_tile; y ++) {
@@ -725,7 +757,7 @@ bool PngToTiles::Compare90degCW() {
 
 
 /*** Compara si 2 tiles estan rotadas 90º a la izquierda (90º Anti Clock Wise) ***/
-bool PngToTiles::Compare90degACW() {
+bool ConvertToTiles::Compare90degACW() {
 
     //bool r = true;          // Son iguales?
 
@@ -734,7 +766,7 @@ bool PngToTiles::Compare90degACW() {
 
     uint32_t x, y, _x, _y;
     uint32_t last = size_of_tile - 1;
-    rgba_pixel p, _p;
+    RgbaPixel p, _p;
 
     // Compara todos los pixels de las tiles
     for (y = 0; y < size_of_tile; y ++) {
@@ -763,4 +795,3 @@ bool PngToTiles::Compare90degACW() {
     return true;
 
 }
-

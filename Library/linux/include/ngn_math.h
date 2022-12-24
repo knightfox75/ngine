@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -82,6 +82,10 @@ class Vector2 {
         Vector2 operator/(float);
         bool operator==(Vector2);
         bool operator!=(Vector2);
+        void operator+=(Vector2);
+        void operator-=(Vector2);
+        void operator*=(float);
+        void operator/=(float);
 
 
     private:
@@ -109,6 +113,10 @@ class Vector2I32 {
         Vector2I32 operator/(int32_t);
         bool operator==(Vector2I32);
         bool operator!=(Vector2I32);
+        void operator+=(Vector2I32);
+        void operator-=(Vector2I32);
+        void operator*=(int32_t);
+        void operator/=(int32_t);
 
 
     private:
@@ -136,6 +144,10 @@ class Vector2I64 {
         Vector2I64 operator/(int64_t);
         bool operator==(Vector2I64);
         bool operator!=(Vector2I64);
+        void operator+=(Vector2I64);
+        void operator-=(Vector2I64);
+        void operator*=(int64_t);
+        void operator/=(int64_t);
 
 
     private:
@@ -150,11 +162,13 @@ class NGN_Math {
     // Segmento publico
     public:
 
-        // Contructor de la clase
-        NGN_Math();
+        // Devuelve la instancia
+        static NGN_Math* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor de la clase
-        ~NGN_Math();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
 
 
         // Distancia entre 2 puntos (4 parametros, punto flotante, 1a sobrecarga)
@@ -186,6 +200,14 @@ class NGN_Math {
     // Segmento privado
     private:
 
+        // Contructor de la clase
+        NGN_Math();
+
+        // Destructor de la clase
+        ~NGN_Math();
+
+        // Puntero de memoria a la instancia
+        static NGN_Math* instance;
 
 
 };

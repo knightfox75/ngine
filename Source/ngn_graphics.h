@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -68,11 +68,14 @@ class NGN_Graphics {
     // Public
     public:
 
-        // Contructor
-        NGN_Graphics();
+        // Devuelve la instancia
+        static NGN_Graphics* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_Graphics();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
+
 
         // Inicializa la ventana principal y la superficie de renderizado
         bool Init(
@@ -184,6 +187,16 @@ class NGN_Graphics {
 
     // Private
     private:
+
+        // Contructor
+        NGN_Graphics();
+
+        // Destructor
+        ~NGN_Graphics();
+
+        // Puntero de memoria a la instancia
+        static NGN_Graphics* instance;
+
 
         // Resolucion de pantalla completa
         int32_t desktop_w;

@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -61,6 +61,38 @@
 
 // Libreria
 #include "ngn.h"
+
+
+
+/*** Puntero de la instancia a NULL ***/
+NGN_Graphics* NGN_Graphics::instance = NULL;
+
+
+
+/*** Metodo para crear/obtener la instancia ***/
+NGN_Graphics* NGN_Graphics::GetInstance() {
+
+    // Verifica si la instancia ya se ha creado
+    // Si no es asi, creala
+    if (!instance) instance = new NGN_Graphics();
+
+    // Devuelve la instancia
+    return instance;
+
+}
+
+
+
+/*** Metodo para eliminar la instancia ***/
+void NGN_Graphics::RemoveInstance() {
+
+    // Si la instancia aun existe, eliminala
+    if (instance) {
+        delete instance;
+        instance = NULL;
+    }
+
+}
 
 
 
@@ -130,6 +162,12 @@ NGN_Graphics::~NGN_Graphics() {
     SDL_DestroyWindow(window);
     window = NULL;
 
+}
+
+
+
+/*** Procesos iniciales despues de crear la instancia ***/
+void NGN_Graphics::BootUp() {
 }
 
 

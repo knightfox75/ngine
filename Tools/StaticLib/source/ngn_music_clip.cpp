@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -146,28 +146,32 @@ void NGN_MusicClip::SetLoop(
     int32_t loop_end        // Punto final del loop (milisengundos)
     ) {
 
-    // Ajuste del punto final
-    sf::Time duration = music.getDuration();
-    if (loop_end == NGN_DEFAULT_VALUE) loop_end = duration.asMilliseconds();
+    #if !defined (DISABLE_SFML_AUDIO_ADVANCED_FEATURES)
 
-    // Proteccion
-    if (
-        (loop_end > duration.asMilliseconds())  // Si el punto final de loop esta mas alla del final
-        ||
-        (loop_start >= loop_end)                // Si el punto de inicio supera el punto final
-    ) return;
+        // Ajuste del punto final
+        sf::Time duration = music.getDuration();
+        if (loop_end == NGN_DEFAULT_VALUE) loop_end = duration.asMilliseconds();
 
-    // Convierte el tiempo de los puntos al formato SF::TIME
-    sf::Time _offset = sf::milliseconds(loop_start);
-    sf::Time _length = sf::milliseconds(loop_end - loop_start);
+        // Proteccion
+        if (
+            (loop_end > duration.asMilliseconds())  // Si el punto final de loop esta mas alla del final
+            ||
+            (loop_start >= loop_end)                // Si el punto de inicio supera el punto final
+        ) return;
 
-    // Prepara los datos del loop
-    sf::Music::TimeSpan loop;
-    loop.offset = _offset;
-    loop.length = _length;
+        // Convierte el tiempo de los puntos al formato SF::TIME
+        sf::Time _offset = sf::milliseconds(loop_start);
+        sf::Time _length = sf::milliseconds(loop_end - loop_start);
 
-    // Aplicalos
-    music.setLoopPoints(loop);
+        // Prepara los datos del loop
+        sf::Music::TimeSpan loop;
+        loop.offset = _offset;
+        loop.length = _length;
+
+        // Aplicalos
+        music.setLoopPoints(loop);
+
+    #endif
 
 }
 

@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.10.0-beta ***
+    *** Version 1.11.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -61,11 +61,13 @@ class NGN_System {
    // Public
     public:
 
-        // Contructor
-        NGN_System();
+        // Devuelve la instancia
+        static NGN_System* GetInstance();
+        // Elimina la instancia
+        static void RemoveInstance();
 
-        // Destructor
-        ~NGN_System();
+        // Procesos iniciales despues de crear la instancia
+        void BootUp();
 
         // Inicializa la libreria
         bool Init();
@@ -92,6 +94,15 @@ class NGN_System {
 
     // Private
     private:
+
+        // Contructor
+        NGN_System();
+
+        // Destructor
+        ~NGN_System();
+
+        // Puntero de memoria a la instancia
+        static NGN_System* instance;
 
         // Resetea los flags y variables antes de leer el evento
         void ResetFlags();

@@ -13,6 +13,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DOS_WINDOWS" />
+					<Add option="-DMODE_DEBUG" />
 				</Compiler>
 			</Target>
 			<Target title="WIN - Release">
@@ -23,6 +25,8 @@
 				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DOS_WINDOWS" />
+					<Add option="-DMODE_RELEASE" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -35,6 +39,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_DEBUG" />
 				</Compiler>
 			</Target>
 			<Target title="LINUX - Release">
@@ -45,6 +51,8 @@
 				<Option use_console_runner="0" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_RELEASE" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -53,22 +61,26 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++14" />
+			<Add option="-std=c++17" />
 			<Add option="-m64" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Linker>
 			<Add option="-m64" />
 		</Linker>
+		<Unit filename="source/collision_map.cpp" />
+		<Unit filename="source/collision_map.h" />
+		<Unit filename="source/convert_to_map.cpp" />
+		<Unit filename="source/convert_to_map.h" />
+		<Unit filename="source/defines.h" />
+		<Unit filename="source/fs_manager.cpp" />
+		<Unit filename="source/fs_manager.h" />
 		<Unit filename="source/lodepng/lodepng.cpp" />
 		<Unit filename="source/lodepng/lodepng.h" />
 		<Unit filename="source/main.cpp" />
-		<Unit filename="source/map.cpp" />
-		<Unit filename="source/map.h" />
+		<Unit filename="source/message.cpp" />
+		<Unit filename="source/message.h" />
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

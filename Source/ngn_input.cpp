@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-wip0x02 ***
+    *** Version 1.11.0-stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2022 by Cesar Rincon "NightFox"
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -122,6 +122,39 @@ void NGN_Key::Reset() {
 
 /*** Metodos de entrada (Clase NGN_Input) ***/
 
+
+/*** Puntero de la instancia a NULL ***/
+NGN_Input* NGN_Input::instance = NULL;
+
+
+
+/*** Metodo para crear/obtener la instancia ***/
+NGN_Input* NGN_Input::GetInstance() {
+
+    // Verifica si la instancia ya se ha creado
+    // Si no es asi, creala
+    if (!instance) instance = new NGN_Input();
+
+    // Devuelve la instancia
+    return instance;
+
+}
+
+
+
+/*** Metodo para eliminar la instancia ***/
+void NGN_Input::RemoveInstance() {
+
+    // Si la instancia aun existe, eliminala
+    if (instance) {
+        delete instance;
+        instance = NULL;
+    }
+
+}
+
+
+
 /*** Constructor ***/
 NGN_Input::NGN_Input() {
 
@@ -147,6 +180,12 @@ NGN_Input::~NGN_Input() {
     // Cierra los JOYS abiertos
     GameControllerClose();
 
+}
+
+
+
+/*** Procesos iniciales despues de crear la instancia ***/
+void NGN_Input::BootUp() {
 }
 
 

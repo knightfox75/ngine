@@ -1,133 +1,105 @@
 /******************************************************************************
 
-    N'gine Lib for C++
-    Conversor de PNG a Sprite sheet (.spr)
+    Conversor de PNG a Sprite (.spr) para N'gine
+    - Nucleo del programa -
 
-    Proyecto iniciado el 3 de Marzo del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    Proyecto iniciado el 11 de Febrero del 2016
+    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere LodePNG
-    (c) 2005 - 2020 by Lode Vandevenne
+    Requiere LodePNG (20220717)
+    (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 ******************************************************************************/
 
 
 
-#ifndef SPRITE_H_INCLUDED
-#define SPRITE_H_INCLUDED
-
-
-
-/*** Defines ***/
-static const int32_t VERSION = 2;                       // Version del archivo
-static const std::string MAGIC_STRING = "NGN SPRITE";   // Magic string
+#ifndef TILE_MAP_H_INCLUDED
+#define TILE_MAP_H_INCLUDED
 
 
 
 /*** Includes ***/
+// C++
 #include <vector>
 #include <string>
-
-
-
-/*** Estructuras personalizadas ***/
-
-// Pixel RGBA
-struct rgba_pixel {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
-};
-
-// Cabecera del archivo
-struct file_header {
-    uint8_t version;              // Version del programa de conversion
-    char magic[32];                     // Magic String
-    uint32_t sheet_width;           // Tamaño del sheet completo
-    uint32_t sheet_height;
-    uint32_t frame_width;           // Tamaño del frame
-    uint32_t frame_height;
-    uint32_t total_frames;          // Numero total de frames de la imagen
-    uint8_t reserve[256];                  // Posible uso futuro
-};
+// Proyecto
+#include "defines.h"
+#include "message.h"
+#include "fs_manager.h"
+#include "convert_to_sprite.h"
 
 
 
 /*** Declaracion de la clase ***/
-class SpriteSheet {
+class Sprite {
 
-    // Public
     public:
 
         // Constructor
-        SpriteSheet();
+        Sprite(int32_t argc, char* args[]);
 
         // Destructor
-        ~SpriteSheet();
+        ~Sprite();
 
         /*** Propiedades ***/
 
-        std::string input_filename;     // Fichero de entrada
-        std::string output_filename;    // Nombre base del archivo de salida
-        uint32_t frame_width;       // Tamaño del frame
-        uint32_t frame_height;
-
-        bool strip;                     // Debe generarse el PNG con el Strip?
 
 
         /*** Metodos ***/
-
-        // Convierte el archivo
-        int32_t ConvertPng();
+        int32_t Run();          // Programa principal
 
 
-
-    // Private
     private:
 
         /*** Propiedades ***/
 
-        // Define los vectores de memoria
-        std::vector<uint8_t> png;                 // Buffer para almacenar la imagen PNG
-        std::vector<uint8_t> raw;                 // Buffer para almacenar los pixeles de la imagen de entrada
-        std::vector<uint8_t> sheet;               // Buffer para almacenar la composicion del Sprite Sheet
-        std::vector<uint8_t> out;                 // Buffer para almacenar la imagen de salida
+        // Flags de los argumentos
+        struct argument {
+            bool state;
+            std::string value;
+        };
+        argument arg_help;              // Ayuda
+        argument arg_in_file;           // Archivo de origen
+        argument arg_out_file;          // Archivo de salida
+        argument arg_width;             // Tamaño del tile
+        argument arg_height;            // Nivel de optimizacion
+        argument arg_strip;             // Generacion de un PNG con la tira de fotogramas
 
-        // Parametros de las imagenes
-        uint32_t in_width, in_height;               // Tamaño del archivo de entrada
-        uint32_t out_width, out_height;             // Tamaño del archivo de salida
 
-        // Cabecera del archivo de salida
-        file_header header;
+        // Argumentos introducidos
+        int32_t argument_count;                             // Numero de argumentos en la linea de comandos
+        std::vector<std::string> argument_list;             // Lista con los argumentos proporcionados
+
+        // Parametros de la conversion
+        struct {
+            std::string in_file;            // Archivo de entrada
+            std::string out_file;           // Archivo de salida
+            int32_t width;                  // Tamaño del tile
+            int32_t height;                 // Nivel de optimizacion
+            bool generate_strip;            // Generar la tira de fotogramas?
+        } parameter;
 
 
-        /*** Metodos ***/
+        /*** Objetos ***/
+        Message* msg;                   // Gestor de mensages
+        FsManager* fs;                  // Gestor de archivos del sistema
+        ConvertToSprite* png2sprite;    // Conversor de PNG a Sprite
 
-        // Lee el archivo PNG y almacena los pixeles de la imagen en el buffer
-        int32_t ReadPNG(std::string filename, std::vector<uint8_t> &data);
 
-        // Graba el buffer a un archivo PNG
-        int32_t WritePNG(std::string filename, std::vector<uint8_t> &data);
+        /*** Metodos para la lectura de parametros***/
+        int32_t CheckArguments();       // Analiza la lista de argumentos proporcionados
+        bool ValidateParameters();      // Valida los parametros de entrada
+        void Report();                  // Resumen de los datos
 
-        // Graba el archivo empaquetado
-        int32_t WriteFile(std::string filename);
 
-        // Lee un pixel del buffer especificado
-        rgba_pixel GetPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w);
-
-        // Escribe el pixel en el buffer especificado
-        void PutPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y, uint32_t w, rgba_pixel pixel);
-
-        // Corta la imagen de izquierda a derecha y de arriba a abajo, en bloques del tamaño del frame
-        void GenerateSpriteSheet();
-
+        /*** Metodos de depuracion ***/
+        void DebugArgList();            // Imprime la lista de argumentos introducidos
 
 };
 
 
 
-#endif // SPRITE_H_INCLUDED
+#endif // TILE_MAP_H_INCLUDED
