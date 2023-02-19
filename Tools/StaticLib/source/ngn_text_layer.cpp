@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -64,7 +64,7 @@
 
 ******************************************************************************/
 
-/*** Constructor de la clase NGN_TextLayer ***/
+/*** Constructor de la clase NGN_TextLayer (1ra sobrecarga) ***/
 NGN_TextLayer::NGN_TextLayer(
     NGN_TextFont* default_font,         // Fuente por defecto
     NGN_TextureData* bg,                // Textura de fondo de la caja de texto
@@ -75,88 +75,47 @@ NGN_TextLayer::NGN_TextLayer(
     bool _filtering                     // Filtrado
 ) {
 
-    // Fuente por defecto
-    font = default_font;
+    // Crea la capa de texto
+    CreateTextLayer(
+        default_font,   // Fuente por defecto
+        bg,             // Textura de fondo
+        position_x,     // Posicion X (0 por defecto)
+        position_y,     // Posicion Y (0 por defecto)
+        _width,         // Ancho de la capa (Toda la pantalla por defecto)
+        _height,        // Alto de la capa (Toda la pantalla por defecto)
+        _filtering      // Filtrado del contenido?
+    );
 
-    // Si existe, textura de fondo
-    background = bg;
+}
 
-    // Guarda el tamaño
-    if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
-        width = _width;
-        height = _height;
-    } else if (bg != NULL) {
-        width = bg->width;
-        height = bg->height;
-    } else {
-        width = ngn->graphics->native_w;
-        height = ngn->graphics->native_h;
-    }
 
-    // Y la posicion
-    position.x = position_x;
-    position.y = position_y;
 
-    // Guarda el tamaño original en pixeles
-    layer_width = (uint32_t)width;
-    layer_height = (uint32_t)height;
+/*** Constructor de la clase NGN_TextLayer (2da sobrecarga) ***/
+NGN_TextLayer::NGN_TextLayer(
+    std::string repo_name,              // Nombre del repositorio
+    std::string resource_name,          // Nombre del recurso
+    std::string bg_name,                // Nombre de la textura de fondo
+    int32_t position_x,                 // Posicion X (0 por defecto)
+    int32_t position_y,                 // Posicion Y (0 por defecto)
+    uint32_t _width,                    // Ancho de la capa (Toda la pantalla por defecto)
+    uint32_t _height,                   // Alto de la capa (Toda la pantalla por defecto)
+    bool _filtering                     // Filtrado
+) {
 
-    // Crea el backbuffer del tamaño adecuado
-    #if !defined (DISABLE_BACKBUFFER)
-        if (_filtering) {
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-        }
-    #endif
-    backbuffer = NULL;
-    backbuffer = SDL_CreateTexture(
-                         ngn->graphics->renderer,       // Renderer
-                         SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                         SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                         layer_width,                   // Ancho de la textura
-                         layer_height                   // Alto de la textura
-                         );
-    #if !defined (DISABLE_BACKBUFFER)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    #endif
+    // Decide si hay que aplicar o no una textura de fondo
+    NGN_TextureData* bg = NULL;
+    if (bg_name.size() > 0) bg = ngn->resources->GetTexture(repo_name, bg_name);
 
-    // Propiedades adicionales
-    visible = true;             // Visibilidad
-    alpha = 0xFF;               // Alpha
-    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
-    rotation = 0.0f;            // Rotacion
-    center.x = 0.0f;            // Centro de rotacion
-    center.y = 0.0f;
-    flip_h = false;             // Flip
-    flip_v = false;
-    scale.width = 1.0f;         // Escala
-    scale.height = 1.0f;
-
-    padding = 0;                // Margen interior de la caja de texto
-    word_wrap = true;           // Autoajuste horizontal
-    auto_home = false;          // Autoajuste vertical
-
-    locate.x = 0;               // Posicion del cabezal de escritura
-    locate.y = 0;
-
-    text_boundaries.top = 0;
-    text_boundaries.bottom = 0;
-    text_boundaries.left = 0;
-    text_boundaries.right = 0;
-
-    ink.b = 0xFF;               // Color por defecto (Tinta)
-    ink.g = 0xFF;
-    ink.r = 0xFF;
-
-    canvas.a = 0x00;            // Color por defecto (Lienzo)
-    canvas.b = 0x00;
-    canvas.g = 0x00;
-    canvas.r = 0x00;
-
-    // Prepara la capa
-    SurfaceCleanUp();
-
-    // Borra el contenido para actualizar su fondo, padding etc
-    Cls();
+    // Crea la capa de texto
+    CreateTextLayer(
+        ngn->resources->GetTypeface(repo_name, resource_name),  // Fuente por defecto
+        bg,             // Textura de fondo
+        position_x,     // Posicion X (0 por defecto)
+        position_y,     // Posicion Y (0 por defecto)
+        _width,         // Ancho de la capa (Toda la pantalla por defecto)
+        _height,        // Alto de la capa (Toda la pantalla por defecto)
+        _filtering      // Filtrado del contenido?
+    );
 
 }
 
@@ -517,5 +476,103 @@ void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
     // Calcula el tamaño de texto escrito
     text_boundaries.width = (text_boundaries.right - text_boundaries.left);
     text_boundaries.height = (text_boundaries.bottom - text_boundaries.top);
+
+}
+
+
+
+/*** Crea el objeto que contiene la capa de texto ***/
+void NGN_TextLayer::CreateTextLayer(
+    NGN_TextFont* default_font,     // Fuente por defecto
+    NGN_TextureData* bg,            // Textura de fondo
+    int32_t position_x,             // Posicion X (0 por defecto)
+    int32_t position_y,             // Posicion Y (0 por defecto)
+    uint32_t _width,                // Ancho de la capa (Toda la pantalla por defecto)
+    uint32_t _height,               // Alto de la capa (Toda la pantalla por defecto)
+    bool _filtering                 // Filtrado del contenido?
+) {
+
+    // Fuente por defecto
+    font = default_font;
+
+    // Si existe, textura de fondo
+    background = bg;
+
+    // Guarda el tamaño
+    if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
+        width = _width;
+        height = _height;
+    } else if (bg != NULL) {
+        width = bg->width;
+        height = bg->height;
+    } else {
+        width = ngn->graphics->native_w;
+        height = ngn->graphics->native_h;
+    }
+
+    // Y la posicion
+    position.x = position_x;
+    position.y = position_y;
+
+    // Guarda el tamaño original en pixeles
+    layer_width = (uint32_t)width;
+    layer_height = (uint32_t)height;
+
+    // Crea el backbuffer del tamaño adecuado
+    #if !defined (DISABLE_BACKBUFFER)
+        if (_filtering) {
+            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+        }
+    #endif
+    backbuffer = NULL;
+    backbuffer = SDL_CreateTexture(
+                         ngn->graphics->renderer,       // Renderer
+                         SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                         SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+                         layer_width,                   // Ancho de la textura
+                         layer_height                   // Alto de la textura
+                         );
+    #if !defined (DISABLE_BACKBUFFER)
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    #endif
+
+    // Propiedades adicionales
+    visible = true;             // Visibilidad
+    alpha = 0xFF;               // Alpha
+    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
+    rotation = 0.0f;            // Rotacion
+    center.x = 0.0f;            // Centro de rotacion
+    center.y = 0.0f;
+    flip_h = false;             // Flip
+    flip_v = false;
+    scale.width = 1.0f;         // Escala
+    scale.height = 1.0f;
+
+    padding = 0;                // Margen interior de la caja de texto
+    word_wrap = true;           // Autoajuste horizontal
+    auto_home = false;          // Autoajuste vertical
+
+    locate.x = 0;               // Posicion del cabezal de escritura
+    locate.y = 0;
+
+    text_boundaries.top = 0;
+    text_boundaries.bottom = 0;
+    text_boundaries.left = 0;
+    text_boundaries.right = 0;
+
+    ink.b = 0xFF;               // Color por defecto (Tinta)
+    ink.g = 0xFF;
+    ink.r = 0xFF;
+
+    canvas.a = 0x00;            // Color por defecto (Lienzo)
+    canvas.b = 0x00;
+    canvas.g = 0x00;
+    canvas.r = 0x00;
+
+    // Prepara la capa
+    SurfaceCleanUp();
+
+    // Borra el contenido para actualizar su fondo, padding etc
+    Cls();
 
 }

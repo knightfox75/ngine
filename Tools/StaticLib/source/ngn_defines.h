@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -59,7 +59,7 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
-static const int32_t NGN_VERSION_MINOR = 11;                    // Version menor
+static const int32_t NGN_VERSION_MINOR = 12;                    // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
 static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
 
@@ -85,7 +85,6 @@ static const SDL_BlendMode NGN_BLENDMODE_MODULATE = SDL_BLENDMODE_MOD;       // 
 /*** Definiciones de los modos de mascara ***/
 static const uint8_t NGN_MASKMODE_CUTOUT = 0;       // Recorta el origen con la forma de la mascara
 static const uint8_t NGN_MASKMODE_HOLLOW = 1;       // Extrae la mascara del origien
-
 
 
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -56,71 +56,30 @@
 
 
 
-/*** Contructor ***/
+/*** Contructor (1ra sobrecarga) ***/
 NGN_TiledBg::NGN_TiledBg(
-                        NGN_TiledBgData* bg,            // Datos del fondo
-                        int32_t position_x,             // Posicion X del fondo [0 por defecto]
-                        int32_t position_y              // Posicion Y del fondo [0 por defecto]
-                        ) {
+    NGN_TiledBgData* bg,            // Datos del fondo
+    int32_t position_x,             // Posicion X del fondo [0 por defecto]
+    int32_t position_y              // Posicion Y del fondo [0 por defecto]
+) {
 
-    // Copia del fondo
-    bgdata = bg;
+    // Crea el fondo
+    CreateTiledBg(bg, position_x, position_y);
 
-    // Guarda el tamaño del tile
-    tile_size = bg->header.tile_size;
-    // Guarda el tamaño del mapa
-    map_size.width = bg->header.map_width;
-    map_size.height = bg->header.map_height;
-
-    // Tamaño del backbuffer
-    bb_size.width = ngn->graphics->native_w + (tile_size << 1);
-    bb_size.height = ngn->graphics->native_h + (tile_size << 1);
-    // Tamaño del fondo completo
-    width = bgdata->header.bg_width;
-    height = bgdata->header.bg_height;
-
-    // Almacena los datos del fondo, segun los datos facilitados
-    position.x = position_x;
-    position.y = position_y;
-
-    last_position.x = NGN_DEFAULT_VALUE;
-    last_position.y = NGN_DEFAULT_VALUE;
-    last_viewport = -1;
-    tile_mode = true;
-
-    center.x = 0;
-    center.y = 0;
-
-    rotation = 0;
-
-    visible = true;
-    alpha = 0xFF;
-    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
-
-    scale.x = 1.0f;
-    scale.y = 1.0f;
+}
 
 
-    // Crea el backbuffer de este fondo
-    backbuffer = SDL_CreateTexture(
-                             ngn->graphics->renderer,       // Renderer
-                             SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                             SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                             bb_size.width,                 // Ancho de la textura
-                             bb_size.height                 // Alto de la textura
-                             );
 
-    // Parametros para el sistema de camaras
-    camera_layer = -1;                      // Por defecto, no estas en la camara
-    virtual_bg.bg_size.width = 0;           // Sin tamaño virtual, loop, etc
-    virtual_bg.bg_size.height = 0;
-    virtual_bg.loop.x = 0;
-    virtual_bg.loop.y = 0;
-    virtual_bg.scroll.x = 0.0f;
-    virtual_bg.scroll.y = 0.0f;
-    virtual_bg.offset.x = 0.0f;
-    virtual_bg.offset.y = 0.0f;
-    virtual_bg.enabled = false;
+/*** Contructor (2da sobrecarga) ***/
+NGN_TiledBg::NGN_TiledBg(
+    std::string repo_name,          // Nombre del repositorio
+    std::string resource_name,      // Nombre del recurso
+    int32_t position_x,             // Posicion X del fondo [0 por defecto]
+    int32_t position_y              // Posicion Y del fondo [0 por defecto]
+) {
+
+    // Crea el fondo
+    CreateTiledBg(ngn->resources->GetTiledbg(repo_name, resource_name), position_x, position_y);
 
 }
 
@@ -210,3 +169,73 @@ void NGN_TiledBg::SetCenter(float x, float y) {
 
 }
 
+
+
+
+/*** Crea el objeto que contiene el fondo ***/
+void NGN_TiledBg::CreateTiledBg(
+    NGN_TiledBgData* bg,    // Datos del fondo
+    int32_t position_x,     // Posicion X del fondo
+    int32_t position_y      // Posicion Y del fondo
+) {
+
+    // Copia del fondo
+    bgdata = bg;
+
+    // Guarda el tamaño del tile
+    tile_size = bg->header.tile_size;
+    // Guarda el tamaño del mapa
+    map_size.width = bg->header.map_width;
+    map_size.height = bg->header.map_height;
+
+    // Tamaño del backbuffer
+    bb_size.width = ngn->graphics->native_w + (tile_size << 1);
+    bb_size.height = ngn->graphics->native_h + (tile_size << 1);
+    // Tamaño del fondo completo
+    width = bgdata->header.bg_width;
+    height = bgdata->header.bg_height;
+
+    // Almacena los datos del fondo, segun los datos facilitados
+    position.x = position_x;
+    position.y = position_y;
+
+    last_position.x = NGN_DEFAULT_VALUE;
+    last_position.y = NGN_DEFAULT_VALUE;
+    last_viewport = -1;
+    tile_mode = true;
+
+    center.x = 0;
+    center.y = 0;
+
+    rotation = 0;
+
+    visible = true;
+    alpha = 0xFF;
+    blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
+
+    scale.x = 1.0f;
+    scale.y = 1.0f;
+
+
+    // Crea el backbuffer de este fondo
+    backbuffer = SDL_CreateTexture(
+                             ngn->graphics->renderer,       // Renderer
+                             SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                             SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+                             bb_size.width,                 // Ancho de la textura
+                             bb_size.height                 // Alto de la textura
+                             );
+
+    // Parametros para el sistema de camaras
+    camera_layer = -1;                      // Por defecto, no estas en la camara
+    virtual_bg.bg_size.width = 0;           // Sin tamaño virtual, loop, etc
+    virtual_bg.bg_size.height = 0;
+    virtual_bg.loop.x = 0;
+    virtual_bg.loop.y = 0;
+    virtual_bg.scroll.x = 0.0f;
+    virtual_bg.scroll.y = 0.0f;
+    virtual_bg.offset.x = 0.0f;
+    virtual_bg.offset.y = 0.0f;
+    virtual_bg.enabled = false;
+
+}

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -72,15 +72,27 @@ class NGN_TextLayer {
     // Segmento publico
     public:
 
-        // Constructor de la clase
+        // Constructor de la clase (1ra sobrecarga)
         NGN_TextLayer(
-            NGN_TextFont* default_font,                     // Fuente por defecto
-            NGN_TextureData* bg = NULL,                     // Textura de fondo
-            int32_t position_x = 0,                         // Posicion X (0 por defecto)
-            int32_t position_y = 0,                         // Posicion Y (0 por defecto)
-            uint32_t _width = (uint32_t)NGN_DEFAULT_VALUE,  // Ancho de la capa (Toda la pantalla por defecto)
-            uint32_t _height = (uint32_t)NGN_DEFAULT_VALUE, // Alto de la capa (Toda la pantalla por defecto)
-            bool _filtering = false                         // Filtrado del contenido?
+            NGN_TextFont* default_font,                         // Fuente por defecto
+            NGN_TextureData* bg = NULL,                         // Textura de fondo
+            int32_t position_x = 0,                             // Posicion X (0 por defecto)
+            int32_t position_y = 0,                             // Posicion Y (0 por defecto)
+            uint32_t _width = (uint32_t)NGN_DEFAULT_VALUE,      // Ancho de la capa (Toda la pantalla por defecto)
+            uint32_t _height = (uint32_t)NGN_DEFAULT_VALUE,     // Alto de la capa (Toda la pantalla por defecto)
+            bool _filtering = false                             // Filtrado del contenido?
+        );
+
+        // Constructor de la clase (2da sobrecarga)
+        NGN_TextLayer(
+            std::string repo_name,                              // Nombre del repositorio
+            std::string resource_name,                          // Nombre del recurso
+            std::string bg_name = "",                           // Nombre de la textura de fondo
+            int32_t position_x = 0,                             // Posicion X (0 por defecto)
+            int32_t position_y = 0,                             // Posicion Y (0 por defecto)
+            uint32_t _width = (uint32_t)NGN_DEFAULT_VALUE,      // Ancho de la capa (Toda la pantalla por defecto)
+            uint32_t _height = (uint32_t)NGN_DEFAULT_VALUE,     // Alto de la capa (Toda la pantalla por defecto)
+            bool _filtering = false                             // Filtrado del contenido?
         );
 
         // Destructor de la clase
@@ -197,6 +209,17 @@ class NGN_TextLayer {
 
         // Calcula el tamaño del texto escrito
         void GetTextBoundaries(int32_t x, int32_t y);
+
+        // Crea el objeto que contiene la capa de texto
+        void CreateTextLayer(
+            NGN_TextFont* default_font,     // Fuente por defecto
+            NGN_TextureData* bg,            // Textura de fondo
+            int32_t position_x,             // Posicion X (0 por defecto)
+            int32_t position_y,             // Posicion Y (0 por defecto)
+            uint32_t _width,                // Ancho de la capa (Toda la pantalla por defecto)
+            uint32_t _height,               // Alto de la capa (Toda la pantalla por defecto)
+            bool _filtering                 // Filtrado del contenido?
+        );
 
 };
 

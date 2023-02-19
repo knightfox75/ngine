@@ -2,19 +2,25 @@
 
     N'gine Lib for C++
 
-    Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2017 by Cesar Rincon "NightFox"
-    http://www.nightfoxandco.com
+    Proyecto iniciado el 13 de Noviembre del 2022
+    (c) 2022-2023 by Cesar Rincon "NightFox"
+    https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere SDL2 (2.0.5 or higher)
+    Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
+    https://www.mingw-w64.org/
+
+    Requiere SDL2 (2.26.3) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.4.1 or higher)
+    Requiere SDL2_TTF (2.20.2) - 64-bits
+    http://www.libsdl.org/download-2.0.php
+
+    Requiere SFML (2.5.1) - 64-bits
     http://www.sfml-dev.org/
 
-    Requiere LodePNG
-    (c) 2005 - 2016 by Lode Vandevenne
+    Requiere LodePNG (20200306)
+    (c) 2005 - 2020 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
@@ -47,9 +53,12 @@
         You may not apply legal terms or technological measures that
         legally restrict others from doing anything the license permits.
 
-*******************************************************************************
+******************************************************************************/
 
 DESCARGO DE RESPONSABILIDAD. EL SOFTWARE SE CONCEDE CON LICENCIA “TAL CUAL”.
 POR CONSIGUIENTE, USTED ASUME EL RIESGO DE UTILIZARLO.
 NO SE OTORGA NINGUNA GARANTÍA NI CONDICIÓN EXPLÍCITAS.
 
+This software is provided 'as-is', without any express or implied
+warranty.  In no event will the authors be held liable for any damages
+arising from the use of this software.

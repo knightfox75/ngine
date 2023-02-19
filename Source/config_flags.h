@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     FLAGS de configuracion de la libreria
     La libreria debe compilarse para que estos FLAGS sean efectivos
 
@@ -13,10 +13,10 @@
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
-    Requiere SDL2 (2.0.22) - 64-bits
+    Requiere SDL2 (2.26.3) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SDL2_TTF (2.0.15) - 64-bits
+    Requiere SDL2_TTF (2.20.2) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.1) - 64-bits

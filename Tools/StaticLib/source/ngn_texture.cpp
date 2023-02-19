@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -60,53 +60,25 @@
 
 /*** Contructor (1ra sobrecarga) ***/
 NGN_Texture::NGN_Texture(
-                    NGN_TextureData* texture,               // Objeto de la clase Texture Data
-                    int32_t position_x,                     // Posicion X inicial (oculto por defecto)
-                    int32_t position_y,                     // Posicion Y inicial (oculto por defecto)
-                    uint32_t texture_width,                 // Ancho de la textura (por defecto, el de la textura)
-                    uint32_t texture_height                 // Altura de la textura (por defecto, la de la textura)
+    NGN_TextureData* texture,               // Objeto de la clase Texture Data
+    int32_t position_x,                     // Posicion X inicial (oculto por defecto)
+    int32_t position_y,                     // Posicion Y inicial (oculto por defecto)
+    uint32_t texture_width,                 // Ancho de la textura (por defecto, el de la textura)
+    uint32_t texture_height                 // Altura de la textura (por defecto, la de la textura)
 ) {
 
-    // Guarda el grafico que usara este texture
-    data = texture;
-    // Tamaño
-    if ((texture_width != NGN_DEFAULT_VALUE) && (texture_height != NGN_DEFAULT_VALUE)) {
-        // Tamaño definido por el usuario
-        width = texture_width;
-        height = texture_height;
-    } else {
-        // Tamaño en base a la textura del grafico
-        width = data->width;
-        height = data->height;
-    }
-    linked = true;
-
-    // Guarda el tamaño original al crear la textura
-    original.width = width;
-    original.height = height;
-
-    // Posicion
-    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
-        // Posicion definida por el usuario
-        position.x = position_x;
-        position.y = position_y;
-    } else {
-        // Posicion fuera del escenario
-        position.x = -width;
-        position.y = -height;
-    }
-
-    DefaultValues();
+    // Crea la textura
+    CreateTexture(texture, position_x, position_y, texture_width, texture_height);
 
 }
 
 
 /*** Contructor (2da sobrecarga) ***/
 NGN_Texture::NGN_Texture(
-                    uint32_t texture_width,     // Ancho de la textura (por defecto, el de la textura)
-                    uint32_t texture_height,    // Altura de la textura (por defecto, la de la textura)
-                    int32_t position_x,         // Posicion X inicial (oculto por defecto)
-                    int32_t position_y          // Posicion Y inicial (oculto por defecto)
+    uint32_t texture_width,     // Ancho de la textura (por defecto, el de la textura)
+    uint32_t texture_height,    // Altura de la textura (por defecto, la de la textura)
+    int32_t position_x,         // Posicion X inicial (oculto por defecto)
+    int32_t position_y          // Posicion Y inicial (oculto por defecto)
 ) {
 
     // Tamaño definido por el usuario
@@ -142,6 +114,23 @@ NGN_Texture::NGN_Texture(
     }
 
     DefaultValues();
+
+}
+
+
+
+/*** Contructor (3ra sobrecarga) ***/
+NGN_Texture::NGN_Texture(
+    std::string repo_name,                  // Nombre del repositorio
+    std::string resource_name,              // Nombre del recurso
+    int32_t position_x,                     // Posicion X inicial (oculto por defecto)
+    int32_t position_y,                     // Posicion Y inicial (oculto por defecto)
+    uint32_t texture_width,                 // Ancho de la textura (por defecto, el de la textura)
+    uint32_t texture_height                 // Altura de la textura (por defecto, la de la textura)
+) {
+
+    // Crea la textura
+    CreateTexture(ngn->resources->GetTexture(repo_name, resource_name), position_x, position_y, texture_width, texture_height);
 
 }
 
@@ -288,5 +277,50 @@ void NGN_Texture::ClearContent() {
 
     // Devuelve el render al seleccionado
     ngn->graphics->RenderToSelected();
+
+}
+
+
+
+/*** Crea el objeto que contiene la textura ***/
+void NGN_Texture::CreateTexture(
+    NGN_TextureData* texture,       // Objeto de la clase Texture Data
+    int32_t position_x,             // Posicion X inicial (oculto por defecto)
+    int32_t position_y,             // Posicion Y inicial (oculto por defecto)
+    uint32_t texture_width,         // Ancho de la textura (por defecto, el de la textura)
+    uint32_t texture_height         // Altura de la textura (por defecto, la de la textura)
+) {
+
+    // Guarda el grafico que usara este texture
+    data = texture;
+
+    // Tamaño
+    if ((texture_width != NGN_DEFAULT_VALUE) && (texture_height != NGN_DEFAULT_VALUE)) {
+        // Tamaño definido por el usuario
+        width = texture_width;
+        height = texture_height;
+    } else {
+        // Tamaño en base a la textura del grafico
+        width = data->width;
+        height = data->height;
+    }
+    linked = true;
+
+    // Guarda el tamaño original al crear la textura
+    original.width = width;
+    original.height = height;
+
+    // Posicion
+    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
+        // Posicion definida por el usuario
+        position.x = position_x;
+        position.y = position_y;
+    } else {
+        // Posicion fuera del escenario
+        position.x = -width;
+        position.y = -height;
+    }
+
+    DefaultValues();
 
 }

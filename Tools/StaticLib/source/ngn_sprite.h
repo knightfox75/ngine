@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,9 +66,23 @@ class NGN_Sprite {
    // Public
     public:
 
-        // Contructor
+        // Contructor (1ra sobrecarga)
         NGN_Sprite(
             NGN_SpriteData* sprite,                                 // Objeto de la clase Sprite Data
+            int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
+            int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
+            uint32_t sprite_width = (uint32_t)NGN_DEFAULT_VALUE,    // Ancho del sprite (por defecto, el de la textura)
+            uint32_t sprite_height = (uint32_t)NGN_DEFAULT_VALUE,   // Altura del sprite (por defecto, la de la textura)
+            uint32_t box_width = (uint32_t)NGN_DEFAULT_VALUE,       // Ancho de la caja de colisiones
+            uint32_t box_height = (uint32_t)NGN_DEFAULT_VALUE,      // Alto de la caja de colisiones
+            int32_t box_offset_x = NGN_DEFAULT_VALUE,               // Offset horizontal de la caja de colisiones
+            int32_t box_offset_y = NGN_DEFAULT_VALUE                // Offset vertical de la de colisiones
+        );
+
+        // Contructor (2da sobrecarga)
+        NGN_Sprite(
+            std::string repo_name,                                  // Nombre del repositorio
+            std::string resource_name,                              // Nombre del recurso
             int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
             int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
             uint32_t sprite_width = (uint32_t)NGN_DEFAULT_VALUE,    // Ancho del sprite (por defecto, el de la textura)
@@ -202,6 +216,19 @@ class NGN_Sprite {
         // Propiedades internas del Sprite
         Size2 original;         		// Tamaño original
         int32_t animation_timer;        // Control de velocidad de la animacion
+
+        // Crea el objeto que contiene el sprite
+        void CreateSprite(
+            NGN_SpriteData* sprite,     // Objeto de la clase Sprite Data
+            int32_t position_x,         // Posicion X inicial (oculto por defecto)
+            int32_t position_y,         // Posicion Y inicial (oculto por defecto)
+            uint32_t sprite_width,      // Ancho del sprite (por defecto, el de la textura)
+            uint32_t sprite_height,     // Altura del sprite (por defecto, la de la textura)
+            uint32_t box_width,         // Ancho de la caja de colisiones
+            uint32_t box_height,        // Alto de la caja de colisiones
+            int32_t box_offset_x,       // Offset horizontal de la caja de colisiones
+            int32_t box_offset_y        // Offset vertical de la de colisiones
+        );
 
 };
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,18 +68,27 @@ class NGN_Texture {
 
         // Contructor (1ra sobrecarga)
         NGN_Texture(
-                    NGN_TextureData* texture,                               // Objeto de la clase Texture Data
-                    int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
-                    int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
-                    uint32_t texture_width = (uint32_t)NGN_DEFAULT_VALUE,   // Ancho de la textura (por defecto, el de la textura)
-                    uint32_t texture_height = (uint32_t)NGN_DEFAULT_VALUE   // Altura de la textura (por defecto, la de la textura)
+            NGN_TextureData* texture,                               // Objeto de la clase Texture Data
+            int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
+            int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
+            uint32_t texture_width = (uint32_t)NGN_DEFAULT_VALUE,   // Ancho de la textura (por defecto, el de la textura)
+            uint32_t texture_height = (uint32_t)NGN_DEFAULT_VALUE   // Altura de la textura (por defecto, la de la textura)
         );
         // Contructor (2da sobrecarga)
         NGN_Texture(
-                    uint32_t texture_width,     // Ancho de la textura (por defecto, el de la textura)
-                    uint32_t texture_height,    // Altura de la textura (por defecto, la de la textura)
-                    int32_t position_x = NGN_DEFAULT_VALUE,                // Posicion X inicial (oculto por defecto)
-                    int32_t position_y = NGN_DEFAULT_VALUE                 // Posicion Y inicial (oculto por defecto)
+            uint32_t texture_width,     // Ancho de la textura (por defecto, el de la textura)
+            uint32_t texture_height,    // Altura de la textura (por defecto, la de la textura)
+            int32_t position_x = NGN_DEFAULT_VALUE,                // Posicion X inicial (oculto por defecto)
+            int32_t position_y = NGN_DEFAULT_VALUE                 // Posicion Y inicial (oculto por defecto)
+        );
+        // Contructor (3ra sobrecarga)
+        NGN_Texture(
+            std::string repo_name,                                  // Nombre del repositorio
+            std::string resource_name,                              // Nombre del recurso
+            int32_t position_x = NGN_DEFAULT_VALUE,                 // Posicion X inicial (oculto por defecto)
+            int32_t position_y = NGN_DEFAULT_VALUE,                 // Posicion Y inicial (oculto por defecto)
+            uint32_t texture_width = (uint32_t)NGN_DEFAULT_VALUE,   // Ancho de la textura (por defecto, el de la textura)
+            uint32_t texture_height = (uint32_t)NGN_DEFAULT_VALUE   // Altura de la textura (por defecto, la de la textura)
         );
 
         // Destructor
@@ -148,6 +157,15 @@ class NGN_Texture {
         Size2 original;         			// Tamaño original
         bool linked;                        // Textura creada o enlazada
         void DefaultValues();               // Carga los parametros por defecto
+
+        // Crea el objeto que contiene la textura
+        void CreateTexture(
+            NGN_TextureData* texture,       // Objeto de la clase Texture Data
+            int32_t position_x,             // Posicion X inicial (oculto por defecto)
+            int32_t position_y,             // Posicion Y inicial (oculto por defecto)
+            uint32_t texture_width,         // Ancho de la textura (por defecto, el de la textura)
+            uint32_t texture_height         // Altura de la textura (por defecto, la de la textura)
+        );
 
 };
 

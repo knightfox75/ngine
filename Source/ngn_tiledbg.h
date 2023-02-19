@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -61,12 +61,20 @@ class NGN_TiledBg {
     // Public
     public:
 
-        // Constructor
+        // Constructor (1ra sobrecarga)
         NGN_TiledBg(
-                    NGN_TiledBgData* bg,           // Datos del fondo
-                    int32_t position_x = 0,        // Posicion X del fondo [0 por defecto]
-                    int32_t position_y = 0         // Posicion Y del fondo [0 por defecto]
-                    );
+            NGN_TiledBgData* bg,            // Datos del fondo
+            int32_t position_x = 0,         // Posicion X del fondo [0 por defecto]
+            int32_t position_y = 0          // Posicion Y del fondo [0 por defecto]
+        );
+
+        // Constructor (2da sobrecarga)
+        NGN_TiledBg(
+            std::string repo_name,          // Nombre del repositorio
+            std::string resource_name,      // Nombre del recurso
+            int32_t position_x = 0,         // Posicion X del fondo [0 por defecto]
+            int32_t position_y = 0          // Posicion Y del fondo [0 por defecto]
+        );
 
         // Destructor
         ~NGN_TiledBg();
@@ -132,8 +140,16 @@ class NGN_TiledBg {
             bool enabled;                       // El fondo lo gestiona la camara en modo virtual
         } virtual_bg;
 
+
     // Private
     private:
+
+        // Crea el objeto que contiene el fondo
+        void CreateTiledBg(
+            NGN_TiledBgData* bg,    // Datos del fondo
+            int32_t position_x,     // Posicion X del fondo
+            int32_t position_y      // Posicion Y del fondo
+        );
 
 };
 

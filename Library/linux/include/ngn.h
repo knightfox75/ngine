@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,10 +12,10 @@
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
-    Requiere SDL2 (2.0.22) - 64-bits
+    Requiere SDL2 (2.26.3) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SDL2_TTF (2.0.15) - 64-bits
+    Requiere SDL2_TTF (2.20.2) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.1) - 64-bits
@@ -100,6 +100,7 @@
 #include "ngn_music_clip.h"         // Clase para los clips de musica
 #include "ngn_canvas.h"             // Clase para el lienzo de dibujo
 #include "ngn_disk.h"               // Clase para la gestion de archivos en disco
+#include "ngn_resources.h"          // Clase para la gestion de recursos
 
 
 
@@ -128,6 +129,7 @@ class NGN {
         NGN_Sound* sound;               // Gestion de los efectos de sonido
         NGN_Image* image;               // Manipulacion de imagenes en RAW
         NGN_Disk* disk;                 // Gestion de archivos en el disco
+        NGN_Resources* resources;       // Gestion integrada de recursos
 
         // Punteros a los objetos
         NGN_Camera* camera;             // Camara virtual 2D integrada

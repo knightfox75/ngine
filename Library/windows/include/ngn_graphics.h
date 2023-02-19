@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -124,6 +124,7 @@ class NGN_Graphics {
             int32_t h;                              // Altura del viewport
             int32_t render_w;                       // Ancho del render
             int32_t render_h;                       // Altura del render
+            SDL_Rect clip_area;                     // Area del clip del renderer
             bool local_filter;                      // Filtrado local?
             bool _local_filter;                     // Estado actual del filtrado
             bool available;                         // Viewport disponible?
@@ -156,9 +157,12 @@ class NGN_Graphics {
         void DefaultViewport();
 
 
-        // Ajusta el clip del viewport
+        // Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal]
         void SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h);
-        SDL_Rect cliparea;
+        SDL_Rect clip_area;
+        // Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples]
+        void SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h);
+
 
         // Ajusta la visibilidad del cursor del raton
         void ShowMouse(bool visible);

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -57,7 +57,7 @@
 
 
 
-/*** Contructor ***/
+/*** Contructor (1ra sobrecarga) ***/
 NGN_Sprite::NGN_Sprite(
     NGN_SpriteData* sprite,         // Objeto de la clase Sprite Data
     int32_t position_x,             // Posicion X inicial (oculto por defecto)
@@ -70,82 +70,49 @@ NGN_Sprite::NGN_Sprite(
     int32_t box_offset_y            // Offset vertical de la de colisiones
 ) {
 
-    // Guarda el grafico que usara este sprite
-    data = sprite;
+    // Crea el sprite
+    CreateSprite(
+        sprite,             // Objeto de la clase Sprite Data
+        position_x,         // Posicion X inicial (oculto por defecto)
+        position_y,         // Posicion Y inicial (oculto por defecto)
+        sprite_width,       // Ancho del sprite (por defecto, el de la textura)
+        sprite_height,      // Altura del sprite (por defecto, la de la textura)
+        box_width,          // Ancho de la caja de colisiones
+        box_height,         // Alto de la caja de colisiones
+        box_offset_x,       // Offset horizontal de la caja de colisiones
+        box_offset_y        // Offset vertical de la de colisiones
+    );
 
-    // Tamaño
-    if ((sprite_width != NGN_DEFAULT_VALUE) && (sprite_height != NGN_DEFAULT_VALUE)) {
-        // Tamaño definido por el usuario
-        width = sprite_width;
-        height = sprite_height;
-    } else {
-        // Tamaño en base a la textura del grafico
-        width = data->header.frame_width;
-        height = data->header.frame_height;
-    }
+}
 
-    // Guarda el tamaño original al crear el sprite
-    original.width = width;
-    original.height = height;
 
-    // Tamaño de la caja de colisiones
-    if ((box_width != NGN_DEFAULT_VALUE) && (box_height != NGN_DEFAULT_VALUE)) {
-        box.width = box_width;
-        box.height = box_height;
-    } else {
-        box.width = width;
-        box.height = height;
-    }
-    // Caja de colisiones habilitada por defecto
-    box_enabled = true;
 
-    // Prepara la lista de colisionadores adicionales
-    colliders.clear();
+/*** Contructor (2da sobrecarga) ***/
+NGN_Sprite::NGN_Sprite(
+    std::string repo_name,          // Nombre del repositorio
+    std::string resource_name,      // Nombre del recurso
+    int32_t position_x,             // Posicion X inicial (oculto por defecto)
+    int32_t position_y,             // Posicion Y inicial (oculto por defecto)
+    uint32_t sprite_width,          // Ancho del sprite (por defecto, el de la textura)
+    uint32_t sprite_height,         // Altura del sprite (por defecto, la de la textura)
+    uint32_t box_width,             // Ancho de la caja de colisiones
+    uint32_t box_height,            // Alto de la caja de colisiones
+    int32_t box_offset_x,           // Offset horizontal de la caja de colisiones
+    int32_t box_offset_y            // Offset vertical de la de colisiones
+) {
 
-    // Offset de la caja de colisiones
-    if ((box_offset_x != NGN_DEFAULT_VALUE) && (box_offset_y != NGN_DEFAULT_VALUE)) {
-        box.offset.x = box_offset_x;
-        box.offset.y = box_offset_y;
-    } else {
-        box.offset.x = 0.0f;
-        box.offset.y = 0.0f;
-    }
-
-    // Posicion
-    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
-        // Posicion definida por el usuario
-        position.x = position_x;
-        position.y = position_y;
-    } else {
-        // Posicion fuera del escenario
-        position.x = -width;
-        position.y = -height;
-    }
-
-    // Valores por defecto
-    frame = 0;                                  // Primer fotograma
-    total_frames = data->header.total_frames;   // Nº total de fotogramas
-    visible = true;                             // Visibilidad
-    alpha = 0xFF;                               // Alpha
-    blend_mode = NGN_BLENDMODE_ALPHA;           // Modo de mezcla
-    on_screen = false;                          // Reset del flag
-    rotation = 0.0f;                            // Rotacion
-    center.x = 0.0f;                            // Centro de rotacion
-    center.y = 0.0f;
-    flip_h = false;                             // Flip
-    flip_v = false;
-    screen.x = (uint32_t)position.x;
-    screen.y = (uint32_t)position.y;
-
-    // Animaciones
-    animation.clear();
-    current_animation.name = "";
-    current_animation.id = -1;
-    animation_pause = false;
-    animation_timer = 0;
-
-    // Otros parametros
-    camera_layer = -1;      // Por defecto, no estas en la camara
+    // Crea el sprite
+    CreateSprite(
+        ngn->resources->GetSprite(repo_name, resource_name),    // Objeto de la clase Sprite Data
+        position_x,         // Posicion X inicial (oculto por defecto)
+        position_y,         // Posicion Y inicial (oculto por defecto)
+        sprite_width,       // Ancho del sprite (por defecto, el de la textura)
+        sprite_height,      // Altura del sprite (por defecto, la de la textura)
+        box_width,          // Ancho de la caja de colisiones
+        box_height,         // Alto de la caja de colisiones
+        box_offset_x,       // Offset horizontal de la caja de colisiones
+        box_offset_y        // Offset vertical de la de colisiones
+    );
 
 }
 
@@ -441,3 +408,97 @@ void NGN_Sprite::PlayAnimation() {
 
 }
 
+
+
+
+/*** Crea el objeto que contiene el sprite ***/
+void NGN_Sprite::CreateSprite(
+    NGN_SpriteData* sprite,     // Objeto de la clase Sprite Data
+    int32_t position_x,         // Posicion X inicial (oculto por defecto)
+    int32_t position_y,         // Posicion Y inicial (oculto por defecto)
+    uint32_t sprite_width,      // Ancho del sprite (por defecto, el de la textura)
+    uint32_t sprite_height,     // Altura del sprite (por defecto, la de la textura)
+    uint32_t box_width,         // Ancho de la caja de colisiones
+    uint32_t box_height,        // Alto de la caja de colisiones
+    int32_t box_offset_x,       // Offset horizontal de la caja de colisiones
+    int32_t box_offset_y        // Offset vertical de la de colisiones
+) {
+
+    // Guarda el grafico que usara este sprite
+    data = sprite;
+
+    // Tamaño
+    if ((sprite_width != NGN_DEFAULT_VALUE) && (sprite_height != NGN_DEFAULT_VALUE)) {
+        // Tamaño definido por el usuario
+        width = sprite_width;
+        height = sprite_height;
+    } else {
+        // Tamaño en base a la textura del grafico
+        width = data->header.frame_width;
+        height = data->header.frame_height;
+    }
+
+    // Guarda el tamaño original al crear el sprite
+    original.width = width;
+    original.height = height;
+
+    // Tamaño de la caja de colisiones
+    if ((box_width != NGN_DEFAULT_VALUE) && (box_height != NGN_DEFAULT_VALUE)) {
+        box.width = box_width;
+        box.height = box_height;
+    } else {
+        box.width = width;
+        box.height = height;
+    }
+    // Caja de colisiones habilitada por defecto
+    box_enabled = true;
+
+    // Prepara la lista de colisionadores adicionales
+    colliders.clear();
+
+    // Offset de la caja de colisiones
+    if ((box_offset_x != NGN_DEFAULT_VALUE) && (box_offset_y != NGN_DEFAULT_VALUE)) {
+        box.offset.x = box_offset_x;
+        box.offset.y = box_offset_y;
+    } else {
+        box.offset.x = 0.0f;
+        box.offset.y = 0.0f;
+    }
+
+    // Posicion
+    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
+        // Posicion definida por el usuario
+        position.x = position_x;
+        position.y = position_y;
+    } else {
+        // Posicion fuera del escenario
+        position.x = -width;
+        position.y = -height;
+    }
+
+    // Valores por defecto
+    frame = 0;                                  // Primer fotograma
+    total_frames = data->header.total_frames;   // Nº total de fotogramas
+    visible = true;                             // Visibilidad
+    alpha = 0xFF;                               // Alpha
+    blend_mode = NGN_BLENDMODE_ALPHA;           // Modo de mezcla
+    on_screen = false;                          // Reset del flag
+    rotation = 0.0f;                            // Rotacion
+    center.x = 0.0f;                            // Centro de rotacion
+    center.y = 0.0f;
+    flip_h = false;                             // Flip
+    flip_v = false;
+    screen.x = (uint32_t)position.x;
+    screen.y = (uint32_t)position.y;
+
+    // Animaciones
+    animation.clear();
+    current_animation.name = "";
+    current_animation.id = -1;
+    animation_pause = false;
+    animation_timer = 0;
+
+    // Otros parametros
+    camera_layer = -1;      // Por defecto, no estas en la camara
+
+}

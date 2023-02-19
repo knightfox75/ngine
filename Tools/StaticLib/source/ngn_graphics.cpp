@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -260,7 +260,7 @@ bool NGN_Graphics::Init(
     SetVsync();
 
     // Parametros por defecto del clip
-    cliparea = {
+    clip_area = {
         0,
         0,
         native_w,
@@ -332,6 +332,7 @@ void NGN_Graphics::RenderToSelected() {
         ngn->render->SetRenderToTextureState();
     } else if (current_viewport >= 0) {
         SDL_SetRenderTarget(renderer, viewport_list[current_viewport].surface);
+        SDL_RenderSetClipRect(renderer, &viewport_list[current_viewport].clip_area);
     } else {
         #if !defined (DISABLE_BACKBUFFER)
             SDL_SetRenderTarget(renderer, backbuffer);
@@ -412,6 +413,7 @@ void NGN_Graphics::OpenViewport(
     // Check de datos
     if ((v.w > native_w) || (v.h > native_h) || (v.render_w > native_w) || (v.render_h > native_h)) return;
 
+    // Si existe una textura de destino, eliminala
     if (viewport_list[id].available) {
         if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
     }
@@ -443,6 +445,12 @@ void NGN_Graphics::OpenViewport(
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
         }
     #endif
+
+    // Guarda los datos del clip de este viewport (por defecto, toda la area de render)
+    v.clip_area.x = 0;
+    v.clip_area.y = 0;
+    v.clip_area.w = v.render_w;
+    v.clip_area.h = v.render_h;
 
     // Viewport disponible
     v.available = true;
@@ -490,13 +498,15 @@ void NGN_Graphics::SelectViewport(uint8_t id) {
     if (id > VIEWPORT_NUMBER) return;
     if (!viewport_list[id].available) return;
 
-    // Registra y actualiza el viewport
+    // Registra el ID del viewport
     current_viewport = id;
-    SDL_SetRenderTarget(renderer, viewport_list[id].surface);
 
     // Registra el tamaño del area de render
     render_resolution.width = viewport_list[id].render_w;
     render_resolution.height = viewport_list[id].render_h;
+
+    // Fija este viewport como destino del render
+    RenderToSelected();
 
 }
 
@@ -548,15 +558,15 @@ void NGN_Graphics::DefaultViewport() {
 
 
 
-/*** Cambia el tamaño del clip del viewport ***/
+/*** Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal] ***/
 void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
     SDL_Rect viewport = {
-                x,          // Posicion X
-                y,          // Posicion Y
-                w,          // Ancho
-                h           // Alto
-                };
+        x,          // Posicion X
+        y,          // Posicion Y
+        w,          // Ancho
+        h           // Alto
+    };
 
     if (viewport.x < 0) viewport.x = 0;
     if (viewport.y < 0) viewport.y = 0;
@@ -568,10 +578,39 @@ void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
     if (viewport.h < 0) return;
 
     // Guarda el area
-    cliparea = viewport;
+    clip_area = viewport;
 
     // Ahora limita el area de dibujado a esa resolucion
     SDL_RenderSetClipRect(renderer, &viewport);
+
+}
+
+
+
+/*** Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples] ***/
+void NGN_Graphics::SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h) {
+
+    if (id > VIEWPORT_NUMBER) return;
+    if (!viewport_list[id].available) return;
+
+    SDL_Rect viewport = {
+        x,          // Posicion X
+        y,          // Posicion Y
+        w,          // Ancho
+        h           // Alto
+    };
+
+    if (viewport.x < 0) viewport.x = 0;
+    if (viewport.y < 0) viewport.y = 0;
+
+    if ((viewport.x + viewport.w) > native_w) viewport.w = (native_w - viewport.x);
+    if (viewport.w < 0) return;
+
+    if ((viewport.y + viewport.h) > native_h) viewport.h = (native_h - viewport.y);
+    if (viewport.h < 0) return;
+
+    // Guarda el area
+    viewport_list[id].clip_area = viewport;
 
 }
 
@@ -956,6 +995,7 @@ void NGN_Graphics::SetupViewports() {
     v.h = 0;
     v.render_w = 0;
     v.render_h = 0;
+    v.clip_area = {0, 0, 0, 0};
     v.surface = NULL;
     v._local_filter = v.local_filter = false;
 

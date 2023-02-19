@@ -148,6 +148,8 @@
 		<Unit filename="source/ngn_music_clip.h" />
 		<Unit filename="source/ngn_render.cpp" />
 		<Unit filename="source/ngn_render.h" />
+		<Unit filename="source/ngn_resources.cpp" />
+		<Unit filename="source/ngn_resources.h" />
 		<Unit filename="source/ngn_sound.cpp" />
 		<Unit filename="source/ngn_sound.h" />
 		<Unit filename="source/ngn_sprite.cpp" />

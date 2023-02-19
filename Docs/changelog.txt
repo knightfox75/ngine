@@ -2,6 +2,26 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2023-02-19 Ver.1.12.0-stable
+--------------------------------------------------------------------------------
+- Añadida una sobrecarga al método SetViewportClip() de la clase NGN_Graphics,
+  la cual en el caso de existir diferentes viewports, permite configurar el
+  clipping de cada uno de ellos por separado.
+- Añadida la clase NGN_Resources, la cual permite crear repositorios de
+  recursos para gestionarlos directamente desde la libreria. El nombre interno
+  y archivo de cada recurso se especifica en un archivo de texto, el cual
+  es usado para cargar los recursos listado en el repositorio especificado.
+  ES posible disponer de 127 repositorios de manera simultánea.
+- Modificadas las clases NGN_Texture, NGN_TiledBg, NGN_Sprite, NGN_TextLayer y
+  NGN_Sound para admitir la creación o reproducción de elementos usando
+  directamente los recursos de la clase NGN_Resources.
+- Añadido el ejemplo del uso de carga de recursos en un repositorio y uso de
+  empaquetado de archivos.
+- En la versión de Windows, se ha actualizado la librería SDL2 a la ver.2.26.3
+  y la librería SDL2_TTF a la ver.2.20.2.
+- Añadido el template de code::blocks para la creación de proyectos avanzados.
+
+
 2022-12-24 Ver.1.11.0-stable
 --------------------------------------------------------------------------------
 - Añadido el archivo de configuración de flags de compilación de N'gine.
@@ -24,7 +44,6 @@ N'gine Changelog
 - N'gine, los templates y los ejemplos se han configurado para seguir la
   norma C++ 17 (estándar).
 - Actualizados los ejemplos de sonido.
-
 
 
 2022-07-29 Ver.1.10.0-beta

@@ -8,12 +8,12 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.11.0-stable o superior
+    Requiere N'gine 1.12.0-stable o superior
 
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
-    Requiere SDL2 (2.0.22) - 64-bits
+    Requiere SDL2 (2.26.3) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.1) - 64-bits

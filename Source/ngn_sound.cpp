@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -125,7 +125,7 @@ void NGN_Sound::BootUp() {
 
 
 
-/*** Reproduce un sonido ***/
+/*** Reproduce un sonido (1ra sobrecarga) ***/
 NGN_AudioClip* NGN_Sound::PlaySfx(
         NGN_AudioClipData* sound,       // Clip de audio
         int32_t volume,                 // Volumen
@@ -134,31 +134,35 @@ NGN_AudioClip* NGN_Sound::PlaySfx(
         uint8_t mixer_channel           // Canal asignado en el mixer
     ) {
 
-    // Si no se ha alcanzado el limite de SFX simultaneos...
-    if (sfx_cue.size() < MAX_SFX_CHANNELS) {
+    return _PlaySfx(
+        sound,              // Clip de audio
+        volume,             // Volumen
+        panning,            // Panning (-100 a 100)
+        loop,               // Loop ?
+        mixer_channel       // Canal por defecto en el mixer
+    );
 
-        // Crea un nuevo clip en la cola de SFX
-        sfx_cue.push_back(new NGN_AudioClip());
+}
 
-        // ID
-        uint32_t id = (sfx_cue.size() - 1);
 
-        if ((mixer_channel > 0) && (mixer_channel < MIXER_CHANNELS)) sfx_cue[id]->SetMixerChannel(mixer_channel);
 
-        // Asignale el sonido a la instancia creada
-        sfx_cue[id]->Clip(sound);
+/*** Reproduce un sonido (2da sobrecarga) ***/
+NGN_AudioClip* NGN_Sound::PlaySfx(
+        std::string repo_name,          // Nombre del repositorio
+        std::string resource_name,      // Nombre del recurso
+        int32_t volume,                 // Volumen
+        int32_t panning,                // Panning (-100 a 100)
+        bool loop,                      // Loop ?
+        uint8_t mixer_channel           // Canal asignado en el mixer
+    ) {
 
-        // Y reproducelo
-        sfx_cue[id]->Play(volume, panning, loop);
-
-        // Devuelve la referencia al clip creado
-        return sfx_cue[id];
-
-    } else {
-
-        return NULL;
-
-    }
+    return _PlaySfx(
+        ngn->resources->GetSfx(repo_name, resource_name),   // Clip de audio
+        volume,             // Volumen
+        panning,            // Panning (-100 a 100)
+        loop,               // Loop ?
+        mixer_channel       // Canal por defecto en el mixer
+    );
 
 }
 
@@ -939,6 +943,45 @@ void NGN_Sound::PopMixer() {
 
     for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) {
         mixer_channel_level[i] = backup_mixer_channel_level[i];
+    }
+
+}
+
+
+
+/*** Reproduce un sonido (procesos comunes en las sobrecargas) ***/
+NGN_AudioClip* NGN_Sound::_PlaySfx(
+    NGN_AudioClipData* sound,       // Clip de audio
+    int32_t volume,                 // Volumen
+    int32_t panning,                // Panning (-100 a 100)
+    bool loop,                      // Loop ?
+    uint8_t mixer_channel           // Canal por defecto en el mixer
+) {
+
+    // Si no se ha alcanzado el limite de SFX simultaneos...
+    if (sfx_cue.size() < MAX_SFX_CHANNELS) {
+
+        // Crea un nuevo clip en la cola de SFX
+        sfx_cue.push_back(new NGN_AudioClip());
+
+        // ID
+        uint32_t id = (sfx_cue.size() - 1);
+
+        if ((mixer_channel > 0) && (mixer_channel < MIXER_CHANNELS)) sfx_cue[id]->SetMixerChannel(mixer_channel);
+
+        // Asignale el sonido a la instancia creada
+        sfx_cue[id]->Clip(sound);
+
+        // Y reproducelo
+        sfx_cue[id]->Play(volume, panning, loop);
+
+        // Devuelve la referencia al clip creado
+        return sfx_cue[id];
+
+    } else {
+
+        return NULL;
+
     }
 
 }

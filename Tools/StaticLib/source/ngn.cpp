@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
-    Requiere SDL2 (2.0.22) - 64-bits
+    Requiere SDL2 (2.26.3) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.1) - 64-bits
@@ -91,6 +91,7 @@ NGN::NGN() {
     sound = NULL;           // Efectos de sonido
     image = NULL;           // Manipulacion de imagenes en RAW
     disk = NULL;            // Gestion de archivos en el disco
+    resources = NULL;       // Gestion integrada de recursos
 
     // Prepara los objetos de la libreria
     camera = NULL;          // Crea la camara virtual 2D
@@ -106,6 +107,7 @@ NGN::~NGN() {
     delete camera; camera = NULL;
 
     // Elimina todas las instancias a los singletons
+    NGN_Resources::RemoveInstance(); resources = NULL;
     NGN_Disk::RemoveInstance(); disk = NULL;
     NGN_Image::RemoveInstance(); image = NULL;
     NGN_Sound::RemoveInstance(); sound = NULL;
@@ -142,6 +144,7 @@ bool NGN::Init() {
     sound = NGN_Sound::GetInstance();               // Efectos de sonido
     image = NGN_Image::GetInstance();               // Manipulacion de imagenes en RAW
     disk = NGN_Disk::GetInstance();                 // Gestion de archivos en el disco
+    resources = NGN_Resources::GetInstance();       // Gestion integrada de recursos
 
     // Inicia los singletons de la libreria
     log->BootUp();                      // Mensages de depuracion
@@ -156,6 +159,7 @@ bool NGN::Init() {
     sound->BootUp();                    // Efectos de sonido
     image->BootUp();                    // Manipulacion de imagenes en RAW
     disk->BootUp();                     // Gestion de archivos en el disco
+    resources->BootUp();                // Gestion integrada de recursos
 
     // Crea los objetos adicionales de a libreria
     camera = new NGN_Camera();          // Crea la camara virtual 2D

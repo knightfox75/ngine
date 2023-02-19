@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.11.0-stable ***
+    *** Version 1.12.0-stable ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -98,14 +98,24 @@ class NGN_Sound {
 
         /*** Efectos de sonido (SFX) [64 simultaneos maximo por defecto] ***/
 
-        // Reproduce un sonido
+        // Reproduce un sonido (1ra sobrecarga)
         NGN_AudioClip* PlaySfx(
-                               NGN_AudioClipData* sound,                    // Clip de audio
-                               int32_t volume = 100,                        // Volumen
-                               int32_t panning = 0,                         // Panning (-100 a 100)
-                               bool loop = false,                           // Loop ?
-                               uint8_t mixer_channel = MIXER_EFFECTS_CH     // Canal por defecto en el mixer
-                               );
+            NGN_AudioClipData* sound,                    // Clip de audio
+            int32_t volume = 100,                        // Volumen
+            int32_t panning = 0,                         // Panning (-100 a 100)
+            bool loop = false,                           // Loop ?
+            uint8_t mixer_channel = MIXER_EFFECTS_CH     // Canal por defecto en el mixer
+        );
+
+        // Reproduce un sonido (2da sobrecarga)
+        NGN_AudioClip* PlaySfx(
+            std::string repo_name,                       // Nombre del repositorio
+            std::string resource_name,                   // Nombre del recurso
+            int32_t volume = 100,                        // Volumen
+            int32_t panning = 0,                         // Panning (-100 a 100)
+            bool loop = false,                           // Loop ?
+            uint8_t mixer_channel = MIXER_EFFECTS_CH     // Canal por defecto en el mixer
+        );
 
         // Continua la reproduccion de un sonido
         void ResumeSfx(NGN_AudioClip* sound);
@@ -272,6 +282,15 @@ class NGN_Sound {
         int32_t mixer_channel_level[MIXER_CHANNELS];
         int32_t last_mixer_channel_level[MIXER_CHANNELS];
         int32_t backup_mixer_channel_level[MIXER_CHANNELS];
+
+        // Reproduce un sonido (procesos comunes en las sobrecargas)
+        NGN_AudioClip* _PlaySfx(
+            NGN_AudioClipData* sound,       // Clip de audio
+            int32_t volume,                 // Volumen
+            int32_t panning,                // Panning (-100 a 100)
+            bool loop,                      // Loop ?
+            uint8_t mixer_channel           // Canal por defecto en el mixer
+        );
 
 };
 
