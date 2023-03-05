@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-win_0x01 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -452,6 +452,12 @@ void NGN_Graphics::OpenViewport(
     v.clip_area.w = v.render_w;
     v.clip_area.h = v.render_h;
 
+    // Color de backdrop por defecto (negro)
+    v.backdrop_color.r = 0x00;
+    v.backdrop_color.g = 0x00;
+    v.backdrop_color.b = 0x00;
+    v.backdrop_color.a = 0x00;
+
     // Viewport disponible
     v.available = true;
 
@@ -536,6 +542,20 @@ void NGN_Graphics::ViewportLocalFilter(uint8_t id, bool status) {
 
     if (id >= VIEWPORT_NUMBER) return;
     viewport_list[id].local_filter = status;
+
+}
+
+
+
+/*** Cambia el color del backdrop de un viewport ***/
+void NGN_Graphics::ViewportBackdropColor(uint8_t id, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+
+    if (id >= VIEWPORT_NUMBER) return;
+
+    viewport_list[id].backdrop_color.r = r;
+    viewport_list[id].backdrop_color.g = g;
+    viewport_list[id].backdrop_color.b = b;
+    viewport_list[id].backdrop_color.a = a;
 
 }
 
@@ -998,6 +1018,10 @@ void NGN_Graphics::SetupViewports() {
     v.clip_area = {0, 0, 0, 0};
     v.surface = NULL;
     v._local_filter = v.local_filter = false;
+    v.backdrop_color.r = 0;
+    v.backdrop_color.g = 0;
+    v.backdrop_color.b = 0;
+    v.backdrop_color.a = 0;
 
     viewport_list.clear();
     viewport_list.reserve(VIEWPORT_NUMBER);
@@ -1045,7 +1069,13 @@ void NGN_Graphics::ClearViewports() {
             // Informa al renderer que la textura "backbuffer" del viewport es su destino
             SDL_SetRenderTarget(renderer, viewport_list[i].surface);
             // Borra el contenido de la textura actual
-            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+            SDL_SetRenderDrawColor(
+                renderer,
+                viewport_list[i].backdrop_color.r,
+                viewport_list[i].backdrop_color.g,
+                viewport_list[i].backdrop_color.b,
+                viewport_list[i].backdrop_color.a
+            );
             SDL_RenderFillRect(renderer, NULL);
             // Actualiza el estado del filtrado local
             viewport_list[i]._local_filter = viewport_list[i].local_filter;

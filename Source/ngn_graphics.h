@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-win_0x01 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -129,6 +129,7 @@ class NGN_Graphics {
             bool _local_filter;                     // Estado actual del filtrado
             bool available;                         // Viewport disponible?
             SDL_Texture* surface;                   // Textura para usar de backbuffer para el viewport
+            Rgba backdrop_color;                    // Color por defecto del backdrop
         };
         std::vector<Viewport_struct> viewport_list;
         int8_t current_viewport;                    // Viewport actual (-1 sin viewport)
@@ -153,6 +154,8 @@ class NGN_Graphics {
         void ViewportPosition(uint8_t id, Vector2I32 position);             // Sobrecarga 2
         // Cambia el estado local del filtro de un viewport
         void ViewportLocalFilter(uint8_t id, bool status);
+        // Cambia el color del backdrop de un viewport
+        void ViewportBackdropColor(uint8_t id, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
         // Viewport por defecto
         void DefaultViewport();
 

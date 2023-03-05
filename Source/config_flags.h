@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-win_0x01 ***
     FLAGS de configuracion de la libreria
     La libreria debe compilarse para que estos FLAGS sean efectivos
 
