@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x01 ***
+    *** Version 1.13.0-win_0x02 ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016

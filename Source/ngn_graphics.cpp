@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x01 ***
+    *** Version 1.13.0-win_0x02 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -127,6 +127,9 @@ NGN_Graphics::NGN_Graphics() {
     output_scale.y = 1.0f;
     output_viewport.x = 0.0f;
     output_viewport.y = 0.0f;
+
+    // Color del backdrop
+    backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     // Grabacion de la pantalla a PNG
     png_pixels.clear();
@@ -341,7 +344,17 @@ void NGN_Graphics::RenderToSelected() {
         #endif
     }
     // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    #if !defined (DISABLE_BACKBUFFER)
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    #else
+        SDL_SetRenderDrawColor(
+            renderer,
+            backdrop_color.r,
+            backdrop_color.g,
+            backdrop_color.b,
+            0xFF
+        );
+    #endif
 
 }
 
@@ -452,11 +465,8 @@ void NGN_Graphics::OpenViewport(
     v.clip_area.w = v.render_w;
     v.clip_area.h = v.render_h;
 
-    // Color de backdrop por defecto (negro)
-    v.backdrop_color.r = 0x00;
-    v.backdrop_color.g = 0x00;
-    v.backdrop_color.b = 0x00;
-    v.backdrop_color.a = 0x00;
+    // Color de backdrop por defecto (negro, transparente)
+    v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     // Viewport disponible
     v.available = true;
@@ -490,6 +500,7 @@ void NGN_Graphics::CloseViewport(uint8_t id) {
     v.render_h = 0;
     v.surface = NULL;
     v._local_filter = v.local_filter = false;
+    v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     // Actualiza los datos del viewport cerrado
     viewport_list[id] = v;
@@ -1018,10 +1029,7 @@ void NGN_Graphics::SetupViewports() {
     v.clip_area = {0, 0, 0, 0};
     v.surface = NULL;
     v._local_filter = v.local_filter = false;
-    v.backdrop_color.r = 0;
-    v.backdrop_color.g = 0;
-    v.backdrop_color.b = 0;
-    v.backdrop_color.a = 0;
+    v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     viewport_list.clear();
     viewport_list.reserve(VIEWPORT_NUMBER);
@@ -1121,17 +1129,23 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
 
         // Crea el backbuffer de este fondo
         backbuffer = SDL_CreateTexture(
-                                 renderer,                      // Renderer
-                                 SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                                 SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                                 native_w,                      // Ancho de la textura
-                                 native_h                       // Alto de la textura
-                                 );
+            renderer,                      // Renderer
+            SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+            SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+            native_w,                      // Ancho de la textura
+            native_h                       // Alto de la textura
+        );
 
         SDL_SetRenderTarget(renderer, backbuffer);
 
         // Borra el contenido de la textura actual
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_SetRenderDrawColor(
+            renderer,
+            backdrop_color.r,
+            backdrop_color.g,
+            backdrop_color.b,
+            backdrop_color.a
+        );
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0xFF);
         SDL_RenderFillRect(renderer, NULL);
@@ -1204,13 +1218,28 @@ void NGN_Graphics::ClearBackbuffer() {
         if (filtering != _filtering) {
             SetBackbuffer();
         } else {
-            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+            SDL_SetRenderDrawColor(
+                renderer,
+                backdrop_color.r,
+                backdrop_color.g,
+                backdrop_color.b,
+                backdrop_color.a
+            );
             SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
             SDL_SetTextureAlphaMod(backbuffer, 0xFF);
             SDL_RenderFillRect(renderer, NULL);
         }
 
     #endif
+
+}
+
+
+
+/*** Establece el color del backdrop ***/
+void NGN_Graphics::SetBackdropColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+
+    backdrop_color = {r, g, b, a};
 
 }
 

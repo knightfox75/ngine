@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x01 ***
+    *** Version 1.13.0-win_0x02 ***
     FLAGS de configuracion de la libreria
     La libreria debe compilarse para que estos FLAGS sean efectivos
 
@@ -117,7 +117,7 @@
 	That speeds up to 50% in lowend GPU's, but also disables the option
 	of enable bilinear filtering in objects and layers separately.
 */
-//#define DISABLE_BACKBUFFER
+// #define DISABLE_BACKBUFFER
 
 
 

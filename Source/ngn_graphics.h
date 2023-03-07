@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x01 ***
+    *** Version 1.13.0-win_0x02 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -112,6 +112,9 @@ class NGN_Graphics {
 
         // Estable el destino del render al seleccionado por defecto
         void RenderToSelected();
+
+        // Color del backdrop del viewport principal
+        void SetBackdropColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
         // Actualiza el renderer a 60fps
         void Update();
@@ -257,6 +260,9 @@ class NGN_Graphics {
         void RenderBackbuffer();
         // Limpia el backbuffer
         void ClearBackbuffer();
+
+        // Color del backdrop
+        Rgba backdrop_color;
 
         // Graba el frame actual en formato PNG
         std::vector<uint8_t> png_pixels;        // Pixeles para formar el PNG
