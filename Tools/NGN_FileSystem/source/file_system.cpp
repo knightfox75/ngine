@@ -4,9 +4,33 @@
     - Sistema de archivos -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (cc) 2021 - 2023 by Cesar Rincon "NightFox"
+    (c) 2021 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
+
+
+	Sistema de empaquetado de archivos para N'gine is under MIT License
+
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -246,7 +270,7 @@ int32_t FileSystem::CreateFatFromDir() {
     node.next_node_offset = sizeof(file_header);
     // Offset de posicion del archivo (de momento, 0)
     node.file_offset = 0;
-    // Estimacion de tamaño de la FAT y de los datos
+    // Estimacion de tamaï¿½o de la FAT y de los datos
     fat_size = 0;
     data_size = 0;
     // Checksum del archivo
@@ -255,7 +279,7 @@ int32_t FileSystem::CreateFatFromDir() {
     std::vector<uint8_t> buffer;
     buffer.clear();
 
-    // Recore la lista de archivos, analizando el tamaño de cada uno de ellos y creando el nodo correspondiente en la FAT
+    // Recore la lista de archivos, analizando el tamaï¿½o de cada uno de ellos y creando el nodo correspondiente en la FAT
     std::cout << "FAT creation started... ";
     for (uint32_t i = 0; i < file_list.size(); i ++) {
 
@@ -264,10 +288,10 @@ int32_t FileSystem::CreateFatFromDir() {
         node.path_length = node.file_name.length();             // Numero de caracteres en la ruta
         node.next_node_offset += NODE_SIZE + node.path_length;  // Offset al siguiente nodo
 
-        // Registra el tamaño del nodo
+        // Registra el tamaï¿½o del nodo
         fat_size += NODE_SIZE + node.path_length;
 
-        // Intenta abrir el archivo para guardar su tamaño
+        // Intenta abrir el archivo para guardar su tamaï¿½o
         const char* path = node.file_name.c_str();
 
         // Intenta abrir el archivo en modo binario
@@ -276,7 +300,7 @@ int32_t FileSystem::CreateFatFromDir() {
 
         // Segun si has podido o no abrirlo...
         if (file.is_open()) {
-            // Calcula el tamaño del archivo
+            // Calcula el tamaï¿½o del archivo
             file.seekg(0, file.end);            // Avanza hasta el final del archivo
             node.file_size = file.tellg();      // Consulta el numero de bytes recorridos
             file.seekg(0, file.beg);            // Rebobina el archivo
@@ -286,7 +310,7 @@ int32_t FileSystem::CreateFatFromDir() {
             checksum = Checksum(buffer);
             buffer.clear();
             file.close();                       // Cierra el archivo
-            // Registra el tamaño de archivo
+            // Registra el tamaï¿½o de archivo
             data_size += node.file_size;
             // Registra el checksum del archivo
             for (uint8_t i = 0; i < CHK_SIZE; i ++) node.checksum[i] = checksum[i];
@@ -302,7 +326,7 @@ int32_t FileSystem::CreateFatFromDir() {
         // Verifica si es el ultimo nodo para marcarlo (offset a 0)
         if (i == file_list.size() - 1) node.next_node_offset = 0;
 
-        // Añade el nodo creado a la FAT
+        // Aï¿½ade el nodo creado a la FAT
         fat.push_back(node);
 
     }
@@ -413,7 +437,7 @@ int32_t FileSystem::WritePackageFile(std::string filepath) {
     uint32_t next_node_offset;          // Posicion del siguiente nodo
     uint32_t path_length;               // Numero de caracteres de la ruta
     uint32_t file_offset;               // Posicion del archivo
-    uint32_t file_size;                 // Tamaño del archivo
+    uint32_t file_size;                 // Tamaï¿½o del archivo
     uint8_t checksum[CHK_SIZE];         // Checksum del archivo
     std::string file_name;              // Nombre del archivo (ruta incluida)
     // Lee el contenido de la tabla y escribelo en el archivo
@@ -444,14 +468,14 @@ int32_t FileSystem::WritePackageFile(std::string filepath) {
         const char* infile_name = fat[i].file_name.c_str();
         infile.open(infile_name, std::ifstream::in | std::ifstream::binary);
 
-        // Añadiendo el archivo...
+        // Aï¿½adiendo el archivo...
         std::cout << "Adding";
         if (arg_key.state) std::cout << " and encrypting";
         std::cout << " [" << fat[i].file_name << "]... ";
 
         // Si se abre con exito, realiza la copia
         if (infile.is_open()) {
-            // Reserva el espacio segun el tamaño del archivo
+            // Reserva el espacio segun el tamaï¿½o del archivo
             buffer.resize(fat[i].file_size);
             // Lee el archivo de origen
             infile.read((char*)&buffer[0], fat[i].file_size);
@@ -477,13 +501,13 @@ int32_t FileSystem::WritePackageFile(std::string filepath) {
     // Cierra el archivo
     outfile.close();
 
-    // Verificacion del tamaño del archivo creado
+    // Verificacion del tamaï¿½o del archivo creado
     int32_t length = -1;
     // Intenta abrir el archivo en modo binario
     infile.open(_filepath, std::ifstream::in | std::ifstream::binary);
     // Si has abierto el archivo con exito...
     if (infile.is_open()) {
-        // Calcula el tamaño del archivo
+        // Calcula el tamaï¿½o del archivo
         infile.seekg(0, infile.end);        // Avanza hasta el final del archivo
         length = infile.tellg();            // Consulta el numero de bytes recorridos
         infile.seekg(0, infile.beg);        // Rebobina el archivo
@@ -559,7 +583,7 @@ int32_t FileSystem::CreateFatFromPackage() {
     uint32_t next_node_offset;          // Posicion del siguiente nodo
     uint32_t path_length;               // Numero de caracteres de la ruta
     uint32_t file_offset;               // Posicion del archivo
-    uint32_t file_size;                 // Tamaño del archivo
+    uint32_t file_size;                 // Tamaï¿½o del archivo
     uint8_t checksum[CHK_SIZE];         // Checksum del archivo
     std::vector<uint8_t> file_name;     // Nombre del archivo (ruta incluida)
 
@@ -585,7 +609,7 @@ int32_t FileSystem::CreateFatFromPackage() {
         for (uint8_t n = 0; n < CHK_SIZE; n ++) node.checksum[n] = checksum[n];
         std::string str(file_name.begin(), file_name.end());
         node.file_name = str;
-        // Añade el nodo temporal a la FAT
+        // Aï¿½ade el nodo temporal a la FAT
         fat.push_back(node);
     } while (node.next_node_offset > 0);
 

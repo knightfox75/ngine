@@ -4,13 +4,37 @@
     - ConvertToSprite -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2020 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG (20220717)
     (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
+
+
+	Conversor de PNG a Sprite is under MIT License
+
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -67,7 +91,7 @@ ConvertToSprite::~ConvertToSprite() {
 bool ConvertToSprite::Convert(
     std::string in_file,        // Archivo PNG a convertir
     std::string out_file,       // Nombre base de los archivos de salida
-    uint32_t frame_w,           // Tamaño del tile
+    uint32_t frame_w,           // Tamaï¿½o del tile
     uint32_t frame_h,           // Nivel de optimizacion
     bool strip                  // Generar archivos adicionales?
 ) {
@@ -79,7 +103,7 @@ bool ConvertToSprite::Convert(
     // Intenta abrir y decodificar el archivo PNG
     if (!ReadPng(in_file, png_pixels)) return false;
 
-    // Verifica que el tamaño de imagen coincida con los datos del tamaño de fotograma
+    // Verifica que el tamaï¿½o de imagen coincida con los datos del tamaï¿½o de fotograma
     if (
         (frame_w > in_width)
         ||
@@ -127,7 +151,7 @@ void ConvertToSprite::CutFrames(std::vector<uint8_t> &data) {
     uint32_t _total_frames = (_frames_w * _frames_h);                       // Numero total de frames
     uint32_t _current_frame = 0;                                            // Fotograma actual
 
-    // Calcula el tamaño del archivo de salida
+    // Calcula el tamaï¿½o del archivo de salida
     out_width = frame_width;
     out_height = (_total_frames * frame_height);
     // Y guarda el numero total de frames
@@ -241,7 +265,7 @@ bool ConvertToSprite::WriteFile(std::string filename) {
 bool ConvertToSprite::ReadPng(std::string filename, std::vector<uint8_t> &data) {
 
     // Variables
-    uint32_t width = 0, height = 0;     // Tamaño del archivo cargado
+    uint32_t width = 0, height = 0;     // Tamaï¿½o del archivo cargado
 
     // Prepara el buffer temporal
     std::vector<uint8_t> png_data;
@@ -265,7 +289,7 @@ bool ConvertToSprite::ReadPng(std::string filename, std::vector<uint8_t> &data) 
         return false;
     }
 
-    // Guarda los tamaños de la imagen a convertir
+    // Guarda los tamaï¿½os de la imagen a convertir
     in_width = width;
     in_height = height;
 

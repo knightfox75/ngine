@@ -4,13 +4,37 @@
     - Convierte un archivo PNG en tiles -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG (20220717)
     (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
+
+
+	Conversor de PNG a Fondo de Tiles is under MIT License
+
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -77,7 +101,7 @@ ConvertToTiles::~ConvertToTiles() {
 bool ConvertToTiles::Convert(
     std::string in_file,        // Archivo PNG a convertir
     std::string out_file,       // Nombre base de los archivos de salida
-    uint32_t tile_size,         // Tamaño del tile
+    uint32_t tile_size,         // Tamaï¿½o del tile
     uint32_t op_level,          // Nivel de optimizacion
     bool ex_files               // Generar archivos adicionales?
 ) {
@@ -163,7 +187,7 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
         for (img_x = 0; img_x <= (map_width - size_of_tile); img_x += size_of_tile) {
             // Obten un tile
             GetTile(img_tile, data, img_x, img_y, bg_width, bg_height);
-            // Comparalo con los tiles existentes y añadelo si no existe. Registra el resultado en el mapa
+            // Comparalo con los tiles existentes y aï¿½adelo si no existe. Registra el resultado en el mapa
             t = OptimizeTiles();
             // Codifica el WORD con la info del tile
             tmap[idx] = (t & 0x000000ff); idx ++;
@@ -186,7 +210,7 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
     std::cout << tileset_length << " tiles from " << total_tiles << " generated." << std::endl;
     //std::cout << "Tile strip image size: " << size_of_tile << "x" << (tileset_length * size_of_tile) << " pixels." << std::endl;
 
-    // Calcula el tamaño de la imagen de destino, para que sea lo mas cuadrada posible
+    // Calcula el tamaï¿½o de la imagen de destino, para que sea lo mas cuadrada posible
     double sq = sqrt(tileset_length);                                // Calcula el ancho
     uint32_t w = ceil(sq);
     out_width = (w * size_of_tile);
@@ -311,7 +335,7 @@ bool ConvertToTiles::WriteFile(std::string filename) {
 bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
 
     // Variables
-    uint32_t width = 0, height = 0;     // Tamaño del archivo cargado
+    uint32_t width = 0, height = 0;     // Tamaï¿½o del archivo cargado
 
     // Prepara el buffer temporal
     std::vector<uint8_t> png_data;
@@ -335,11 +359,11 @@ bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
         return false;
     }
 
-    // Guarda los tamaños de la imagen a convertir
+    // Guarda los tamaï¿½os de la imagen a convertir
     bg_width = width;
     bg_height = height;
 
-    // Calcula el tamaño del mapa necesario
+    // Calcula el tamaï¿½o del mapa necesario
     if ((width % size_of_tile) == 0) {
         map_width = width;
     } else {
@@ -354,7 +378,7 @@ bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
     // Informacion del archivo cargado
     std::cout << "File " << filename << " loaded & decoded successfully." << std::endl;
     std::cout << "Image size is " << width << "x" << height << " pixels." << std::endl;
-    // Aviso de tamaño no exacto
+    // Aviso de tamaï¿½o no exacto
     if (((width % size_of_tile) != 0) || ((height % size_of_tile) != 0)) {
         std::cout << std::endl;
         std::cout << "WARNING: Image size doesn't fits the tile size." << std::endl;
@@ -548,16 +572,16 @@ uint32_t ConvertToTiles::OptimizeTiles() {
 
     }
 
-    // Añade el tile si es necesario
+    // Aï¿½ade el tile si es necesario
     if (add_tile == 0) {
         PutTile(img_tile, buffer, 0, (tileset_length * size_of_tile), size_of_tile);
         tile_id = tileset_length;
         tileset_length ++;
-        // Al ser un tile añadido, por defecto no tiene ni flip ni rotacion
+        // Al ser un tile aï¿½adido, por defecto no tiene ni flip ni rotacion
         add_tile = 1;
     }
 
-    // Calcula el valor de devolver para añadir al mapa
+    // Calcula el valor de devolver para aï¿½adir al mapa
     // [8bits FLIP &| ROTATION] [24bits TILE ID]
     tile_id |= (add_tile << 24);
 
@@ -714,7 +738,7 @@ bool ConvertToTiles::Compare180deg() {
 
 
 
-/*** Compara si 2 tiles estan rotadas 90º a la derecha (90º Clock Wise) ***/
+/*** Compara si 2 tiles estan rotadas 90ï¿½ a la derecha (90ï¿½ Clock Wise) ***/
 bool ConvertToTiles::Compare90degCW() {
 
     //bool r = true;          // Son iguales?
@@ -756,7 +780,7 @@ bool ConvertToTiles::Compare90degCW() {
 
 
 
-/*** Compara si 2 tiles estan rotadas 90º a la izquierda (90º Anti Clock Wise) ***/
+/*** Compara si 2 tiles estan rotadas 90ï¿½ a la izquierda (90ï¿½ Anti Clock Wise) ***/
 bool ConvertToTiles::Compare90degACW() {
 
     //bool r = true;          // Son iguales?

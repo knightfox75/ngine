@@ -13,7 +13,7 @@ A cualquier persona que quiera desarrollar su videojuego y tenga nociones de pro
 Actualmente el motor funciona en sistemas Windows y Linux.<br>
 
 - ¿Bajo qué licencia se distribuye?<br>
-El motor se distribuye bajo la licencia Creative Commons 4, atribución, no comercial. Eso significa que puedes usar, modificar, crear y distribuir contenido usando el motor, siempre y cuando lo acredites correctamente y el contenido no se distribuya de forma carácter comercial sin un acuerdo previo con el autor.<br>
+El motor se distribuye bajo la licencia MIT. Eso significa que puedes usar, modificar, crear y distribuir contenido usando el motor, siempre y cuando lo acredites correctamente.<br>
 
 - ¿Cómo nació este proyecto?<br>
 El proyecto nació por la necesidad de tener una herramienta 2D a medida para el desarrollo de proyectos personales y en mayor medida, como base para la realización de proyectos de los estudiantes de primer curso en el centro donde imparto clases como profesor de diseño y programación de videojuegos.<br>
@@ -50,6 +50,7 @@ Con más de 6 años de desarrollo, ya se encuentra en una fase estable de desarr
 		· Funciones de carga de los recursos desde el sistema de archivos<br>
 		· Posibilidad de crear archivos de empaquetado de recursos con la posibilidad de encriptación<br>
 		· Funciones de carga y grabación de archivos en formato binario o texto<br>
+		· Posibilidad de gestionar hasta 127 repositorios de recursos, indicado la lista de archivos a cargar desde un archivo de texto plano.<br>
 		
 - ¿Que contiene el paquete de distribución del motor?<br>
 El archivo contiene el código fuente del motor, así como las librerías del mismo compiladas para Windows y Linux Mint, documentación de instalación y uso, ejemplos comentados y un pack con demos ya compiladas mostrando las principales funcionalidades del motor<br>

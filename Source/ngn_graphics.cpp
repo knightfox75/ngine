@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x02 ***
+    *** Version 1.13.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -518,7 +512,7 @@ void NGN_Graphics::SelectViewport(uint8_t id) {
     // Registra el ID del viewport
     current_viewport = id;
 
-    // Registra el tamaño del area de render
+    // Registra el tamaï¿½o del area de render
     render_resolution.width = viewport_list[id].render_w;
     render_resolution.height = viewport_list[id].render_h;
 
@@ -578,7 +572,7 @@ void NGN_Graphics::DefaultViewport() {
     // Ningun viewport seleccionado
     current_viewport = -1;
 
-    // Registra el tamaño del area de render
+    // Registra el tamaï¿½o del area de render
     render_resolution.width = native_w;
     render_resolution.height = native_h;
 
@@ -589,7 +583,7 @@ void NGN_Graphics::DefaultViewport() {
 
 
 
-/*** Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal] ***/
+/*** Cambia el tamaï¿½o del clip del viewport [1ra sobrecarga, viewport principal] ***/
 void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
     SDL_Rect viewport = {
@@ -618,7 +612,7 @@ void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
 
 
-/*** Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples] ***/
+/*** Cambia el tamaï¿½o del clip del viewport [2da sobrecarga, viewports multiples] ***/
 void NGN_Graphics::SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h) {
 
     if (id > VIEWPORT_NUMBER) return;
@@ -873,7 +867,7 @@ void NGN_Graphics::ChangeScreenMode() {
             // Modo del renderer
             SDL_SetWindowFullscreen(window, 0);
 
-            // Ajusta el tamaño de la ventana
+            // Ajusta el tamaï¿½o de la ventana
             int8_t win_size = NGN_SCR_WINDOW;
             switch (screen_mode) {
                 case NGN_SCR_WINDOW:
@@ -890,7 +884,7 @@ void NGN_Graphics::ChangeScreenMode() {
                     break;
             }
 
-            // Cambia el tamaño de la ventana
+            // Cambia el tamaï¿½o de la ventana
             int32_t win_width = native_w * win_size;
             int32_t win_height = native_h * win_size;
             SDL_SetWindowSize(window, win_width, win_height);
@@ -1295,7 +1289,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
 
     // Overlay en la captura?
     if (screenshot_overlay != NULL) {
-        // Tamaño de origen (textura)
+        // Tamaï¿½o de origen (textura)
         _src.w = screenshot_overlay->width;
         _src.h = screenshot_overlay->height;
         SDL_SetTextureBlendMode(screenshot_overlay->gfx, SDL_BLENDMODE_BLEND);
@@ -1310,7 +1304,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     png_buffer.clear();
     png_pixels.clear();
 
-    // Consulta el tamaño del renderer
+    // Consulta el tamaï¿½o del renderer
     int32_t _width;
     int32_t _height;
     SDL_GetRendererOutputSize(renderer, &_width, &_height);

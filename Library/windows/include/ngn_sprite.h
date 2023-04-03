@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -100,7 +94,7 @@ class NGN_Sprite {
         NGN_SpriteData* data;       // Datos graficos del Sprite
         Vector2 position;           // Posicion del Sprite (Global/Mundo)
         Vector2I32 screen;          // Posicion del Sprite (Pantalla)
-        float width;                // Tamaño
+        float width;                // Tamaï¿½o
         float height;
         Vector2 center;             // Centro del Sprite para su rotacion
 
@@ -133,7 +127,7 @@ class NGN_Sprite {
         void Translate(float speed_x, float speed_y);
         void Translate(Vector2 spd);
 
-        // Cambia el tamaño del Sprite
+        // Cambia el tamaï¿½o del Sprite
         void Size(float w, float h);
 
         //  Escala un Sprite
@@ -160,7 +154,7 @@ class NGN_Sprite {
         };
         std::vector<ColliderData> colliders;    // Colisionadores adicionales
 
-        // Añade un nuevo collider
+        // Aï¿½ade un nuevo collider
         int32_t AddCollider(
             std::string name,           // Nombre del colisionador
             float offset_x,             // Offset X
@@ -206,7 +200,7 @@ class NGN_Sprite {
 
         // Si se da el caso, capa en la camara virtual 2D donde esta ubicado.
         int32_t camera_layer;
-        uint32_t runtime_frame;         // ID del frame en tiempo de ejecución
+        uint32_t runtime_frame;         // ID del frame en tiempo de ejecuciï¿½n
 
 
 
@@ -214,7 +208,7 @@ class NGN_Sprite {
     private:
 
         // Propiedades internas del Sprite
-        Size2 original;         		// Tamaño original
+        Size2 original;         		// Tamaï¿½o original
         int32_t animation_timer;        // Control de velocidad de la animacion
 
         // Crea el objeto que contiene el sprite

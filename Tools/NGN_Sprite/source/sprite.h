@@ -4,13 +4,37 @@
     - Nucleo del programa -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG (20220717)
     (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
+
+
+	Conversor de PNG a Sprite is under MIT License
+
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -64,7 +88,7 @@ class Sprite {
         argument arg_help;              // Ayuda
         argument arg_in_file;           // Archivo de origen
         argument arg_out_file;          // Archivo de salida
-        argument arg_width;             // Tamaño del tile
+        argument arg_width;             // Tamaï¿½o del tile
         argument arg_height;            // Nivel de optimizacion
         argument arg_strip;             // Generacion de un PNG con la tira de fotogramas
 
@@ -77,7 +101,7 @@ class Sprite {
         struct {
             std::string in_file;            // Archivo de entrada
             std::string out_file;           // Archivo de salida
-            int32_t width;                  // Tamaño del tile
+            int32_t width;                  // Tamaï¿½o del tile
             int32_t height;                 // Nivel de optimizacion
             bool generate_strip;            // Generar la tira de fotogramas?
         } parameter;

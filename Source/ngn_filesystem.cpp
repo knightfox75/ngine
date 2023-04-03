@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x02 ***
+    *** Version 1.13.0-stable ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -316,7 +310,7 @@ int32_t NGN_FileSystem::CreateFatFromPackage() {
     uint32_t next_node_offset;          // Posicion del siguiente nodo
     uint32_t path_length;               // Numero de caracteres de la ruta
     uint32_t file_offset;               // Posicion del archivo
-    uint32_t file_size;                 // Tamaño del archivo
+    uint32_t file_size;                 // Tamaï¿½o del archivo
     uint8_t checksum[CHK_SIZE];         // Checksum del archivo
     std::vector<uint8_t> file_name;     // Nombre del archivo (ruta incluida)
 
@@ -342,7 +336,7 @@ int32_t NGN_FileSystem::CreateFatFromPackage() {
         for (uint8_t n = 0; n < CHK_SIZE; n ++) node.checksum[n] = checksum[n];
         std::string str(file_name.begin(), file_name.end());
         node.file_name = str;
-        // Añade el nodo temporal a la FAT
+        // Aï¿½ade el nodo temporal a la FAT
         fat.push_back(node);
     } while (node.next_node_offset > 0);
 
@@ -413,7 +407,7 @@ uint8_t NGN_FileSystem::RotateLeft(uint8_t value, uint32_t positions) {
         bit = (byte & 0x80);
         // Rota una posicion a la izquierda
         byte = (byte << 1);
-        // Añade el BIT7 guardado en la posicion 0
+        // Aï¿½ade el BIT7 guardado en la posicion 0
         byte |= ((bit >> 7) & 0x01);
     }
 
@@ -442,7 +436,7 @@ uint8_t NGN_FileSystem::RotateRight(uint8_t value, uint32_t positions) {
         bit = (byte & 0x01);
         // Rota una posicion a la derecha
         byte = (byte >> 1);
-        // Añade el BIT0 guardado en la posicion 7
+        // Aï¿½ade el BIT0 guardado en la posicion 7
         byte |= ((bit << 7) & 0x80);
     }
 

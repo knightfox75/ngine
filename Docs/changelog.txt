@@ -2,16 +2,30 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+2023-04-03 Ver.1.13.0-stable
+--------------------------------------------------------------------------------
+- Actualizado el template de proyectos avanzados.
+- Añadido el método ViewportBackdropColor(); a la clase NGN_Graphics, el cual
+  permite escoger el color de backdrop del viewport especificado.
+- Añadido el método SetBackdropColor(); a la clase NGN_Graphics, el cual
+  permite escoger el color de backdrop del viewport principal.
+- Añadidas protecciones a todos los métodos de la clase NGN_Camera con el fin
+  de evitar su uso en el caso de que un parámetro de referencia sea nulo.
+- Cambio de la licencia de usuario de CC-4.0 a MIT.
+- Actualizadas todas las herramientas, templates y ejemplos para mostrar la
+  nueva licencia, tanto en el código fuente como en los binarios.
+
+
 2023-02-19 Ver.1.12.0-stable
 --------------------------------------------------------------------------------
 - Añadida una sobrecarga al método SetViewportClip() de la clase NGN_Graphics,
   la cual en el caso de existir diferentes viewports, permite configurar el
   clipping de cada uno de ellos por separado.
 - Añadida la clase NGN_Resources, la cual permite crear repositorios de
-  recursos para gestionarlos directamente desde la libreria. El nombre interno
+  recursos para gestionarlos directamente desde la librería. El nombre interno
   y archivo de cada recurso se especifica en un archivo de texto, el cual
   es usado para cargar los recursos listado en el repositorio especificado.
-  ES posible disponer de 127 repositorios de manera simultánea.
+  Es posible disponer de 127 repositorios de manera simultánea.
 - Modificadas las clases NGN_Texture, NGN_TiledBg, NGN_Sprite, NGN_TextLayer y
   NGN_Sound para admitir la creación o reproducción de elementos usando
   directamente los recursos de la clase NGN_Resources.

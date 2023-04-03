@@ -4,16 +4,21 @@
     Archivo de Demo (Programa)
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.12.0-stable o superior
+	Requiere N'gine 1.13.0-stable o superior
+	(c) 2016 - 2023 by Cesar Rincon "NightFox"
+	https://nightfoxandco.com
 
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
     Requiere SDL2 (2.26.3) - 64-bits
+    http://www.libsdl.org/download-2.0.php
+
+    Requiere SDL2_TTF (2.20.2) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
     Requiere SFML (2.5.1) - 64-bits
@@ -22,36 +27,6 @@
     Requiere LodePNG (20220717)
     (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
-
-
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
-
-    You are free to:
-
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
-
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
-
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
 
 ******************************************************************************/
 
@@ -239,7 +214,7 @@ void Demo::CreateStage() {
     bg = new NGN_TiledBg(bg_data);
     // Crea el mapa de iluminacion
     lightmap = new NGN_TiledBg(lightmap_data);
-    // Añade las cerezas
+    // Aï¿½ade las cerezas
     AddCherries();
 
 }
@@ -250,9 +225,9 @@ void Demo::CreateStage() {
 void Demo::AddCherries() {
 
     Vector2I32 pos;     // Calculo de las posiciones
-    Size2 map_size = ngn->collisions->GetMapSize(cmap_data);     // Obten el tamaño del mapa de colisiones
+    Size2 map_size = ngn->collisions->GetMapSize(cmap_data);     // Obten el tamaï¿½o del mapa de colisiones
 
-    for (int32_t y = 0; y < map_size.height; y += cmap_data->header.tile_size) {      // Steps del tamaño del tile del mapa de colisiones
+    for (int32_t y = 0; y < map_size.height; y += cmap_data->header.tile_size) {      // Steps del tamaï¿½o del tile del mapa de colisiones
         pos.y = y + (cmap_data->header.tile_size / 2);
         for (int32_t x = 0; x < map_size.width; x += cmap_data->header.tile_size) {
             // Punto para colocar el objeto

@@ -4,13 +4,37 @@
     - Convierte un archivo PNG en tiles -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
     Requiere LodePNG (20220717)
     (c) 2005 - 2022 by Lode Vandevenne
     http://lodev.org/lodepng/
+
+
+	Conversor de PNG a Mapa de Colisiones is under MIT License
+
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -40,10 +64,10 @@ ConvertToMap::ConvertToMap() {
 
     map_width = 0;                  // Ancho del mapa
     map_height = 0;                 // Altura del mapa
-    size_of_tile = 0;               // Tamaño del tile
-    pal_length = 0;                 // Tamaño de la paleta
-    tileset_length = 0;             // Tamaño del tileset
-    map_length = 0;                 // Tamaño del mapa
+    size_of_tile = 0;               // Tamaï¿½o del tile
+    pal_length = 0;                 // Tamaï¿½o de la paleta
+    tileset_length = 0;             // Tamaï¿½o del tileset
+    map_length = 0;                 // Tamaï¿½o del mapa
 
     palette.clear();
     tiles.clear();
@@ -72,7 +96,7 @@ ConvertToMap::~ConvertToMap() {
 bool ConvertToMap::Convert(
     std::string in_file,        // Archivo PNG a convertir
     std::string out_file,       // Nombre base de los archivos de salida
-    uint32_t tile_size          // Tamaño del tile
+    uint32_t tile_size          // Tamaï¿½o del tile
 ) {
 
     // Guarda los parametros
@@ -134,7 +158,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
     std::cout << std::endl;
     std::cout << "Generating bitmap & palette..." << std::endl;
 
-    // Identifica el color de cada pixel e identificalo en la paleta, de no existir, añadelo
+    // Identifica el color de cada pixel e identificalo en la paleta, de no existir, aï¿½adelo
     for (uint32_t y = 0; y < map_height; y ++) {
         for (uint32_t x = 0; x < map_width; x ++) {
             // Color del pixel actual
@@ -184,7 +208,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
     std::cout << "Bitmap generation completed." << std::endl;
     std::cout << "Palette generation completed. The palette contains " << pal_id << " colors." << std::endl;
 
-    // Guarda el tamaño del buffer de la paleta
+    // Guarda el tamaï¿½o del buffer de la paleta
     pal_length = pal_id;
 
     // Copia la paleta temporal a la final
@@ -203,7 +227,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
 /*** Genera una mapa de tiles a partir del bitmap ***/
 void ConvertToMap::GenerateTileMap() {
 
-    // Aviso de ajuste del tamaño de tiles
+    // Aviso de ajuste del tamaï¿½o de tiles
     std::cout << std::endl;
     if (((map_width % size_of_tile) != 0) || (map_height % size_of_tile) != 0) {
         std::cout << "WARNING: Image size doesn't fits the tile size." << std::endl;
@@ -262,7 +286,7 @@ void ConvertToMap::GenerateTileMap() {
                         break;
                     }
                 }
-                // Si no hay discrepancia, añade el tile actual al mapa
+                // Si no hay discrepancia, aï¿½ade el tile actual al mapa
                 if (!miss_match) {
                     t_num = ((ty * width) + tx);
                     tmap[t_num] = i;
@@ -270,7 +294,7 @@ void ConvertToMap::GenerateTileMap() {
                     break;
                 }
             }
-            // Si no se encuentra coincidencia, añade el tile
+            // Si no se encuentra coincidencia, aï¿½ade el tile
             if (new_tile) {
                 t_num = ((ty * width) + tx);
                 tmap[t_num] = last_tile;
@@ -315,12 +339,12 @@ bool ConvertToMap::WriteFile(std::string filename) {
     memset((void*)&header, 0, sizeof(header));
     header.version = VERSION;
     strncpy(header.magic, MAGIC_STRING.c_str(), MAGIC_STRING.length());
-    header.width = map_width;                                                       // Tamaño del mapa en pixeles
+    header.width = map_width;                                                       // Tamaï¿½o del mapa en pixeles
     header.height = map_height;
-    header.tile_size = size_of_tile;                                                // Tamaño del tile
-    header.pal_length = pal_length;                                                 // nº de elementos de la paleta (*4)
-    header.tileset_length = tileset_length;                                         // nº de elementos del tileset
-    header.map_length = map_length;                                                 // nº de elementos del mapa (*4)
+    header.tile_size = size_of_tile;                                                // Tamaï¿½o del tile
+    header.pal_length = pal_length;                                                 // nï¿½ de elementos de la paleta (*4)
+    header.tileset_length = tileset_length;                                         // nï¿½ de elementos del tileset
+    header.map_length = map_length;                                                 // nï¿½ de elementos del mapa (*4)
 
     // Genera el nombres de archivo
     std::string fname = filename + MAP_EXTENSION;
@@ -352,7 +376,7 @@ bool ConvertToMap::WriteFile(std::string filename) {
 bool ConvertToMap::ReadPng(std::string filename, std::vector<uint8_t> &data) {
 
     // Variables
-    uint32_t width = 0, height = 0;     // Tamaño del archivo cargado
+    uint32_t width = 0, height = 0;     // Tamaï¿½o del archivo cargado
 
     // Prepara el buffer temporal
     std::vector<uint8_t> png_data;
@@ -376,7 +400,7 @@ bool ConvertToMap::ReadPng(std::string filename, std::vector<uint8_t> &data) {
         return false;
     }
 
-    // Guarda el tamaño del mapa
+    // Guarda el tamaï¿½o del mapa
     map_width = width;
     map_height = height;
 

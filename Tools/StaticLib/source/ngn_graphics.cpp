@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -127,6 +121,9 @@ NGN_Graphics::NGN_Graphics() {
     output_scale.y = 1.0f;
     output_viewport.x = 0.0f;
     output_viewport.y = 0.0f;
+
+    // Color del backdrop
+    backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     // Grabacion de la pantalla a PNG
     png_pixels.clear();
@@ -341,7 +338,17 @@ void NGN_Graphics::RenderToSelected() {
         #endif
     }
     // Restaura el color y alpha del renderer
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    #if !defined (DISABLE_BACKBUFFER)
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+    #else
+        SDL_SetRenderDrawColor(
+            renderer,
+            backdrop_color.r,
+            backdrop_color.g,
+            backdrop_color.b,
+            0xFF
+        );
+    #endif
 
 }
 
@@ -452,6 +459,9 @@ void NGN_Graphics::OpenViewport(
     v.clip_area.w = v.render_w;
     v.clip_area.h = v.render_h;
 
+    // Color de backdrop por defecto (negro, transparente)
+    v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
+
     // Viewport disponible
     v.available = true;
 
@@ -484,6 +494,7 @@ void NGN_Graphics::CloseViewport(uint8_t id) {
     v.render_h = 0;
     v.surface = NULL;
     v._local_filter = v.local_filter = false;
+    v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     // Actualiza los datos del viewport cerrado
     viewport_list[id] = v;
@@ -501,7 +512,7 @@ void NGN_Graphics::SelectViewport(uint8_t id) {
     // Registra el ID del viewport
     current_viewport = id;
 
-    // Registra el tamaño del area de render
+    // Registra el tamaï¿½o del area de render
     render_resolution.width = viewport_list[id].render_w;
     render_resolution.height = viewport_list[id].render_h;
 
@@ -541,13 +552,27 @@ void NGN_Graphics::ViewportLocalFilter(uint8_t id, bool status) {
 
 
 
+/*** Cambia el color del backdrop de un viewport ***/
+void NGN_Graphics::ViewportBackdropColor(uint8_t id, uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+
+    if (id >= VIEWPORT_NUMBER) return;
+
+    viewport_list[id].backdrop_color.r = r;
+    viewport_list[id].backdrop_color.g = g;
+    viewport_list[id].backdrop_color.b = b;
+    viewport_list[id].backdrop_color.a = a;
+
+}
+
+
+
 /*** Selecciona el VIEWPORT por defecto ***/
 void NGN_Graphics::DefaultViewport() {
 
     // Ningun viewport seleccionado
     current_viewport = -1;
 
-    // Registra el tamaño del area de render
+    // Registra el tamaï¿½o del area de render
     render_resolution.width = native_w;
     render_resolution.height = native_h;
 
@@ -558,7 +583,7 @@ void NGN_Graphics::DefaultViewport() {
 
 
 
-/*** Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal] ***/
+/*** Cambia el tamaï¿½o del clip del viewport [1ra sobrecarga, viewport principal] ***/
 void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
     SDL_Rect viewport = {
@@ -587,7 +612,7 @@ void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
 
 
-/*** Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples] ***/
+/*** Cambia el tamaï¿½o del clip del viewport [2da sobrecarga, viewports multiples] ***/
 void NGN_Graphics::SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h) {
 
     if (id > VIEWPORT_NUMBER) return;
@@ -842,7 +867,7 @@ void NGN_Graphics::ChangeScreenMode() {
             // Modo del renderer
             SDL_SetWindowFullscreen(window, 0);
 
-            // Ajusta el tamaño de la ventana
+            // Ajusta el tamaï¿½o de la ventana
             int8_t win_size = NGN_SCR_WINDOW;
             switch (screen_mode) {
                 case NGN_SCR_WINDOW:
@@ -859,7 +884,7 @@ void NGN_Graphics::ChangeScreenMode() {
                     break;
             }
 
-            // Cambia el tamaño de la ventana
+            // Cambia el tamaï¿½o de la ventana
             int32_t win_width = native_w * win_size;
             int32_t win_height = native_h * win_size;
             SDL_SetWindowSize(window, win_width, win_height);
@@ -998,6 +1023,7 @@ void NGN_Graphics::SetupViewports() {
     v.clip_area = {0, 0, 0, 0};
     v.surface = NULL;
     v._local_filter = v.local_filter = false;
+    v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
     viewport_list.clear();
     viewport_list.reserve(VIEWPORT_NUMBER);
@@ -1045,7 +1071,13 @@ void NGN_Graphics::ClearViewports() {
             // Informa al renderer que la textura "backbuffer" del viewport es su destino
             SDL_SetRenderTarget(renderer, viewport_list[i].surface);
             // Borra el contenido de la textura actual
-            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+            SDL_SetRenderDrawColor(
+                renderer,
+                viewport_list[i].backdrop_color.r,
+                viewport_list[i].backdrop_color.g,
+                viewport_list[i].backdrop_color.b,
+                viewport_list[i].backdrop_color.a
+            );
             SDL_RenderFillRect(renderer, NULL);
             // Actualiza el estado del filtrado local
             viewport_list[i]._local_filter = viewport_list[i].local_filter;
@@ -1091,17 +1123,23 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
 
         // Crea el backbuffer de este fondo
         backbuffer = SDL_CreateTexture(
-                                 renderer,                      // Renderer
-                                 SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                                 SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                                 native_w,                      // Ancho de la textura
-                                 native_h                       // Alto de la textura
-                                 );
+            renderer,                      // Renderer
+            SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+            SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
+            native_w,                      // Ancho de la textura
+            native_h                       // Alto de la textura
+        );
 
         SDL_SetRenderTarget(renderer, backbuffer);
 
         // Borra el contenido de la textura actual
-        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_SetRenderDrawColor(
+            renderer,
+            backdrop_color.r,
+            backdrop_color.g,
+            backdrop_color.b,
+            backdrop_color.a
+        );
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0xFF);
         SDL_RenderFillRect(renderer, NULL);
@@ -1174,13 +1212,28 @@ void NGN_Graphics::ClearBackbuffer() {
         if (filtering != _filtering) {
             SetBackbuffer();
         } else {
-            SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+            SDL_SetRenderDrawColor(
+                renderer,
+                backdrop_color.r,
+                backdrop_color.g,
+                backdrop_color.b,
+                backdrop_color.a
+            );
             SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
             SDL_SetTextureAlphaMod(backbuffer, 0xFF);
             SDL_RenderFillRect(renderer, NULL);
         }
 
     #endif
+
+}
+
+
+
+/*** Establece el color del backdrop ***/
+void NGN_Graphics::SetBackdropColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+
+    backdrop_color = {r, g, b, a};
 
 }
 
@@ -1236,7 +1289,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
 
     // Overlay en la captura?
     if (screenshot_overlay != NULL) {
-        // Tamaño de origen (textura)
+        // Tamaï¿½o de origen (textura)
         _src.w = screenshot_overlay->width;
         _src.h = screenshot_overlay->height;
         SDL_SetTextureBlendMode(screenshot_overlay->gfx, SDL_BLENDMODE_BLEND);
@@ -1251,7 +1304,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     png_buffer.clear();
     png_pixels.clear();
 
-    // Consulta el tamaño del renderer
+    // Consulta el tamaï¿½o del renderer
     int32_t _width;
     int32_t _height;
     SDL_GetRendererOutputSize(renderer, &_width, &_height);

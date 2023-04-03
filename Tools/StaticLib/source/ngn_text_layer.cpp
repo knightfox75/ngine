@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -207,7 +201,7 @@ void NGN_TextLayer::Cls() {
 
 
 
-/*** Devuelve el tamaño original de la capa ***/
+/*** Devuelve el tamaï¿½o original de la capa ***/
 Size2I32 NGN_TextLayer::GetSize() {
 
     Size2I32 s;
@@ -324,7 +318,7 @@ void NGN_TextLayer::Print(std::string text) {
             locate.y += font->line_spacing;
             if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
         } else {
-            // Calculo del tamaño del texto escrito
+            // Calculo del tamaï¿½o del texto escrito
             GetTextBoundaries(locate.x, locate.y);
             // Si el caracter es invalido, selecciona el caracter de espacio
             if (font->character[c]->gfx == NULL) c = 0x20;
@@ -350,7 +344,7 @@ void NGN_TextLayer::Print(std::string text) {
             SDL_RenderCopyEx(ngn->graphics->renderer, font->character[c]->gfx, &source, &destination, 0.0f, _center, SDL_FLIP_NONE);
             // Actualiza la posicion del cabezal de escritura
             locate.x += destination.w;
-            // Calculo del tamaño del texto escrito
+            // Calculo del tamaï¿½o del texto escrito
             GetTextBoundaries(locate.x, (locate.y + destination.h));
         }
     }
@@ -399,10 +393,10 @@ void NGN_TextLayer::Translate(Vector2 spd) {
 
 
 
-/*** Cambia el tamaño de la capa ***/
+/*** Cambia el tamaï¿½o de la capa ***/
 void NGN_TextLayer::Size(float w, float h) {
 
-    // Aplica el nuevo tamaño
+    // Aplica el nuevo tamaï¿½o
     width = w;
     height = h;
 
@@ -464,7 +458,7 @@ void NGN_TextLayer::SurfaceCleanUp() {
 
 
 
-/*** Calcula el tamaño del texto escrito en la capa ***/
+/*** Calcula el tamaï¿½o del texto escrito en la capa ***/
 void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
 
     // Calcula los limites
@@ -473,7 +467,7 @@ void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
     if ((y < text_boundaries.top)  || (text_boundaries.top < 0)) text_boundaries.top = y;
     if ((y > text_boundaries.bottom) || (text_boundaries.bottom < 0)) text_boundaries.bottom = y;
 
-    // Calcula el tamaño de texto escrito
+    // Calcula el tamaï¿½o de texto escrito
     text_boundaries.width = (text_boundaries.right - text_boundaries.left);
     text_boundaries.height = (text_boundaries.bottom - text_boundaries.top);
 
@@ -498,7 +492,7 @@ void NGN_TextLayer::CreateTextLayer(
     // Si existe, textura de fondo
     background = bg;
 
-    // Guarda el tamaño
+    // Guarda el tamaï¿½o
     if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
         width = _width;
         height = _height;
@@ -514,11 +508,11 @@ void NGN_TextLayer::CreateTextLayer(
     position.x = position_x;
     position.y = position_y;
 
-    // Guarda el tamaño original en pixeles
+    // Guarda el tamaï¿½o original en pixeles
     layer_width = (uint32_t)width;
     layer_height = (uint32_t)height;
 
-    // Crea el backbuffer del tamaño adecuado
+    // Crea el backbuffer del tamaï¿½o adecuado
     #if !defined (DISABLE_BACKBUFFER)
         if (_filtering) {
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");

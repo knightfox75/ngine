@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x02 ***
+    *** Version 1.13.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -78,7 +72,7 @@ class NGN_Camera {
         // Destructor de la clase
         ~NGN_Camera();
 
-       // Tamaño del mundo
+       // Tamaï¿½o del mundo
         Size2I64 world;
 
         // Posicion de la camara en el mundo
@@ -90,21 +84,21 @@ class NGN_Camera {
         // Define en numero de capas a crear (elimina las existentes)
         void CreateLayers(uint32_t layers);
 
-        // Define el tamaño la capa de sprites (por defecto, todas las capas tienen el tamaño del mundo)
+        // Define el tamaï¿½o la capa de sprites (por defecto, todas las capas tienen el tamaï¿½o del mundo)
         void SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height);
 
         // Inicializa la camara
         void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = NULL);
 
-        // Añade un fondo de textura o de tiles a la capa y devuelve su indice en la lista. En caso de error, devuelve -1
+        // Aï¿½ade un fondo de textura o de tiles a la capa y devuelve su indice en la lista. En caso de error, devuelve -1
         int32_t PushBackground(uint32_t layer_number, NGN_Texture* texture);
         int32_t PushBackground(uint32_t layer_number, NGN_TiledBg* background);
 
-        // Añade un fondo de textura o de tiles en modo tamaño virtual a la capa y devuelve su indice en la lista. En caso de error, devuelve -1
+        // Aï¿½ade un fondo de textura o de tiles en modo tamaï¿½o virtual a la capa y devuelve su indice en la lista. En caso de error, devuelve -1
         int32_t PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x = 0.0f, float auto_y = 0.0f);
         int32_t PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x = 0.0f, float auto_y = 0.0f);
 
-        // Añade un sprite a la capa  y devuelve su indice en la lista. En caso de error, devuelve -1
+        // Aï¿½ade un sprite a la capa  y devuelve su indice en la lista. En caso de error, devuelve -1
         int32_t PushSprite(uint32_t layer_number, NGN_Sprite* sprite);          // Primera sobrecarga
         int32_t PushSprite(uint32_t layer_number, NGN_Texture* texture);        // Segunda sobrecarga
 
@@ -150,15 +144,15 @@ class NGN_Camera {
             std::vector<NGN_TiledBg*> bg;       // Fondos de tiles en esta capa
             std::vector<NGN_Texture*> spr_t;    // Textura como Sprites para esta capa
             std::vector<NGN_Sprite*> spr;       // Sprites en esta capa
-            Size2I64 sprite_layer;              // Tamaño para la capa de sprites
+            Size2I64 sprite_layer;              // Tamaï¿½o para la capa de sprites
             bool visible;                       // Visibilidad de la capa
             bool in_use;                        // Hay datos en la capa
         };
 
         // Parametros internos de la camara para su funcionamiento
         NGN_Sprite* target;                     // Sprite al que seguira la camara
-        Size2I64 scroll;                        // Tamaño total del scroll en el mundo
-        Size2I32 render_area;                   // Tamaño del area del render
+        Size2I64 scroll;                        // Tamaï¿½o total del scroll en el mundo
+        Size2I32 render_area;                   // Tamaï¿½o del area del render
 
 
     // Vector de datos gestionados por la camara

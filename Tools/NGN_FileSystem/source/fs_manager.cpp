@@ -4,9 +4,33 @@
 	- Gestor de sistema de archivos del sistema -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (cc) 2021 - 2023 by Cesar Rincon "NightFox"
+    (c) 2021 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
+
+
+	Sistema de empaquetado de archivos para N'gine is under MIT License
+
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -100,6 +124,16 @@ int32_t FsManager::MakePath(std::string path) {
 
 /*** Crea una lista recursiva de los archivos ***/
 void FsManager::GetFilesRecursive(std::string path, std::vector<std::string> &files) {
+
+    /// BUGFIX Windows 11 - Es posible que Windows 11 devuelva la ruta de archivo con el
+    /// caracter \ en lugar de /. Esto podria causar que una ruta con /ngine por ejemplo
+    /// se interpretara como \n, es decir, un salto de linea.
+    /// Esta correccion es de caracter experimental para verificar si se soluciona el problema.
+    const uint8_t slash = 0x2F;
+    const uint8_t back_slash = 0x5C;
+    //std::cout << "IN: " << path << std::endl;
+    for (uint32_t k = 0; k < path.size(); k ++) if (path[k] == back_slash) path[k] = slash;
+    //std::cout << "OUT: " << path << std::endl;
 
     // Convierte la ruta de archivo a constante
     const char* _path = path.c_str();

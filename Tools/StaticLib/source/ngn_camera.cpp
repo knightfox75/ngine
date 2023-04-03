@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -114,7 +108,7 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
 
 
 
-/*** Especifica el tamaño de la capa para los sprites ***/
+/*** Especifica el tamaï¿½o de la capa para los sprites ***/
 void NGN_Camera::SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height) {
 
     if (layer_number < layer.size()) {
@@ -133,7 +127,7 @@ void NGN_Camera::Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* 
     world.width = world_width;
     world.height = world_height;
 
-    // El mundo NO puede ser menor del tamaño de la pantalla
+    // El mundo NO puede ser menor del tamaï¿½o de la pantalla
     if (world.width < ngn->graphics->native_w) world.width = ngn->graphics->native_w;
     if (world.height < ngn->graphics->native_h) world.height = ngn->graphics->native_h;
 
@@ -144,21 +138,21 @@ void NGN_Camera::Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* 
 
 
 
-/*** Añade un fondo de textura a la capa especificada ***/
+/*** Aï¿½ade un fondo de textura a la capa especificada ***/
 int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) {
 
-    // Si la capa es valida
-    if (layer_number < layer.capacity()) {
+    // Si la capa y la textura son validas
+    if ((layer_number < layer.capacity()) && texture) {
 
-        // Indica al sprite en que capa se ha añadido
+        // Indica al sprite en que capa se ha aï¿½adido
         texture->camera_layer = layer_number;
 
-        // Añade el fondo a la lista
+        // Aï¿½ade el fondo a la lista
         layer[layer_number].texture.push_back(texture);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
 
-        // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
+        // Si es necesario, registra el tamaï¿½o del fondo como el de la capa de Sprites
         if ((layer[layer_number].sprite_layer.width == NGN_DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == NGN_DEFAULT_VALUE)) {
             SizeOfLayer(layer_number, texture->width, texture->height);
         }
@@ -176,21 +170,21 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) 
 
 
 
-/*** Añade un fondo de tiles a la capa especificada ***/
+/*** Aï¿½ade un fondo de tiles a la capa especificada ***/
 int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* background) {
 
-    // Si la capa es valida
-    if (layer_number < layer.capacity()) {
+    // Si la capa y el fondo son validos
+    if ((layer_number < layer.capacity()) && background) {
 
-        // Indica al sprite en que capa se ha añadido
+        // Indica al sprite en que capa se ha aï¿½adido
         background->camera_layer = layer_number;
 
-        // Añade el fondo a la lista
+        // Aï¿½ade el fondo a la lista
         layer[layer_number].bg.push_back(background);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
 
-        // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
+        // Si es necesario, registra el tamaï¿½o del fondo como el de la capa de Sprites
         if ((layer[layer_number].sprite_layer.width == NGN_DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == NGN_DEFAULT_VALUE)) {
             SizeOfLayer(layer_number, background->width, background->height);
         }
@@ -208,10 +202,10 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* backgroun
 
 
 
-/*** Añade un fondo de textura a la camara en modo virtual ***/
+/*** Aï¿½ade un fondo de textura a la camara en modo virtual ***/
 int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x, float auto_y) {
 
-    // Añade el fondo a la camara
+    // Aï¿½ade el fondo a la camara
     int32_t id = PushBackground(layer_number, texture);
 
     // Registra los parametros virtuales
@@ -234,10 +228,10 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, u
 
 
 
-/*** Añade un fondo de tiles a la camara en modo virtual ***/
+/*** Aï¿½ade un fondo de tiles a la camara en modo virtual ***/
 int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x, float auto_y) {
 
-    // Añade el fondo a la camara
+    // Aï¿½ade el fondo a la camara
     int32_t id = PushBackground(layer_number, background);
 
     // Registra los parametros virtuales
@@ -260,15 +254,15 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background
 
 
 
-/*** Añade un sprite a la capa especificada (1ra sobrecarga) ***/
+/*** Aï¿½ade un sprite a la capa especificada (1ra sobrecarga) ***/
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
-    // Si la capa es valida
-    if (layer_number < layer.capacity()) {
+    // Si la capa y el sprite son validos
+    if ((layer_number < layer.capacity()) && sprite) {
 
-        // Indica al sprite en que capa se ha añadido
+        // Indica al sprite en que capa se ha aï¿½adido
         sprite->camera_layer = layer_number;
-        // Añade el fondo a la lista
+        // Aï¿½ade el fondo a la lista
         layer[layer_number].spr.push_back(sprite);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
@@ -286,15 +280,15 @@ int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
 
 
-/*** Añade un sprite a la capa especificada (2da sobrecarga) ***/
+/*** Aï¿½ade un sprite a la capa especificada (2da sobrecarga) ***/
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Texture* texture) {
 
-    // Si la capa es valida
-    if (layer_number < layer.capacity()) {
+    // Si la capa y la textura son validas
+    if ((layer_number < layer.capacity()) && texture) {
 
-        // Indica al sprite en que capa se ha añadido
+        // Indica al sprite en que capa se ha aï¿½adido
         texture->camera_layer = layer_number;
-        // Añade el fondo a la lista
+        // Aï¿½ade el fondo a la lista
         layer[layer_number].spr_t.push_back(texture);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
@@ -316,7 +310,7 @@ int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Texture* texture) {
 void NGN_Camera::LookAt(NGN_Sprite* target_sprite) {
 
     // Si el target es valido, asignalo
-    if (target_sprite != NULL) target = target_sprite;
+    if (target_sprite) target = target_sprite;
 
 }
 
@@ -360,7 +354,7 @@ void NGN_Camera::Update() {
     render_area.width = ngn->graphics->render_resolution.width;
     render_area.height = ngn->graphics->render_resolution.height;
 
-    // Calcula el tamaño del scroll
+    // Calcula el tamaï¿½o del scroll
     scroll.width = (world.width - render_area.width);
     scroll.height = (world.height - render_area.height);
 
@@ -625,6 +619,7 @@ int32_t NGN_Camera::RemoveBackground(NGN_Texture* texture) {
 int32_t NGN_Camera::RemoveBackground(NGN_TiledBg* background) {
 
     int32_t r = -1;
+    if (!background) return r;
 
     // Capas
     for (uint32_t l = 0; l < layer.size(); l ++) {
@@ -653,6 +648,7 @@ int32_t NGN_Camera::RemoveBackground(NGN_TiledBg* background) {
 int32_t NGN_Camera::RemoveSprite(NGN_Sprite* sprite) {
 
     int32_t r = -1;                     // Resultado de la operacion
+    if (!sprite) return r;
     int32_t l = sprite->camera_layer;   // Capa donde esta el sprite alojado
 
     // Si el sprite no esta asignado a la camara, sal
@@ -686,6 +682,7 @@ int32_t NGN_Camera::RemoveSprite(NGN_Sprite* sprite) {
 int32_t NGN_Camera::RemoveSprite(NGN_Texture* texture) {
 
     int32_t r = -1;                         // Resultado de la operacion
+    if (!texture) return r;
     int32_t l = texture->camera_layer;      // Capa donde esta el sprite alojado
 
     // Si el sprite no esta asignado a la camara, sal
@@ -723,7 +720,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number) {
     int32_t r = -1;
 
     // Verifica que la capa sea valida y el sprite no sea nulo
-    if ((layer_number < layer.capacity()) && (sprite != NULL)) {
+    if ((layer_number < layer.capacity()) && sprite) {
         // Capa actual
         l = sprite->camera_layer;
         // Si la capa de origen y destino son identicas, sal y devuelve error
@@ -733,18 +730,16 @@ int32_t NGN_Camera::ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number) {
             if (layer[l].spr[s] == sprite) {
                 // Borra el elemento de la capa actual
                 layer[l].spr.erase((layer[l].spr.begin() + s));
-                // Y añadelo a su nueva capa de destino
+                // Y aï¿½adelo a su nueva capa de destino
                 r = PushSprite(layer_number, sprite);
                 // Fuerza la salida del bucle
                 break;
             }
         }
-        // En caso de exito, devuelve el ID en la capa de este sprite
-        return r;
-    } else {
-        // Devuelve error
-        return r;
     }
+
+    // Resultado de la operacion
+    return r;
 
 }
 
@@ -758,7 +753,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
     int32_t r = -1;
 
     // Verifica que la capa sea valida y el sprite no sea nulo
-    if ((layer_number < layer.capacity()) && (texture != NULL)) {
+    if ((layer_number < layer.capacity()) && texture) {
         // Capa actual
         l = texture->camera_layer;
         // Si la capa de origen y destino son identicas, sal y devuelve error
@@ -768,18 +763,16 @@ int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
             if (layer[l].spr_t[s] == texture) {
                 // Borra el elemento de la capa actual
                 layer[l].spr_t.erase((layer[l].spr_t.begin() + s));
-                // Y añadelo a su nueva capa de destino
+                // Y aï¿½adelo a su nueva capa de destino
                 r = PushSprite(layer_number, texture);
                 // Fuerza la salida del bucle
                 break;
             }
         }
-        // En caso de exito, devuelve el ID en la capa de este sprite
-        return r;
-    } else {
-        // Devuelve error
-        return r;
     }
+
+    // Resultado de la operacion
+    return r;
 
 }
 
@@ -789,6 +782,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
 int32_t NGN_Camera::SendToFront(NGN_Sprite* sprite) {
 
     int32_t r = -1;                     // Resultado de la operacion
+    if (!sprite) return r;
     int32_t l = sprite->camera_layer;   // Capa donde esta el sprite alojado
 
     // Si el sprite no esta asignado a la camara, sal
@@ -821,6 +815,7 @@ int32_t NGN_Camera::SendToFront(NGN_Sprite* sprite) {
 int32_t NGN_Camera::SendToFront(NGN_Texture* texture) {
 
     int32_t r = -1;                     // Resultado de la operacion
+    if (!texture) return r;
     int32_t l = texture->camera_layer;   // Capa donde esta el sprite alojado
 
     // Si el sprite no esta asignado a la camara, sal
@@ -853,6 +848,7 @@ int32_t NGN_Camera::SendToFront(NGN_Texture* texture) {
 int32_t NGN_Camera::SendToBack(NGN_Sprite* sprite) {
 
     int32_t r = -1;                     // Resultado de la operacion
+    if (!sprite) return r;
     int32_t l = sprite->camera_layer;   // Capa donde esta el sprite alojado
 
     // Si el sprite no esta asignado a la camara, sal
@@ -886,6 +882,7 @@ int32_t NGN_Camera::SendToBack(NGN_Sprite* sprite) {
 int32_t NGN_Camera::SendToBack(NGN_Texture* texture) {
 
     int32_t r = -1;                     // Resultado de la operacion
+    if (!texture) return r;
     int32_t l = texture->camera_layer;   // Capa donde esta el sprite alojado
 
     // Si el sprite no esta asignado a la camara, sal

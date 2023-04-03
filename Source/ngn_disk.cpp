@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x02 ***
+    *** Version 1.13.0-stable ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -132,7 +126,7 @@ int32_t NGN_Disk::ReadBinaryFile(std::string filepath, std::vector<uint8_t> &buf
 
     // Si has abierto el archivo con exito...
     if (file.is_open()) {
-        // Calcula el tamaño del archivo
+        // Calcula el tamaï¿½o del archivo
         file.seekg(0, file.end);        // Avanza hasta el final del archivo
         length = file.tellg();          // Consulta el numero de bytes recorridos
         file.seekg(0, file.beg);        // Rebobina el archivo
@@ -176,7 +170,7 @@ int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &bu
         }
     }
 
-    // Guarda el tamaño del buffer a escribir
+    // Guarda el tamaï¿½o del buffer a escribir
     int32_t length = buffer.size();
 
     // Escribe los datos del buffer en el archivo
@@ -185,7 +179,7 @@ int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &bu
     // Cierra el archivo
     file.close();
 
-    // Verifica que el archivo existe y tiene el tamaño esperado
+    // Verifica que el archivo existe y tiene el tamaï¿½o esperado
     if (CheckFile(filepath) != length) {
         ngn->log->Message("[NGN_Disk error] Error writing <" + filepath + ">, size mismatch.");
         return -1;
@@ -309,13 +303,13 @@ int32_t NGN_Disk::WriteTextFile(std::string filepath, std::string text, bool app
 
 
 
-/*** Verifica que el archivo existe y devuelve su tamaño ***/
+/*** Verifica que el archivo existe y devuelve su tamaï¿½o ***/
 int32_t NGN_Disk::CheckFile(std::string path) {
 
     // Convierte la ruta de archivo a constante
     const char* _path = path.c_str();
 
-    // Tamaño del archivo
+    // Tamaï¿½o del archivo
     int32_t length = -1;
 
     // Intenta abrir el archivo en modo binario
@@ -329,7 +323,7 @@ int32_t NGN_Disk::CheckFile(std::string path) {
         file.close();                       // Cierra el archivo
     }
 
-    // Devuelve el tamaño del archivo [-1 no existe]
+    // Devuelve el tamaï¿½o del archivo [-1 no existe]
     return length;
 
 }

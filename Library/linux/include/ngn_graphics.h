@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.12.0-stable ***
+    *** Version 1.13.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -113,6 +107,9 @@ class NGN_Graphics {
         // Estable el destino del render al seleccionado por defecto
         void RenderToSelected();
 
+        // Color del backdrop del viewport principal
+        void SetBackdropColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
         // Actualiza el renderer a 60fps
         void Update();
 
@@ -129,6 +126,7 @@ class NGN_Graphics {
             bool _local_filter;                     // Estado actual del filtrado
             bool available;                         // Viewport disponible?
             SDL_Texture* surface;                   // Textura para usar de backbuffer para el viewport
+            Rgba backdrop_color;                    // Color por defecto del backdrop
         };
         std::vector<Viewport_struct> viewport_list;
         int8_t current_viewport;                    // Viewport actual (-1 sin viewport)
@@ -153,14 +151,16 @@ class NGN_Graphics {
         void ViewportPosition(uint8_t id, Vector2I32 position);             // Sobrecarga 2
         // Cambia el estado local del filtro de un viewport
         void ViewportLocalFilter(uint8_t id, bool status);
+        // Cambia el color del backdrop de un viewport
+        void ViewportBackdropColor(uint8_t id, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
         // Viewport por defecto
         void DefaultViewport();
 
 
-        // Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal]
+        // Cambia el tamaï¿½o del clip del viewport [1ra sobrecarga, viewport principal]
         void SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h);
         SDL_Rect clip_area;
-        // Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples]
+        // Cambia el tamaï¿½o del clip del viewport [2da sobrecarga, viewports multiples]
         void SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h);
 
 
@@ -182,7 +182,7 @@ class NGN_Graphics {
         Size2I32 GetDesktopResolution();                    // Devuelve la resolucion actual del escritorio
 
         /*** Devuelve el numero de FPS actual ***/
-        uint32_t GetFps();                                  // Devuelve el nº de fotogramas renderizado en el ultimo segundo
+        uint32_t GetFps();                                  // Devuelve el nï¿½ de fotogramas renderizado en el ultimo segundo
 
         /*** Metodos de uso interno ***/
         Vector2 ScaleAndFitCoordinates(Vector2 coord);      // Escala las coordenadas al area visible
@@ -254,6 +254,9 @@ class NGN_Graphics {
         void RenderBackbuffer();
         // Limpia el backbuffer
         void ClearBackbuffer();
+
+        // Color del backdrop
+        Rgba backdrop_color;
 
         // Graba el frame actual en formato PNG
         std::vector<uint8_t> png_pixels;        // Pixeles para formar el PNG

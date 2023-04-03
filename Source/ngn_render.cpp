@@ -1,43 +1,37 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-win_0x02 ***
+    *** Version 1.13.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (cc) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2023 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
-    N'gine se distribuye bajo la licencia CREATIVE COMMONS
-    "Attribution-NonCommercial 4.0 International"
-    https://creativecommons.org/licenses/by-nc/4.0/
+	N'gine Lib is under MIT License
 
-    You are free to:
+	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
 
-        - Share
-        copy and redistribute the material in any medium or format.
-        - Adapt
-        remix, transform, and build upon the material.
+	Permission is hereby granted, free of charge, to any person
+	obtaining a copy of this software and associated documentation
+	files (the "Software"), to deal	in the Software without restriction,
+	including without limitation the rights to use, copy, modify, merge,
+	publish, distribute, sublicense, and/or sell copies of the Software,
+	and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
 
-        The licensor cannot revoke these freedoms as long as you follow
-        the license terms.
+	The above copyright notice and this permission notice shall be
+	included in all	copies or substantial portions of the Software.
 
-    Under the following terms:
-
-        - Attribution
-        You must give appropriate credit, provide a link to the license,
-        and indicate if changes were made. You may do so in any reasonable
-        manner, but not in any way that suggests the licensor endorses you
-        or your use.
-
-        - NonCommercial
-        You may not use the material for commercial purposes.
-
-        - No additional restrictions
-        You may not apply legal terms or technological measures that
-        legally restrict others from doing anything the license permits.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+	CLAIM, DAMAGES OR OTHER	LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ******************************************************************************/
 
@@ -607,7 +601,7 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
         SDL_SetTextureAlphaMod(bg->backbuffer, 0x00);
         SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-        // Tamaño del area de dibujado
+        // Tamaï¿½o del area de dibujado
         int32_t tile_last_x = (std::floor(render_area.width / bg->tile_size) + 2);      // +2 soluciona el encage en resoluciones anamorficas
         int32_t tile_last_y = (std::floor(render_area.height / bg->tile_size) + 2);
 
@@ -657,7 +651,7 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
                         _rotation = 0.0f;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 8:     // 180º         (BIT 3) [1 << 3]
+                    case 8:     // 180ï¿½         (BIT 3) [1 << 3]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 180.0f;
                         // Compensa el desplazamiento
@@ -665,14 +659,14 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 16:     // 90º CW      (BIT 4) [1 << 4]
+                    case 16:     // 90ï¿½ CW      (BIT 4) [1 << 4]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 270.0f;
                         // Compensa el desplazamiento
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 32:     // 90º ACW     (BIT 5) [1 << 5]
+                    case 32:     // 90ï¿½ ACW     (BIT 5) [1 << 5]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 90.0f;
                         // Compensa el desplazamiento
@@ -770,7 +764,7 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
         SDL_SetTextureAlphaMod(bg->backbuffer, 0x00);
         SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-        // Tamaño del area de dibujado
+        // Tamaï¿½o del area de dibujado
         int32_t tile_last_x = (std::floor(render_area.width / bg->tile_size) + 2);      // +2 soluciona el encage en resoluciones anamorficas
         int32_t tile_last_y = (std::floor(render_area.height / bg->tile_size) + 2);
 
@@ -824,7 +818,7 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
                         _rotation = 0.0f;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 8:     // 180º         (BIT 3) [1 << 3]
+                    case 8:     // 180ï¿½         (BIT 3) [1 << 3]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 180.0f;
                         // Compensa el desplazamiento
@@ -832,14 +826,14 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 16:     // 90º CW      (BIT 4) [1 << 4]
+                    case 16:     // 90ï¿½ CW      (BIT 4) [1 << 4]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 270.0f;
                         // Compensa el desplazamiento
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 32:     // 90º ACW     (BIT 5) [1 << 5]
+                    case 32:     // 90ï¿½ ACW     (BIT 5) [1 << 5]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 90.0f;
                         // Compensa el desplazamiento
