@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -126,7 +126,7 @@ int32_t NGN_Disk::ReadBinaryFile(std::string filepath, std::vector<uint8_t> &buf
 
     // Si has abierto el archivo con exito...
     if (file.is_open()) {
-        // Calcula el tama�o del archivo
+        // Calcula el tamaño del archivo
         file.seekg(0, file.end);        // Avanza hasta el final del archivo
         length = file.tellg();          // Consulta el numero de bytes recorridos
         file.seekg(0, file.beg);        // Rebobina el archivo
@@ -170,7 +170,7 @@ int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &bu
         }
     }
 
-    // Guarda el tama�o del buffer a escribir
+    // Guarda el tamaño del buffer a escribir
     int32_t length = buffer.size();
 
     // Escribe los datos del buffer en el archivo
@@ -179,7 +179,7 @@ int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &bu
     // Cierra el archivo
     file.close();
 
-    // Verifica que el archivo existe y tiene el tama�o esperado
+    // Verifica que el archivo existe y tiene el tamaño esperado
     if (CheckFile(filepath) != length) {
         ngn->log->Message("[NGN_Disk error] Error writing <" + filepath + ">, size mismatch.");
         return -1;
@@ -303,13 +303,13 @@ int32_t NGN_Disk::WriteTextFile(std::string filepath, std::string text, bool app
 
 
 
-/*** Verifica que el archivo existe y devuelve su tama�o ***/
+/*** Verifica que el archivo existe y devuelve su tamaño ***/
 int32_t NGN_Disk::CheckFile(std::string path) {
 
     // Convierte la ruta de archivo a constante
     const char* _path = path.c_str();
 
-    // Tama�o del archivo
+    // Tamaño del archivo
     int32_t length = -1;
 
     // Intenta abrir el archivo en modo binario
@@ -323,7 +323,7 @@ int32_t NGN_Disk::CheckFile(std::string path) {
         file.close();                       // Cierra el archivo
     }
 
-    // Devuelve el tama�o del archivo [-1 no existe]
+    // Devuelve el tamaño del archivo [-1 no existe]
     return length;
 
 }

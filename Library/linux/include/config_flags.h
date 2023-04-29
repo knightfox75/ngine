@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     FLAGS de configuracion de la libreria
     La libreria debe compilarse para que estos FLAGS sean efectivos
 
@@ -19,7 +19,7 @@
     Requiere SDL2_TTF (2.20.2) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.5.1) - 64-bits
+    Requiere SFML (3.0.0) - 64-bits
     http://www.sfml-dev.org/
 
     Requiere LodePNG (20220717)

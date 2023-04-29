@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016

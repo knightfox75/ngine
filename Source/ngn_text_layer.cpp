@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -201,7 +201,7 @@ void NGN_TextLayer::Cls() {
 
 
 
-/*** Devuelve el tama�o original de la capa ***/
+/*** Devuelve el tamaño original de la capa ***/
 Size2I32 NGN_TextLayer::GetSize() {
 
     Size2I32 s;
@@ -318,7 +318,7 @@ void NGN_TextLayer::Print(std::string text) {
             locate.y += font->line_spacing;
             if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
         } else {
-            // Calculo del tama�o del texto escrito
+            // Calculo del tamaño del texto escrito
             GetTextBoundaries(locate.x, locate.y);
             // Si el caracter es invalido, selecciona el caracter de espacio
             if (font->character[c]->gfx == NULL) c = 0x20;
@@ -344,7 +344,7 @@ void NGN_TextLayer::Print(std::string text) {
             SDL_RenderCopyEx(ngn->graphics->renderer, font->character[c]->gfx, &source, &destination, 0.0f, _center, SDL_FLIP_NONE);
             // Actualiza la posicion del cabezal de escritura
             locate.x += destination.w;
-            // Calculo del tama�o del texto escrito
+            // Calculo del tamaño del texto escrito
             GetTextBoundaries(locate.x, (locate.y + destination.h));
         }
     }
@@ -393,10 +393,10 @@ void NGN_TextLayer::Translate(Vector2 spd) {
 
 
 
-/*** Cambia el tama�o de la capa ***/
+/*** Cambia el tamaño de la capa ***/
 void NGN_TextLayer::Size(float w, float h) {
 
-    // Aplica el nuevo tama�o
+    // Aplica el nuevo tamaño
     width = w;
     height = h;
 
@@ -458,7 +458,7 @@ void NGN_TextLayer::SurfaceCleanUp() {
 
 
 
-/*** Calcula el tama�o del texto escrito en la capa ***/
+/*** Calcula el tamaño del texto escrito en la capa ***/
 void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
 
     // Calcula los limites
@@ -467,7 +467,7 @@ void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
     if ((y < text_boundaries.top)  || (text_boundaries.top < 0)) text_boundaries.top = y;
     if ((y > text_boundaries.bottom) || (text_boundaries.bottom < 0)) text_boundaries.bottom = y;
 
-    // Calcula el tama�o de texto escrito
+    // Calcula el tamaño de texto escrito
     text_boundaries.width = (text_boundaries.right - text_boundaries.left);
     text_boundaries.height = (text_boundaries.bottom - text_boundaries.top);
 
@@ -492,7 +492,7 @@ void NGN_TextLayer::CreateTextLayer(
     // Si existe, textura de fondo
     background = bg;
 
-    // Guarda el tama�o
+    // Guarda el tamaño
     if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
         width = _width;
         height = _height;
@@ -508,11 +508,11 @@ void NGN_TextLayer::CreateTextLayer(
     position.x = position_x;
     position.y = position_y;
 
-    // Guarda el tama�o original en pixeles
+    // Guarda el tamaño original en pixeles
     layer_width = (uint32_t)width;
     layer_height = (uint32_t)height;
 
-    // Crea el backbuffer del tama�o adecuado
+    // Crea el backbuffer del tamaño adecuado
     #if !defined (DISABLE_BACKBUFFER)
         if (_filtering) {
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");

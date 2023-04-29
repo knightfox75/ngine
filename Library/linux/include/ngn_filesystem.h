@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -83,9 +83,9 @@ class NGN_FileSystem {
             uint8_t version;                // Version del programa
             char magic[32];                 // Magic String (MAX 32 chars)
             uint32_t fat_offset;            // Punto de inicio de la FAT
-            uint32_t fat_size;              // Tama�o de la FAT
+            uint32_t fat_size;              // Tamaño de la FAT
             uint32_t data_offset;           // Punto de unicio de los datos
-            uint32_t data_size;             // Tama�o de los datos
+            uint32_t data_size;             // Tamaño de los datos
             uint8_t reserve[256];           // Reservado para usos futuros (256 por defecto)
         };
 
@@ -100,24 +100,24 @@ class NGN_FileSystem {
 
 
         //Define la estructura de un nodo de la FAT
-        // Tama�o del checksum
+        // Tamaño del checksum
         static const uint8_t CHK_SIZE = 32;
         // Estructura del nodo
         struct FatNode {
             uint32_t next_node_offset;          // Posicion del siguiente nodo
             uint32_t path_length;               // Numero de caracteres de la ruta
             uint32_t file_offset;               // Posicion del archivo
-            uint32_t file_size;                 // Tama�o del archivo
+            uint32_t file_size;                 // Tamaño del archivo
             uint8_t checksum[CHK_SIZE];         // Checksum del archivo
             std::string file_name;              // Nombre del archivo (ruta incluida)
         };
-        // Tama�o de los datos estaticos del nodo
+        // Tamaño de los datos estaticos del nodo
         static const uint32_t NODE_SIZE = ((sizeof(uint32_t) * 4) + (sizeof(uint8_t) * CHK_SIZE));
 
         // Tabla de asignacion de archivos
         std::vector<FatNode> fat;               // Lista con los archivos a gestionar
-        uint32_t fat_size;                      // Tama�o de la tabla de asignacion de archivos (FAT)
-        uint32_t data_size;                     // Tama�o de los datos
+        uint32_t fat_size;                      // Tamaño de la tabla de asignacion de archivos (FAT)
+        uint32_t data_size;                     // Tamaño de los datos
 
         /*
 
@@ -126,7 +126,7 @@ class NGN_FileSystem {
         [(uint8_t)(uint8_t)(uint8_t)(uint8_t)]      {next_node_offset}      // Posicion del siguiente nodo
         [(uint8_t)(uint8_t)(uint8_t)(uint8_t)]      {path_length}           // Longitud en caracteres del nombre de archivo
         [(uint8_t)(uint8_t)(uint8_t)(uint8_t)]      {file_offset}           // Posicion del archivo
-        [(uint8_t)(uint8_t)(uint8_t)(uint8_t)]      {file_size}             // Tama�o del archivo
+        [(uint8_t)(uint8_t)(uint8_t)(uint8_t)]      {file_size}             // Tamaño del archivo
         [(uint8_t)(uint8_t)(uint8_t)...      ]      {file_name}             // Nombre del archivo (varia en longitud)
 
         */

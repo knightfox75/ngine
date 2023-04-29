@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -15,7 +15,7 @@
     Requiere SDL2 (2.26.3) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.5.1) - 64-bits
+    Requiere SFML (3.0.0) - 64-bits
     http://www.sfml-dev.org/
 
     Requiere LodePNG (20220717)

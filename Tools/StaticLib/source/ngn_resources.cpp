@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -136,7 +136,7 @@ void NGN_Resources::AddRepository(std::string repo_name) {
     rs.typeface.clear();
     rs.name = repo_name;
 
-    // A�ade el repositorio
+    // Añade el repositorio
     repository.push_back(rs);
 
 }

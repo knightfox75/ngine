@@ -10,7 +10,7 @@ Todo el motor está programado enteramente en C++, usando librerías de apoyo pa
 A cualquier persona que quiera desarrollar su videojuego y tenga nociones de programación orientada a objetos.<br>
 
 - ¿Bajo qué sistemas funciona?<br>
-Actualmente el motor funciona en sistemas Windows y Linux.<br>
+Actualmente el motor funciona en sistemas operativos Windows, Linux y Raspberry PI OS.<br>
 
 - ¿Bajo qué licencia se distribuye?<br>
 El motor se distribuye bajo la licencia MIT. Eso significa que puedes usar, modificar, crear y distribuir contenido usando el motor, siempre y cuando lo acredites correctamente.<br>
@@ -53,13 +53,13 @@ Con más de 6 años de desarrollo, ya se encuentra en una fase estable de desarr
 		· Posibilidad de gestionar hasta 127 repositorios de recursos, indicado la lista de archivos a cargar desde un archivo de texto plano.<br>
 		
 - ¿Que contiene el paquete de distribución del motor?<br>
-El archivo contiene el código fuente del motor, así como las librerías del mismo compiladas para Windows y Linux Mint, documentación de instalación y uso, ejemplos comentados y un pack con demos ya compiladas mostrando las principales funcionalidades del motor<br>
+El archivo contiene el código fuente del motor, así como las librerías del mismo compiladas para Windows, Linux Mint y Raspberry PI OS (Raspbian), documentación de instalación y uso, ejemplos comentados y un pack con demos ya compiladas mostrando las principales funcionalidades del motor<br>
 
 - ¿Dónde puedo conseguir el motor?<br>
 Actualmente el motor está hospedado en Github, puedes descargarte la última versión desde el enlace al final de esta página<br>
 
 - ¿Cómo puedo contactar con el autor?<br>
-Tan pronto como sea posible, habilitaré un foro para las posibles consultas y comentarios.<br>
+Puedes enviar un correo electronico a la dirección de contacto: contact@nightfoxandco.com.<br>
 
 Aquí tenéis una demo reel con la mayoría de características del motor:<br>
 https://www.youtube.com/watch?v=kIcG9lp1oI0

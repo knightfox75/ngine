@@ -64,10 +64,10 @@ ConvertToMap::ConvertToMap() {
 
     map_width = 0;                  // Ancho del mapa
     map_height = 0;                 // Altura del mapa
-    size_of_tile = 0;               // Tama�o del tile
-    pal_length = 0;                 // Tama�o de la paleta
-    tileset_length = 0;             // Tama�o del tileset
-    map_length = 0;                 // Tama�o del mapa
+    size_of_tile = 0;               // tamaño del tile
+    pal_length = 0;                 // tamaño de la paleta
+    tileset_length = 0;             // tamaño del tileset
+    map_length = 0;                 // tamaño del mapa
 
     palette.clear();
     tiles.clear();
@@ -96,7 +96,7 @@ ConvertToMap::~ConvertToMap() {
 bool ConvertToMap::Convert(
     std::string in_file,        // Archivo PNG a convertir
     std::string out_file,       // Nombre base de los archivos de salida
-    uint32_t tile_size          // Tama�o del tile
+    uint32_t tile_size          // tamaño del tile
 ) {
 
     // Guarda los parametros
@@ -208,7 +208,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
     std::cout << "Bitmap generation completed." << std::endl;
     std::cout << "Palette generation completed. The palette contains " << pal_id << " colors." << std::endl;
 
-    // Guarda el tama�o del buffer de la paleta
+    // Guarda el tamaño del buffer de la paleta
     pal_length = pal_id;
 
     // Copia la paleta temporal a la final
@@ -227,7 +227,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
 /*** Genera una mapa de tiles a partir del bitmap ***/
 void ConvertToMap::GenerateTileMap() {
 
-    // Aviso de ajuste del tama�o de tiles
+    // Aviso de ajuste del tamaño de tiles
     std::cout << std::endl;
     if (((map_width % size_of_tile) != 0) || (map_height % size_of_tile) != 0) {
         std::cout << "WARNING: Image size doesn't fits the tile size." << std::endl;
@@ -339,9 +339,9 @@ bool ConvertToMap::WriteFile(std::string filename) {
     memset((void*)&header, 0, sizeof(header));
     header.version = VERSION;
     strncpy(header.magic, MAGIC_STRING.c_str(), MAGIC_STRING.length());
-    header.width = map_width;                                                       // Tama�o del mapa en pixeles
+    header.width = map_width;                                                       // tamaño del mapa en pixeles
     header.height = map_height;
-    header.tile_size = size_of_tile;                                                // Tama�o del tile
+    header.tile_size = size_of_tile;                                                // tamaño del tile
     header.pal_length = pal_length;                                                 // n� de elementos de la paleta (*4)
     header.tileset_length = tileset_length;                                         // n� de elementos del tileset
     header.map_length = map_length;                                                 // n� de elementos del mapa (*4)
@@ -376,7 +376,7 @@ bool ConvertToMap::WriteFile(std::string filename) {
 bool ConvertToMap::ReadPng(std::string filename, std::vector<uint8_t> &data) {
 
     // Variables
-    uint32_t width = 0, height = 0;     // Tama�o del archivo cargado
+    uint32_t width = 0, height = 0;     // tamaño del archivo cargado
 
     // Prepara el buffer temporal
     std::vector<uint8_t> png_data;
@@ -400,7 +400,7 @@ bool ConvertToMap::ReadPng(std::string filename, std::vector<uint8_t> &data) {
         return false;
     }
 
-    // Guarda el tama�o del mapa
+    // Guarda el tamaño del mapa
     map_width = width;
     map_height = height;
 

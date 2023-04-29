@@ -2,17 +2,18 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Multiple_Viewports" />
+		<Option title="Multiple Viewports" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="WIN - Debug">
 				<Option platforms="Windows;" />
-				<Option output="./Multiple_Viewports" prefix_auto="1" extension_auto="1" />
+				<Option output="./Demo_Multiple_Viewports" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/win_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DOS_WINDOWS" />
 					<Add option="-DMODE_DEBUG" />
@@ -21,6 +22,7 @@
 					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add library="mingw32" />
 					<Add library="ngn_d" />
 					<Add library="SDL2main" />
@@ -35,12 +37,13 @@
 			</Target>
 			<Target title="WIN - Release">
 				<Option platforms="Windows;" />
-				<Option output="./Multiple_Viewports" prefix_auto="1" extension_auto="1" />
+				<Option output="./Demo_Multiple_Viewports" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/win_release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-m64" />
 					<Add option="-DOS_WINDOWS" />
 					<Add option="-DMODE_RELEASE" />
 					<Add directory="$(CODEBLOCKS)/Libs/ngn/include" />
@@ -49,6 +52,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-m64" />
 					<Add library="mingw32" />
 					<Add library="ngn" />
 					<Add library="SDL2main" />
@@ -63,11 +67,12 @@
 			</Target>
 			<Target title="LINUX - Debug">
 				<Option platforms="Unix;" />
-				<Option output="./Multiple_Viewports" prefix_auto="1" extension_auto="1" />
+				<Option output="./Demo_Multiple_Viewports" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/linux_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_DEBUG" />
@@ -76,6 +81,9 @@
 					<Add directory="/usr/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
+					<Add option="-Wl,-rpath,libs/x86_64-linux-gnu/" />
+					<Add option="-Wl,--disable-new-dtags" />
 					<Add library="ngn_d" />
 					<Add library="SDL2" />
 					<Add library="SDL2_ttf" />
@@ -88,12 +96,13 @@
 			</Target>
 			<Target title="LINUX - Release">
 				<Option platforms="Unix;" />
-				<Option output="./Multiple_Viewports" prefix_auto="1" extension_auto="1" />
+				<Option output="./Demo_Multiple_Viewports" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/linux_release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-m64" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_RELEASE" />
 					<Add directory="/usr/include/NGN" />
@@ -102,6 +111,66 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-m64" />
+					<Add option="-Wl,-rpath,libs/x86_64-linux-gnu/" />
+					<Add option="-Wl,--disable-new-dtags" />
+					<Add library="ngn" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="/usr/lib/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Linker>
+			</Target>
+			<Target title="RASPBIAN - Debug">
+				<Option platforms="Unix;" />
+				<Option output="./Demo_Multiple_Viewports" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/raspbian_debug/" />
+				<Option type="5" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Og" />
+					<Add option="-g" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_DEBUG" />
+					<Add directory="/usr/include/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,-rpath,libs/arm-linux-gnueabihf/" />
+					<Add option="-Wl,--disable-new-dtags" />
+					<Add library="ngn_d" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="/usr/lib/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Linker>
+			</Target>
+			<Target title="RASPBIAN - Release">
+				<Option platforms="Unix;" />
+				<Option output="./Demo_Multiple_Viewports" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/raspbian_release/" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_RELEASE" />
+					<Add directory="/usr/include/NGN" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-Wl,-rpath,libs/arm-linux-gnueabihf/" />
+					<Add option="-Wl,--disable-new-dtags" />
 					<Add library="ngn" />
 					<Add library="SDL2" />
 					<Add library="SDL2_ttf" />
@@ -116,11 +185,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
-			<Add option="-m64" />
 		</Compiler>
-		<Linker>
-			<Add option="-m64" />
-		</Linker>
 		<Unit filename="resource/resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>

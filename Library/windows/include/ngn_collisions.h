@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,7 +66,7 @@ class NGN_Collisions {
         // Consulta el color de un pixel del mapa de colisiones
         uint32_t GetPixel(NGN_CollisionMapData* cmap, int32_t position_x, int32_t position_y);
 
-        // Devuelve el tama�o de un mapa de colisiones
+        // Devuelve el tamaño de un mapa de colisiones
         Size2 GetMapSize(NGN_CollisionMapData* cmap);
 
         // Consulta si hay colision por cajas entre 2 sprites
@@ -101,7 +101,7 @@ class NGN_Collisions {
             NGN_Sprite* sprite,     // Sprite a renderizar
             int32_t x,              // Posicion
             int32_t y,
-            uint32_t w,             // Tama�o del buffer
+            uint32_t w,             // Tamaño del buffer
             uint32_t h
             );
 

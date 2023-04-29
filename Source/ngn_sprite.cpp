@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -156,10 +156,10 @@ void NGN_Sprite::Translate(Vector2 spd) {
 
 
 
-/*** Cambia el tama�o del sprite ***/
+/*** Cambia el tamaño del sprite ***/
 void NGN_Sprite::Size(float w, float h) {
 
-    // Aplica el nuevo tama�o
+    // Aplica el nuevo tamaño
     width = w;
     original.width = width;
     height = h;
@@ -207,7 +207,7 @@ void NGN_Sprite::SetCenter(float x, float y) {
 }
 
 
-/*** A�ade un nuevo collider al Sprite ***/
+/*** Añade un nuevo collider al Sprite ***/
 int32_t NGN_Sprite::AddCollider(
     std::string name,           // Nombre del colisionador
     float offset_x,             // Offset X
@@ -295,7 +295,7 @@ int32_t NGN_Sprite::RemoveCollider(std::string name) {
 
 
 
-/*** A�ade una animacion al Sprite ***/
+/*** Añade una animacion al Sprite ***/
 int32_t NGN_Sprite::AddAnimation(
                               std::string name,
                               int32_t first_frame,
@@ -327,7 +327,7 @@ int32_t NGN_Sprite::AddAnimation(
     a.loop = loop;
     a.frame_duration = frame_duration;
 
-    // A�ade la animacion
+    // Añade la animacion
     animation.push_back(a);
 
     // Todo correcto
@@ -421,22 +421,22 @@ void NGN_Sprite::CreateSprite(
     // Guarda el grafico que usara este sprite
     data = sprite;
 
-    // Tama�o
+    // Tamaño
     if ((sprite_width != NGN_DEFAULT_VALUE) && (sprite_height != NGN_DEFAULT_VALUE)) {
-        // Tama�o definido por el usuario
+        // Tamaño definido por el usuario
         width = sprite_width;
         height = sprite_height;
     } else {
-        // Tama�o en base a la textura del grafico
+        // Tamaño en base a la textura del grafico
         width = data->header.frame_width;
         height = data->header.frame_height;
     }
 
-    // Guarda el tama�o original al crear el sprite
+    // Guarda el tamaño original al crear el sprite
     original.width = width;
     original.height = height;
 
-    // Tama�o de la caja de colisiones
+    // Tamaño de la caja de colisiones
     if ((box_width != NGN_DEFAULT_VALUE) && (box_height != NGN_DEFAULT_VALUE)) {
         box.width = box_width;
         box.height = box_height;

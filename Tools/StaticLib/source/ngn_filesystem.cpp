@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -310,7 +310,7 @@ int32_t NGN_FileSystem::CreateFatFromPackage() {
     uint32_t next_node_offset;          // Posicion del siguiente nodo
     uint32_t path_length;               // Numero de caracteres de la ruta
     uint32_t file_offset;               // Posicion del archivo
-    uint32_t file_size;                 // Tama�o del archivo
+    uint32_t file_size;                 // Tamaño del archivo
     uint8_t checksum[CHK_SIZE];         // Checksum del archivo
     std::vector<uint8_t> file_name;     // Nombre del archivo (ruta incluida)
 
@@ -336,7 +336,7 @@ int32_t NGN_FileSystem::CreateFatFromPackage() {
         for (uint8_t n = 0; n < CHK_SIZE; n ++) node.checksum[n] = checksum[n];
         std::string str(file_name.begin(), file_name.end());
         node.file_name = str;
-        // A�ade el nodo temporal a la FAT
+        // Añade el nodo temporal a la FAT
         fat.push_back(node);
     } while (node.next_node_offset > 0);
 
@@ -407,7 +407,7 @@ uint8_t NGN_FileSystem::RotateLeft(uint8_t value, uint32_t positions) {
         bit = (byte & 0x80);
         // Rota una posicion a la izquierda
         byte = (byte << 1);
-        // A�ade el BIT7 guardado en la posicion 0
+        // Añade el BIT7 guardado en la posicion 0
         byte |= ((bit >> 7) & 0x01);
     }
 
@@ -436,7 +436,7 @@ uint8_t NGN_FileSystem::RotateRight(uint8_t value, uint32_t positions) {
         bit = (byte & 0x01);
         // Rota una posicion a la derecha
         byte = (byte >> 1);
-        // A�ade el BIT0 guardado en la posicion 7
+        // Añade el BIT0 guardado en la posicion 7
         byte |= ((bit << 7) & 0x80);
     }
 

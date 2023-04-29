@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -512,7 +512,7 @@ void NGN_Graphics::SelectViewport(uint8_t id) {
     // Registra el ID del viewport
     current_viewport = id;
 
-    // Registra el tama�o del area de render
+    // Registra el tamaño del area de render
     render_resolution.width = viewport_list[id].render_w;
     render_resolution.height = viewport_list[id].render_h;
 
@@ -572,7 +572,7 @@ void NGN_Graphics::DefaultViewport() {
     // Ningun viewport seleccionado
     current_viewport = -1;
 
-    // Registra el tama�o del area de render
+    // Registra el tamaño del area de render
     render_resolution.width = native_w;
     render_resolution.height = native_h;
 
@@ -583,7 +583,7 @@ void NGN_Graphics::DefaultViewport() {
 
 
 
-/*** Cambia el tama�o del clip del viewport [1ra sobrecarga, viewport principal] ***/
+/*** Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal] ***/
 void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
     SDL_Rect viewport = {
@@ -612,7 +612,7 @@ void NGN_Graphics::SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h) {
 
 
 
-/*** Cambia el tama�o del clip del viewport [2da sobrecarga, viewports multiples] ***/
+/*** Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples] ***/
 void NGN_Graphics::SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h) {
 
     if (id > VIEWPORT_NUMBER) return;
@@ -867,7 +867,7 @@ void NGN_Graphics::ChangeScreenMode() {
             // Modo del renderer
             SDL_SetWindowFullscreen(window, 0);
 
-            // Ajusta el tama�o de la ventana
+            // Ajusta el tamaño de la ventana
             int8_t win_size = NGN_SCR_WINDOW;
             switch (screen_mode) {
                 case NGN_SCR_WINDOW:
@@ -884,7 +884,7 @@ void NGN_Graphics::ChangeScreenMode() {
                     break;
             }
 
-            // Cambia el tama�o de la ventana
+            // Cambia el tamaño de la ventana
             int32_t win_width = native_w * win_size;
             int32_t win_height = native_h * win_size;
             SDL_SetWindowSize(window, win_width, win_height);
@@ -1289,7 +1289,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
 
     // Overlay en la captura?
     if (screenshot_overlay != NULL) {
-        // Tama�o de origen (textura)
+        // Tamaño de origen (textura)
         _src.w = screenshot_overlay->width;
         _src.h = screenshot_overlay->height;
         SDL_SetTextureBlendMode(screenshot_overlay->gfx, SDL_BLENDMODE_BLEND);
@@ -1304,7 +1304,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     png_buffer.clear();
     png_pixels.clear();
 
-    // Consulta el tama�o del renderer
+    // Consulta el tamaño del renderer
     int32_t _width;
     int32_t _height;
     SDL_GetRendererOutputSize(renderer, &_width, &_height);

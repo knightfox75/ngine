@@ -84,7 +84,7 @@ const int32_t ARG_MIN_NUM = 2;                          // Numero minimo de argu
 const int32_t ARG_MAX_NUM = 7;                          // Numero maximo de argumentos
 const std::string ARG_HELP = "-?";                      // Ayuda
 const std::string ARG_OUT_FILE = "-o";                  // Define el archivo de salida
-const std::string ARG_TILE_SIZE = "-ts";                // Define el tama�o del tile
+const std::string ARG_TILE_SIZE = "-ts";                // Define el tamaño del tile
 
 /*** Parametros de los argumentos ***/
 const int32_t MIN_TILE_SIZE = 8;                        // Tamaño minimo del tile

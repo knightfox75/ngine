@@ -75,7 +75,7 @@ class ConvertToMap {
         bool Convert(
             std::string in_file,        // Archivo PNG a convertir
             std::string out_file,       // Nombre base de los archivos de salida
-            uint32_t tile_size          // Tama�o del tile
+            uint32_t tile_size          // tamaño del tile
         );
 
 
@@ -86,10 +86,10 @@ class ConvertToMap {
         // Parametros del mapa
         uint32_t map_width;                 // Ancho del mapa
         uint32_t map_height;                // Altura del mapa
-        uint32_t size_of_tile;              // Tama�o del tile
-        uint32_t pal_length;                // Tama�o de la paleta
-        uint32_t tileset_length;            // Tama�o del tileset
-        uint32_t map_length;                // Tama�o del mapa
+        uint32_t size_of_tile;              // tamaño del tile
+        uint32_t pal_length;                // tamaño de la paleta
+        uint32_t tileset_length;            // tamaño del tileset
+        uint32_t map_length;                // tamaño del mapa
 
         // Define los vectores de memoria para el archivo de guardado
         std::vector<uint32_t> palette;      // Buffer para almacenar la paleta de colores

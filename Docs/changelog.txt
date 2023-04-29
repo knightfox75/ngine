@@ -2,6 +2,26 @@
 N'gine Changelog
 --------------------------------------------------------------------------------
 
+
+2023-04-29 Ver.1.14.0-stable
+--------------------------------------------------------------------------------
+- Actualizado el método GetVersion() de la clase NGN_System, el cual ahora
+  devuelve además de la versión actual de N'gine, las versiones detectadas
+  de las librerias SDL2, SDL_ttf, SFML y LodePNG.
+- Actualizada la versión de SFML a la versión 3.0.0.
+- Corregido un bug en el método de renderizado de sprites, el cual causava
+  que en plataformas ARM de 32bits los sprites con su centro en coordenadas
+  negativas no se renderizaban como es debido.
+- Añadido soporte para usar N'gine en Raspberry PI OS (Rapbian). Se han
+  actualizado todos los templates, herramientas y ejemplos para su uso en esta
+  plataforma.
+- Incluidos dos scripts de instalación de las librerías necesarias para Linux
+  Mint y Raspberry OS. Atención! El uso de estos scripts instalara en el
+  sistema las librerías usadas para compilar y usar esta versión de N'gine
+  y sus proyectos, sobrescribiendo las versiones que se encuentren instaladas
+  en el sistema.
+
+
 2023-04-03 Ver.1.13.0-stable
 --------------------------------------------------------------------------------
 - Actualizado el template de proyectos avanzados.

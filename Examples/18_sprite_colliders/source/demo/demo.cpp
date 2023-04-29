@@ -8,7 +8,7 @@
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.12.0-stable o superior
+    Requiere N'gine 1.14.0-stable o superior
 
     Requiere GCC 11.3.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
@@ -19,7 +19,7 @@
     Requiere SDL2_TTF (2.20.2) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (2.5.1) - 64-bits
+    Requiere SFML (3.0.0) - 64-bits
     http://www.sfml-dev.org/
 
     Requiere LodePNG (20190615)
@@ -125,9 +125,15 @@ bool Demo::Awake() {
     #endif
     ngn->graphics->Update();
 
+    // Usa el archivo empaquetado de datos si es la version release
+    #if defined (MODE_RELEASE)
+        if(!ngn->load->SetPackage("data.pkg", "0123456789ABCDEF")) return false;
+    #endif
+
 	// Muestra la version de la libreria en la consola
 	#if defined (MODE_DEBUG)
-		ngn->log->Message(ngn->system->GetVersion() + " started successfully!");
+		ngn->log->Message("Versions check:\n" + ngn->system->GetVersion());
+		ngn->log->Message("N'gine started successfully!");
 	#endif
 
     // Inicializacion completada con exito

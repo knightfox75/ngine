@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -75,7 +75,7 @@ NGN_Texture::NGN_Texture(
     int32_t position_y          // Posicion Y inicial (oculto por defecto)
 ) {
 
-    // Tama�o definido por el usuario
+    // Tamaño definido por el usuario
     width = texture_width;
     height = texture_height;
 
@@ -92,7 +92,7 @@ NGN_Texture::NGN_Texture(
     data->height = height;
     linked = false;
 
-    // Guarda el tama�o original al crear la textura
+    // Guarda el tamaño original al crear la textura
     original.width = width;
     original.height = height;
 
@@ -158,7 +158,7 @@ void NGN_Texture::DefaultValues() {
 
     // Parametros para el sistema de camaras
     camera_layer = -1;                              // Por defecto, no estas en la camara
-    virtual_texture.texture_size.width = 0;         // Sin tama�o virtual, loop, etc
+    virtual_texture.texture_size.width = 0;         // Sin tamaño virtual, loop, etc
     virtual_texture.texture_size.height = 0;
     virtual_texture.loop.x = 0;
     virtual_texture.loop.y = 0;
@@ -206,10 +206,10 @@ void NGN_Texture::Translate(Vector2 spd) {
 
 
 
-/*** Cambia el tama�o de la textura ***/
+/*** Cambia el tamaño de la textura ***/
 void NGN_Texture::Size(float w, float h) {
 
-    // Aplica el nuevo tama�o
+    // Aplica el nuevo tamaño
     width = w;
     original.width = width;
     height = h;
@@ -288,19 +288,19 @@ void NGN_Texture::CreateTexture(
     // Guarda el grafico que usara este texture
     data = texture;
 
-    // Tama�o
+    // Tamaño
     if ((texture_width != NGN_DEFAULT_VALUE) && (texture_height != NGN_DEFAULT_VALUE)) {
-        // Tama�o definido por el usuario
+        // Tamaño definido por el usuario
         width = texture_width;
         height = texture_height;
     } else {
-        // Tama�o en base a la textura del grafico
+        // Tamaño en base a la textura del grafico
         width = data->width;
         height = data->height;
     }
     linked = true;
 
-    // Guarda el tama�o original al crear la textura
+    // Guarda el tamaño original al crear la textura
     original.width = width;
     original.height = height;
 

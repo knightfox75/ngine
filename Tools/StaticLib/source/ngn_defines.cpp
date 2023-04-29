@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -204,7 +204,7 @@ NGN_RendererSurface::NGN_RendererSurface() {
     // Surface
     surface = NULL;
 
-    // Guarda el tama�o
+    // Guarda el tamaño
     width = -1;
     height = -1;
 

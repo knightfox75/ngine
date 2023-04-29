@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -73,7 +73,7 @@ class NGN_Canvas {
             int32_t position_y = 0,                     // Posicion Y (0 por defecto)
             uint32_t _width = NGN_DEFAULT_VALUE,        // Ancho de la capa (Toda la pantalla por defecto)
             uint32_t _height = NGN_DEFAULT_VALUE,       // Alto de la capa (Toda la pantalla por defecto)
-            bool _filtering = false                    // Filtrado bilinear del contenido?
+            bool _filtering = false                     // Filtrado bilinear del contenido?
         );
 
         // Destructor de la clase
@@ -81,7 +81,7 @@ class NGN_Canvas {
 
         // Propiedades
         Vector2 position;                   // Posicion de la capa
-        float width;                        // Tama�o
+        float width;                        // Tamaño
         float height;
         Vector2 center;                     // Centro de la capa para su rotacion
 
@@ -105,7 +105,7 @@ class NGN_Canvas {
         void Translate(float speed_x, float speed_y);
         void Translate(Vector2 spd);
 
-        // Cambia el tama�o de la capa
+        // Cambia el tamaño de la capa
         void Size(float w, float h);
 
         //  Escala una capa
@@ -129,7 +129,7 @@ class NGN_Canvas {
         // Borra la capa
         void Cls(uint32_t color = 0x00000000);
 
-        // Devuelve el tama�o original del lienzo
+        // Devuelve el tamaño original del lienzo
         Size2I32 GetSize();
 
         // Dibuja un punto
@@ -170,7 +170,7 @@ class NGN_Canvas {
         // Devuelve el color en formato RGBA
         Rgba GetRgbaColor(uint32_t color);
 
-        // Tama�o en pixeles del buffer de pixeles
+        // Tamaño en pixeles del buffer de pixeles
         int32_t surface_width, surface_height;
 
         // Flag de conversion a textura

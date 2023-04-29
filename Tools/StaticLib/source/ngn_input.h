@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -275,7 +275,7 @@ class NGN_Input {
         // Actualiza la lista de game controllers
         void UpdateGameController();
 
-        // A�ade controladores a la lista
+        // Añade controladores a la lista
         void AddControllers(int32_t gc);
 
         // Quita controladores de la lista

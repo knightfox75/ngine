@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -176,16 +176,16 @@ void NGN_TiledBg::CreateTiledBg(
     // Copia del fondo
     bgdata = bg;
 
-    // Guarda el tama�o del tile
+    // Guarda el tamaño del tile
     tile_size = bg->header.tile_size;
-    // Guarda el tama�o del mapa
+    // Guarda el tamaño del mapa
     map_size.width = bg->header.map_width;
     map_size.height = bg->header.map_height;
 
-    // Tama�o del backbuffer
+    // Tamaño del backbuffer
     bb_size.width = ngn->graphics->native_w + (tile_size << 1);
     bb_size.height = ngn->graphics->native_h + (tile_size << 1);
-    // Tama�o del fondo completo
+    // Tamaño del fondo completo
     width = bgdata->header.bg_width;
     height = bgdata->header.bg_height;
 
@@ -222,7 +222,7 @@ void NGN_TiledBg::CreateTiledBg(
 
     // Parametros para el sistema de camaras
     camera_layer = -1;                      // Por defecto, no estas en la camara
-    virtual_bg.bg_size.width = 0;           // Sin tama�o virtual, loop, etc
+    virtual_bg.bg_size.width = 0;           // Sin tamaño virtual, loop, etc
     virtual_bg.bg_size.height = 0;
     virtual_bg.loop.x = 0;
     virtual_bg.loop.y = 0;

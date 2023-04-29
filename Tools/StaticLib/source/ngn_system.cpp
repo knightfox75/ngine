@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -46,6 +46,12 @@
 // SDL
 #include <SDL.h>
 #include <SDL_ttf.h>
+
+// SFML
+#include <SFML/Config.hpp>
+
+// LodePNG
+#include "lodepng/lodepng.h"
 
 // Libreria
 #include "ngn.h"
@@ -208,7 +214,12 @@ void NGN_System::EventUpdate() {
 /*** Devuelve un string con la version actual de N'gine ***/
 std::string NGN_System::GetVersion() {
 
-    std::string version = "N'gine version ";
+    std::string version = "";
+
+    version += "----------------------------------------\n";
+
+    // N'gine
+    version += "N'gine version ";
     version += ngn->toolbox->Int2String(NGN_VERSION_MAJOR, 1, "0");
     version += ".";
     version += ngn->toolbox->Int2String(NGN_VERSION_MINOR, 1, "0");
@@ -216,6 +227,45 @@ std::string NGN_System::GetVersion() {
     version += ngn->toolbox->Int2String(NGN_VERSION_PATCH, 1, "0");
     version += "-";
     version += NGN_VERSION_METADATA;
+    version += "\n";
+
+    // SDL2
+    SDL_version sdl_version;
+    SDL_GetVersion(&sdl_version);
+    version += "SDL2 version ";
+    version += ngn->toolbox->Int2String(sdl_version.major, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(sdl_version.minor, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(sdl_version.patch, 1, "0");
+    version += "\n";
+
+    // SDL_ttf
+    const SDL_version* ttf = TTF_Linked_Version();
+    version += "SDL_ttf version ";
+    version += ngn->toolbox->Int2String(ttf->major, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(ttf->minor, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(ttf->patch, 1, "0");
+    version += "\n";
+
+    // SFML
+    version += "SFML version ";
+    version += ngn->toolbox->Int2String(SFML_VERSION_MAJOR, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(SFML_VERSION_MINOR, 1, "0");
+    version += ".";
+    version += ngn->toolbox->Int2String(SFML_VERSION_PATCH, 1, "0");
+    version += "\n";
+
+    // LodePNG
+    std::string lode(LODEPNG_VERSION_STRING);
+    version += "LodePNG version ";
+    version += lode;
+    version += "\n";
+
+    version += "----------------------------------------";
 
     return version;
 

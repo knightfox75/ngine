@@ -88,7 +88,7 @@ class CollisionMap {
         argument arg_help;              // Ayuda
         argument arg_in_file;           // Archivo de origen
         argument arg_out_file;          // Archivo de salida
-        argument arg_tile_size;         // Tama�o del tile
+        argument arg_tile_size;         // tamaño del tile
 
         // Argumentos introducidos
         int32_t argument_count;                             // Numero de argumentos en la linea de comandos
@@ -98,7 +98,7 @@ class CollisionMap {
         struct {
             std::string in_file;            // Archivo de entrada
             std::string out_file;           // Archivo de salida
-            int32_t tile_size;              // Tama�o del tile
+            int32_t tile_size;              // tamaño del tile
         } parameter;
 
 

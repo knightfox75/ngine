@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -208,13 +208,15 @@ void NGN_AudioClip::Panning(int32_t pan) {
     if (_panning > 100) _panning = 100;
 
     // Calculos de angulo
+    sf::Vector3 pos(0.0f, 0.0f, 0.0f);
     float angle = ((PI * ((float)(-_panning + 100))) / 200.0f);
-    float x = std::cos(angle);
-    float z = std::sin(angle);
-    sound.setPosition(x, 0.0f, z);
+    pos.x = std::cos(angle);
+    pos.y = 0.0f;
+    pos.z = std::sin(angle);
+    sound.setPosition(pos);
 
     // Calculos de la compensacion de la atenuacion panoramica
-    _panning_attenuation = (1.0f - (std::abs(x) / 2.0f));
+    _panning_attenuation = (1.0f - (std::abs(pos.x) / 2.0f));
 
     // Reajusta el nivel de volumen
     float mixer = ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) * ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);

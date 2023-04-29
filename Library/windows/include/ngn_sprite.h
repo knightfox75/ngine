@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -94,7 +94,7 @@ class NGN_Sprite {
         NGN_SpriteData* data;       // Datos graficos del Sprite
         Vector2 position;           // Posicion del Sprite (Global/Mundo)
         Vector2I32 screen;          // Posicion del Sprite (Pantalla)
-        float width;                // Tama�o
+        float width;                // Tamaño
         float height;
         Vector2 center;             // Centro del Sprite para su rotacion
 
@@ -127,7 +127,7 @@ class NGN_Sprite {
         void Translate(float speed_x, float speed_y);
         void Translate(Vector2 spd);
 
-        // Cambia el tama�o del Sprite
+        // Cambia el tamaño del Sprite
         void Size(float w, float h);
 
         //  Escala un Sprite
@@ -154,7 +154,7 @@ class NGN_Sprite {
         };
         std::vector<ColliderData> colliders;    // Colisionadores adicionales
 
-        // A�ade un nuevo collider
+        // Añade un nuevo collider
         int32_t AddCollider(
             std::string name,           // Nombre del colisionador
             float offset_x,             // Offset X
@@ -208,7 +208,7 @@ class NGN_Sprite {
     private:
 
         // Propiedades internas del Sprite
-        Size2 original;         		// Tama�o original
+        Size2 original;         		// Tamaño original
         int32_t animation_timer;        // Control de velocidad de la animacion
 
         // Crea el objeto que contiene el sprite

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones para la manipulacion de imagenes en RAW
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -160,7 +160,7 @@ bool NGN_Image::CutOutMask(NGN_RawImage* source, NGN_RawImage* mask, NGN_RawImag
     // Proteccion
     if (!source || !mask || !destination) return false;
 
-    // El tama�o debe de coincidir entre la imagen y la mascara
+    // El tamaño debe de coincidir entre la imagen y la mascara
     if ((source->width != mask->width) || (source->height != mask->height)) return false;
 
     // Prepara el buffer de destino
@@ -200,7 +200,7 @@ bool NGN_Image::HollowMask(NGN_RawImage* source, NGN_RawImage* mask, NGN_RawImag
     // Proteccion
     if (!source || !mask || !destination) return false;
 
-    // El tama�o debe de coincidir entre la imagen y la mascara
+    // El tamaño debe de coincidir entre la imagen y la mascara
     if ((source->width != mask->width) || (source->height != mask->height)) return false;
 
     // Prepara el buffer de destino
@@ -336,12 +336,12 @@ bool NGN_Image::AdvancedMask(
 /*** Guarda el contenido actual del renderer a un surface ***/
 bool NGN_Image::RendererToSurface(NGN_RendererSurface* destination) {
 
-    // Consulta el tama�o del renderer
+    // Consulta el tamaño del renderer
     int32_t _width = 0;
     int32_t _height = 0;
     SDL_GetRendererOutputSize(ngn->graphics->renderer, &_width, &_height);
 
-    // Si el surface no existe o no coincide en tama�o
+    // Si el surface no existe o no coincide en tamaño
     if (!destination) {
 
         return false;
@@ -361,7 +361,7 @@ bool NGN_Image::RendererToSurface(NGN_RendererSurface* destination) {
             0x0000FF00,     // Mascara B
             0x000000FF      // Mascara A
         );
-        // Registra el tama�o
+        // Registra el tamaño
         destination->width = _width;
         destination->height = _height;
 

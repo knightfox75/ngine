@@ -14,6 +14,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DOS_WINDOWS" />
 					<Add option="-DMODE_DEBUG" />
@@ -21,6 +22,7 @@
 					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add library="mingw32" />
 					<Add library="SDL2main" />
 					<Add library="SDL2" />
@@ -40,6 +42,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-m64" />
 					<Add option="-DOS_WINDOWS" />
 					<Add option="-DMODE_RELEASE" />
 					<Add directory="$(CODEBLOCKS)/Libs/sdl2/include" />
@@ -47,6 +50,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-m64" />
 					<Add library="mingw32" />
 					<Add library="SDL2main" />
 					<Add library="SDL2" />
@@ -65,6 +69,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_DEBUG" />
@@ -72,6 +77,7 @@
 					<Add directory="/usr/include" />
 				</Compiler>
 				<Linker>
+					<Add option="-m64" />
 					<Add library="SDL2" />
 					<Add library="SDL2_ttf" />
 					<Add library="sfml-audio" />
@@ -89,6 +95,56 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add option="-m64" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_RELEASE" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-m64" />
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Linker>
+			</Target>
+			<Target title="RASPBIAN - Debug">
+				<Option platforms="Unix;" />
+				<Option output="./lib_raspbian/ngn_d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/raspbian_debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Og" />
+					<Add option="-g" />
+					<Add option="-DOS_LINUX" />
+					<Add option="-DMODE_DEBUG" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Compiler>
+				<Linker>
+					<Add library="SDL2" />
+					<Add library="SDL2_ttf" />
+					<Add library="sfml-audio" />
+					<Add library="sfml-system" />
+					<Add directory="/usr/include/SDL2" />
+					<Add directory="/usr/include" />
+				</Linker>
+			</Target>
+			<Target title="RASPBIAN - Release">
+				<Option platforms="Unix;" />
+				<Option output="./lib_raspbian/ngn" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/raspbian_release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_RELEASE" />
 					<Add directory="/usr/include/SDL2" />
@@ -108,11 +164,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
-			<Add option="-m64" />
 		</Compiler>
-		<Linker>
-			<Add option="-m64" />
-		</Linker>
 		<Unit filename="source/config_flags.h" />
 		<Unit filename="source/lodepng/lodepng.cpp" />
 		<Unit filename="source/lodepng/lodepng.h" />

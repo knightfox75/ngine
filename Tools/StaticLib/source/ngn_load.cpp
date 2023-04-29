@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -130,7 +130,7 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
     std::vector<uint8_t> buffer;
     std::vector<uint8_t> pixels;
 
-    // Tama�o de la imagen
+    // Tamaño de la imagen
     uint32_t w, h;
 
     // Intenta abrir el archivo
@@ -790,7 +790,7 @@ NGN_RawImage* NGN_Load::SpriteAsRaw(std::string filepath, uint32_t frame) {
     raw->width = spr->header.frame_width;
     raw->height = spr->header.frame_height;
 
-    // Calcula el tama�o de cada frame en memoria
+    // Calcula el tamaño de cada frame en memoria
     uint32_t frame_size = ((raw->width * raw->height) << 2);        // WIDTH * HEIGHT * 4
     // Calcula el offset con el origen de los datos
     uint32_t offset = (frame_size * frame);
@@ -842,7 +842,7 @@ bool NGN_Load::SpriteAsRawVector(
     uint32_t height = spr->header.frame_height;
     uint32_t total_frames = ((_last_frame - _first_frame) + 1);
 
-    // Calcula el tama�o de cada frame en memoria
+    // Calcula el tamaño de cada frame en memoria
     uint32_t frame_size = ((width * height) << 2);        // WIDTH * HEIGHT * 4
     // Calcula el offset con el origen de los datos
     uint32_t offset = 0;
@@ -1033,7 +1033,7 @@ bool NGN_Load::LoadSpriteData(std::string filepath, std::vector<uint8_t> &img_pi
         memcpy((uint8_t*)&spr->header, (uint8_t*)&buffer[0], sizeof(spr->header));
         file_pos += sizeof(spr->header);
 
-        // Calcula el tama�o del buffer
+        // Calcula el tamaño del buffer
         uint32_t buffer_size = (buffer.size() - sizeof(spr->header));
         raw.resize(buffer_size);
 

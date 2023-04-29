@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -125,7 +125,7 @@ void NGN_Render::Texture(NGN_Texture* texture, float position_x, float position_
     if (!texture->visible) return;
 
     // Calculos
-    if ((position_x == NGN_DEFAULT_VALUE) && (position_y == NGN_DEFAULT_VALUE)) {
+    if ((position_x == (float)NGN_DEFAULT_VALUE) && (position_y == (float)NGN_DEFAULT_VALUE)) {
         texture->screen = texture->position;
     } else {
         texture->screen.x = position_x;
@@ -206,9 +206,9 @@ void NGN_Render::Sprite(NGN_Sprite* sprite, float position_x, float position_y) 
     if (!sprite->visible) return;
 
     // Calculos
-    if ((position_x == NGN_DEFAULT_VALUE) && (position_y == NGN_DEFAULT_VALUE)) {
-        sprite->screen.x = (uint32_t)sprite->position.x;
-        sprite->screen.y = (uint32_t)sprite->position.y;
+    if ((position_x == (float)NGN_DEFAULT_VALUE) && (position_y == (float)NGN_DEFAULT_VALUE)) {
+        sprite->screen.x = (int32_t)sprite->position.x;
+        sprite->screen.y = (int32_t)sprite->position.y;
     } else {
         sprite->screen.x = position_x;
         sprite->screen.y = position_y;
@@ -305,7 +305,7 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
     if (!layer->visible) return;
 
     // Calculos
-    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
+    if ((position_x != (float)NGN_DEFAULT_VALUE) && (position_y != (float)NGN_DEFAULT_VALUE)) {
         layer->position.x = position_x;
         layer->position.y = position_y;
     }
@@ -387,7 +387,7 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
     canvas->Blit();
 
     // Calculos
-    if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
+    if ((position_x != (float)NGN_DEFAULT_VALUE) && (position_y != (float)NGN_DEFAULT_VALUE)) {
         canvas->position.x = position_x;
         canvas->position.y = position_y;
     }
@@ -601,7 +601,7 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
         SDL_SetTextureAlphaMod(bg->backbuffer, 0x00);
         SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-        // Tama�o del area de dibujado
+        // Tamaño del area de dibujado
         int32_t tile_last_x = (std::floor(render_area.width / bg->tile_size) + 2);      // +2 soluciona el encage en resoluciones anamorficas
         int32_t tile_last_y = (std::floor(render_area.height / bg->tile_size) + 2);
 
@@ -764,7 +764,7 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
         SDL_SetTextureAlphaMod(bg->backbuffer, 0x00);
         SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
-        // Tama�o del area de dibujado
+        // Tamaño del area de dibujado
         int32_t tile_last_x = (std::floor(render_area.width / bg->tile_size) + 2);      // +2 soluciona el encage en resoluciones anamorficas
         int32_t tile_last_y = (std::floor(render_area.height / bg->tile_size) + 2);
 

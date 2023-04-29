@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -76,11 +76,11 @@ class NGN_TiledBg {
         // Propiedades del fondo (publicas)
         NGN_TiledBgData* bgdata;            // Tiles + Mapa del fondo
         Vector2 position;                   // Posicion del fondo
-        float width;                        // Tama�o
+        float width;                        // Tamaño
         float height;
 
-        uint32_t tile_size;                 // Tama�o del tile
-        Size2I32 map_size;                  // Tama�o del mapa de tiles
+        uint32_t tile_size;                 // Tamaño del tile
+        Size2I32 map_size;                  // Tamaño del mapa de tiles
 
         Vector2 center;                     // Centro del fondo para su rotacion
 
@@ -94,7 +94,7 @@ class NGN_TiledBg {
 
         SDL_Texture* backbuffer;            // Backbufer del fondo para su renderizado
 
-        // Tama�o del backbuffer
+        // Tamaño del backbuffer
         Size2I32 bb_size;
 
         // Ubicacion en el ultimo frame
@@ -127,8 +127,8 @@ class NGN_TiledBg {
 
         // Datos del fondo virtual para la camara 2D
         struct {
-            Size2I64 bg_size;                   // Tama�o virtual del fondo
-            Vector2I64 loop;                    // Punto de loop del scroll del fondo (segun tama�o virtual)
+            Size2I64 bg_size;                   // Tamaño virtual del fondo
+            Vector2I64 loop;                    // Punto de loop del scroll del fondo (segun tamaño virtual)
             Vector2 scroll;                     // Velocidad del autoscroll
             Vector2 offset;                     // Guarda el acumulado del autoscroll
             bool enabled;                       // El fondo lo gestiona la camara en modo virtual

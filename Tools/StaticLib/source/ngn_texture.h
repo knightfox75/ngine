@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -92,7 +92,7 @@ class NGN_Texture {
         NGN_TextureData* data;      // Datos graficos de la textura
         Vector2 position;           // Posicion de la textura (Global/Mundo)
         Vector2 screen;             // Posicion de la textura (Pantalla)
-        float width;                // Tama�o
+        float width;                // Tamaño
         float height;
         Vector2 center;             // Centro de la textura para su rotacion
 
@@ -113,7 +113,7 @@ class NGN_Texture {
         void Translate(float speed_x, float speed_y);
         void Translate(Vector2 spd);
 
-        // Cambia el tama�o de la textura
+        // Cambia el tamaño de la textura
         void Size(float w, float h);
 
         //  Escala una textura
@@ -131,8 +131,8 @@ class NGN_Texture {
 
         // Datos de la textura virtual para la camara 2D
         struct {
-            Size2I64 texture_size;              // Tama�o virtual de la textura
-            Vector2I64 loop;                    // Punto de loop del scroll de la textura (segun tama�o virtual)
+            Size2I64 texture_size;              // Tamaño virtual de la textura
+            Vector2I64 loop;                    // Punto de loop del scroll de la textura (segun tamaño virtual)
             Vector2 scroll;                     // Velocidad del autoscroll
             Vector2 offset;                     // Guarda el acumulado del autoscroll
             bool enabled;                       // El fondo lo gestiona la camara en modo virtual
@@ -148,7 +148,7 @@ class NGN_Texture {
     private:
 
         // Propiedades internas de la textura
-        Size2 original;         			// Tama�o original
+        Size2 original;         			// Tamaño original
         bool linked;                        // Textura creada o enlazada
         void DefaultValues();               // Carga los parametros por defecto
 

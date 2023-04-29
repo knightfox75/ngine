@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -157,10 +157,10 @@ class NGN_Graphics {
         void DefaultViewport();
 
 
-        // Cambia el tama�o del clip del viewport [1ra sobrecarga, viewport principal]
+        // Cambia el tamaño del clip del viewport [1ra sobrecarga, viewport principal]
         void SetViewportClip(int32_t x, int32_t y, int32_t w, int32_t h);
         SDL_Rect clip_area;
-        // Cambia el tama�o del clip del viewport [2da sobrecarga, viewports multiples]
+        // Cambia el tamaño del clip del viewport [2da sobrecarga, viewports multiples]
         void SetViewportClip(uint8_t id, int32_t x, int32_t y, int32_t w, int32_t h);
 
 

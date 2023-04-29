@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.13.0-stable ***
+    *** Version 1.14.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -108,7 +108,7 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
 
 
 
-/*** Especifica el tama�o de la capa para los sprites ***/
+/*** Especifica el tamaño de la capa para los sprites ***/
 void NGN_Camera::SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height) {
 
     if (layer_number < layer.size()) {
@@ -127,7 +127,7 @@ void NGN_Camera::Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* 
     world.width = world_width;
     world.height = world_height;
 
-    // El mundo NO puede ser menor del tama�o de la pantalla
+    // El mundo NO puede ser menor del tamaño de la pantalla
     if (world.width < ngn->graphics->native_w) world.width = ngn->graphics->native_w;
     if (world.height < ngn->graphics->native_h) world.height = ngn->graphics->native_h;
 
@@ -138,21 +138,21 @@ void NGN_Camera::Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* 
 
 
 
-/*** A�ade un fondo de textura a la capa especificada ***/
+/*** Añade un fondo de textura a la capa especificada ***/
 int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) {
 
     // Si la capa y la textura son validas
     if ((layer_number < layer.capacity()) && texture) {
 
-        // Indica al sprite en que capa se ha a�adido
+        // Indica al sprite en que capa se ha añadido
         texture->camera_layer = layer_number;
 
-        // A�ade el fondo a la lista
+        // Añade el fondo a la lista
         layer[layer_number].texture.push_back(texture);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
 
-        // Si es necesario, registra el tama�o del fondo como el de la capa de Sprites
+        // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
         if ((layer[layer_number].sprite_layer.width == NGN_DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == NGN_DEFAULT_VALUE)) {
             SizeOfLayer(layer_number, texture->width, texture->height);
         }
@@ -170,21 +170,21 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) 
 
 
 
-/*** A�ade un fondo de tiles a la capa especificada ***/
+/*** Añade un fondo de tiles a la capa especificada ***/
 int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* background) {
 
     // Si la capa y el fondo son validos
     if ((layer_number < layer.capacity()) && background) {
 
-        // Indica al sprite en que capa se ha a�adido
+        // Indica al sprite en que capa se ha añadido
         background->camera_layer = layer_number;
 
-        // A�ade el fondo a la lista
+        // Añade el fondo a la lista
         layer[layer_number].bg.push_back(background);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
 
-        // Si es necesario, registra el tama�o del fondo como el de la capa de Sprites
+        // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
         if ((layer[layer_number].sprite_layer.width == NGN_DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == NGN_DEFAULT_VALUE)) {
             SizeOfLayer(layer_number, background->width, background->height);
         }
@@ -202,10 +202,10 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* backgroun
 
 
 
-/*** A�ade un fondo de textura a la camara en modo virtual ***/
+/*** Añade un fondo de textura a la camara en modo virtual ***/
 int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x, float auto_y) {
 
-    // A�ade el fondo a la camara
+    // Añade el fondo a la camara
     int32_t id = PushBackground(layer_number, texture);
 
     // Registra los parametros virtuales
@@ -228,10 +228,10 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, u
 
 
 
-/*** A�ade un fondo de tiles a la camara en modo virtual ***/
+/*** Añade un fondo de tiles a la camara en modo virtual ***/
 int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x, float auto_y) {
 
-    // A�ade el fondo a la camara
+    // Añade el fondo a la camara
     int32_t id = PushBackground(layer_number, background);
 
     // Registra los parametros virtuales
@@ -254,15 +254,15 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background
 
 
 
-/*** A�ade un sprite a la capa especificada (1ra sobrecarga) ***/
+/*** Añade un sprite a la capa especificada (1ra sobrecarga) ***/
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
     // Si la capa y el sprite son validos
     if ((layer_number < layer.capacity()) && sprite) {
 
-        // Indica al sprite en que capa se ha a�adido
+        // Indica al sprite en que capa se ha añadido
         sprite->camera_layer = layer_number;
-        // A�ade el fondo a la lista
+        // Añade el fondo a la lista
         layer[layer_number].spr.push_back(sprite);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
@@ -280,15 +280,15 @@ int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
 
 
-/*** A�ade un sprite a la capa especificada (2da sobrecarga) ***/
+/*** Añade un sprite a la capa especificada (2da sobrecarga) ***/
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Texture* texture) {
 
     // Si la capa y la textura son validas
     if ((layer_number < layer.capacity()) && texture) {
 
-        // Indica al sprite en que capa se ha a�adido
+        // Indica al sprite en que capa se ha añadido
         texture->camera_layer = layer_number;
-        // A�ade el fondo a la lista
+        // Añade el fondo a la lista
         layer[layer_number].spr_t.push_back(texture);
         // Y registra que esta en uso la capa
         layer[layer_number].in_use = true;
@@ -354,7 +354,7 @@ void NGN_Camera::Update() {
     render_area.width = ngn->graphics->render_resolution.width;
     render_area.height = ngn->graphics->render_resolution.height;
 
-    // Calcula el tama�o del scroll
+    // Calcula el tamaño del scroll
     scroll.width = (world.width - render_area.width);
     scroll.height = (world.height - render_area.height);
 

@@ -189,7 +189,7 @@ int32_t CollisionMap::CheckArguments() {
             arg_out_file.value = argument_list[i];
             valid = true;
 
-        } else if (argument_list[i] == ARG_TILE_SIZE) {             // Tama�o del tile
+        } else if (argument_list[i] == ARG_TILE_SIZE) {             // tamaño del tile
 
             if (arg_tile_size.state) return -1;
             if ((i + 1) >= argument_list.size()) return -1;
@@ -245,7 +245,7 @@ bool CollisionMap::ValidateParameters() {
     }
 
 
-    // Tama�o del tile
+    // tamaño del tile
     if (arg_tile_size.state) {
         parameter.tile_size = std::stoi(arg_tile_size.value);
         if ((parameter.tile_size < MIN_TILE_SIZE) || (parameter.tile_size > MAX_TILE_SIZE)) {
