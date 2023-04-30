@@ -261,6 +261,17 @@ int32_t FileSystem::CreateFatFromDir() {
     // Informa del numero de archivos encontrados
     std::cout << "[" << arg_in_dir.value << "] contains " << file_list.size() << " files." << std::endl;
 
+    // Ordena la lista de archivos alfabeticamente en orden ascendente (A-Z)
+    struct {
+        bool operator() (std::string a, std::string b) {
+            return ((a.compare(b)) < 0);
+        }
+    } comp;
+    std::cout << "Sorting file list entries in ascending order (A to Z)... ";
+    std::sort(file_list.begin(), file_list.end(), comp);
+    std::cout << "Ok." << std::endl;
+    //for (uint32_t k = 0; k < fat.size(); k ++) std::cout << fat[k].file_name << std::endl;
+
     // Prepara la FAT
     fat.clear();
 
@@ -270,7 +281,7 @@ int32_t FileSystem::CreateFatFromDir() {
     node.next_node_offset = sizeof(file_header);
     // Offset de posicion del archivo (de momento, 0)
     node.file_offset = 0;
-    // Estimacion de tama�o de la FAT y de los datos
+    // Estimacion de tamaño de la FAT y de los datos
     fat_size = 0;
     data_size = 0;
     // Checksum del archivo
@@ -279,7 +290,7 @@ int32_t FileSystem::CreateFatFromDir() {
     std::vector<uint8_t> buffer;
     buffer.clear();
 
-    // Recore la lista de archivos, analizando el tama�o de cada uno de ellos y creando el nodo correspondiente en la FAT
+    // Recore la lista de archivos, analizando el tamaño de cada uno de ellos y creando el nodo correspondiente en la FAT
     std::cout << "FAT creation started... ";
     for (uint32_t i = 0; i < file_list.size(); i ++) {
 
@@ -288,10 +299,19 @@ int32_t FileSystem::CreateFatFromDir() {
         node.path_length = node.file_name.length();             // Numero de caracteres en la ruta
         node.next_node_offset += NODE_SIZE + node.path_length;  // Offset al siguiente nodo
 
-        // Registra el tama�o del nodo
+        /*
+        std::cout << "****************************************" << std::endl;
+        std::cout << "Position: " << i << std::endl;
+        std::cout << "Node name: " << node.file_name << std::endl;
+        std::cout << "Name length: " << node.path_length << std::endl;
+        std::cout << "Node next pos: " << node.next_node_offset << std::endl;
+        std::cout << "****************************************" << std::endl;
+        */
+
+        // Registra el tamaño del nodo
         fat_size += NODE_SIZE + node.path_length;
 
-        // Intenta abrir el archivo para guardar su tama�o
+        // Intenta abrir el archivo para guardar su tamaño
         const char* path = node.file_name.c_str();
 
         // Intenta abrir el archivo en modo binario
@@ -300,7 +320,7 @@ int32_t FileSystem::CreateFatFromDir() {
 
         // Segun si has podido o no abrirlo...
         if (file.is_open()) {
-            // Calcula el tama�o del archivo
+            // Calcula el tamaño del archivo
             file.seekg(0, file.end);            // Avanza hasta el final del archivo
             node.file_size = file.tellg();      // Consulta el numero de bytes recorridos
             file.seekg(0, file.beg);            // Rebobina el archivo
@@ -310,7 +330,7 @@ int32_t FileSystem::CreateFatFromDir() {
             checksum = Checksum(buffer);
             buffer.clear();
             file.close();                       // Cierra el archivo
-            // Registra el tama�o de archivo
+            // Registra el tamaño de archivo
             data_size += node.file_size;
             // Registra el checksum del archivo
             for (uint8_t i = 0; i < CHK_SIZE; i ++) node.checksum[i] = checksum[i];
@@ -326,22 +346,11 @@ int32_t FileSystem::CreateFatFromDir() {
         // Verifica si es el ultimo nodo para marcarlo (offset a 0)
         if (i == file_list.size() - 1) node.next_node_offset = 0;
 
-        // A�ade el nodo creado a la FAT
+        // Añade el nodo creado a la FAT
         fat.push_back(node);
 
     }
     std::cout << "Ok." << std::endl;
-
-    // Ordena la FAT alfabeticamente en orden ascendente (A-Z)
-    struct {
-        bool operator() (FatNode node_a, FatNode node_b) {
-            return ((node_a.file_name.compare(node_b.file_name)) < 0);
-        }
-    } comp;
-    std::cout << "Sorting FAT entries in ascending order (A to Z)... ";
-    std::sort(fat.begin(), fat.end(), comp);
-    std::cout << "Ok." << std::endl;
-    //for (uint32_t k = 0; k < fat.size(); k ++) std::cout << fat[k].file_name << std::endl;
 
     // Con la FAT creada y los datos analizados, calcula ahora la posicion que ocupara cada archivo en la seccion de datos
     uint32_t offset = sizeof(file_header) + fat_size;
@@ -468,7 +477,7 @@ int32_t FileSystem::WritePackageFile(std::string filepath) {
         const char* infile_name = fat[i].file_name.c_str();
         infile.open(infile_name, std::ifstream::in | std::ifstream::binary);
 
-        // A�adiendo el archivo...
+        // Añadiendo el archivo...
         std::cout << "Adding";
         if (arg_key.state) std::cout << " and encrypting";
         std::cout << " [" << fat[i].file_name << "]... ";
@@ -609,7 +618,7 @@ int32_t FileSystem::CreateFatFromPackage() {
         for (uint8_t n = 0; n < CHK_SIZE; n ++) node.checksum[n] = checksum[n];
         std::string str(file_name.begin(), file_name.end());
         node.file_name = str;
-        // A�ade el nodo temporal a la FAT
+        // Añade el nodo temporal a la FAT
         fat.push_back(node);
     } while (node.next_node_offset > 0);
 

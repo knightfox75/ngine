@@ -131,9 +131,9 @@ void FsManager::GetFilesRecursive(std::string path, std::vector<std::string> &fi
     /// Esta correccion es de caracter experimental para verificar si se soluciona el problema.
     const uint8_t slash = 0x2F;
     const uint8_t back_slash = 0x5C;
-    //std::cout << "IN: " << path << std::endl;
+    // std::cout << "IN: " << path << std::endl;
     for (uint32_t k = 0; k < path.size(); k ++) if (path[k] == back_slash) path[k] = slash;
-    //std::cout << "OUT: " << path << std::endl;
+    // std::cout << "OUT: " << path << std::endl;
 
     // Convierte la ruta de archivo a constante
     const char* _path = path.c_str();
