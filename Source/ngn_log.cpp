@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-RC1 ***
     Funciones de mensages de depuracion
 
     Proyecto iniciado el 1 de Febrero del 2016

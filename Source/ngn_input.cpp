@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-RC1 ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -554,7 +554,28 @@ void NGN_Input::GameControllerInit() {
 void NGN_Input::GameControllerClose() {
 
     // Cierra los controladores de la lista
-    for (uint32_t i = 0; i < GAME_CONTROLLERS; i ++) if (SDL_JoystickGetAttached(controller[i].joy)) SDL_JoystickClose(controller[i].joy);
+    for (uint32_t i = 0; i < GAME_CONTROLLERS; i ++) {
+        if (!controller[i].available) continue;
+        if (!SDL_GameControllerGetAttached(controller[i].gamepad)) continue;
+        // Si soporta rumble, cancela cualquier efecto en curso
+        if (controller[i].rumble_available) SDL_GameControllerRumble(controller[i].gamepad, 0, 0, 0);
+        // Cierra el controlador
+        SDL_GameControllerClose(controller[i].gamepad);
+        // Informa de la eliminacion
+        #if defined (MODE_DEBUG)
+            // Imprime la info del controlador eliminado
+            std::string txt = "[NGN_Input info]\nThe <";
+            txt += controller[i].name;
+            txt += "> with ID <";
+            txt += ngn->toolbox->Int2String(controller[i].device_id, 1, "0");
+            txt += "> at slot [";
+            txt += ngn->toolbox->Int2String(i, 1, "0");
+            txt += "] has been successfully closed.";
+            ngn->log->Message(txt);
+        #endif
+        // Reinicialo
+        GameControllerReset(i);
+    }
 
     // Limpia la lista de controladores
     controller_list.clear();
@@ -567,12 +588,8 @@ void NGN_Input::GameControllerClose() {
 void NGN_Input::GameControllerReset(uint8_t idx) {
 
     controller[idx].available = false;
-    controller[idx].joy = NULL;
-    controller[idx].id = -1;
+    controller[idx].device_id = -1;
     controller[idx].name = "";
-    controller[idx].axis_number = 0;
-    controller[idx].button_number = 0;
-    controller[idx].pov_available = false;
     for (uint32_t a = 0; a < GAME_CONTROLLER_AXIS; a ++) controller[idx].axis[a] = 0.0f;
     for (uint32_t b = 0; b < GAME_CONTROLLER_BUTTONS; b ++) controller[idx].button[b].Reset();
     controller[idx].pov = 0;
@@ -580,8 +597,11 @@ void NGN_Input::GameControllerReset(uint8_t idx) {
     controller[idx].pov_down.Reset();
     controller[idx].pov_left.Reset();
     controller[idx].pov_right.Reset();
+    controller[idx].dpad.up.Reset();
+    controller[idx].dpad.down.Reset();
+    controller[idx].dpad.left.Reset();
+    controller[idx].dpad.right.Reset();
     controller[idx].rumble_available = false;
-    controller[idx].haptic = NULL;
 
 }
 
@@ -603,62 +623,36 @@ void NGN_Input::UpdateGameController() {
         controllers = gc;
     }
 
-    // Debug de los AXIS disponibles
-//    #if __INPUT_DEBUG == true
-//    for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
-//        if (controller[i].available) {
-//            std::cout << "ID" << i << "|";
-//            for (int32_t a = 0; a < controller[i].axis_number; a ++) {
-//                std::cout << "A" << a << ":" << std::fixed << std::setw(5) << std::setprecision(2) << controller[i].axis[a] << "|";
-//            }
-//            //std::cout << std::endl;
-//        }
-//    }
-//    #endif
-
     // Lectura de los botones de los game controllers
     for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
-        // Si el game controller esta disponible
-        if (controller[i].available) {
-            // Actualiza los botones de cada game controller
-            for (int32_t b = 0; b < controller[i].button_number; b ++) {
-                controller[i].button[b].held = SDL_JoystickGetButton(controller[i].joy, b);
-                controller[i].button[b].Update();
-            }
-            // Actualiza el POV si este existe
-            if (controller[i].pov_available) {
-                controller[i].pov = SDL_JoystickGetHat(controller[i].joy, 0);
-                controller[i].pov_up.held = (controller[i].pov & 0x01) ? true:false;
-                controller[i].pov_up.Update();
-                controller[i].pov_right.held = (controller[i].pov & 0x02) ? true:false;
-                controller[i].pov_down.Update();
-                controller[i].pov_down.held = (controller[i].pov & 0x04) ? true:false;
-                controller[i].pov_left.Update();
-                controller[i].pov_left.held = (controller[i].pov & 0x08) ? true:false;
-                controller[i].pov_right.Update();
-            }
+        // Si el game controller no esta disponible, lectura del siguiente
+        if (!controller[i].available) continue;
+        // Actualiza los botones de cada game controller
+        for (int32_t b = 0; b < GAME_CONTROLLER_BUTTONS; b ++) {
+            controller[i].button[b].Update();
         }
+        // Actualiza el estado del D-PAD
+        controller[i].dpad.up.Update();
+        controller[i].dpad.down.Update();
+        controller[i].dpad.left.Update();
+        controller[i].dpad.right.Update();
+        // Actualiza el POV en base al D-PAD (legacy)
+        controller[i].pov_up.held = controller[i].dpad.up.held;
+        controller[i].pov_down.held = controller[i].dpad.down.held;
+        controller[i].pov_left.held = controller[i].dpad.left.held;
+        controller[i].pov_right.held = controller[i].dpad.right.held;
+        // Actualiza el POV (legacy)
+        controller[i].pov_up.Update();
+        controller[i].pov_down.Update();
+        controller[i].pov_left.Update();
+        controller[i].pov_right.Update();
+        // Mascara de bits para el POV (legacy)
+        controller[i].pov = 0;
+        if (controller[i].dpad.up.held) controller[i].pov |= 0x01;
+        if (controller[i].dpad.right.held) controller[i].pov |= 0x02;
+        if (controller[i].dpad.down.held) controller[i].pov |= 0x04;
+        if (controller[i].dpad.left.held) controller[i].pov |= 0x08;
     }
-
-    // Debug de los botones y crucetas disponibles
-//    #if __INPUT_DEBUG == true
-//    for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
-//        if (controller[i].available) {
-//            //std::cout << "ID_" << i << "|>>|";
-//            for (int32_t b = 0; b < controller[i].button_number; b ++) {
-//                std::cout << "B" << b << ":" << controller[i].button[b].held << "|";
-//            }
-//            if (controller[i].pov_available) {
-//                std::cout << "P:" << (int32_t)controller[i].pov;
-//            }
-//            std::cout << std::endl;
-//        }
-//    }
-//    #endif
-
-    /*
-    Las lecturas los AXIS se realizan en el SYSTEM
-    */
 
 }
 
@@ -668,65 +662,74 @@ void NGN_Input::UpdateGameController() {
 void NGN_Input::AddControllers(int32_t gc) {
 
     // Variables
-    SDL_Joystick* joy = NULL;           // Puntero a la instancia
-    bool found = false;                 // Control de busqueda
-    controller_list_data add_joy;       // Temporal para a�adirlo a la lista
-    std::string name = "";              // Nombre del joystick
+    SDL_GameController* gamepad = NULL;     // Puntero a la instancia
+    bool found = false;                     // Control de busqueda
+    ControllerListData gamepad_data;        // Temporal para añadirlo a la lista
+    std::string name = "";                  // Nombre del gamepad
+    std::string serial_id = "";             // numero de serie
+    int32_t device_id = -1;                 // ID de instancia del dispositivo
 
-    // Recorre la lista de controladores  conectados actualmente
+    // Recorre la lista de controladores conectados actualmente
     for (int32_t idx = 0; idx < gc; idx ++) {
 
-        // Nombre del Joystick
-        name = std::string(SDL_JoystickNameForIndex(idx));
+        // Intenta abrir el controlador
+        gamepad = SDL_GameControllerOpen(idx);
 
-        // Busca si ese JOY ya esta en la lista
+        // Si falla la apertura, intentalo con el siguiente
+        if (!gamepad) continue;
+
+        // Nombre e ID del Gamepad
+        device_id = SDL_GameControllerGetPlayerIndex(gamepad);
+        name = std::string(SDL_GameControllerName(gamepad));
+
+        // Busca si ese GAMEPAD ya esta en la lista
         found = false;
         for (uint32_t i = 0; i < controller_list.size(); i ++) {
             // Si lo encuentras, indicalo y sal
-            if (controller_list[i].name == name) {
+            if ((controller_list[i].device_id == device_id) && (controller_list[i].name == name)) {
                 found = true;
                 break;
             }
         }
+        // Si esta en la lista, analiza el siguiente ID conectado
+        if (found) continue;
 
-        // Si no se encuentra, a�adelo a la lista en el primer slot disponible
-        if (!found) {
-            for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
-                // Si el slot esta libre
-                if (!controller[i].available) {
-                    // Abre la instancia al Joystick
-                    joy = SDL_JoystickOpen(idx);
-                    // Si se ha abierto con exito
-                    if (SDL_JoystickGetAttached(joy)) {
-                        // Guarda los parametros de este joystick
-                        controller[i].available = true;
-                        controller[i].name = name;
-                        controller[i].joy = joy;
-                        controller[i].id = SDL_JoystickInstanceID(joy);
-                        controller[i].axis_number = SDL_JoystickNumAxes(joy);
-                        if (controller[i].axis_number > GAME_CONTROLLER_AXIS) controller[i].axis_number = GAME_CONTROLLER_AXIS;
-                        controller[i].button_number = SDL_JoystickNumButtons(joy);
-                        if (controller[i].button_number > GAME_CONTROLLER_BUTTONS) controller[i].button_number = GAME_CONTROLLER_BUTTONS;
-                        if (SDL_JoystickNumHats(joy) > 0) controller[i].pov_available = true;
-                        // Efecto "rumble"
-                        controller[i].haptic = SDL_HapticOpen(i);
-                        if (controller[i].haptic) {
-                            if (SDL_HapticRumbleInit(controller[i].haptic) == 0) {
-                                controller[i].rumble_available = true;
-                            } else {
-                                SDL_HapticClose(controller[i].haptic);
-                            }
-                        }
-                        // Guarda este JOY en la lista de controladores disponibles
-                        add_joy.name = name;
-                        add_joy.slot = i;
-                        controller_list.push_back(add_joy);
-                        //std::cout << add_joy.name << " Added." << std::endl;
-                        // Sal del proceso
-                        break;
-                    }
-                }
-            }
+        // Si no se encuentra, añadelo a la lista en el primer slot disponible
+        for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
+
+            // Si el slot en uso (controlador disponible, busca en el siguiente)
+            if (controller[i].available) continue;
+
+            // Guarda los parametros de este joystick
+            controller[i].available = true;
+            controller[i].gamepad = gamepad;
+            controller[i].device_id = device_id;
+            controller[i].name = name;
+            controller[i].rumble_available = SDL_GameControllerHasRumble(gamepad);
+
+            #if defined (MODE_DEBUG)
+                // Imprime la info del controlador añadido
+                std::string txt = "[NGN_Input info]\nThe <";
+                txt += name;
+                txt += "> with ID <";
+                txt += ngn->toolbox->Int2String(device_id, 1, "0");
+                txt += "> has been connected to slot [";
+                txt += ngn->toolbox->Int2String(i, 1, "0");
+                txt += "]. This device ";
+                if (!controller[i].rumble_available) txt += "doesn't ";
+                txt += "supports rumble.";
+                ngn->log->Message(txt);
+            #endif
+
+            // Guarda este game pad en la lista de controladores disponibles
+            gamepad_data.name = name;
+            gamepad_data.device_id = device_id;
+            gamepad_data.slot = i;
+            controller_list.push_back(gamepad_data);
+
+            // Sal del proceso despues de buscar un slot libre y asignarlo de ser posible
+            break;
+
         }
 
     }
@@ -739,25 +742,34 @@ void NGN_Input::AddControllers(int32_t gc) {
 void NGN_Input::RemoveControllers() {
 
     // Variables
-    bool repeat = false;            // Flag para repetir el proceso
-    SDL_Joystick* joy = NULL;       // Puntero a la instancia
-    uint8_t slot = 0;               // ID en la lista de joysticks
+    bool repeat = false;                    // Flag para repetir el proceso
+    uint8_t slot = 0;                       // ID en la lista de joysticks
 
-    // Repite mientras falten joysticks o la lista este vacia
+    // Elimina los gamepads no conectados
     do {
         repeat = false;
         for (uint32_t i = 0; i < controller_list.size(); i ++) {
             slot = controller_list[i].slot;
-            joy = controller[slot].joy;
-            // Si el Joystick no esta disponible...
-            if (!SDL_JoystickGetAttached(joy)) {
-                // Si esta abiero el sistema de "haptic", cierralo
-                if (controller[slot].haptic) SDL_HapticClose(controller[slot].haptic);
+            // Si el Gamepad no esta disponible...
+            if (!SDL_GameControllerGetAttached(controller[slot].gamepad)) {
+                // Si soporta rumble, cancela cualquier efecto en curso
+                if (controller[slot].rumble_available) SDL_GameControllerRumble(controller[slot].gamepad, 0, 0, 0);
                 // Cierra el controlador
-                SDL_JoystickClose(joy);
+                SDL_GameControllerClose(controller[slot].gamepad);
                 // Reinicialo
-                //std::cout << controller[slot].name << " Removed." << std::endl;
                 GameControllerReset(slot);
+                // Informa de la eliminacion
+                #if defined (MODE_DEBUG)
+                    // Imprime la info del controlador eliminado
+                    std::string txt = "[NGN_Input info]\nThe <";
+                    txt += controller_list[i].name;
+                    txt += "> with ID <";
+                    txt += ngn->toolbox->Int2String(controller_list[i].device_id, 1, "0");
+                    txt += "> has been disconnected from slot [";
+                    txt += ngn->toolbox->Int2String(slot, 1, "0");
+                    txt += "].";
+                    ngn->log->Message(txt);
+                #endif
                 // Y eliminalo de la lista de controladores conectados
                 controller_list.erase(controller_list.begin() + i);
                 // Marca para repetir
@@ -775,8 +787,8 @@ void NGN_Input::RemoveControllers() {
 /*** Efecto simple de "rumble" en el controlador ***/
 int32_t NGN_Input::ControllerRumble(uint32_t controller_id, float intensity, uint32_t duration) {
 
-    // Fuera de rando
-    if (controller_id > GAME_CONTROLLERS) return -1;
+    // Fuera de rango
+    if (controller_id >= GAME_CONTROLLERS) return -1;
     // Game controller disponible
     if (!controller[controller_id].available) return -1;
     // Rumble disponible
@@ -785,6 +797,7 @@ int32_t NGN_Input::ControllerRumble(uint32_t controller_id, float intensity, uin
     if ((intensity < 0.0f) || (intensity > 1.0f)) return -1;
 
     // Aplica el efecto rumble
-    return SDL_HapticRumblePlay(controller[controller_id].haptic, intensity, duration);
+    uint16_t i = (uint16_t)(32767.0f * intensity);
+    return SDL_GameControllerRumble(controller[controller_id].gamepad, i, i, duration);
 
 }
