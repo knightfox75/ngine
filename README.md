@@ -24,10 +24,12 @@
   Con más de 6 años de desarrollo, ya se encuentra en una fase estable y sin errores graves conocidos. Actualmente, se trabaja en la mejora del rendimiento y la incorporación de nuevas funcionalidades.<br>
 
 - **¿Cuáles son las principales características del motor?**<br>
+
   **Métodos de entrada:**<br>
    - Teclado<br>
    - Ratón<br>
    - Gamepads norma x-input<br>
+   
   **Gráficos:**<br>
    - Texturas de hasta 8192x8192 píxeles<br>
    - Fondos de gran tamaño usando tiles<br>
@@ -38,16 +40,19 @@
    - Diferentes modos de mezcla y uso de máscaras<br>
    - Hasta 8 viewports simultáneos y ajustables<br>
    - Capacidad de mover, rotar y escalar todos los elementos gráficos<br>
+   
   **Sonido:**<br>
    - Hasta 4 streams de música/diálogos simultáneos (formato ogg)<br>
    - Hasta 64 efectos de sonido simultáneos (formato wav recomendado)<br>
    - Mezclador de 5 canales<br>
    - Posibilidad de cambiar el volumen, pan (en los efectos de sonido), pitch y loop<br>
+   
   **Colisiones:**<br>
    - Detección de colisión entre 2 sprites por cajas, con la posibilidad de añadir múltiples colisionadores en cada sprite<br>
    - Detección de colisión entre 2 sprites a nivel de píxel<br>
    - Raycast de 1 punto de una coordenada a un sprite<br>
    - Mapas de colisión de hasta 255 colores<br>
+   
   **Sistema de archivos:**<br>
    - Funciones de carga de los recursos desde el sistema de archivos<br>
    - Posibilidad de crear archivos de empaquetado de recursos con la opción de encriptación<br>
@@ -90,10 +95,12 @@ Aquí tienes una demo reel con la mayoría de características del motor:<br>
   With over 6 years of development, it is now in a stable phase without known major bugs. The current focus is on performance improvement and the addition of new features.<br>
 
 - **What are the main features of the engine?**<br>
+
   **Input Methods:**<br>
    - Keyboard<br>
    - Mouse<br>
    - X-input standard Gamepads<br>
+   
   **Graphics:**<br>
    - Textures up to 8192x8192 pixels<br>
    - Large backgrounds using tiles<br>
@@ -104,16 +111,19 @@ Aquí tienes una demo reel con la mayoría de características del motor:<br>
    - Various blending modes and use of masks<br>
    - Up to 8 simultaneous and adjustable viewports<br>
    - Ability to move, rotate, and scale all graphic elements<br>
+   
   **Sound:**<br>
    - Up to 4 simultaneous music/dialogue streams (ogg format)<br>
    - Up to 64 simultaneous sound effects (recommended wav format)<br>
    - 5-channel mixer<br>
    - Ability to change volume, pan (for sound effects), pitch, and loop<br>
+   
   **Collisions:**<br>
    - Collision detection between 2 sprites by boxes, with the ability to add multiple colliders to each sprite<br>
    - Pixel-level collision detection between 2 sprites<br>
    - Raycasting from 1 point of a coordinate to a sprite<br>
    - Collision maps with up to 255 colors<br>
+   
   **File System:**<br>
    - Loading functions for resources from the file system<br>
    - Ability to create resource packaging files with encryption options<br>
