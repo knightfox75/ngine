@@ -1,0 +1,194 @@
+NGN_TEXTURE.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_Texture(
+	NGN_TextureData* texture, 					// Object of the TextureData class
+	int32_t position_x = DEFAULT_VALUE,			// Initial X position (hidden by default)
+	int32_t position_y = DEFAULT_VALUE,			// Initial Y position (hidden by default)
+	uint32_t texture_width = DEFAULT_VALUE,		// Texture width (default: width of the texture)
+	uint32_t texture_height = DEFAULT_VALUE		// Texture height (default: height of the texture)
+);
+
+- Description
+Creates a new texture using the previously loaded data.
+
+- Example
+NGN_Texture* clouds = new NGN_Texture(clouds_gfx, 0, 0);
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_Texture(
+	uint32_t texture_width,						// Texture width
+	uint32_t texture_height,					// Texture height
+	int32_t position_x = NGN_DEFAULT_VALUE,		// Initial X position (hidden by default)
+	int32_t position_y = NGN_DEFAULT_VALUE		// Initial Y position (hidden by default)
+);
+
+- Description
+Creates a new blank texture with the specified size.
+
+- Example
+NGN_Texture* clouds = new NGN_Texture(1280, 720, 0, 0);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Description
+Positions the texture at the given coordinates.
+
+- Example
+clouds->Position(1200, 900);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Description
+Moves the texture in the direction and at the speeds provided.
+
+- Example
+clouds->Translate(5.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Size(float w, float h);
+
+- Description
+Resizes the texture.
+
+- Example
+clouds->Size(64, 48);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Description
+Scales the texture by the given factor. Depending on the overload used, it will scale the axes together or separately.
+The default scale is 1.0f.
+
+- Example
+clouds->Scale(1.5f);
+clouds->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Rotate(double degrees);
+
+- Description
+The texture rotates the provided number of degrees.
+
+- Example
+clouds->Rotate(1.2f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetCenter(float x, float y);
+
+- Description
+Specifies, in relative coordinates and from the actual center of the texture, where the rotation center of the texture will be located.
+
+- Example
+clouds->SetCenter(-10, -5);
+
+--------------------------------------------------------------------------------
+
+- Method
+void ClearContent (uint32_t rgba = 0x00000000);
+
+- Description
+Clears the content of a texture if it has been created as blank.
+If a fill color in RGBA format is not specified, the texture is cleared using the transparent color.
+
+- Example
+clouds->ClearContent();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Property
+Vector2 position
+Vector2 screen
+
+- Description
+Texture position (global or on the screen).
+
+--------------------------------------------------------------------------------
+
+- Property
+float width
+float height
+
+- Description
+Texture size.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool visible
+
+- Description
+Indicates whether the texture is visible or not.
+
+--------------------------------------------------------------------------------
+
+- Property
+int32_t alpha
+
+- Description
+Transparency level of the texture, ranging from 0 to 255.
+
+--------------------------------------------------------------------------------
+
+- Property
+SDL_BlendMode blend_mode
+
+- Description
+Color blending mode of the texture. Available modes are:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE, and NGN_BLENDMODE_MODULATE.
+The default value for this property is NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Property
+double rotation
+
+- Description
+Rotation of the texture, in degrees.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool flip_h
+bool flip_v
+
+- Description
+Vertical and horizontal flipping of the texture.
+
+--------------------------------------------------------------------------------

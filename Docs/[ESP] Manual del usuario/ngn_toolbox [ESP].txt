@@ -1,0 +1,62 @@
+NGN_TOOLBOX.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+std::string Int2String(
+	int32_t number,			// Número a convertir
+	uint8_t min_width,		// Ancho mínimo
+	const char* chr			// Símbolo para el relleno
+);
+	
+- Descripción
+Convierte un número entero a un string con el formato especificado.
+
+- Ejemplo
+std::string text = ngn->toolbox->Int2String(ngn->input->mouse.y, 4, "0");
+
+--------------------------------------------------------------------------------
+
+- Método
+std::string Float2String(
+	float number,			// Número a convertir
+	uint8_t min_width,		// Ancho mínimo
+	uint8_t precisión,		// Número de decimales a mostrar
+	const char* chr			// Símbolo para el relleno
+);
+	
+- Descripción
+Convierte un número de coma flotante a un string con el formato especificado.
+
+- Ejemplo
+std::string text = ngn->toolbox->Float2String(spr->position.x, 7, 2, "0");
+
+--------------------------------------------------------------------------------
+
+- Método
+std::string Utf8ToAnsi(std::string text);
+
+- Descripción
+Convierte una cadena de texto en formato UTF-8 (2 bytes) a ANSI.
+
+- Ejemplo
+std::string ansi_t = ngn->toolbox->Utf8ToAnsi(utf8_t);
+
+--------------------------------------------------------------------------------
+
+- Método
+std::string AnsiToUtf8(std::string text);
+
+- Descripción
+Convierte una cadena de texto en formato ANSI a UTF-8 (2 bytes).
+
+- Ejemplo
+std::string utf8_t = ngn->toolbox->Utf8ToAnsi(ansi_t);
+
+--------------------------------------------------------------------------------

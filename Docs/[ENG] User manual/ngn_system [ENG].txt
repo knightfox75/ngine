@@ -1,0 +1,72 @@
+NGN_SYSTEM.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+void EventUpdate();
+
+- Description
+Updates and manages events from the SDL2 library. Additionally, updates some of the library's subsystems, such as input device reading. Should be called once per cycle at the beginning of the frame.
+
+- Example
+ngn->system->EventUpdate();
+
+--------------------------------------------------------------------------------
+
+- Method
+std::string GetVersion();
+
+- Description
+Returns a string with the current version of N'gine.
+
+- Example
+std::string version = ngn->system->GetVersion();
+
+--------------------------------------------------------------------------------
+
+- Method
+bool GetApplicationFocus();
+
+- Description
+Returns whether the focus is on the application or not.
+
+- Example
+bool focused = ngn->system->GetApplicationFocus();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Property
+bool quit
+
+- Description
+Class property. Takes the value TRUE if any SDL event requests the program to exit; otherwise, its value is FALSE.
+
+- Example
+if (ngn->system->quit) exit_flag = true;
+
+--------------------------------------------------------------------------------
+
+- Property
+bool fps_counter
+
+- Description
+Class property. It has a default value of FALSE. If set to TRUE, it displays the frames per second being rendered in the debug console.
+
+- Example
+ngn->system->fps_counter = true;
+
+--------------------------------------------------------------------------------

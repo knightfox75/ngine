@@ -1,0 +1,20 @@
+NGN.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+- Método
+bool Init();
+
+- Descripción
+Inicializa la librería. Devuelve FALSE en caso de error.
+Ha de crearse un objeto llamado "ngn" usando el comando "new" y ejecutarse el método "Init()" antes de poder usar cualquier función de la librería.
+
+- Ejemplo
+ngn = new NGN();
+ngn->Init();
+
+--------------------------------------------------------------------------------

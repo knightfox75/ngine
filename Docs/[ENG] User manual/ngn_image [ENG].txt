@@ -1,0 +1,109 @@
+NGN_IMAGE.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_TextureData* ConvertRawToTextureData(NGN_RawImage* raw);
+
+- Description
+Converts an image in RAW format to texture data. Returns NULL in case of an error.
+
+- Example
+NGN_RawImage* pixels = ngn->load->SpriteAsRaw("data/coin.spr", 3);
+NGN_TextureData* coin_data = ngn->image->ConvertRawToTextureData(pixels);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool CutOutMask(
+    NGN_RawImage* source,       // Source RAW image
+    NGN_RawImage* mask,         // Mask RAW image
+    NGN_RawImage* destination	// Destination RAW image
+);
+
+- Description
+Applies the specified clipping mask to the source image and stores the result in the destination image. If the mask pixels contain transparency information (alpha channel), it is also applied. Returns TRUE on success and FALSE on error.
+
+- Example
+NGN_RawImage* stone = ngn->load->PngAsRaw("data/stone.png");
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+ngn->image->CutOutMask(stone, mask, pixels);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool HollowMask(
+    NGN_RawImage* source,       // Source RAW image
+    NGN_RawImage* mask,         // Mask RAW image
+    NGN_RawImage* destination   // Destination RAW image
+);
+
+- Description
+Applies the specified hollowing mask to the source image and stores the result in the destination image. If the mask pixels contain transparency information (alpha channel), it is also applied. Returns TRUE on success and FALSE on error.
+
+- Example
+NGN_RawImage* stone = ngn->load->PngAsRaw("data/stone.png");
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+ngn->image->HollowMask(stone, mask, pixels);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool AdvancedMask(
+    NGN_RawImage* source,                   // Source image
+    NGN_RawImage* mask,                     // Mask image
+    NGN_RawImage* destination,              // Destination image
+    Vector2I32 offset = {0, 0},             // Mask offset
+    uint8_t mode = NGN_MASKMODE_CUTOUT		// Mask mode
+);
+
+- Description
+Applies the specified mask to the source image and stores the result in the destination image. If the mask pixels contain transparency information (alpha channel), it is also applied. The mask application mode can be specified as NGN_MASKMODE_CUTOUT or NGN_MASKMODE_HOLLOW (cutout or hollow), as well as the mask offset. Returns TRUE on success and FALSE on error.
+
+- Example
+NGN_RawImage* stone = ngn->load->PngAsRaw("data/stone.png");
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+Vector2I32 offset = {15, 25};
+ngn->image->AdvancedMask(stone, mask, pixels, offset, NGN_MASKMODE_CUTOUT);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool RendererToSurface(NGN_RendererSurface* destination);
+
+- Description
+Saves the current content of the renderer in the specified object of type NGN_RendererSurface. Returns TRUE on success or FALSE on error.
+RendererSurface* renderer_surface = new NGN_RendererSurface();
+
+- Example
+ngn->image->RendererToSurface(renderer_surface);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool SurfaceToRaw(
+    NGN_RendererSurface* source,	// Source surface
+    NGN_RawImage* destination,      // Destination RAW image
+    NGN_RawImage* mask = NULL       // Cutout mask (optional)
+);
+
+- Description
+Converts the specified Surface to an image in RAW format and, optionally, applies a cutout mask if specified. This method returns TRUE on success or FALSE on error.
+
+- Example
+RendererSurface* renderer_surface = new NGN_RendererSurface();
+ngn->image->RendererToSurface(renderer_surface);
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+ngn->image->SurfaceToRaw(renderer_surface, pixels, mask);
+
+--------------------------------------------------------------------------------

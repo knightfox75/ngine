@@ -1,0 +1,409 @@
+--------------------------------------------------------------------------------
+2023-12-03 Ver.1.15.0-RC1
+--------------------------------------------------------------------------------
+- In the NGN_Texture class, the option to specify the fill color when using the ClearContent() method is added.
+- The code for reading and managing game controllers (gamepads) has been completely rewritten, using the latest SDL2 functions (SDL_GameController). This solves the bug where, on Windows operating systems, the "rumble" effect of controllers had stopped working.
+- Internal changes in the animation search of the NGN_Sprite class.
+- The documentation for using the library is updated, and the English version is added.
+
+
+--------------------------------------------------------------------------------
+2023-04-30 Ver.1.14.1-stable (NGN_FileSystem v1.3.3 Patch)
+--------------------------------------------------------------------------------
+- Fixed a BUG in the NGN_FileSystem utility, which, in some cases, did not correctly sort the list of files, causing the creation of an incorrect FAT in the generated packaging file.
+
+
+--------------------------------------------------------------------------------
+2023-04-29 Ver.1.14.0-stable
+--------------------------------------------------------------------------------
+- Updated the GetVersion() method of the NGN_System class, which now also returns the detected versions of the SDL2, SDL_ttf, SFML, and LodePNG libraries in addition to the current version of N'gine.
+- Updated the SFML version to version 3.0.0.
+- Fixed a bug in the sprite rendering method, which caused sprites with their center at negative coordinates not to render correctly on 32-bit ARM platforms.
+- Added support for using N'gine on Raspberry PI OS (Raspbian). All templates, tools, and examples have been updated for use on this platform.
+- Included two installation scripts for the necessary libraries for Linux Mint and Raspberry OS. Caution: The use of these scripts will install the libraries used to compile and use this version of N'gine and its projects on the system, overwriting any existing versions.
+
+
+--------------------------------------------------------------------------------
+2023-04-03 Ver.1.13.0-stable
+--------------------------------------------------------------------------------
+- Updated the template for advanced projects.
+- Added the ViewportBackdropColor() method to the NGN_Graphics class, which allows choosing the backdrop color of the specified viewport.
+- Added the SetBackdropColor() method to the NGN_Graphics class, which allows choosing the backdrop color of the main viewport.
+- Added protections to all methods of the NGN_Camera class to prevent their use in case a reference parameter is null.
+- Changed the user license from CC-4.0 to MIT.
+- Updated all tools, templates, and examples to display the new license, both in the source code and binaries.
+
+
+--------------------------------------------------------------------------------
+2023-02-19 Ver.1.12.0-stable
+--------------------------------------------------------------------------------
+- Added an overload to the SetViewportClip() method of the NGN_Graphics class, which, in the case of having different viewports, allows configuring the clipping of each one separately.
+- Added the NGN_Resources class, which allows creating resource repositories to manage them directly from the library. The internal name and file of each resource are specified in a text file, which is used to load the listed resources in the specified repository. It is possible to have 127 repositories simultaneously.
+- Modified the NGN_Texture, NGN_TiledBg, NGN_Sprite, NGN_TextLayer, and NGN_Sound classes to support the creation or playback of elements using the resources directly from the NGN_Resources class.
+- Added the example of using resource loading in a repository and the use of file packaging.
+- In the Windows version, the SDL2 library has been updated to ver.2.26.3, and the SDL2_TTF library to ver.2.20.2.
+- Added the code::blocks template for creating advanced projects.
+
+
+--------------------------------------------------------------------------------
+2022-12-24 Ver.1.11.0-stable
+--------------------------------------------------------------------------------
+- Added the compilation flags configuration file for N'gine. This allows compiling the library by disconnecting certain functionalities or using other alternatives if developing for platforms with low-performance GPUs or portable devices or on systems where the latest versions of the libraries used by N'gine are not available. Among other things, it is possible to disconnect the use of the backbuffer (losing certain options of bilinear filtering) or disconnect the advanced audio functions of SFML, available only in the latest versions of the library.
+- Updated the version of LodePNG.
+- Added the operators += and -= to the Vector2 class and its derivatives.
+- Added the operators *= and /= to the Vector2 class and its derivatives.
+- Partial rewrite of all tools for N'gine, for better parameter detection and a more homogeneous appearance.
+- Partial rewrite of all internal classes of N'gine, converting them to singletons to avoid conflicts due to oversight. The NGN_Camera class has not been converted, as in some projects, it may be necessary to have more than one instance of this class.
+- N'gine, templates, and examples have been configured to follow the C++ 17 (standard) norm.
+- Updated sound examples.
+
+
+--------------------------------------------------------------------------------
+2022-07-29 Ver.1.10.0-beta
+--------------------------------------------------------------------------------
+- Optimizations in rendering routines, especially in tile background rendering, which are on average 30% more efficient.
+- Fixed the error that caused incorrect rendering in tile backgrounds if they were used in multiple viewports and one of them was placed at coordinates 0, 0.
+- Modified the routines for opening music streams. Now, if a data packaging file is not being used, the file will not be preloaded into RAM, and the stream will be performed directly from the file system.
+
+
+--------------------------------------------------------------------------------
+2022-05-22 Ver.1.9.0-stable
+--------------------------------------------------------------------------------
+- Added the GetApplicationFocus() method to the NGN_System class, which returns whether the focus is on the application or not.
+- [Windows] Updated the GCC compiler from version 8.1.0 to 11.3.0.
+- [Windows] Updated the version of SDL2 to 2.0.22.
+
+
+--------------------------------------------------------------------------------
+2022-04-17 Ver.1.8.0-stable
+--------------------------------------------------------------------------------
+- Updated templates for code::blocks.
+- Added the TextFile() method to the NGN_Load class, which allows opening a text file and storing it in a string or in a vector of strings with lines separated.
+- Added the ClearSfx() and ClearMusic() methods to the NGN_Sound class, which remove all sound effects or music in the playback queue.
+- Added the PushMixer() and PopMixer() methods to the NGN_Sound class, which save and restore the current values of all mixer channels.
+- *** BUGFIX *** Fixed the BUG that caused memory overflows when trying to stop a music stream without loop activated once it had finished playing.
+- Improved detection of changes in window properties to force redrawing in some functions.
+
+
+--------------------------------------------------------------------------------
+2021-12-05 Ver.1.7.0-beta
+--------------------------------------------------------------------------------
+- Added the GetFps() method to the NGN_Graphics class, which returns the current number of frames per second of the render.
+- Updated the method that limits the framerate by software, now being more precise and stable with screens with a refresh rate higher than 60hz.
+- Added the text_boundaries property to the NGN_TextLayer class, which stores the size of the text written on the layer since the use of the Print() instruction. If there is no text on the layer, it returns -1.
+- Added the RaycastPoint() method to the NGN_Collisions class, which returns whether there is a visible pixel of the given sprite at the specified coordinate. This sprite can be rotated or scaled.
+- Minor optimizations in the overloads of some classes.
+- Updated user manual documentation.
+
+
+--------------------------------------------------------------------------------
+2021-10-12 Ver.1.6.0-beta
+--------------------------------------------------------------------------------
+- Modifications in the NGN_FileSystem utility, which now ensures that the created FAT is alphabetically ordered in ascending order.
+- Changed the search method in the NGN_FileSystem class. Now it searches for files within the packaged index mode instead of sequentially. This means that, in a packaging with 20,000 files, it can locate the requested file with approximately 14 queries.
+
+
+--------------------------------------------------------------------------------
+2021-08-04 Ver.1.5.0-stable
+--------------------------------------------------------------------------------
+- Minor corrections in some alert messages.
+- Added the "total_frames" property to the NGN_Sprite class.
+- Added the NGN_Image class for handling RAW format images and mask creation.
+- Added the PngAsRaw(), SpriteAsRaw(), and SpriteAsRawVector() methods to the NGN_Load class for loading textures and sprites and converting them to RAW.
+- Added examples of using the new functionalities.
+- Added an audio mixer in the "NGN_Sound" class to adjust the master volume, music channel volume, sound effects channel volume, and two auxiliary channels. The methods included in the class are: SetMixerLevel() and GetMixerLevel(). Additionally, the PlaySfx() and OpenMusic() methods have been modified to be able to assign a mixer channel when calling them. Constants MIXER_MASTER_CH, MIXER_MUSIC_CH, MIXER_EFFECTS_CH, MIXER_AUX1_CH, and MIXER_AUX2_CH have also been defined to identify the different channels.
+- Added the NGN_Disk class for accessing files on the hard drive.
+- The ScreenShot() method in the NGN_Graphics class now creates the destination directory if it does not exist.
+- Added the SetVerticalSync() method to the NGN_Graphics class.
+- Added the NGN_Log class for creating messages and log files for program activity. All errors and alerts from N'gine starting from this version will use this method.
+- Minor changes in character reading in the Print() method of the NGN_TextLayer class.
+- Added the Utf8ToAnsi() and AnsiToUtf8() methods in the NGN_ToolBox class to convert a UTF-8 formatted text string (two bytes) to ANSI and vice versa.
+- Fixed a BUG in the Reset() method of the NGN_Camera class, which did not properly reset the position and target.
+- Added support for the == and != operators to the Vector2 classes.
+- Fixed the division by 0 error in the Normalize() method of the Vector2 class, which occurred if both vector components were 0.
+- The SDL2 version has been updated to 2.0.14.
+
+
+--------------------------------------------------------------------------------
+2021-02-27 Ver.1.4.0-beta
+--------------------------------------------------------------------------------
+- Rewritten the file loading class, using custom functions for the preloading of all files into a data buffer in RAM.
+- Fixed a bug that, in case the opening of a music stream failed, it removed the instance from the sound effects queue instead of the music stream queue.
+- Minor code optimizations in various classes.
+- Added support for file packing. Functions for its use in N'gine are included, as well as the necessary tool to create these file packages (NGN_FileSystem). The tool allows packing and unpacking files, with and without encryption. The library detects that file loading through a package is desired by using the SetPackage() command of the NGN_Load class.
+- Added the LoadFile(); method in the NGN_Load class for loading a file into a data vector.
+- Reorganization of the source code files of the library, separating files belonging to external libraries into different folders.
+- Fixed a day 0 bug in the NGN_Load class that overscaled the RAM buffer for loading sprites.
+- Documentation has been updated.
+- Fixed the filename "resource.rc."
+- Library templates have been updated.
+
+
+--------------------------------------------------------------------------------
+2021-01-10 Ver.1.3.0-beta
+--------------------------------------------------------------------------------
+- The Vector2 data types have been rewritten, changing from being a structure to being a class, and adding functionalities such as vector addition and subtraction, as well as multiplication and division by a scalar. The Magnitude() methods have been added to all vector types, and the Normalize() method to floating-point vectors.
+- The NGN_Math class has been created with common mathematical functions, such as distance calculations, angle calculations between 2 points, etc.
+- The GetDistance() methods from the NGN_Toolbox class are moved to the NGN_Math class. If any project uses them, it should replace the command ngn->toolbox->GetDistance() with ngn->math->GetDistance();
+- The ScreenShot() method of the "NGN_Graphics" class now supports overlaying a texture as a watermark, with opacity adjustment.
+- Corresponding documentation and examples have been updated.
+
+
+--------------------------------------------------------------------------------
+2020-11-08 Ver.1.2.0-beta
+--------------------------------------------------------------------------------
+- Added the GetPixelColor() and GetPixelRgba() methods to the NGN_Canvas class.
+- Added the ScreenShot(); method to the NGN_Graphics class, which captures the current frame and saves it to the disk in PNG format.
+- Added examples of using the new methods.
+- Updated documentation.
+- Library binaries are compiled with the GCC 8.1.0 MinGW (SEH) - 64-bit compiler. SFML DLL files are updated to work with this version.
+- Tools are recompiled, and additional protections are added in the filename generation.
+
+
+--------------------------------------------------------------------------------
+2020-11-03 Ver.1.1.0-beta
+--------------------------------------------------------------------------------
+- Fixed scaling issues with text layers when their size was changed.
+- Added the "filtering" parameter and property, which allows enabling or disabling bilinear filtering of the text layer content.
+- Entirely rewritten the NGN_Canvas class to use its own drawing methods. Since this class was mainly used for educational purposes and should not significantly impact previous projects, the following methods have been removed, modified, and added:
+  - The following methods have been removed from the class:
+    - Points()
+    - Lines()
+    - FilledCircle()
+  - The following methods have been modified:
+    - Circle()
+  - The following methods have been added:
+    - Arc()
+- Fixed the method in the NGN_Input class that returns mouse coordinates on the screen, now filtering this data and adapting it to the scaling and resolution of the screen in its various modes.
+
+
+--------------------------------------------------------------------------------
+2020-06-26 Ver.1.0.0-stable
+--------------------------------------------------------------------------------
+- Added the possibility to force the local filtering state of the viewports. The general scene filtering will still be applied if it is active, but now you can choose whether to apply additional filtering independently in each of the viewports (useful for reductions). This property can be modified using the ViewportLocalFilter() method of the "NGN_Graphics" class.
+- Documentation and examples are updated.
+- After several years of development and testing, the "alpha" state is abandoned, and this is the first release considered "stable."
+
+
+--------------------------------------------------------------------------------
+2020-06-25 Ver.0.13.0-a
+--------------------------------------------------------------------------------
+- Updated library templates.
+- Corrections in informative texts of utilities.
+- Modified the rendering engine to work with a backbuffer. This allows enabling or disabling real-time bilinear filtering of the scene.
+- Added the SetFiltering() method in the "NGN_Graphics" class, which allows enabling or disabling bilinear filtering. The "filtering" property has also been added to the class to check the filtering state.
+- Updated the "Window modes" and "Multiple Viewports" examples, now including the possibility of applying bilinear filtering.
+
+
+--------------------------------------------------------------------------------
+2020-06-22 Ver.0.12.0-a
+--------------------------------------------------------------------------------
+- Now detects focus change/screen mode change to force scene redraw.
+- Added the methods SendToFront() and SendToBack() to the "NGN_Camera" class, which send a sprite to the front or back of its layer, respectively.
+- Optimized the tile background rendering algorithm. The loading routine for these files has also been changed.
+- Added the SetMode() method to the "NGN_Graphics" class, allowing us to change the window size and mode between window x1, x2, x3, x4, full window, or full screen, in real-time and without restarting the program. In contrast, the use of the full_screen variable for these changes is eliminated.
+- Added the GetDesktopResolution(); method to the "NGN_Graphics" class, which returns the desktop resolution.
+- Added an example of using the SetMode() method.
+- The LodePNG library is updated to version 20200306.
+- Library binaries are compiled with SDL2 version 2.0.12.
+- Updated templates.
+
+
+--------------------------------------------------------------------------------
+2020-03-18 Ver.0.11.0-a
+--------------------------------------------------------------------------------
+- Adjustments in the "panning" effect calculation algorithm for sound effects, for better volume balance.
+- Added "rumble" functionality for controllers that support it.
+- Optimized key state reading.
+- Added the method for cloning Sprites in the "NGN_Graphics" class.
+- Added the color blending mode property to the classes "NGN_Canvas," "NGN_Sprite," "NGN_TextLayer," "NGN_Texture," and "NGN_TiledBg." This property can have the values NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE, and NGN_BLENDMODE_MODULATE, with the default value being NGN_BLENDMODE_ALPHA.
+- Documentation and examples have been updated.
+
+
+--------------------------------------------------------------------------------
+2019-12-29 Ver.0.10.0-a
+--------------------------------------------------------------------------------
+- Added the "box_enabled" property to the "NGN_Sprite" class, which allows enabling or disabling the main collision box.
+- Now, Sprites can have additional colliders.
+- Added the methods "AddCollider," "GetColliderId," "ColliderEnabled," and "RemoveCollider" to the "NGN_Sprite" class.
+- Documentation has been updated.
+- Added an example for the use of multiple colliders on sprites.
+- Minor adjustments in the box collision detection algorithm.
+- N'gine recompiled with SDL2 version 2.0.10.
+- N'gine for Linux Mint updated to version 17.3 TRICIA.
+
+
+--------------------------------------------------------------------------------
+2019-09-04 Ver.0.9.1-a
+--------------------------------------------------------------------------------
+- Documentation updated with the new URL of the official website.
+
+
+--------------------------------------------------------------------------------
+2019-06-18 Ver.0.9.0-a
+--------------------------------------------------------------------------------
+- Added the "NGN_ToolBox" class to the library, which contains generic tools to aid in programming.
+- Added the "Int2String" method to the "NGN_ToolBox" class, which converts an integer to a formatted text string.
+- Added the "Float2String" method to the "NGN_ToolBox" class, which converts a decimal number to a formatted text string.
+- Added the "GetDistance" method to the "NGN_ToolBox" class, which returns the distance between 2 points (4 overloads).
+- Added constants "NGN_VERSION_MAJOR," "NGN_VERSION_MINOR," "NGN_VERSION_PATCH," and "NGN_VERSION_METADATA," indicating the version of N'gine.
+- Added the "GetVersion" method in the "NGN_System" class, which returns a string with the current version of N'gine.
+- Updated N'gine templates for code::blocks, now displaying the N'gine version in the console if running in "debug" mode.
+- Updated N'gine templates for code::blocks, declaring the "MODE_DEBUG" define when selected.
+- Updated all examples of N'gine function usage.
+- Updated the library for the use of SDL2 2.0.9, SDL2_TTF 2.0.15, SFML 2.5.1, and LodePNG 20190615.
+
+
+--------------------------------------------------------------------------------
+2019-03-28 Ver.0.8.0-a
+--------------------------------------------------------------------------------
+- Updated user documentation.
+- Added overload to the constructor of the NGN_Texture class for creating blank textures.
+- Added the ClearContent(); method to the NGN_Texture class to erase the content of a texture if it has been created blank.
+- Added the RenderToTexture(NGN_Texture* texture); method in the NGN_Render class to set a texture as the render target.
+- Added the RenderToScreen(); method in the NGN_Render class to set the default surface as the render target.
+- Overloads added for the PushSprite(); RemoveSprite(); ChangeLayer(); methods of the NGN_Camera class to register textures as sprites in the 2D camera.
+- Added the possibility to create animations of sprites with decreasing order in frames (reverse animation).
+- Fixed a bug in the initialization of viewports.
+
+
+--------------------------------------------------------------------------------
+2019-03-04 Ver.0.7.0-a
+--------------------------------------------------------------------------------
+- Fixed a BUG in the POV reading of controllers if no controller was connected, resulting in false positives in the reading.
+- Completely rewritten the controller detection routine, now retaining its ID even if a controller with a lower ID is disconnected.
+- Changed the data types of some parameters in the classes NGN_Camera, NGN_Canvas, NGN_Sprite, NGN_TextLayer, and NGN_Texture, as well as their documentation.
+- Modified some internal parameter definitions of N'gine, switching to the "static const" method instead of "#define."
+- Added the option for the creation and rendering towards different selectable viewports, through the methods OpenViewport(); CloseViewport(); SelectViewport(); ViewportPosition(); DefaultViewport(); in the NGN_Graphics class and the render->Viewports(); method in the NGN_Render class.
+- Internally, a frame ID is generated at runtime, thus preventing multiple calls to PlayAnimation(); from accelerating the sprite animation.
+- Temporarily removed the "overscan" options for tile backgrounds due to their incompatibility with the "viewports" system and their overall low performance.
+- Added an example for the use of multiple viewports.
+
+
+--------------------------------------------------------------------------------
+2018-07-09 Ver.0.6.1-a
+--------------------------------------------------------------------------------
+- The necessary DLL files for the library utilities were incorporated in their Windows version.
+- Overload added to the NGN_Sound::OpenMusic() method, allowing us to choose the entry and exit points of the loop.
+- Example of music loop added, changing the loop points.
+
+
+--------------------------------------------------------------------------------
+2018-05-31 Ver.0.6.0-a
+--------------------------------------------------------------------------------
+[Windows]
+- Library binaries compiled for the use of SDL2 2.0.8.
+- Library binaries compiled for the use of SFML 2.5.0.
+- Library binaries compiled using MinGW-windows-gcc-7.3.0.
+- Updated installation documentation.
+[General]
+- Library binaries compiled for x64 environments.
+- Templates updated for 64-bit compilation.
+- Examples compiled in 64 bits.
+
+
+--------------------------------------------------------------------------------
+2018-05-07 Ver.0.5.3-a
+--------------------------------------------------------------------------------
+- Added the possibility to change the center of the collision box for sprites using an offset.
+- Updated the documentation for the NGN_Sprite class.
+- Added the "animation_pause" flag to the NGN_Camera class, which pauses the animation of all sprites if set to TRUE.
+- Minor changes in the structure of the "NGN_Camera" class.
+- Change in the internal structure of NGN_Sprite and NGN_SpriteData, now storing each frame in an independent texture, which solves the problem of the 8192 pixels height limit of the sprite sheet. Now each frame can have a maximum size of 8192x8192 pixels. This does not affect the internal format of .SPR files, and it is not necessary to reconvert them or make any changes to existing projects.
+- Fixed the bug in the NGN_Load::Sprite() method, which allocated more memory than required when loading the sprite sheet.
+- Added an example for the use of adjustable hitboxes for sprites.
+
+
+--------------------------------------------------------------------------------
+2018-03-22 Ver.0.5.2-a
+--------------------------------------------------------------------------------
+- Updated templates to auto-detect the target operating system and thus adapt the optimal method for changing the screen mode.
+- Added the include for the "cstdint" library to ensure the use of C++ 11 intxx_t data types.
+- Fixed a BUG in the "Menu" template, which did not delete cursor data when destroying the object.
+- Added gamepad support in the "Menu" template.
+- When creating a text layer, the Cls(); command is automatically executed to apply the background texture.
+
+
+--------------------------------------------------------------------------------
+2018-02-03 Ver.0.5.1-a
+--------------------------------------------------------------------------------
+- Fixed an error in the detection of the screen aspect ratio in "SCR_WINDOW_FULL" mode.
+
+
+--------------------------------------------------------------------------------
+2018-02-02 Ver.0.5.0-a
+--------------------------------------------------------------------------------
+- The library templates have been updated.
+- Now, the screen saver is automatically disabled when the program starts.
+- The order of parameters in the NGN_Graphics::Init() method has been changed for ease of use.
+- The VSYNC option is automatically disabled if the monitor refresh rate is less than 60 Hz.
+- The method for changing the screen mode has been rewritten, now allowing you to choose between window mode, fullscreen window mode, and fullscreen mode. This avoids drawing elements out of place in fullscreen mode on some graphics cards. It is recommended to use "SCR_WINDOW_FULL" mode (fullscreen window mode) on Linux.
+- The window_name parameter in the NGN_Graphics::Init() method is now of type string and is stored in the window_caption property.
+- The NGN_Graphics::SetViewportClip() method has been added, allowing you to define the visible area of the screen.
+- The NGN_Graphics::ShowMouse() method has been added to show and hide the mouse cursor when the application is in focus.
+
+
+--------------------------------------------------------------------------------
+2018-01-17 Ver.0.4.4-a
+--------------------------------------------------------------------------------
+- Modified the CloseMusic() method of the NGN_Sound class so that, in case a non-looping music stream ends, there is no runtime protection error if an attempt is made to close it.
+
+
+--------------------------------------------------------------------------------
+2018-01-17 Ver.0.4.3-a
+--------------------------------------------------------------------------------
+- Updated the library template and examples to include an icon in the generated Windows executable file.
+- Added a new template for creating applications with startup screens and menus.
+- Added the StopAll() function to the SOUND class, which stops all active SFX and closes all open music streams.
+
+
+--------------------------------------------------------------------------------
+2018-01-10 Ver.0.4.2-a
+--------------------------------------------------------------------------------
+- Fixed a bug in the Cls() method of the TEXT_LAYER class that caused the text layer's content not to be cleared if the background color had an alpha value equal to 0.
+(Thanks to David Bassaganya for the notice)
+
+
+--------------------------------------------------------------------------------
+2017-12-19 Ver.0.4.1-a
+--------------------------------------------------------------------------------
+- Added the remaining pending keys from the (US) keyboard to the INPUT class.
+- Detected an SDL2 bug on Linux that caused generated textures not to correctly handle transparency when filled for the first time. This resulted in incorrect display of background images in text layers after the CLS command on Linux; however, on Windows, it worked without issues. The issue has been resolved by performing a double texture clearing with colors 0xFFFFFFFF and 0x00000000 before applying the background image to the texture.
+
+
+--------------------------------------------------------------------------------
+2017-11-14 Ver.0.4.0-a
+--------------------------------------------------------------------------------
+- Added collision functions between Sprites for "Pixel Perfect" collisions.
+- Added overloads to be able to use the "Vector2" data type in most movement and positioning functions (Translate() and Position()).
+
+
+--------------------------------------------------------------------------------
+2017-11-14 Ver.0.3.0-a
+--------------------------------------------------------------------------------
+- Compilation of N'gine binaries for Windows using the new versions of SDL and SFML libraries (SDL 2.0.7 and SFML 2.4.2).
+- Minor corrections in the informative texts of the "PNG to Collision Map converter" utility.
+- Change of color format in the NGN_TextLayer::CanvasColor() function from ARGB to RGBA.
+- Change of the DEFAULT_VALUE definition from (1 << 31) to 0x7FFFFFFF.
+- Minor changes in parameter detection in the NGN_Graphics::Init() function, adapting it to the new DEFAULT_VALUE.
+- Minor changes in the NGN_Camera class, adapting it to the new DEFAULT_VALUE.
+- Addition of the first Canvas functions.
+- Addition of internal functions for buffer cleaning in their creation process.
+- Addition of Canvas examples and minor corrections in the camera usage example.
+
+
+--------------------------------------------------------------------------------
+2017-10-24 Ver.0.2.0-a
+--------------------------------------------------------------------------------
+- Changed the pixel format in collision maps from ABGR to RGBA.
+- Changed the file and RAM storage system of the collision map, using tiles to compress its information.
+- Optimized the progress counter in utilities.
+- Optimized argument detection in utilities.
+- Optimized file name generation in utilities.
+- Updated the example of using collision maps.
+
+
+--------------------------------------------------------------------------------
+2017-10-04 Ver.0.1.0-a
+--------------------------------------------------------------------------------
+- First pre-release in Alpha state.

@@ -1,0 +1,120 @@
+NGN_RENDER.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+The methods of this class render the specified graphical elements to the established target, which by default is the main viewport. It is possible to specify another target (another viewport or a texture) using the SelectViewport() method of the NGN_Graphics class or the RenderToTexture() and RenderToScreen() methods of this class.
+
+--------------------------------------------------------------------------------
+
+- Method
+void Texture(
+    NGN_Texture* texture,               // Texture
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);
+
+- Description
+Draws a texture with the NGN_Texture format to the specified target and at the position stored in the texture's properties. Optionally, you can specify the position for this rendering.
+
+- Example
+ngn->render->Texture(bg);
+ngn->render->Texture(bg, 100, 200);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Sprite(
+    NGN_Sprite* sprite,                 // Sprite
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);
+
+- Description
+Draws a sprite with the NGN_Sprite format to the specified target and at the position stored in the sprite's properties. Optionally, you can specify the position for this rendering.
+
+- Example
+ngn->render->Sprite(ball);
+ngn->render->Sprite(ball, 127, 96);
+
+--------------------------------------------------------------------------------
+
+- Method
+void TiledBg(NGN_TiledBg* bg);
+
+- Description
+Draws a background composed of tiles with the NGN_TiledBg format to the specified target.
+
+- Example
+ngn->render->TiledBg(clouds);
+
+--------------------------------------------------------------------------------
+
+- Method
+void TextLayer(
+    NGN_TextLayer* layer,               // Text Layer
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);
+
+- Description
+Draws a text layer with the NGN_TextLayer format to the specified target and at the position stored in the layer's properties. Optionally, you can specify the position for this rendering.
+
+
+- Example
+ngn->render->TextLayer(textbox);
+ngn->render->TextLayer(textbox, 200, 100);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Canvas(
+    NGN_Canvas* canvas,                 // Canvas
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);
+
+- Description
+Draws a canvas with the NGN_Canvas format to the specified target and at the position stored in the canvas's properties. Optionally, you can specify the position for this rendering.
+
+- Example
+ngn->render->Canvas(mydraw);
+ngn->render->Canvas(mydraw, 10, 10);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Viewports();
+
+- Description
+Renders the content of all enabled viewports.
+
+- Example
+ngn->render->Viewports();
+
+--------------------------------------------------------------------------------
+
+- Method
+void RenderToTexture(NGN_Texture* texture);
+
+- Description
+Selects and sets a texture as the render target.
+
+- Example
+ngn->render->RenderToTexture(surface);
+
+--------------------------------------------------------------------------------
+
+- Method
+void RenderToScreen();
+
+- Description
+Sets the screen (or VIEWPORT) as the render target.
+
+- Example
+ngn->render->RenderToScreen();
+
+--------------------------------------------------------------------------------

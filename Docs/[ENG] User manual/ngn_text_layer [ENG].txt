@@ -1,0 +1,363 @@
+NGN_TEXT_LAYER.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class: Text layer methods
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_TextLayer(
+	NGN_TextFont* default_font,			// Default font
+	NGN_TextureData* bg = NULL,			// Texture data for the background
+	int32_t position_x = 0,				// X position (0 by default)
+	int32_t position_y = 0,				// Y position (0 by default)
+	uint32_t _width = DEFAULT_VALUE,	// Layer width (Whole screen by default)
+	uint32_t _height = DEFAULT_VALUE,	// Layer height (Whole screen by default)
+	bool _filtering = false				// Content filtering?
+);
+
+- Description
+Creates a new text layer using the specified font and parameters. If texture data for the background is specified, the layer will be created using the size of the texture image. If a layer size is specified, it takes precedence. If NULL is used for the background parameter, it will be transparent by default. If neither background nor size is specified, the layer will cover the entire window.
+
+- Example
+NGN_TextLayer* allscreen = new NGN_TextLayer(my_font);
+NGN_TextLayer* smalltext = new NGN_TextLayer(my_font, NULL, 100, 50, 200, 64);
+NGN_TextLayer* textbox = new NGN_TextLayer(my_font, boximg, 20, 500);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Description
+Positions the text layer at the given coordinates.
+
+- Example
+textbox->Position(1200, 900);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Description
+Moves the text layer in the given direction and speeds.
+
+- Example
+textbox->Translate(5.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Size(float w, float h);
+
+- Description
+Changes the size of the text layer.
+
+- Example
+textbox->Size(64, 48);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Description
+Scales the text layer by the given factor. Depending on the overload used, it will scale the axes together or separately. The default scale is 1.0f.
+
+- Example
+textbox->Scale(1.5f);
+textbox->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Rotate(double degrees);
+
+- Description
+Rotates the text layer by the provided number of degrees.
+
+- Example
+textbox->Rotate(1.2f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetCenter(float x, float y);
+
+- Description
+Specifies, in relative coordinates from the actual center of the text layer, where the rotation center of the text layer will be located.
+
+- Example
+textbox->SetCenter(-10, -5);
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2I32 GetSize();
+
+- Description
+Returns the original size of the text layer.
+
+- Example
+Size2I32 s = textbox->GetSize();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class: Text layer properties
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Property
+Vector2 position
+
+- Description
+Position of the text layer on the screen.
+
+--------------------------------------------------------------------------------
+
+- Property
+float width
+float height
+
+- Description
+Size of the text layer.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool visible
+
+- Description
+Indicates whether the text layer is visible or not.
+
+--------------------------------------------------------------------------------
+
+- Property
+int32_t alpha
+
+- Description
+Text layer transparency level, ranging from 0 to 255.
+
+--------------------------------------------------------------------------------
+
+- Property
+SDL_BlendMode blend_mode
+
+- Description
+Text layer color blend mode. Available modes are:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE and NGN_BLENDMODE_MODULATE.
+The default value for this property is NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool filtering
+
+- Description
+Enables or disables bilinear filtering for the content of the text layer.
+
+--------------------------------------------------------------------------------
+
+- Property
+double rotation
+
+- Description
+Text layer rotation, in degrees.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool flip_h
+bool flip_v
+
+- Description
+Horizontal and vertical flipping of the text layer.
+
+
+--------------------------------------------------------------------------------
+
+Note:
+Changes in size or scale do not affect the original size of the container; they only alter the size of the content when displayed on the screen.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	METHODS of the class: Text writing methods
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+void Cls();
+
+- Description
+Clears the content of the text layer and resets the writing cursor position to the top-left corner. If there is no specific background texture, the layer will be filled with the background color specified in the CanvasColor() method.
+
+- Example
+textbox->Cls();
+
+--------------------------------------------------------------------------------
+
+- Method
+void Locate(int32_t x, int32_t y);
+
+- Description
+Positions the writing cursor at the specified local coordinates of the layer.
+
+- Example
+textbox->Locate(100, 50);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Padding(uint32_t pd);
+
+- Description
+Defines the inner margin that the text layer will have from that moment on.
+
+- Example
+textbox->Padding(16);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Font(NGN_TextFont* fnt);
+
+- Description
+Selects the font to be used in text writing from that moment on.
+
+- Example
+textbox->Font(my_font);
+
+--------------------------------------------------------------------------------
+
+- Method
+void InkColor(uint8_t r, uint8_t g, uint8_t b);  // [R, G, B]
+void InkColor(uint32_t rgb);                     // [0xRRGGBB]
+
+- Description
+Selects the color to be used for text from that moment on.
+
+- Example
+textbox->InkColor(255, 200, 40);
+textbox->InkColor(0xFFAA33);
+
+--------------------------------------------------------------------------------
+
+- Method
+void CanvasColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a); 	// [R, G, B, A]
+void CanvasColor(uint32_t rgba);								// [0xRRGGBBAA];
+
+- Description
+Selects the color to be used for the background of the text layer from the next erase with the Cls() method, in case a texture is not defined for the background.
+
+- Example
+textbox->CanvasColor(0, 0, 0, 128);
+textbox->CanvasColor(0xFF0000FF);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Print(std::string text);
+
+- Description
+Writes the given text from the current writing cursor position, using the defined color. The "\n" character will be recognized as a line break. 
+
+- Example
+textbox->Print(“Hello World!”);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class: Text writing properties
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Property
+Vector2I32 locate
+
+- Description
+Current position of the writing cursor in the text layer.
+
+--------------------------------------------------------------------------------
+
+- Property
+struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} ink;
+
+- Description
+Current color for the text.
+
+--------------------------------------------------------------------------------
+
+- Property
+struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} canvas;
+
+- Description
+Current color of the background for the text layer.
+
+--------------------------------------------------------------------------------
+
+- Property
+struct {
+    int32_t top;
+    int32_t bottom;
+    int32_t left;
+    int32_t right;
+    int32_t width;
+    int32_t height;
+} text_boundaries;
+
+- Description
+Current boundaries of the content in the text layer.
+
+--------------------------------------------------------------------------------
+
+- Property
+int32_t padding
+
+- Description
+Current inner margin of the text layer.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool word_wrap
+
+- Description
+Automatic line break when reaching the layer limit (enabled by default).
+
+
+--------------------------------------------------------------------------------
+
+- Property
+bool auto_home
+
+- Description
+Automatic reset of the writing cursor position when reaching the end of the text layer (disabled by default).
+
+--------------------------------------------------------------------------------

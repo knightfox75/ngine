@@ -1,0 +1,111 @@
+NGN_MATH.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the Vector2 class
+--------------------------------------------------------------------------------
+
+This class includes all the necessary methods and properties for basic usage of 2-dimensional vectors. There are three variations of the class: Vector2, Vector2I32, and Vector2I64, each with their respective overloads. All classes support addition and subtraction operations between vectors of the same type, as well as multiplication and division operations between a vector and a scalar. Additionally, they support logical operations for equality and inequality.
+
+--------------------------------------------------------------------------------
+
+- Method
+float Vector2.Magnitude();
+int32_t Vector2I32.Magnitude();
+int64_t Vector2I64.Magnitude();
+
+- Description
+Returns the magnitude of the vector. In the case of integer vectors, it returns the closest possible result.
+
+- Example
+Vector2 my_vector = {10.0f, 25.0f};
+float d = my_vector.Magnitude();
+
+--------------------------------------------------------------------------------
+
+- Method
+void Vector2.Normalize();
+
+- Description
+This method is only available for floating-point vectors. It normalizes and updates the content of the vector, converting the content of coordinates X and Y to values between -1.0f and 1.0f.
+
+- Example
+Vector2 my_vector = {10.0f, 25.0f};
+my_vector.Normalize();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the Vector2 class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2.x;
+Vector2.y;
+
+- Description
+Main properties of the vector. They store the X and Y coordinates. These properties are of the type declared for the vector (float, int32_t or int64_t).
+
+- Example
+Vector2 my_vector;
+my_vector.x = 13.5f;
+my_vector.y = 27.34f;
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	METHODS of the NGN_Math class
+--------------------------------------------------------------------------------
+
+This class includes basic mathematical functions to assist in the development of any video game, such as angle or distance calculations.
+
+--------------------------------------------------------------------------------
+
+- Method
+float GetDistance(float x1, float y1, float x2, float y2);
+float GetDistance(Vector2 a, Vector2 b);
+uint32_t GetDistance(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+uint32_t GetDistance(Vector2I32 a, Vector2I32 b);
+
+- Description
+Returns the distance between 2 points (4 overloads). In the case of using integers, the closest rounded value is returned.
+
+- Example
+float d = ngn->math->GetDistance(100.0f, 100.0f, 200.0f, 300.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+float GetAngle(float x1, float y1, float x2, float y2);
+float GetAngle(Vector2 a, Vector2 b);
+
+- Description
+Returns the angle formed by 2 points (2 overloads) with respect to the horizontal. The first parameter determines the vertex of the angle, and the second parameter determines the opening of that angle. The result is returned in RADIANS.
+
+- Example
+Vector2 origin = {10.0f, 10.0f};
+Vector2 destination = {100.0f, 15.0f};
+float a = ngn->math->GetAngle(origin, destination);
+
+--------------------------------------------------------------------------------
+
+- Method
+float GetManhattan(float x1, float y1, float x2, float y2);
+float GetManhattan(Vector2 a, Vector2 b);
+uint32_t GetManhattan(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+uint32_t GetManhattan(Vector2I32 a, Vector2I32 b);
+
+- Description
+Returns the Manhattan distance between 2 points (4 overloads). This distance is the sum of the absolute differences of the individual coordinates (abs(x1 - x2) + abs(y1 - y2)).
+
+- Example
+float d = ngn->math->GetGetManhattan(100.0f, 100.0f, 200.0f, 300.0f);
+
+--------------------------------------------------------------------------------

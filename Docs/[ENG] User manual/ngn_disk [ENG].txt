@@ -1,0 +1,92 @@
+NGN_DISK.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t ReadBinaryFile(
+    std::string filepath,          // Path to the file
+    std::vector<uint8_t> &buffer   // Storage vector
+);
+
+- Description
+Opens and reads the specified file in binary mode from the system's file system and stores it in the given buffer. Additionally, this method returns the size of the read file (in bytes) or -1 in case of an error.
+
+- Example
+std::vector<uint8_t> data;
+int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t WriteBinaryFile(
+    std::string filepath,          // Path to the file
+    std::vector<uint8_t> &buffer   // Vector with data to write
+);
+
+- Description
+Opens and writes, in binary mode, to the specified file in the system's file system, the data stored in the given buffer. Additionally, this method creates the path if it does not exist and returns the number of bytes written to the file or -1 in case of an error.
+
+- Example
+std::vector<uint8_t> save_data;
+int32_t length = ngn->disk->WriteBinaryFile(“save/card01.sav”, save_data);
+
+--------------------------------------------------------------------------------
+
+- Method
+
+[First Overload]
+std::string ReadTextFile(std::string filepath);
+
+[Second Overload]
+bool ReadTextFile(
+    std::string filepath,              // Path to the file
+    std::vector<std::string> &lines    // Storage vector for text lines
+);
+
+- Description
+Open and read, in text mode, the specified file in the system's file system and return its content as a string or an empty string if the file cannot be read (first overload). The second overload separately stores the text lines in the given vector of strings and returns TRUE or FALSE depending on whether the file could be read or not
+
+- Example
+
+[First Overload]
+std::string text = ngn->disk-> ReadTextFile(“data/info/eula.txt”);
+
+[Second Overload]
+std::vector<std::string> text_lines;
+bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t WriteTextFile(
+    std::string filepath,      	// Path to the file
+    std::string text,          	// String with data to write
+    bool append = false      	// Append data to the end of the existing file?
+);
+
+
+- Description
+Opens and writes, in text mode, to the specified file in the system's file system, the data stored in the given string. Additionally, this method creates the path if it does not exist and returns the number of characters written (including line breaks) to the file or -1 in case of an error. Optionally, you can specify whether the data should be appended to the end of the file, preserving the existing content (append = true), or if the file content should be overwritten (append = false, default).
+
+- Example
+std::string txt = “This is a simple text”;
+int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t CheckFile(std::string path);
+
+- Description
+Verifies if the specified file at the path exists and is accessible. If yes, it returns the size of the file in bytes. If not, it returns -1.
+
+- Example
+int32_t length = ngn->disk->CheckFile(“logs/debug.log”);
+
+--------------------------------------------------------------------------------

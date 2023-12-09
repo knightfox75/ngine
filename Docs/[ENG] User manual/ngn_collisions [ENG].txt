@@ -1,0 +1,92 @@
+NGN_COLLISIONS.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+uint32_t GetPixel(
+    NGN_CollisionMapData* cmap,		// Collision map data
+    int32_t position_x,            	// X coordinate on the map
+    int32_t position_y              // Y coordinate on the map
+);
+
+- Description
+Returns the color of the pixel from the given map at the provided coordinates. If the coordinates are outside the map, it returns 0x00000000. The format of the returned color is 0xRRGGBBAA (RGBA).
+
+- Example
+uint32_t color = ngn->collisions->GetPixel(
+    collision_map,
+    wizard.sprite->position.x,
+    wizard.sprite->position.y
+);
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2 GetMapSize(NGN_CollisionMapData* cmap);
+
+- Description
+Returns the size of the given map in Size2 format (width and height).
+
+- Example
+Size2 world_size = ngn->collisions->GetMapSize(collision_map);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2);
+
+- Description
+Performs a bounding box collision check between two sprites. Returns TRUE in case of collision.
+
+- Example
+if (ngn->collisions->HitBox(player, coin)) {
+	hit = true;
+} else {
+	hit = false;
+}
+
+--------------------------------------------------------------------------------
+
+- Method
+bool PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2);
+
+- Description
+Performs a pixel-level collision check between two sprites. Returns TRUE in case of collision.
+
+- Example
+if (ngn->collisions->PixelPerfect(player, coin)) {
+	hit = true;
+} else {
+	hit = false;
+}
+
+- Note: Pixel-level collision detection consumes a significant amount of CPU resources. Use only in cases where it is absolutely necessary.
+
+--------------------------------------------------------------------------------
+
+- Method
+bool RaycastPoint(
+    NGN_Sprite* spr,       // Sprite
+    float position_x,      // X coordinate to check
+    float position_y       // Y coordinate to check
+);
+
+bool RaycastPoint(NGN_Sprite* spr, Vector2 position);
+
+- Description
+Checks if there is a visible pixel from the provided sprite at the given coordinates.
+
+- Example
+if (ngn->collisions->RaycastPoint(coin, 128, 96)) {
+	hit = true;
+} else {
+	hit = false;
+}
+
+--------------------------------------------------------------------------------

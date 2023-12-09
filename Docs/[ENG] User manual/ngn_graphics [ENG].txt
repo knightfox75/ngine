@@ -1,0 +1,289 @@
+NGN_GRAPHICS.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+- Method
+bool Init(
+    std::string window_name,        	// Name to display in the window caption
+    uint32_t native_width,          	// Native game resolution
+    uint32_t native_height,
+    int8_t scr_mode = NGN_SCR_WINDOW, 	// Screen mode
+    bool bilinear_filter = false,   	// Bilinear filter enabled?
+    bool sync = true                 	// Active VSYNC?
+);
+
+- Description
+Creates the window for the graphic context and initializes it with the specified parameters. Returns FALSE in case of an error.
+Available screen modes are:
+NGN_SCR_WINDOW      1       Window mode x1
+NGN_SCR_WINDOW_X2   2       Window mode x2
+NGN_SCR_WINDOW_X3   3       Window mode x3
+NGN_SCR_WINDOW_X4   4       Window mode x4
+NGN_SCR_WINDOW_FULL 0       Full-screen window mode
+NGN_SCR_FULLSCREEN  -1		Full-screen mode
+
+- Example
+ngn->graphics->Init("Ngine Demo", 1280, 720);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetMode(int8_t mode);
+
+- Description
+Changes the graphic mode to the specified one. Graphic mode changes may require that text or canvas layers need to be completely redrawn. Use the "force_redraw" variable of the class to determine if such a redraw should be performed.
+
+- Example
+ngn->graphics->SetMode(NGN_SCR_WINDOW_X2);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetFiltering(bool enabled);
+
+- Description
+Sets the state of window bilinear filtering.
+
+- Example
+ngn->graphics->SetFiltering(true);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetVerticalSync(bool enabled);
+
+- Description
+Sets the state of window vertical synchronization.
+
+- Example
+ngn->graphics->SetVerticalSync(true);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Update();
+
+- Description
+Attempts to update the window content at a constant speed of 60fps. This function should be called once per frame.
+
+- Example
+ngn->graphics->Update();
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetViewportClip(
+    int32_t x,      // X position
+    int32_t y,      // Y position
+    int32_t w,      // Width
+    int32_t h       // Height
+);
+
+- Description
+Defines the visible area of the window.
+
+- Example
+ngn->graphics->SetViewportClip(100, 100, 250, 250);
+
+--------------------------------------------------------------------------------
+
+- Method
+void ShowMouse(bool visible);
+
+- Description
+Shows or hides the mouse cursor when hovering over the window.
+
+- Example
+ngn->graphics->ShowMouse(false);
+
+--------------------------------------------------------------------------------
+
+- Method
+void OpenViewport(
+    uint8_t id,                             // VIEWPORT ID (0-7)
+    int32_t pos_x,                          // Viewport position
+    int32_t pos_y,
+    uint32_t width,                         // Viewport width
+    uint32_t height,                        // Viewport height
+    uint32_t h_res = NGN_DEFAULT_VALUE,		// Render resolution in the viewport
+    uint32_t v_res = NGN_DEFAULT_VALUE,
+    uint32_t local_filter = false          	// Local bilinear filtering
+);
+
+
+- Description
+Opens one of the 8 available viewports with the provided parameters.
+The state of local filtering can be changed with the "local_filter" parameter. This does not affect the general filtering state of the window.
+
+- Example
+ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120);
+ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, true);
+
+--------------------------------------------------------------------------------
+
+- Method
+void CloseViewport(uint8_t id);
+
+- Description
+Closes the viewport with the provided ID.
+
+- Example
+ngn->graphics->CloseViewport(3);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SelectViewport(uint8_t id);
+
+- Description
+Selects the viewport with the provided ID. From that moment, all commands from ngn->render will be sent to that viewport. All elements sent to the viewport will not be displayed on the screen until the ngn->render->Viewports() command is executed, which renders the content of the viewports at that moment.
+
+- Example
+ngn->graphics->SelectViewport(3);
+
+--------------------------------------------------------------------------------
+
+- Method
+void ViewportPosition(uint8_t id, int32_t x, int32_t y);
+void ViewportPosition(uint8_t id, Vector2I32 position);
+
+- Description
+Positions the specified viewport at the provided coordinates. The reference point is located at the top-left coordinate.
+
+- Example
+ngn->graphics->ViewportPosition(3, 100, 200);
+
+--------------------------------------------------------------------------------
+
+- Method
+void ViewportLocalFilter(uint8_t id, bool status);
+
+- Description
+Changes the state of local filtering for the specified viewport.
+
+- Example
+ngn->graphics->ViewportLocalFilter(3, true);
+
+--------------------------------------------------------------------------------
+
+- Method
+void DefaultViewport();
+
+- Description
+Sets the main window as the render target.
+
+- Example
+ngn->graphics->DefaultViewport();
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_Sprite* CloneSprite(NGN_Sprite* sprite);
+
+- Description
+Clones a sprite with the current properties. The resulting sprite is a completely new instance.
+
+- Example
+NGN_Sprite* spr_clone = ngn->graphics->CloneSprite(spr);
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2I32 GetDesktopResolution();
+
+- Description
+Returns the system desktop resolution at the time of program initiation.
+
+- Example
+Size2I32 desktop_res = ngn->graphics->GetDesktopResolution();
+
+--------------------------------------------------------------------------------
+
+- Method
+uint32_t GetFps();
+
+- Description
+Returns the number of rendered frames in the last second.
+
+- Example
+uint32_t fps = ngn->graphics->GetFps();
+
+--------------------------------------------------------------------------------
+
+- Method
+void ScreenShot(
+    std::string path,                   // Path to the destination PNG file
+    NGN_TextureData* overlay = NULL,    // Texture data for overlay
+    uint8_t alpha = 0xFF                // Opacity level of the overlay texture
+);
+
+- Description
+Saves a capture of the content of the current frame's renderer in PNG format at the specified file and path. Additionally, you can specify a texture to overlay on the capture and specify its opacity level.
+
+- Example
+ngn->graphics->ScreenShot(“captures/myscreen1.png”);
+ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool vsync
+
+- Description
+Indicates if vertical synchronization is active.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool filtering
+
+- Description
+Indicates if bilinear filtering is active.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t native_w
+int32_t native_h
+
+- Description
+Stores the native resolution of the game.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+std::string window_caption
+
+- Description
+Stores the text of the window caption.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+SDL_Rect cliparea
+
+- Description
+Stores the values of the clipping area.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool force_redraw
+
+- Description
+Indicates whether, due to a change in screen mode, the window content needs to be redrawn.
+
+--------------------------------------------------------------------------------

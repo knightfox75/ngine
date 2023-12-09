@@ -1,0 +1,91 @@
+NGN_DISK.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t ReadBinaryFile(
+	std::string filepath,			// Ruta al archivo
+	std::vector<uint8_t> &buffer	// Vector de almacenamiento
+);
+
+- Descripción
+Abre y lee en modo binario el archivo especificado en la ruta del sistema de archivos del sistema y lo almacena en el buffer dado. Este método, además, devuelve el tamaño del archivo leído (en bytes) o -1 en caso de error.
+
+- Ejemplo
+std::vector<uint8_t> data;
+int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t WriteBinaryFile(
+	std::string filepath,			// Ruta al archivo
+	std::vector<uint8_t> &buffer	// Vector con los datos a escribir
+);
+
+- Descripción
+Abre y escribe, en modo binario, en el archivo especificado en la ruta del sistema de archivos del sistema, los datos almacenados en el buffer dado. Este método, además, crea la ruta si esta no existe y devuelve el número de bytes escritos en el archivo o -1 en caso de error.
+
+- Ejemplo
+std::vector<uint8_t> save_data;
+int32_t length = ngn->disk->WriteBinaryFile(“save/card01.sav”, save_data);
+
+--------------------------------------------------------------------------------
+
+- Método
+
+[Primera sobrecarga]
+std::string ReadTextFile(std::string filepath);
+
+[Segunda sobrecarga]
+bool ReadTextFile(
+    std::string filepath,				// Ruta al archivo
+    std::vector<std::string> &lines		// Vector de almacenamiento de las lineas de texto
+);
+
+- Descripción
+Abre y lee, en modo texto, el archivo especificado en la ruta del sistema de archivos del sistema y devuelve su contenido en un string o una cadena vacia si no se puede leer el archivo (primera sobrecarga). La segunda sobrecarga almacena por separado en el vector de strings dado las líneas de texto, además de devolver TRUE o FALSE según si se ha podido o no leer el archivo.
+
+- Ejemplo
+
+[Primera sobrecarga]
+std::string text = ngn->disk-> ReadTextFile(“data/info/eula.txt”);
+
+[Segunda sobrecarga]
+std::vector<std::string> text_lines;
+bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t WriteTextFile(
+	std::string filepath,		// Ruta al archivo
+	std::string text,			// String con los datos a escribir
+	bool append = false			// Añadir los datos al final del archivo existente?
+);
+
+- Descripción
+Abre y escribe, en modo texto, en el archivo especificado en la ruta del sistema de archivos del sistema, los datos almacenados en el string dado. Este método, además, crea la ruta si esta no existe y devuelve el número de caracteres escritos (saltos de línea incluidos) en el archivo o -1 en caso de error. Opcionalmente, se puede especificar si los datos han de ser adjuntados al final del archivo, conservando los existentes (append = true) o se ha de sobrescribir el contenido del archivo (append = false, por defecto).
+
+- Ejemplo
+std::string txt = “This is a simple text”;
+int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t CheckFile(std::string path);
+
+- Descripción
+Verifica si el archivo especificado en la ruta existe y es accesible. En caso afirmativo, devuelve el tamaño de dicho archivo en bytes. De no serlo, devuelve -1.
+
+- Ejemplo
+int32_t length = ngn->disk->CheckFile(“logs/debug.log”);
+
+--------------------------------------------------------------------------------

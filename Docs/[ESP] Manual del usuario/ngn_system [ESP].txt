@@ -1,0 +1,72 @@
+NGN_SYSTEM.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+void EventUpdate();
+
+- Descripción
+Actualiza y gestiona los eventos de la librería SDL2. Además, actualiza algunos de los subsistemas de la librería, como la lectura de los dispositivos de entrada. Debe de ejecutarse una vez por ciclo al inicio del fotograma.
+
+- Ejemplo
+ngn->system->EventUpdate();
+
+--------------------------------------------------------------------------------
+
+- Método
+std::string GetVersion();
+
+- Descripción
+Devuelve un string con la versión actual de N’gine.
+
+- Ejemplo
+std::string version = ngn->system->GetVersion();
+
+--------------------------------------------------------------------------------
+
+- Método
+bool GetApplicationFocus();
+
+- Descripción
+Devuelve si el foco está o no en la aplicación.
+
+- Ejemplo
+bool focused = ngn->system->GetApplicationFocus();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool quit
+
+- Descripción
+Propiedad de la clase. Adquiere el valor TRUE si algún evento de SDL solicita la salida del programa, de lo contrario su valor es FALSE.
+
+- Ejemplo
+if (ngn->system->quit) exit_flag = true;
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool fps_counter
+
+- Descripción
+Propiedad de la clase. Tiene el valor de FALSE por defecto. En caso de darle el valor de TRUE, muestra en la consola de depuración los frames por segundos que se están renderizando.
+
+- Ejemplo
+ngn->system->fps_counter = true;
+
+--------------------------------------------------------------------------------

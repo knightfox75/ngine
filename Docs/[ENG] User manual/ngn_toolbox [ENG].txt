@@ -1,0 +1,62 @@
+NGN_TOOLBOX.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+std::string Int2String(
+	int32_t number,			// Number to convert
+	uint8_t min_width,		// Minimum width
+	const char* chr			// Symbol for padding
+);
+
+- Description
+Converts an integer to a string with the specified format.
+
+- Example
+std::string text = ngn->toolbox->Int2String(ngn->input->mouse.y, 4, "0");
+
+--------------------------------------------------------------------------------
+
+- Method
+std::string Float2String(
+	float number,			// Number to convert
+	uint8_t min_width,		// Minimum width
+	uint8_t precision,		// Number of decimals to show
+	const char* chr			// Symbol for padding
+);
+
+- Description
+Converts a floating-point number to a string with the specified format.
+
+- Example
+std::string text = ngn->toolbox->Float2String(spr->position.x, 7, 2, "0");
+
+--------------------------------------------------------------------------------
+
+- Method
+std::string Utf8ToAnsi(std::string text);
+
+- Description
+Converts a UTF-8 (2 bytes) formatted text string to ANSI.
+
+- Example
+std::string ansi_t = ngn->toolbox->Utf8ToAnsi(utf8_t);
+
+--------------------------------------------------------------------------------
+
+- Method
+std::string AnsiToUtf8(std::string text);
+
+- Description
+Converts an ANSI formatted text string to UTF-8 (2 bytes).
+
+- Example
+std::string utf8_t = ngn->toolbox->Utf8ToAnsi(ansi_t);
+
+--------------------------------------------------------------------------------

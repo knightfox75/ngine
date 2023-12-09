@@ -1,0 +1,119 @@
+NGN_RENDER.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+Los métodos de esta clase realizan el render de los elementos gráficos especificados en el destino establecido que es por defecto el viewport principal. Es posible especificar otro destino (otro viewport o una textura) mediante el método SelectViewport() de la clase NGN_Graphics o los métodos RenderToTexture() y RenderToScreen() de esta clase.
+
+--------------------------------------------------------------------------------
+
+- Método
+void Texture(
+	NGN_Texture* texture,				// Textura
+	float position_x = DEFAULT_VALUE,	// Posición X
+	float position_y = DEFAULT_VALUE	// Posición Y
+);
+
+- Descripción
+Dibuja una textura con el formato NGN_Texture en el destino especificado y en la posición almacenada en las propiedades de la textura. Opcionalmente, puede especificarse la posición para dicho render.
+
+- Ejemplo
+ngn->render->Texture(bg);
+ngn->render->Texture(bg, 100, 200);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Sprite(
+	NGN_Sprite* sprite,					// Sprite
+	float position_x = DEFAULT_VALUE,	// Posición X
+	float position_y = DEFAULT_VALUE	// Posición Y
+);
+
+- Descripción
+Dibuja un sprite con el formato NGN_Sprite en el destino especificado y en la posición almacenada en las propiedades del sprite. Opcionalmente, puede especificarse la posición para dicho render.
+
+- Ejemplo
+ngn->render->Sprite(ball);
+ngn->render->Sprite(ball, 127, 96);
+
+--------------------------------------------------------------------------------
+
+- Método
+void TiledBg(NGN_TiledBg* bg);
+
+- Descripción
+Dibuja un fondo compuesto de tiles con el formato NGN_TiledBg en el destino especificado. 
+
+- Ejemplo
+ngn->render->TiledBg(clouds);
+
+--------------------------------------------------------------------------------
+
+- Método
+void TextLayer(
+	NGN_TextLayer* layer,				// Capa de texto
+	float position_x = DEFAULT_VALUE,	// Posición X
+	float position_y = DEFAULT_VALUE	// Posición Y
+);
+
+- Descripción
+Dibuja una capa de texto con el formato NGN_TextLayer en el destino especificado y en la posición almacenada en las propiedades de la capa. Opcionalmente, puede especificarse la posición para dicho render.
+
+- Ejemplo
+ngn->render->TextLayer(textbox);
+ngn->render->TextLayer(textbox, 200, 100);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Canvas(
+	NGN_Canvas* canvas,					// Lienzo
+	float position_x = DEFAULT_VALUE,	// Posición X
+	float position_y = DEFAULT_VALUE	// Posición Y
+);
+
+- Descripción
+Dibuja un lienzo con el formato NGN_Canvas en el destino especificado y en la posición almacenada en las propiedades del lienzo. Opcionalmente, puede especificarse la posición para dicho render.
+
+- Ejemplo
+ngn->render->Canvas(mydraw);
+ngn->render->Canvas(mydraw, 10, 10);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Viewports();
+
+- Descripción
+Realiza el render del contenido de todos los viewports habilitados.
+
+- Ejemplo
+ngn->render->Viewports();
+
+--------------------------------------------------------------------------------
+
+- Método
+void RenderToTexture(NGN_Texture* texture);
+
+- Descripción
+Selecciona y fija una textura como destino del render.
+
+- Ejemplo
+ngn->render->RenderToTexture(surface);
+
+--------------------------------------------------------------------------------
+
+- Método
+void RenderToScreen();
+
+- Descripción
+Fija la pantalla (o el VIEWPORT) como destino del render.
+
+- Ejemplo
+ngn->render->RenderToScreen();
+
+--------------------------------------------------------------------------------

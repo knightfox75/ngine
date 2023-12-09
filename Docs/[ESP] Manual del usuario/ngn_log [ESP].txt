@@ -1,0 +1,41 @@
+NGN_LOG.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+bool OpenLogFile(std::string log_file, bool overwrite = true);
+
+- Descripción
+Abre y habilita el archivo de registro de eventos del sistema en la ruta y con el nombre especificados. Todos los mensajes de alerta o error generados por la librería, así como los creados a través del método Message() serán almacenados en este archivo de texto plano. Opcionalmente, puede especificarse que el archivo se sobrescriba (opción por defecto) o se añada la información a continuación. Este método devolverá FALSE en caso de no poder crear o habilitar el archivo de registro. 
+
+- Ejemplo
+ngn->log->OpenLogFile("debug_log.txt");
+
+--------------------------------------------------------------------------------
+
+- Método
+void CloseLogFile();
+
+- Descripción
+Cierra y deshabilita el archivo de registro activo. Aunque no se llame a este método, el archivo se cerrará automáticamente al finalizar el programa. 
+
+- Ejemplo
+ngn->log->CloseLogFile();
+
+--------------------------------------------------------------------------------
+- Método
+void Message(std::string msg);
+
+- Descripción
+Imprime en la consola de depuración el contenido de la cadena de texto en formato STRING del parámetro dado, añadiendo además la marca de tiempo actual de manera automática. Si el archivo de registro está habilitado, esta información también se guardará en dicho archivo. 
+
+- Ejemplo
+ngn->log->Message(“Hello World!”);
+
+--------------------------------------------------------------------------------

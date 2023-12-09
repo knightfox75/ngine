@@ -1,0 +1,198 @@
+NGN_RESOURCES.H
+v1.15.0-stable
+English
+
+--------------------------------------------------------------------------------
+	DESCRIPTION of the class
+--------------------------------------------------------------------------------
+
+The N'gine resource system allows quick and efficient management, utilizing repositories, for all the resources our program may need.
+Once a repository is created, all necessary resources can be loaded into it through a plain text listing.
+An example of such a file would be:
+
+--------------------------------------------------------------------------------
+
+# Resources loading template file
+
+# Usage: Regular files
+# TYPE; INTERNAL_NAME; FILE_PATH
+# Example:
+# TEX; logo; data/logo_overlay.png
+# Usage: Font files
+# FNT; INTERNAL_NAME; FILE_PATH; FONT_HEIGHT; [ANTIALIAS]; [BASE_COLOR]; [BORDER_SIZE]; [BORDER_COLOR]
+# Example:
+# FNT; mono_16; data/monofonto.ttf; 16
+# FNT; mono_24; data/monofonto.ttf; 24; 1; 0xFFFFFF; 2; 0x202020
+# Admited filetypes
+# TEX	Textures (.png)
+# TBG	Tiled backgrounds (.tbg)
+# SPR	Sprites (.spr)
+# MAP	Collision maps (.map)
+# SFX	Sound Effects (.wav) (.ogg)
+# TXT	Plain text files (.txt)
+# FNT	Font files (.ttf) (.otf)
+
+
+# --- Resources loading ---
+
+# Textures
+TEX; logo; data/logo_overlay.png
+# Sprites
+SPR; aim; data/aim.spr
+SPR; bird; data/bird_small.spr
+# Tiled backgrounds
+TBG; bg0; data/bg0.tbg
+TBG; bg1; data/bg1.tbg
+TBG; bg2; data/bg2.tbg
+# Sound Effects
+SFX; shutter; data/shutter.wav
+# Fonts
+FNT; mono_16; data/monofonto.ttf; 16; 1; 0xFFFFFF; 1; 0x202020
+
+# End of the template
+
+--------------------------------------------------------------------------------
+
+You can use the character "#" to introduce comments in the file.
+The maximum number of simultaneous repositories is 127.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+void AddRepository(std::string repo_name);
+
+- Description
+Creates a new repository with the specified name. If an attempt is made to create a repository with an already existing name, the command will be ignored.
+
+- Example
+ngn->resources->AddRepository("local");
+
+--------------------------------------------------------------------------------
+
+- Method
+void RemoveRepository(std::string repo_name);
+
+- Description
+Deletes the repository with the specified name, along with any associated data it may contain. If the repository does not exist, the command will be ignored.
+
+- Example
+ngn->resources->RemoveRepository("local");
+
+--------------------------------------------------------------------------------
+
+- Method
+void Clear(std::string repo_name);
+
+- Description
+Deletes the data contained in the repository with the specified name. If the repository does not exist, the command will be ignored.
+
+- Example
+ngn->resources->Clear("local");
+
+--------------------------------------------------------------------------------
+
+- Method
+bool Load(std::string repo_name, std::string filelist);
+
+- Description
+Loads the resources specified in a plain text formatted list into the indicated repository. If the loading process fails, it returns FALSE.
+
+- Example
+if (!ngn->resources->Load("local", "data/resources.txt")) return false;
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name);
+NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name);
+NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name);
+NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name);
+NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name);
+std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name);
+NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name);
+
+- Description
+Returns a memory pointer to the resource with the requested name or a vector with the content in the case of text files. If the resource or the repository is not found, it returns NULL or an empty vector.
+
+- Example
+NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);
+NGN_SpriteData* bullet = ngn->resources->GetSprite(“local”, “arrow”);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	ADDITIONAL METHODS in other classes for resource support
+--------------------------------------------------------------------------------
+
+The following overloads have been added to the NGN_Texture, NGN_TiledBg, NGN_Sprite, NGN_Sound, and NGN_TextLayer classes for the direct use of repositories in the creation of objects of these classes.
+
+--------------------------------------------------------------------------------
+
+NGN_Texture(
+	std::string repo_name,				// Repository name
+	std::string resource_name,			// Resource name
+	int32_t position_x,					// Initial X position
+	int32_t position_y,					// Initial Y position
+	uint32_t texture_width,				// Texture width
+	uint32_t texture_height				// Texture height
+);
+
+--------------------------------------------------------------------------------
+
+NGN_TiledBg(
+	std::string repo_name,				// Repository name
+	std::string resource_name,			// Resource name
+	int32_t position_x,					// Background X position
+	int32_t position_y					// Background Y position
+);
+
+--------------------------------------------------------------------------------
+
+NGN_Sprite(
+	std::string repo_name,				// Repository name
+	std::string resource_name,			// Resource name
+	int32_t position_x,					// Initial X position
+	int32_t position_y,					// Initial Y position
+	uint32_t sprite_width,				// Sprite width
+	uint32_t sprite_height,				// Sprite height
+	uint32_t box_width,					// Collision box width
+	uint32_t box_height,				// Collision box height
+	int32_t box_offset_x,				// Horizontal box offset
+	int32_t box_offset_y				// Vertical box offset
+);
+
+--------------------------------------------------------------------------------
+
+NGN_TextLayer(
+	std::string repo_name,				// Repository name
+	std::string resource_name,			// Resource name
+	std::string bg_name,				// Background texture name
+	int32_t position_x,					// X position
+	int32_t position_y,					// Y position
+	uint32_t width,						// Layer width
+	uint32_t height,					// Layer height
+	bool filtering						// Content filtering?
+);
+
+--------------------------------------------------------------------------------
+
+NGN_AudioClip* PlaySfx(
+	std::string repo_name,				// Repository name
+	std::string resource_name,			// Resource name
+	int32_t volume,						// Volume
+	int32_t panning,					// Panning
+	bool loop,							// Loop?
+	uint8_t mixer_channel				// Default mixer channel
+);
+
+--------------------------------------------------------------------------------

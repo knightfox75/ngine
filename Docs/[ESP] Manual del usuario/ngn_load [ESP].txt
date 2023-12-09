@@ -1,0 +1,195 @@
+NGN_LOAD.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_TextureData* Texture(std::string filepath);
+
+- Descripción
+Carga una imagen en formato PNG y la convierte a datos de textura.
+El tamaño máximo de imagen soportado es de 8192x8192 píxeles.
+Devuelve NULL en caso de error.
+
+- Ejemplo
+NGN_TextureData* bg_grid = ngn->load->Texture("data/png/grid.png");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_TiledBgData* TiledBg(std::string filepath);
+
+- Descripción
+Carga los datos de un fondo de tiles en formato .tbg (Ver las utilidades adjuntas de la librería).
+El tamaño máximo del tileset es de 8192x8192 píxeles.
+Devuelve NULL en caso de error.
+
+- Ejemplo
+NGN_TiledBgData* tiles_bg_front = ngn->load->TiledBg("data/bg/bg_front.tbg");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_SpriteData* Sprite(std::string filepath);
+
+- Descripción
+Carga los datos de un sprite en formato .spr (Ver las utilidades adjuntas de la librería).
+El tamaño máximo de cada fotograma del sprite es de 8192x8192 píxeles.
+Devuelve NULL en caso de error.
+
+- Ejemplo
+NGN_SpriteData*  wizard_sprite = ngn->load->Sprite("data/spr/wizard.spr");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_CollisionMapData* CollisionMap(std::string filepath);
+
+- Descripción
+Carga los datos de un mapa de colisiones en formato .map (Ver las utilidades adjuntas de la librería).
+Devuelve NULL en caso de error.
+
+- Ejemplo
+NGN_CollisionMapData* collision_map = ngn->load->CollisionMap("data/collision/mainmap.map");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_AudioClipData* AudioClip(std::string filepath);
+
+- Descripción
+Carga un archivo de audio en formato WAV, FLAC o OGG y lo convierte al formato AudioClipData para usarlo como efecto de sonido.
+Devuelve NULL en caso de error.
+
+- Ejemplo
+NGN_AudioClipData* coin_sfx = ngn->load->AudioClip("data/wav/coin.wav");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_TextFont* TrueTypeFont(
+	std::string filepath,				// Archivo a cargar
+	uint32_t height,					// Altura de la fuente (en pixeles)
+	bool antialias = true,				// Antialias?
+	uint32_t font_color = 0xFFFFFF,		// Color base (RGB)
+	uint32_t outline = 0,				// Borde? (en pixeles)
+	uint32_t outline_color = 0x000000	// Color del borde (RGB)
+);
+
+- Descripción
+Carga un archivo de fuente tipográfica TRUE TYPE y a partir de el, genera las texturas para cada caracter con el tamaño de fuente y propiedades especificadas. Devuelve NULL en caso de no poder cargar o convertir la fuente. 
+
+- Ejemplo
+NGN_TextFont* font = ngn->load->TrueTypeFont("data/consolas.ttf", 24);
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_RawImage* PngAsRaw(std::string filepath);
+
+- Descripción
+Carga una imagen en formato PNG y devuelve los pixeles de la misma en formato RAW. Devuelve NULL en caso de error. 
+
+- Ejemplo
+NGN_RawImage* pixels = ngn->load->PngAsRaw("data/clouds.png");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_RawImage* SpriteAsRaw(
+	std::string filepath,	// Archivo a cargar
+	uint32_t frame = 0		// Fotograma a convertir
+);
+
+- Descripción
+Carga los datos de un sprite y devuelve los pixeles del fotograma especificado (el primero por defecto) formato RAW. Devuelve NULL en caso de error. 
+
+- Ejemplo
+NGN_RawImage* pixels = ngn->load->SpriteAsRaw("data/coin.spr", 3);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SpriteAsRawVector(
+	std::string filepath,						// Archivo a cargar
+	std::vector<NGN_RawImage*> &raw_frames,		// Vector de destino con los frames
+	uint32_t first_frame = 0,					// Frame inicial (0 por defecto)
+	uint32_t last_frame = NGN_DEFAULT_VALUE		// Frame final (ultimo por defecto)
+);
+
+- Descripción
+Carga los datos de un sprite y almacena los pixeles de los fotogramas especificados (todos los fotogramas por defecto) formato RAW dentro de un vector. Devuelve TRUE en caso de éxito y FALSE en caso de error.
+
+- Ejemplo
+std::vector<NGN_RawImage*> frames;
+ngn->load->SpriteAsRawVector("data/coin.spr", frames, 2, 5);
+
+--------------------------------------------------------------------------------
+
+- Método
+
+[Primera sobrecarga]
+std::string TextFile(std::string filepath);
+
+[Segunda sobrecarga]
+std::string TextFile(
+	std::string filepath,					// Archivo
+	std::vector<std::string> &text_lines	// Buffer de destino
+);
+
+- Descripción
+Lee el archivo de texto de la ruta especificada y lo devuelve en un string (primera sobrecarga) o almacena las líneas de texto del archivo en el buffer dado y devuelve true o false según sí se ha tenido éxito (segunda sobrecarga).
+
+- Ejemplo
+
+[Primera sobrecarga]
+std::string text = ngn->load->TextFile("data/script.txt");
+
+[Segunda sobrecarga]
+std::vector<std::string> buffer;
+buffer.clear();
+ngn->load->TextFile("data/script.txt", buffer);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t LoadFile(
+	std::string filepath,			// Archivo
+	std::vector<uint8_t> &data		// Vector de datos
+);
+
+- Descripción
+Lee el archivo de la ruta especificada desde el sistema de archivos del dispositivo o desde un paquete de archivos (ver SetDisk() y SetPackage()) y coloca los datos en el vector dado. Si se lee el archivo desde un paquete y este está encriptado, se desencriptará el contenido. El método devuelve el número de bytes leídos o -1 en caso de error.
+
+- Ejemplo
+std::vector<uint8_t> buffer;
+int32_t file_length = ngn->load->LoadFile("data/stage.bin", buffer);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetDisk();
+
+- Descripción
+A partir de ese momento, establece el sistema de archivos del dispositivo como el origen de los datos en los métodos de carga. 
+
+- Ejemplo
+ngn->load->SetDisk();
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SetPackage(std::string pkg_file, std::string key = "");
+
+- Descripción
+A partir de ese momento, establece un paquete de archivos creado con la herramienta NGN_FileSystem como el origen de los datos en los métodos de carga. Si los archivos del paquete están encriptados, deberá de proporcionarse la clave de encriptación en el segundo parámetro.
+
+- Ejemplo
+ngn->load->SetPackage("gamedata.pkg", "myawesomekey");
+
+--------------------------------------------------------------------------------

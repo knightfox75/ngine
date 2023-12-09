@@ -1,0 +1,288 @@
+NGN_GRAPHICS.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+- Método
+bool Init(
+	std::string window_name,			// Nombre a mostrar en la pestaña de la ventana
+	uint32_t native_width,				// Resolución nativa del juego
+	uint32_t native_height,
+	int8_t scr_mode = NGN_SCR_WINDOW	// Modo de pantalla
+	bool bilinear_filter = false,		// Filtro bilinear activado?
+	bool sync = true					// VSYNC activo?
+);
+
+- Descripción
+Crea la ventana para el contexto gráfico y la inicia con los parámetros especificados. Devuelve FALSE en caso de error.
+Los modos de pantalla disponibles son:
+NGN_SCR_WINDOW		1		Modo ventana x1
+NGN_SCR_WINDOW_X2	2		Modo ventana x2
+NGN_SCR_WINDOW_X3	3		Modo ventana x3
+NGN_SCR_WINDOW_X4	4		Modo ventana x4
+NGN_SCR_WINDOW_FULL	0		Modo ventana a pantalla completa
+NGN_SCR_FULLSCREEN	-1		Modo pantalla completa
+
+- Ejemplo
+ngn->graphics->Init("Ngine Demo", 1280, 720);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetMode(int8_t mode);
+
+- Descripción
+Cambia el modo gráfico al indicado. Los cambios de modo gráfico pueden provocar que las capas de texto o canvas deban de redibujarse por completo. Usar la variable “force_redraw” de la clase para detectar si debe realizarse dicho redibujado.
+
+- Ejemplo
+ngn->graphics->SetMode(NGN_SCR_WINDOW_X2);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetFiltering(bool enabled);
+
+- Descripción
+Establece el estado del filtrado bilinear de la ventana.
+
+- Ejemplo
+ngn->graphics->SetFiltering(true);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetVerticalSync(bool enabled);
+
+- Descripción
+Establece el estado de la sincronización vertical de la ventana.
+
+- Ejemplo
+ngn->graphics->SetVerticalSync(true);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Update();
+
+- Descripción
+Intenta actualizar el contenido de la ventana a una velocidad constante de 60fps. Esta función debe llamarse una vez por frame.
+
+- Ejemplo
+ngn->graphics->Update();
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetViewportClip(
+	int32_t x,		// Posición X
+	int32_t y,		// Posición Y
+	int32_t w,		// Ancho
+	int32_t h		// Alto
+);
+
+- Descripción
+Define el área visible de la ventana.
+
+- Ejemplo
+ngn->graphics->SetViewportClip(100, 100, 250, 250);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ShowMouse(bool visible);
+
+- Descripción
+Muestra u oculta el cursor del ratón al colocarse encima de la ventana.
+
+- Ejemplo
+ngn->graphics->ShowMouse(false);
+
+--------------------------------------------------------------------------------
+
+- Método
+void OpenViewport(
+	uint8_t id,								// ID del VIEWPORT (0-7)
+	int32_t pos_x,							// Posición del viewport
+	int32_t pos_y,
+	uint32_t width,							// Ancho del viewport
+	uint32_t height,						// Alto del viewport
+	uint32_t h_res = NGN_DEFAULT_VALUE,		// Resolución del render en el viewport
+	uint32_t v_res = NGN_DEFAULT_VALUE,
+	uint32_t local_filter = false			// Filtrado bilinear local
+);
+
+- Descripción
+Abre uno de los 8 viewports disponibles con los parámetros facilitados.
+Se puede cambiar el estado del filtrado local con el parámetro “local_filter”. Esto no afecta al estado del filtrado general de la ventana.
+
+- Ejemplo
+ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120);
+ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, true);
+
+--------------------------------------------------------------------------------
+
+- Método
+void CloseViewport(uint8_t id);
+
+- Descripción
+Cierra el viewport con el ID facilitado.
+
+- Ejemplo
+ngn->graphics->CloseViewport(3);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SelectViewport(uint8_t id);
+
+- Descripción
+Selecciona el viewport con el ID facilitado. A partir de ese momento, todos los comandos de ngn->render se enviarán a ese viewport. Todos los elementos enviados al viewport no se mostraran en pantalla hasta que se ejecute el comando ngn->render->Viewports(); el cual renderiza el contenido de los viewports en ese momento.
+
+- Ejemplo
+ngn->graphics->SelectViewport(3);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ViewportPosition(uint8_t id, int32_t x, int32_t y);
+void ViewportPosition(uint8_t id, Vector2I32 position);
+
+- Descripción
+Posiciona en las coordenadas facilitadas el viewport especificado. El punto de referencia se sitúa en la coordenada superior izquierda.
+
+- Ejemplo
+ngn->graphics->ViewportPosition(3, 100, 200);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ViewportLocalFilter(uint8_t id, bool status);
+
+- Descripción
+Cambia el estado del filtrado local del viewport especificado.
+
+- Ejemplo
+ngn->graphics->ViewportLocalFilter(3, true);
+
+--------------------------------------------------------------------------------
+
+- Método
+void DefaultViewport();
+
+- Descripción
+Establece la ventana principal como destino del render.
+
+- Ejemplo
+ngn->graphics->DefaultViewport();
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_Sprite* CloneSprite(NGN_Sprite* sprite);
+
+- Descripción
+Clona un sprite con las propiedades actuales. El Sprite resultante es una instancia totalmente nueva.
+
+- Ejemplo
+NGN_Sprite* spr_clone = ngn->graphics->CloneSprite(spr);
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2I32 GetDesktopResolution();
+
+- Descripción
+Devuelve la resolución del escritorio del sistema en el momento de iniciar el programa.
+
+- Ejemplo
+Size2I32 desktop_res = ngn->graphics->GetDesktopResolution();
+
+--------------------------------------------------------------------------------
+
+- Método
+uint32_t GetFps();
+
+- Descripción
+Devuelve el número de fotogramas renderizados en el transcurso del último segundo.
+
+- Ejemplo
+uint32_t fps = ngn->graphics->GetFps();
+
+--------------------------------------------------------------------------------
+
+- Método
+void ScreenShot(
+	std::string path,					// Ruta al archivo PNG de destino
+	NGN_TextureData* overlay = NULL,	// Datos de la textura para la superposición
+	uint8_t alpha = 0xFF				// Nivel de opacidad de la textura de la superposición
+);
+
+- Descripción
+Guarda una captura del contenido del renderer del frame actual en formato PNG en el archivo y rutas especificados. De manera adicional, puede especificarse una textura para superponerla en la captura y pudiendo además especificar su nivel de opacidad.
+
+- Ejemplo
+ngn->graphics->ScreenShot(“captures/myscreen1.png”);
+ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool vsync
+
+- Descripción
+Indica si el sincronismo vertical está activo.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool filtering
+
+- Descripción
+Indica si el filtro bilinear está activo.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t native_w
+int32_t native_h
+
+- Descripción
+Almacena la resolución nativa del juego.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+std::string window_caption
+
+- Descripción
+Guarda el texto del título de la ventana.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+SDL_Rect cliparea
+
+- Descripción
+Almacena los valores del área de recorte.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool force_redraw
+
+- Descripción
+Indica si debido a un cambio de modo de pantalla, debe redibujarse el contenido de la ventana.
+
+--------------------------------------------------------------------------------

@@ -1,0 +1,300 @@
+NGN_CANVAS.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase (Funciones del lienzo)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_Canvas(
+	int32_t position_x = 0,				// Posición X (0 por defecto)
+	int32_t position_y = 0,				// Posición Y (0 por defecto)
+	uint32_t _width = DEFAULT_VALUE,	// Ancho de la capa (Toda la pantalla por defecto)                                                  
+	uint32_t _height = DEFAULT_VALUE,	// Alto de la capa (Toda la pantalla por defecto)
+	bool _filtering = false				// Filtrado bilinear del contenido?
+);
+
+- Descripción
+Crea un nuevo canvas, usando los parámetros especificados.
+
+- Ejemplo
+NGN_Canvas* canvas = new NGN_Canvas(100, 50, 200, 64);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Descripción
+Posiciona el canvas en la coordenada dada.
+
+- Ejemplo
+canvas->Position(10, 20);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Descripción
+Mueve el canvas en la dirección y velocidades dadas.
+
+- Ejemplo
+canvas->Translate(0.0f, -2.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Size(float w, float h);
+
+- Descripción
+Cambia el tamaño del canvas.
+
+- Ejemplo
+canvas->Size(640, 480);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Descripción
+Escala el canvas según el factor dado. Según la sobrecarga usada, escalara los ejes en conjunto o por separado. La escala por defecto es 1.0f.
+
+-Ejemplo
+canvas->Scale(1.5f);
+canvas->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Rotate(double degrees);
+
+- Descripción
+Rota el canvas cada frame el número de unidades dado, en grados.
+
+- Ejemplo
+canvas->Rotate(1.2f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetCenter(float x, float y);
+
+- Descripción
+Específica, en coordenadas relativas y desde el centro real del canvas, donde se ubicará el centro de rotación del mismo.
+
+- Ejemplo
+canvas->SetCenter(-10, -5);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase (Propiedades del lienzo)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2 position
+
+- Descripción
+Posición del canvas en pantalla.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+float width
+float height
+
+- Descripción
+Tamaño del canvas.
+
+--------------------------------------------------------------------------------
+
+- Propiedad	
+bool visible
+
+- Descripción
+Indica si el canvas es o no visible.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t alpha
+
+- Descripción
+Nivel de transparencia del canvas, entre 0 y 255.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+SDL_BlendMode blend_mode
+
+- Descripción
+Modo de mezcla de color del canvas. Los modos disponibles son:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE y NGN_BLENDMODE_MODULATE.
+El valor por defecto de esta propiedad es NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool filtering
+
+- Descripción
+Activa o desactiva el filtrado bilineal del contenido del canvas.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+double rotation
+
+- Descripción
+Rotación del canvas, en grados.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool flip_h
+bool flip_v
+
+- Descripción
+Volteado vertical y horizontal del canvas.
+
+--------------------------------------------------------------------------------
+
+Nota: Los cambios de tamaño o escala no afectan al tamaño original del contenedor, solo se cambia el tamaño del contenido al representarse en la pantalla.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase (Funciones de dibujo)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+void Cls(uint32_t color = 0x00000000);
+
+- Descripción
+Borra el contenido del canvas y si se especifica, lo rellena con el color dado.
+El color ha de especificarse en formato RGBA.
+
+- Ejemplo
+textbox->Cls(0x0080FFFF);	// RRGGBBAA
+
+--------------------------------------------------------------------------------
+
+- Método
+void Point(int32_t x, int32_t y, uint32_t color);
+
+- Descripción
+Dibuja un punto de 1x1 pixels del color especificado en las coordenadas del canvas dadas.
+
+- Ejemplo
+canvas->Point(100, 50, 0x00FF00FF);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Line(
+	int32_t x1, int32_t y1,		// Punto A
+	int32_t x2, int32_t y2,		// Punto B
+	uint32_t color				// Color (RGBA)
+);
+
+- Descripción
+Dibuja una línea entre dos puntos con el color especificado.
+
+- Ejemplo
+canvas->Line(10, 10, 200, 200, 0xFF0000FF);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Box(
+    int32_t x1, int32_t y1,      // Vértice superior izquierdo
+    int32_t x2, int32_t y2,      // Vértice inferior derecho
+    uint32_t color,              // Color (RGBA)
+    bool paint = false           // Relleno?
+);
+
+- Descripción
+Dibuja una caja entre los vértices especificados con el color dado. Puede dibujarse con o sin relleno.
+
+- Ejemplo
+canvas->Box(10, 10, 200, 200, 0xFF00FFFF, true);
+canvas->Box(10, 10, 200, 200, 0xFFFFFFFF);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Circle(
+	int32_t cx, int32_t cy,			// Coordenadas del centro
+	int32_t r,						// Radio horizontal
+	uint32_t color,					// Color (RGBA)
+	int32_t ry = DEFAULT_VALUE,		// Radio vertical
+	bool paint = false				// Relleno?
+);
+
+- Descripción
+Dibuja un círculo con los parámetros especificados. Si no se especifica el radio vertical, se usará el horizontal en su lugar. El parámetro paint establece si el círculo es o no con relleno.
+
+- Ejemplo
+canvas->Circle(320, 240, 32, 0xFFFFFFFF);
+canvas->Circle(320, 240, 32, 0x804080FF, 64, true);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Arc(
+	int32_t cx, int32_t cy,			// Coordenadas del centro
+	int32_t r,						// Radio horizontal
+	double start_angle,				// Ángulo inicial (Radianes)
+	double end_angle,				// Ángulo final (Radianes)
+	uint32_t color,					// Color (RGBA)
+	int32_t ry = DEFAULT_VALUE,		// Radio vertical
+	uint8_t close = 0				// Cerrar el arco?
+);
+
+- Descripción
+Dibuja un arco con los parámetros especificados. Si no se especifica el radio vertical, se usará el horizontal en su lugar. Los ángulos deben de especificarse en RADIANES. El parámetro close permite cerrar el arco por sus extremos (0 = no lo cierra, 1 = cierra los dos extremos, 2 = cierra los extremos con el centro).
+
+- Ejemplo
+canvas->Arc(250, 360, 200, 0.0f, (PI * 2.0f), 0xFFFFFFFF, 200);
+canvas->Arc(640, 360, 100, 0.3f, 4.0f, 0xFFFFFFFF, 100, 1);
+canvas->Arc(640, 580, 100, 0.8f, 5.0f, 0xFFFFFFFF, 100, 2);
+
+--------------------------------------------------------------------------------
+
+- Método
+uint32_t GetPixelColor(int32_t x, int32_t y);
+
+- Descripción
+Devuelve el color en formato RGBA8888 (RRGGBBAA) del pixel en las coordenadas proporcionadas. Si las coordenadas se encuentran fuera de los límites del canvas, se devuelve 0x00000000.
+
+- Ejemplo
+uint32_t color = canvas->GetPixelColor(345, 123);
+
+--------------------------------------------------------------------------------
+
+- Método
+Rgba GetPixelRgba(int32_t x, int32_t y);
+
+-Descripción
+Devuelve el color en formato RGBA (color.r, color.g, color.b, color.a) del pixel en las coordenadas proporcionadas. Si las coordenadas se encuentran fuera de los límites del canvas, se devuelve 0 en los 4 componentes.
+
+- Ejemplo
+Rgba color = canvas->GetPixelRgba(345, 123);
+
+--------------------------------------------------------------------------------

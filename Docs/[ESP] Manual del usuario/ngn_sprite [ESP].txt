@@ -1,0 +1,329 @@
+NGN_SPRITE.H
+v1.15.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_Sprite(
+	NGN_SpriteData* sprite,						// Datos del sprite
+	int32_t position_x = DEFAULT_VALUE,			// Posición X inicial (oculto por defecto)
+	int32_t position_y = DEFAULT_VALUE,			// Posición Y inicial (oculto por defecto)
+	uint32_t sprite_width = DEFAULT_VALUE,		// Ancho del sprite (por defecto, el del fotograma)
+	uint32_t sprite_height = DEFAULT_VALUE,		// Altura del sprite (por defecto, el del fotograma)
+	uint32_t box_width = DEFAULT_VALUE,			// Ancho de la caja de colisiones (por defecto, el del sprite)
+	uint32_t box_height = DEFAULT_VALUE,		// Alto de la caja de colisiones (por defecto, el del sprite)
+	int32_t box_offset_x = NGN_DEFAULT_VALUE,	// Offset horizontal de la caja de colisiones
+	int32_t box_offset_y = NGN_DEFAULT_VALUE	// Offset vertical de la caja de colisiones
+);
+
+- Descripción
+Crea un nuevo Sprite, usando los datos previamente cargados.
+
+- Ejemplo
+NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 100, 200);
+NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 300, 300, 256, 256, 160, 256);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Descripción
+Posiciona el sprite en la coordenada dada.
+
+- Ejemplo
+player->Position(1200, 900);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Descripción
+Mueve el sprite en la dirección y velocidades dadas.
+
+- Ejemplo
+player->Translate(5.0f, 1.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Size(float w, float h);
+
+- Descripción
+Cambia el tamaño del sprite.
+
+- Ejemplo
+player->Size(64.0f, 48.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Descripción
+Escala el sprite, según el factor dado. Según la sobrecarga usada, escalará los ejes en conjunto o por separado. La escala por defecto es 1.0f.
+
+- Ejemplo
+player->Scale(1.5f);
+player->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Rotate(double degrees);
+
+- Descripción
+Rota el sprite el número de grados proporcionados.
+
+- Ejemplo
+player->Rotate(1.2f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetCenter(float x, float y);
+
+- Descripción
+Especifica, en coordenadas relativas y desde el centro real del sprite, donde se ubicará el centro de rotación del sprite.
+
+- Ejemplo
+player->SetCenter(-10, -5);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t AddCollider(
+	std::string name,	// Nombre del colisionador (ha de ser único)
+	float offset_x,		// Offset X respecto al centro real del sprite
+	float offset_y,		// Offset Y respecto al centro real del sprite
+	float width,		// Ancho del colisionador
+	float height		// Altura del colisionador
+);
+
+- Descripción
+Añade un colisionador (collider) adicional al sprite, con el nombre, tamaño y posición indicados.
+Pueden añadirse tantos colisionadores adicionales como sea necesario. Estos colisionadores serán detectados por la instrucción “HitBox” de la clase “NGN_Collisions” de manera automática.
+La rotación o escalado del sprite no afecta a estos colisionadores.
+Esta función devuelve 0 si el colisionador se añade con éxito.
+
+- Ejemplo
+player->AddCollider("bottom", -16.0f, 80.0f, 32.0f, 96.0f);
+player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t GetColliderId(std::string name);
+
+- Descripción
+Devuelve la ID (posición) en el vector de colisionadores del colisionador con el nombre dado. Si no se encuentra, devuelve -1.
+
+- Ejemplo
+Int32_t id = player->GetColliderId(“left”);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t ColliderEnabled(std::string name, bool status);
+
+- Descripción
+Habilita o deshabilita el colisionador con el nombre dado. Esta función devuelve 0 si tiene éxito el cambio de estado.
+
+- Ejemplo
+player->ColliderEnabled(“left”, false);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t RemoveCollider(std::string name);
+
+- Descripción
+Elimina el colisionador con el nombre especificado. En caso de éxito, esta función devuelve 0.
+
+- Ejemplo
+player->RemoveCollider(“left”);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t AddAnimation(
+	std::string name,			// Nombre de la animación
+	uint32_t first_frame,		// Primer fotograma de la animación
+	uint32_t last_frame,		// Ultimo fotograma de la animación
+	uint32_t loop,				// Fotograma "punto de loop”
+	uint32_t frame_duration		// Duracion en ciclos de cada fotograma
+);
+
+- Descripción
+Añade una nueva animación al Sprite creado.
+Es posible crear animaciones con cinemática inversa.
+Devuelve 1 en caso de error.
+
+- Ejemplo
+player->AddAnimation(“walk”, 1, 7, 1, 5);
+player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
+player->AddAnimation(“run”, 0, 20, 8, 3);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t SetAnimation(std::string name = "");
+
+- Descripción
+Selecciona una animación con el nombre dado para su reproducción.
+Si se solicita la animación actualmente seleccionada, se ignora la orden y devuelve 2.
+En caso de error, devuelve 1.
+
+- Ejemplo
+player->SetAnimation(“walk”);
+
+--------------------------------------------------------------------------------
+
+- Método
+void PlayAnimation();
+
+- Descripción
+Reproduce la animación seleccionada actualmente.
+Debe de ejecutarse 1 vez por ciclo para actualizar la animación.
+En caso de usar la Camara 2D de la librería, no es necesario llamar a este método para la reproducción de las animaciones si el sprite se registra en la cámara.
+
+- Ejemplo
+player->PlayAnimation();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2 position
+Vector2 screen
+
+- Descripción
+Posición del Sprite (global o en pantalla).
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+float width
+float height
+
+- Descripción
+Tamaño del Sprite.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+float box.width
+float box.height
+float box.offset.x
+float box.offset.y
+bool box_enabled
+
+- Descripción
+Propiedades de la caja principal de colisión del sprite. Puede habilitarse o deshabilitarse mediante el flag “box_anabled”.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t frame
+
+- Descripción
+Fotograma del sprite que debe mostrarse (El primer frame es el 0).
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t total_frames
+
+- Descripción
+Su valor indica el número total de fotogramas que contiene el sprite.
+Esta propiedad no debe modificarse bajo ningún concepto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+[string] current_animation.id
+[uint32_t] current_animation.first_frame
+[uint32_t] current_animation.last_frame
+[uint32_t] current_animation.loop
+[uint32_t] current_animation.frame_duration
+
+- Descripción
+Parámetros de la animación en curso.
+Estas propiedades no deben de modificarse bajo ningún concepto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool animation_pause
+
+- Descripción
+Si el valor de esta propiedad es TRUE, la animación actual se pausa.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool visible
+
+- Descripción
+Establece la visibilidad del sprite.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t alpha
+
+- Descripción
+Nivel de transparencia del Sprite, entre 0 y 255.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+SDL_BlendMode blend_mode
+
+- Descripción
+Modo de mezcla de color del sprite. Los modos disponibles son:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE y NGN_BLENDMODE_MODULATE.
+El valor por defecto de esta propiedad es NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool on_screen
+
+- Descripción
+Flag que indica si el sprite está o no en pantalla. Si el sprite se encuentra registrado en la Cámara 2D, este flag se actualizara automáticamente. En caso contrario, deberá de actualizarse manualmente.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+double rotation
+
+- Descripción
+Rotación del sprite, en grados.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool flip_h
+bool flip_v
+
+- Descripción
+Volteado vertical y horizontal del Sprite.
+
+--------------------------------------------------------------------------------
