@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -140,7 +140,7 @@ class NGN_Texture {
 
 
         // Si la textura no esta enlazada, borra el contenido
-        void ClearContent();
+        void ClearContent(uint32_t rgba = 0x00000000);
 
 
 

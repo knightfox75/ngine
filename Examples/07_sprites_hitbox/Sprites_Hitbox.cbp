@@ -141,7 +141,7 @@
 					<Add directory="/usr/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-Wl,-rpath,libs/arm-linux-gnueabihf/" />
+					<Add option="-Wl,-rpath,libs/aarch64-linux-gnu/" />
 					<Add option="-Wl,--disable-new-dtags" />
 					<Add library="ngn_d" />
 					<Add library="SDL2" />
@@ -169,7 +169,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-Wl,-rpath,libs/arm-linux-gnueabihf/" />
+					<Add option="-Wl,-rpath,libs/aarch64-linux-gnu/" />
 					<Add option="-Wl,--disable-new-dtags" />
 					<Add library="ngn" />
 					<Add library="SDL2" />

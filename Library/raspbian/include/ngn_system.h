@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -107,8 +107,11 @@ class NGN_System {
         // Lectura del evento del mouse [SDL_MOUSEMOTION]
         void MouseMotion();
 
-        // Lectura del evento del Joystick [SDL_JOYAXISMOTION]
-        void JoyAxisMotion();
+        // Lectura del evento del GamePad [SDL_CONTROLLERAXISMOTION]
+        void GamePadAxisMotion();
+
+        // Lectura del evento del GamePad [SDL_CONTROLLERBUTTONDOWN]
+        void GamePadButtons();
 
         // Tiempo delta
         uint32_t _delta_time;

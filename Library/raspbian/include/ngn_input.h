@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -49,13 +49,22 @@
 #include <string>
 
 
+
+/******************************************************************************
+
+    Definicion de las constantes para referirse a las
+    propiedades de los controladores
+
+******************************************************************************/
+
+
 /*** Define las propiedades de los controladores ***/
 static const int32_t GAME_CONTROLLERS = 8;              // Numero maximo de game controllers
-static const int32_t GAME_CONTROLLER_AXIS = 8;          // Numero maximo de axis por game controller
-static const int32_t GAME_CONTROLLER_BUTTONS = 20;      // Numero maximo de botones por game controller
+static const int32_t GAME_CONTROLLER_AXIS = 5;          // Numero maximo de axis por game controller
+static const int32_t GAME_CONTROLLER_BUTTONS = 11;      // Numero maximo de botones por game controller
 
 /*** Definiciones por defecto de X-INPUT (XBOX Controller) ***/
-static const uint32_t XBOX_BUTTON_A = 0;                // Botones del PAD de XBOX
+static const uint32_t XBOX_BUTTON_A = 0;                // Botones del PAD de XBOX [11]
 static const uint32_t XBOX_BUTTON_B = 1;
 static const uint32_t XBOX_BUTTON_X = 2;
 static const uint32_t XBOX_BUTTON_Y = 3;
@@ -66,12 +75,13 @@ static const uint32_t XBOX_BUTTON_START = 7;
 static const uint32_t XBOX_BUTTON_STICK_L = 8;
 static const uint32_t XBOX_BUTTON_STICK_R = 9;
 static const uint32_t XBOX_BUTTON_XBOX = 10;
-static const uint32_t XBOX_STICK_L_AXIS_X = 0;          // Axis analogicos
+static const uint32_t XBOX_STICK_L_AXIS_X = 0;          // Axis analogicos [5]
 static const uint32_t XBOX_STICK_L_AXIS_Y = 1;
 static const uint32_t XBOX_STICK_R_AXIS_X = 2;
 static const uint32_t XBOX_STICK_R_AXIS_Y = 3;
 static const uint32_t XBOX_TRIGGER_AXIS = 4;            // Gatillos analogicos
-static const float XBOX_AXIS_DEADZONE = 0.25f;          // Zona muerta de los axis
+static const float XBOX_AXIS_DEADZONE = 0.35f;          // Zona muerta de los axis
+static const float XBOX_AXIS_IGNORE = 0.01f;            // Zona donde se ignora la entrada
 
 
 
@@ -147,31 +157,37 @@ class NGN_Input {
 
 
         // Define las propiedades del game controller
-        struct controller_data {
+        struct ControllerData {
             bool available;                                 // El controlador esta disponible?
-            SDL_Joystick* joy;                              // Puntero a la informacion del joy
-            int32_t id;                                     // ID de la instancia de este joy
-            std::string name;                               // Nombre del JoyStick
-            int32_t axis_number;                            // Numero de axis disponibles
+            SDL_GameController* gamepad;                    // Puntero a la informacion del game pad
+            int32_t device_id;                              // ID de instancia
+            std::string name;                               // Nombre del game pad
             float axis[GAME_CONTROLLER_AXIS];               // Axis
-            int32_t button_number;                          // Numero de botones disponibles
             NGN_Key button[GAME_CONTROLLER_BUTTONS];        // Botones
-            bool pov_available;                             // POV (Cruceta digital) disponible?
             uint8_t pov;                                    // Resultado del POV (BITMASK de 4 bits)
             NGN_Key pov_up;                                 // POV como teclas cursor (Arriba)
             NGN_Key pov_down;                               // POV como teclas cursor (Abajo)
             NGN_Key pov_left;                               // POV como teclas cursor (Izquierda)
             NGN_Key pov_right;                              // POV como teclas cursor (Derecha)
+            struct {                                        // D-PAD (Conocido como POV en los joysticks)
+                NGN_Key up;
+                NGN_Key down;
+                NGN_Key left;
+                NGN_Key right;
+            } dpad;
+            NGN_Key any_button;                             // Cualquier boton
+            NGN_Key any_axis;                               // Cualquier axis (analogicos, gatillos o D-PAD)
+            NGN_Key activity;                               // Actividad del mando (cualquier boton o axis)
             bool rumble_available;                          // Dispone de efecto "rumble"
-            SDL_Haptic* haptic;                             // Puntero a la informacion del "haptic"
         };
 
         // Lista de controladores disponibles
-        struct controller_list_data {
-            std::string name;   // ID del controlador
-            int32_t slot;       // Slot de la lista asignado
+        struct ControllerListData {
+            std::string name;           // Nombre del controlador
+            int32_t device_id;          // ID unica de hardware
+            int32_t slot;               // Slot de la lista asignado
         };
-        std::vector<controller_list_data> controller_list;
+        std::vector<ControllerListData> controller_list;
 
 
 
@@ -224,7 +240,7 @@ class NGN_Input {
 
 
         // Lista de game controllers
-        controller_data controller[GAME_CONTROLLERS];
+        ControllerData controller[GAME_CONTROLLERS];
         int32_t controllers;
 
         // Efecto simple de "rumble" para el controlador

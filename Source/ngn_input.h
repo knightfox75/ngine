@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.15.0-RC1 ***
+    *** Version 1.15.0-stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -175,6 +175,9 @@ class NGN_Input {
                 NGN_Key left;
                 NGN_Key right;
             } dpad;
+            NGN_Key any_button;                             // Cualquier boton
+            NGN_Key any_axis;                               // Cualquier axis (analogicos, gatillos o D-PAD)
+            NGN_Key activity;                               // Actividad del mando (cualquier boton o axis)
             bool rumble_available;                          // Dispone de efecto "rumble"
         };
 

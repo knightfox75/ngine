@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -340,36 +340,29 @@ int32_t NGN_Sprite::AddAnimation(
 /*** Selecciona la animacion del Sprite ***/
 int32_t NGN_Sprite::SetAnimation(std::string name) {
 
-    // Toca reproducir una animacion diferente a la actual?
-    if (name != current_animation.name) {
+    // Se solicita la animacion seleccionada actualmente?
+    if (name == current_animation.name) return 2;
 
-        // Busca la animacion
-        int32_t a = -1;
-        for (uint32_t i = 0; i < animation.size(); i ++) {
-            if (animation[i].name == name) {
-                a = i;
-                break;
-            }
+    // Si no, busca la animacion
+    int32_t a = -1;
+    for (uint32_t i = 0; i < animation.size(); i ++) {
+        if (animation[i].name == name) {
+            a = i;
+            break;
         }
-        // Animacion no encontrada
-        if (a == -1) return 1;
-
-        // Si la animacion existe, registrala como la actual y reinicia los contadores
-        current_animation.name = animation[a].name;
-        current_animation.id = animation[a].id;
-        current_animation.first_frame = animation[a].first_frame;
-        current_animation.last_frame = animation[a].last_frame;
-        current_animation.loop = animation[a].loop;
-        current_animation.frame_duration = animation[a].frame_duration;
-        animation_timer = 0;
-        frame = current_animation.first_frame;
-
-    } else {
-
-        // Es la misma animacion
-        return 1;
-
     }
+    // Animacion no encontrada
+    if (a < 0) return 1;
+
+    // Si la animacion existe, registrala como la actual y reinicia los contadores
+    current_animation.name = animation[a].name;
+    current_animation.id = animation[a].id;
+    current_animation.first_frame = animation[a].first_frame;
+    current_animation.last_frame = animation[a].last_frame;
+    current_animation.loop = animation[a].loop;
+    current_animation.frame_duration = animation[a].frame_duration;
+    animation_timer = 0;
+    frame = current_animation.first_frame;
 
     // Animacion seleccionada con exito
     return 0;

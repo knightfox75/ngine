@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -259,14 +259,20 @@ void NGN_Texture::SetCenter(float x, float y) {
 
 
 /*** Borra el contenido de la textura, si no esta enlazada ***/
-void NGN_Texture::ClearContent() {
+void NGN_Texture::ClearContent(uint32_t rgba) {
 
     if (linked) return;
+
+    // Calcula el color de borrado
+    uint8_t r = ((rgba >> 24) & 0xFF);
+    uint8_t g = ((rgba >> 16) & 0xFF);
+    uint8_t b = ((rgba >> 8) & 0xFF);
+    uint8_t a = (rgba & 0xFF);
 
     // Informa al renderer que la textura "backbuffer" es su destino
     SDL_SetRenderTarget(ngn->graphics->renderer, data->gfx);
     // Borra el contenido de la textura actual
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, r, g, b, a);
     SDL_RenderFillRect(ngn->graphics->renderer, NULL);
 
     // Devuelve el render al seleccionado

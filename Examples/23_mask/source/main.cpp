@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-	Requiere N'gine 1.14.0-stable o superior
+	Requiere N'gine 1.15.0-stable o superior
 	(c) 2016 - 2023 by Cesar Rincon "NightFox"
 	https://nightfoxandco.com
 

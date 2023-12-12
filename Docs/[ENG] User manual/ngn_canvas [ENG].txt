@@ -77,7 +77,7 @@ canvas->Scale(2.0f, 0.75f);
 void Rotate(double degrees);
 
 - Description
-Rotate the canvas by the given number of units in degrees each frame.
+Rotates the canvas by the provided number of degrees.
 
 - Example
 canvas->Rotate(1.2f);

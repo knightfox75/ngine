@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.14.0-stable ***
+    *** Version 1.15.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -125,7 +125,7 @@ void NGN_System::BootUp() {
 bool NGN_System::Init() {
 
     // Intenta iniciar SDL con las opciones por defecto
-    if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC) < 0) {
+    if (SDL_Init(SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER) < 0) {
         ngn->log->Message("[NGN_System error] SDL initialization failed.");
         return false;
     }
@@ -168,9 +168,15 @@ void NGN_System::EventUpdate() {
                 MouseMotion();
                 break;
 
-            // Evento del movimiento de los axis del joystick
-            case SDL_JOYAXISMOTION:
-                JoyAxisMotion();
+            // Evento de los axis del GamePad
+            case SDL_CONTROLLERAXISMOTION:
+                GamePadAxisMotion();
+                break;
+
+            // Evento de los botones del GamePad
+            case SDL_CONTROLLERBUTTONDOWN:
+            case SDL_CONTROLLERBUTTONUP:
+                GamePadButtons();
                 break;
 
             // Evento
@@ -323,19 +329,93 @@ void NGN_System::MouseMotion() {
 
 
 
-/*** Lectura del evento del Joystick [SDL_JOYAXISMOTION] ***/
-void NGN_System::JoyAxisMotion() {
+/*** Lectura del evento del GamePad [SDL_CONTROLLERAXISMOTION] ***/
+void NGN_System::GamePadAxisMotion() {
 
     if (ngn->input->controllers <= 0) return;
 
+    float axis = 0.0f;
+    const float int2float = 32767.0f;
+
+    const uint32_t axis_id[4] = {
+        XBOX_STICK_L_AXIS_X,
+        XBOX_STICK_L_AXIS_Y,
+        XBOX_STICK_R_AXIS_X,
+        XBOX_STICK_R_AXIS_Y
+    };
+    const SDL_GameControllerAxis sdl_id[4] = {
+        SDL_CONTROLLER_AXIS_LEFTX,
+        SDL_CONTROLLER_AXIS_LEFTY,
+        SDL_CONTROLLER_AXIS_RIGHTX,
+        SDL_CONTROLLER_AXIS_RIGHTY
+    };
+
     for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
-        if (ngn->input->controller[i].available) {
-            if (sdl_event.jaxis.which == ngn->input->controller[i].id) {
-                if (sdl_event.jaxis.axis < ngn->input->controller[i].axis_number) {
-                    ngn->input->controller[i].axis[sdl_event.jaxis.axis] = (sdl_event.jaxis.value < 0) ? ((float)sdl_event.jaxis.value / 32768.0f):((float)sdl_event.jaxis.value / 32767.0f);
-                }
+
+        if (!ngn->input->controller[i].available) continue;
+
+        // Sticks izquierdo y derecho
+        for (int32_t n = 0; n < 4; n ++) {
+            axis = ((float)SDL_GameControllerGetAxis(ngn->input->controller[i].gamepad, sdl_id[n]) / int2float);
+            if (std::abs(axis) < XBOX_AXIS_IGNORE) {
+                axis = 0.0f;
+            } else if (axis < -1.0f) {
+                axis = -1.0f;
+            } else if (axis > 1.0f) {
+                axis = 1.0f;
             }
+            ngn->input->controller[i].axis[axis_id[n]] = axis;
         }
+
+        // Gatillos
+        axis = ((float)(SDL_GameControllerGetAxis(ngn->input->controller[i].gamepad, SDL_CONTROLLER_AXIS_TRIGGERLEFT) - SDL_GameControllerGetAxis(ngn->input->controller[i].gamepad, SDL_CONTROLLER_AXIS_TRIGGERRIGHT)) / int2float);
+        if (std::abs(axis) < XBOX_AXIS_IGNORE) {
+            axis = 0.0f;
+        } else if (axis < -1.0f) {
+            axis = -1.0f;
+        } else if (axis > 1.0f) {
+            axis = 1.0f;
+        }
+        ngn->input->controller[i].axis[XBOX_TRIGGER_AXIS] = axis;
+
+    }
+
+}
+
+
+
+/*** Lectura del evento del GamePad [SDL_CONTROLLERBUTTONDOWN & SDL_CONTROLLERBUTTONUP] ***/
+void NGN_System::GamePadButtons() {
+
+
+    if (ngn->input->controllers <= 0) return;
+
+
+    for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
+
+        if (!ngn->input->controller[i].available) continue;
+
+        ngn->input->controller[i].button[XBOX_BUTTON_A].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_A) > 0) ? true:false;
+        ngn->input->controller[i].button[XBOX_BUTTON_B].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_B) > 0) ? true:false;
+        ngn->input->controller[i].button[XBOX_BUTTON_X].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_X) > 0) ? true:false;
+        ngn->input->controller[i].button[XBOX_BUTTON_Y].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_Y) > 0) ? true:false;
+
+        ngn->input->controller[i].button[XBOX_BUTTON_L].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_LEFTSHOULDER) > 0) ? true:false;
+        ngn->input->controller[i].button[XBOX_BUTTON_R].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_RIGHTSHOULDER) > 0) ? true:false;
+
+        ngn->input->controller[i].button[XBOX_BUTTON_BACK].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_BACK) > 0) ? true:false;
+        ngn->input->controller[i].button[XBOX_BUTTON_START].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_START) > 0) ? true:false;
+
+        ngn->input->controller[i].button[XBOX_BUTTON_STICK_L].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_LEFTSTICK) > 0) ? true:false;
+        ngn->input->controller[i].button[XBOX_BUTTON_STICK_R].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_RIGHTSTICK) > 0) ? true:false;
+
+        ngn->input->controller[i].button[XBOX_BUTTON_XBOX].held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_GUIDE) > 0) ? true:false;
+
+        ngn->input->controller[i].dpad.up.held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_DPAD_UP) > 0) ? true:false;
+        ngn->input->controller[i].dpad.down.held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_DPAD_DOWN) > 0) ? true:false;
+        ngn->input->controller[i].dpad.left.held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_DPAD_LEFT) > 0) ? true:false;
+        ngn->input->controller[i].dpad.right.held = (SDL_GameControllerGetButton(ngn->input->controller[i].gamepad, SDL_CONTROLLER_BUTTON_DPAD_RIGHT) > 0) ? true:false;
+
     }
 
 }

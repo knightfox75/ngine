@@ -1,10 +1,12 @@
 --------------------------------------------------------------------------------
-2023-12-03 Ver.1.15.0-RC1
+2023-12-12 Ver.1.15.0-stable
 --------------------------------------------------------------------------------
-- In the NGN_Texture class, the option to specify the fill color when using the ClearContent() method is added.
-- The code for reading and managing game controllers (gamepads) has been completely rewritten, using the latest SDL2 functions (SDL_GameController). This solves the bug where, on Windows operating systems, the "rumble" effect of controllers had stopped working.
+- In the NGN_Texture class, the option to specify the fill color has been added when using the ClearContent() method;
+- The code for reading and managing game controllers (gamepads) has been completely rewritten, using the latest SDL2 functions (SDL_GameController). This fixes the bug where, on Windows operating systems, the "rumble" effect of controllers had stopped working.
 - Internal changes in the animation search of the NGN_Sprite class.
-- The documentation for using the library is updated, and the English version is added.
+- The usage documentation for the library has been updated, and an English version has been added.
+- The project template has been removed, merging with the advanced project template.
+- Library and utility versions for Raspberry Pi OS have been updated to be compatible with the latest available distribution (Bookworm) for 64 bits.
 
 
 --------------------------------------------------------------------------------

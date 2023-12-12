@@ -162,6 +162,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Os" />
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
 		</Compiler>

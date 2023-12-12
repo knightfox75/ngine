@@ -105,22 +105,24 @@ controler[n]
 La clase “input” dispone de acceso a los controladores a partir de la propiedad “controller[n]”, donde "n" indica el SLOT de conexión a leer [0 - 7]. Si se accede a un SLOT sin conexión, se devuelven los valores por defecto.
 Las propiedades disponibles para cada controlador son:
 
-bool available							// El controlador está disponible?
+bool available							// ¿Está disponible el controlador?
 int32_t device_id						// ID de la instancia del controlador
-std::string name;						// Nombre del controlador
-float axis[n]							// Valor del axis "n", devuelve entre -1.0f y 1.0f
-bool button[n] [.down, .held, .up]		// Estado del boton "n"
+std::string name						// Nombre del controlador
+float axis[n]							// Valor del eje "n", varía entre -1.0f y 1.0f
+bool button[n] [.down, .held, .up]		// Estado del botón "n"
 bool dpad.up [.down, .held, .up]		// Estado del DIGITAL PAD (cruzeta) Arriba
 bool dpad.down [.down, .held, .up]		// Estado del DIGITAL PAD (cruzeta) Abajo
 bool dpad.left [.down, .held, .up]		// Estado del DIGITAL PAD (cruzeta) Izquierda
 bool dpad.right [.down, .held, .up]		// Estado del DIGITAL PAD (cruzeta) Derecha
-uint8_t pov								// Valor del POV [bitmask de 4 bits]	(Obsoleto: usar dpad en su lugar)
-bool pov_up [.down, .held, .up]			// POV como teclas cursor (Arriba)		(Obsoleto: usar dpad en su lugar)
-bool pov_down [.down, .held, .up]		// POV como teclas cursor (Abajo)		(Obsoleto: usar dpad en su lugar)
-bool pov_left [.down, .held, .up]		// POV como teclas cursor (Izquierda)	(Obsoleto: usar dpad en su lugar)
-bool pov_right[.down, .held, .up]		// POV como teclas cursor (Derecha)		(Obsoleto: usar dpad en su lugar)
-bool rumble_available;					// Disponibilidad del efecto "rumble" (vibración)
-
+uint8_t pov								// Valor del POV [máscara de bits de 4 bits] (Obsoleto: usar dpad en su lugar)
+bool pov_up [.down, .held, .up]			// POV como tecla cursor (Arriba) (Obsoleto: usar dpad en su lugar)
+bool pov_down [.down, .held, .up]		// POV como tecla cursor (Abajo) (Obsoleto: usar dpad en su lugar)
+bool pov_left [.down, .held, .up]		// POV como tecla cursor (Izquierda) (Obsoleto: usar dpad en su lugar)
+bool pov_right [.down, .held, .up]		// POV como tecla cursor (Derecha) (Obsoleto: usar dpad en su lugar)
+bool any_button [.down, .held, .up]		// Se ha pulsado alguno de los botones del controlador
+bool any_axis [.down, .held, .up]		// Se ha movido alguno de los ejes (más allá de la zona muerta) o el DIGITAL PAD
+bool activity [.down, .held, .up]		// Se ha registrado alguna actividad en el controlador
+bool rumble_available					// ¿Está disponible el efecto "rumble" (vibración)?
 
 Se puede acceder de una manera mas fácil a los diferentes axis y botones del controlador mediante las siguientes contantes:
 

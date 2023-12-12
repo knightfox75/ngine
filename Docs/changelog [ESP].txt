@@ -1,10 +1,12 @@
 --------------------------------------------------------------------------------
-2023-12-03 Ver.1.15.0-RC1
+2023-12-12 Ver.1.15.0-stable
 --------------------------------------------------------------------------------
-- En la clase NGN_Texture, se añade la opción de especificar el color de relleno al usar el método ClearContent();
-- Se ha reescrito por completo el código de lectura y gestión de los controladores de juegos (gamepads), usando las funciones más recientes de SDL2 (SDL_GameController). Esto soluciona el bug por el cual, en los sistemas operativos de la familia Windows, el efecto "rumble" de los controladores había dejado de funcionar.
+- En la clase NGN_Texture, se ha añadido la opción de especificar el color de relleno al utilizar el método ClearContent();
+- Se ha reescrito completamente el código de lectura y gestión de los controladores de juegos (gamepads), utilizando las funciones más recientes de SDL2 (SDL_GameController). Esto soluciona el error por el cual, en los sistemas operativos de la familia Windows, el efecto "rumble" de los controladores dejó de funcionar.
 - Cambios internos en la búsqueda de animaciones de la clase NGN_Sprite.
-- Se actualiza la documentación de uso de la librería y se añade la versión en inglés de la misma.
+- Se ha actualizado la documentación de uso de la librería y se ha añadido la versión en inglés de la misma.
+- Se ha eliminado la plantilla de proyectos, fusionándose con la de proyectos avanzados.
+- Las versiones de la librería y las utilidades para Raspberry Pi OS se han actualizado para ser compatibles con la última distribución disponible (Bookworm) para 64 bits.
 
 
 --------------------------------------------------------------------------------

@@ -108,20 +108,22 @@ The available properties for each controller are:
 
 bool available							// Is the controller available?
 int32_t device_id						// Controller instance ID
-std::string name;						// Controller name
-float axis[n]							// Value of axis "n", returns between -1.0f and 1.0f
+std::string name						// Controller name
+float axis[n]							// Value of axis "n," ranging between -1.0f and 1.0f
 bool button[n] [.down, .held, .up]		// State of button "n"
 bool dpad.up [.down, .held, .up]		// State of the DIGITAL PAD (D-pad) Up
 bool dpad.down [.down, .held, .up]		// State of the DIGITAL PAD (D-pad) Down
 bool dpad.left [.down, .held, .up]		// State of the DIGITAL PAD (D-pad) Left
 bool dpad.right [.down, .held, .up]		// State of the DIGITAL PAD (D-pad) Right
-uint8_t pov								// POV value [4-bit bitmask] (Deprecated: use dpad instead)
-bool pov_up [.down, .held, .up]			// POV as cursor keys (Up) (Deprecated: use dpad instead)
-bool pov_down [.down, .held, .up]		// POV as cursor keys (Down) (Deprecated: use dpad instead)
-bool pov_left [.down, .held, .up]		// POV as cursor keys (Left) (Deprecated: use dpad instead)
-bool pov_right[.down, .held, .up]		// POV as cursor keys (Right) (Deprecated: use dpad instead)
-bool rumble_available;					// Availability of "rumble" effect (vibration)
-
+uint8_t pov								// POV value [4-bit bitmask] (Obsolete: use dpad instead)
+bool pov_up [.down, .held, .up]			// POV as cursor keys (Up) (Obsolete: use dpad instead)
+bool pov_down [.down, .held, .up]		// POV as cursor keys (Down) (Obsolete: use dpad instead)
+bool pov_left [.down, .held, .up]		// POV as cursor keys (Left) (Obsolete: use dpad instead)
+bool pov_right [.down, .held, .up]		// POV as cursor keys (Right) (Obsolete: use dpad instead)
+bool any_button [.down, .held, .up]		// Any of the controller buttons has been pressed
+bool any_axis [.down, .held, .up]		// Any of the axes has been moved (beyond dead zone) or the DIGITAL PAD
+bool activity [.down, .held, .up]		// Some activity has been registered on the controller
+bool rumble_available					// Is the "rumble" effect (vibration) available?
 
 Access to the different axes and buttons of the controller can be simplified using the following constants:
 

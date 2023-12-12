@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.15.0-RC1 ***
+    *** Version 1.15.0-stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -601,7 +601,11 @@ void NGN_Input::GameControllerReset(uint8_t idx) {
     controller[idx].dpad.down.Reset();
     controller[idx].dpad.left.Reset();
     controller[idx].dpad.right.Reset();
+    controller[idx].any_button.Reset();
+    controller[idx].any_axis.Reset();
+    controller[idx].activity.Reset();
     controller[idx].rumble_available = false;
+
 
 }
 
@@ -627,15 +631,25 @@ void NGN_Input::UpdateGameController() {
     for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
         // Si el game controller no esta disponible, lectura del siguiente
         if (!controller[i].available) continue;
-        // Actualiza los botones de cada game controller
+        // Estados "any" y actividad del game controller
+        controller[i].any_button.held = false;
+        controller[i].any_axis.held = false;
+        controller[i].activity.held = false;
+        // Actualiza los botones del game controller
         for (int32_t b = 0; b < GAME_CONTROLLER_BUTTONS; b ++) {
             controller[i].button[b].Update();
+            controller[i].any_button.held |= controller[i].button[b].held;
         }
         // Actualiza el estado del D-PAD
         controller[i].dpad.up.Update();
         controller[i].dpad.down.Update();
         controller[i].dpad.left.Update();
         controller[i].dpad.right.Update();
+        // Registra cambios en el D-PAD para el estado "any"
+        controller[i].any_axis.held |= controller[i].dpad.up.held;
+        controller[i].any_axis.held |= controller[i].dpad.down.held;
+        controller[i].any_axis.held |= controller[i].dpad.left.held;
+        controller[i].any_axis.held |= controller[i].dpad.right.held;
         // Actualiza el POV en base al D-PAD (legacy)
         controller[i].pov_up.held = controller[i].dpad.up.held;
         controller[i].pov_down.held = controller[i].dpad.down.held;
@@ -652,6 +666,16 @@ void NGN_Input::UpdateGameController() {
         if (controller[i].dpad.right.held) controller[i].pov |= 0x02;
         if (controller[i].dpad.down.held) controller[i].pov |= 0x04;
         if (controller[i].dpad.left.held) controller[i].pov |= 0x08;
+        // Registra los cambios de los axis para el estado "any"
+        for (uint32_t a = 0; a < GAME_CONTROLLER_AXIS; a ++) {
+            controller[i].any_axis.held |= (std::abs(controller[i].axis[a]) > XBOX_AXIS_DEADZONE) ? true:false;
+        }
+        // Actualiza los estados "any" y "activity" del controlador
+        controller[i].activity.held |= controller[i].any_button.held;
+        controller[i].activity.held |= controller[i].any_axis.held;
+        controller[i].any_button.Update();
+        controller[i].any_axis.Update();
+        controller[i].activity.Update();
     }
 
 }
