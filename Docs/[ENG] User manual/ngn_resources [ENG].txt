@@ -1,5 +1,5 @@
 NGN_RESOURCES.H
-v1.15.0-stable
+v1.16.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -125,6 +125,23 @@ Returns a memory pointer to the resource with the requested name or a vector wit
 - Example
 NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);
 NGN_SpriteData* bullet = ngn->resources->GetSprite(“local”, “arrow”);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool RemoveTexture(std::string repo_name, std::string resource_name);
+bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+bool RemoveSprite(std::string repo_name, std::string resource_name);
+bool RemoveCmap(std::string repo_name, std::string resource_name);
+bool RemoveSfx(std::string repo_name, std::string resource_name);
+bool RemoveTxt(std::string repo_name, std::string resource_name);
+bool RemoveTypeface(std::string repo_name, std::string resource_name);
+
+- Description
+Deletes the resource with the specified name and repository from memory. If the resource or the repository is not found, it returns FALSE.
+
+- Example
+bool erase_ok = ngn->resources->RemoveTexture("local", "main_background");
 
 --------------------------------------------------------------------------------
 

@@ -1,4 +1,14 @@
 --------------------------------------------------------------------------------
+2024-03-16 Ver.1.16.0-estable
+--------------------------------------------------------------------------------
+- Se ha corregido un error ortográfico en el mensaje de error del tipo de archivo desconocido en la clase NGN_Resources.
+- Se han añadido métodos a la clase NGN_Resources para eliminar un recurso específico de un repositorio.
+- En la versión para Windows, se han vuelto a compilar la biblioteca y las utilidades con la última versión disponible de MinGW (gcc-13.2.0).
+- En las versiones para Linux y Raspberry Pi OS, se han vuelto a compilar la biblioteca y las utilidades con las últimas versiones disponibles.
+- Se han actualizado todos los templates para compilar con el flag -std=c++20.
+
+
+--------------------------------------------------------------------------------
 2023-12-12 Ver.1.15.0-stable
 --------------------------------------------------------------------------------
 - En la clase NGN_Texture, se ha añadido la opción de especificar el color de relleno al utilizar el método ClearContent();

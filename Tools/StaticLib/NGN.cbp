@@ -164,7 +164,7 @@
 		<Compiler>
 			<Add option="-Os" />
 			<Add option="-Wall" />
-			<Add option="-std=c++17" />
+			<Add option="-std=c++20" />
 		</Compiler>
 		<Unit filename="source/config_flags.h" />
 		<Unit filename="source/lodepng/lodepng.cpp" />

@@ -1,5 +1,5 @@
 NGN_RESOURCES.H
-v1.15.0-stable
+v1.16.0-stable
 Español
 
 --------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ if (!ngn->resources->Load("local", "data/resources.txt")) return false;
 
 --------------------------------------------------------------------------------
 
-- Método
+- Métodos
 NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name);
 NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name);
 NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name);
@@ -123,6 +123,23 @@ Devuelve el puntero de memoria al recurso con el nombre solicitado, o un vector 
 - Ejemplo
 NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);
 NGN_SpriteData* bullet = ngn->resources->GetSprite(“local”, “arrow”);
+
+--------------------------------------------------------------------------------
+
+- Métodos
+bool RemoveTexture(std::string repo_name, std::string resource_name);
+bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+bool RemoveSprite(std::string repo_name, std::string resource_name);
+bool RemoveCmap(std::string repo_name, std::string resource_name);
+bool RemoveSfx(std::string repo_name, std::string resource_name);
+bool RemoveTxt(std::string repo_name, std::string resource_name);
+bool RemoveTypeface(std::string repo_name, std::string resource_name);
+
+- Descripción
+Elimina de la memoria el recurso con el nombre y el repositorio especificados. Si el recurso o el repositorio no se encuentran, devuelve FALSE.
+
+- Ejemplo
+bool erase_ok = ngn->resources->RemoveTexture("local", "main_background");
 
 --------------------------------------------------------------------------------
 

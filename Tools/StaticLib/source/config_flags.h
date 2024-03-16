@@ -1,12 +1,12 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.15.0-stable ***
+    *** Version 1.16.0-stable ***
     FLAGS de configuracion de la libreria
     La libreria debe compilarse para que estos FLAGS sean efectivos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2024 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 

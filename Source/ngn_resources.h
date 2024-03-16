@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.15.0-stable ***
+    *** Version 1.16.0-stable ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2024 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -147,7 +147,7 @@ class NGN_Resources {
         // Carga una lista de recursos en el repositorio indicado, si no existe, devuelve un error
         bool Load(std::string repo_name, std::string filelist);
 
-        // Busca y devuelve el recurso solicitado de la tabla dada
+        // Busca y devuelve el recurso solicitado del repositorio especificado
         NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name);
         NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name);
         NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name);
@@ -155,6 +155,15 @@ class NGN_Resources {
         NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name);
         std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name);
         NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name);
+
+        // Busca y elimina el recurso solicitado del repositorio especificado
+        bool RemoveTexture(std::string repo_name, std::string resource_name);
+        bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+        bool RemoveSprite(std::string repo_name, std::string resource_name);
+        bool RemoveCmap(std::string repo_name, std::string resource_name);
+        bool RemoveSfx(std::string repo_name, std::string resource_name);
+        bool RemoveTxt(std::string repo_name, std::string resource_name);
+        bool RemoveTypeface(std::string repo_name, std::string resource_name);
 
 
     private:

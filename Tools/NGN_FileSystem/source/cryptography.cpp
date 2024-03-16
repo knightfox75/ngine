@@ -4,14 +4,14 @@
 	- Funciones criptograficas -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (c) 2021 - 2023 by Cesar Rincon "NightFox"
+    (c) 2021 - 2024 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	Sistema de empaquetado de archivos para N'gine is under MIT License
 
-	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2024 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation

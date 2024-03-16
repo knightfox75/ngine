@@ -4,7 +4,7 @@
     - Nucleo del programa -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (c) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016-2024 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -15,7 +15,7 @@
 
 	Conversor de PNG a Fondo de Tiles is under MIT License
 
-	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2024 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation

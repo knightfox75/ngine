@@ -12,6 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wextra" />
 					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DOS_WINDOWS" />
@@ -44,6 +45,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wextra" />
 					<Add option="-m64" />
 					<Add option="-g" />
 					<Add option="-DOS_LINUX" />
@@ -76,6 +78,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wextra" />
 					<Add option="-Og" />
 					<Add option="-g" />
 					<Add option="-DOS_LINUX" />
@@ -100,8 +103,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-std=c++17" />
-			<Add option="-fexceptions" />
+			<Add option="-std=c++20" />
 		</Compiler>
 		<Unit filename="source/convert_to_tiles.cpp" />
 		<Unit filename="source/convert_to_tiles.h" />

@@ -4,14 +4,14 @@
     - Definiciones -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (c) 2021 - 2023 by Cesar Rincon "NightFox"
+    (c) 2021 - 2024 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	Sistema de empaquetado de archivos para N'gine is under MIT License
 
-	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2024 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -41,6 +41,7 @@
 
 /*** Includes ***/
 // C++
+#include <cstdint>
 #include <string>
 
 
@@ -64,10 +65,10 @@ const std::string NGN_VERSION_METADATA = "stable";                      // Versi
 
 /*** Version del programa ***/
 const std::string PROGRAM_NAME = "N'gine file system manager";          // Nombre del programa
-const std::string CPR_YEARS = "2021-2023";                              // Años en el texto de CopyRight
+const std::string CPR_YEARS = "2021-2024";                              // Años en el texto de CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 1;                                // Version mayor
 const int32_t PROGRAM_VERSION_MINOR = 3;                                // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 3;                                // Version parche
+const int32_t PROGRAM_VERSION_PATCH = 4;                                // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                  // Version metadatos
 const std::string MAGIC_STRING = "NGN FILE SYSTEM";    	                // Magic string
 const uint8_t MS_LENGTH = 15;                                           // Logitud del magic string

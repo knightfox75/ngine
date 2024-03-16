@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.15.0-stable ***
+    *** Version 1.16.0-stable ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2023 by Cesar Rincon "NightFox"
+    (c) 2016 - 2024 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -353,7 +353,7 @@ bool NGN_Resources::Load(std::string repo_name, std::string filelist) {
 
         } else {
 
-            ngn->log->Message("[NGN_Resources error] Unkow " + fat[i].filetype + " file type.");
+            ngn->log->Message("[NGN_Resources error] Unknow " + fat[i].filetype + " file type.");
 
         }
 
@@ -606,6 +606,146 @@ NGN_TextFont* NGN_Resources::GetTypeface(std::string repo_name, std::string reso
     return NULL;
 
 }
+
+
+
+/*** Elimina una textura ***/
+bool NGN_Resources::RemoveTexture(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].texture.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].texture[i].id) != 0) continue;
+        delete repository[repo_id].texture[i].data;
+        repository[repo_id].texture.erase(repository[repo_id].texture.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Texture with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+
+/*** Elimina un fondo de tiles ***/
+bool NGN_Resources::RemoveTiledbg(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].tiledbg.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].tiledbg[i].id) != 0) continue;
+        delete repository[repo_id].tiledbg[i].data;
+        repository[repo_id].tiledbg.erase(repository[repo_id].tiledbg.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+/*** Elimina un sprite ***/
+bool NGN_Resources::RemoveSprite(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].sprite.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].sprite[i].id) != 0) continue;
+        delete repository[repo_id].sprite[i].data;
+        repository[repo_id].sprite.erase(repository[repo_id].sprite.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Sprite with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+
+/*** Elimina un mapa de colisiones ***/
+bool NGN_Resources::RemoveCmap(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].cmap.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].cmap[i].id) != 0) continue;
+        delete repository[repo_id].cmap[i].data;
+        repository[repo_id].cmap.erase(repository[repo_id].cmap.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Collision map with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+
+/*** Elimina un efecto de sonido ***/
+bool NGN_Resources::RemoveSfx(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].sfx.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].sfx[i].id) != 0) continue;
+        delete repository[repo_id].sfx[i].data;
+        repository[repo_id].sfx.erase(repository[repo_id].sfx.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] SFX with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+
+/*** Elimina un archivo de texto ***/
+bool NGN_Resources::RemoveTxt(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].txt.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].txt[i].id) != 0) continue;
+        repository[repo_id].txt[i].data.clear();
+        repository[repo_id].txt.erase(repository[repo_id].txt.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Text file with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+
+/*** Elimina una tipografia ***/
+bool NGN_Resources::RemoveTypeface(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].typeface.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].typeface[i].id) != 0) continue;
+        delete repository[repo_id].typeface[i].data;
+        repository[repo_id].typeface.erase(repository[repo_id].typeface.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Typeface with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
 
 
 /*** Devuelve el ID del repositorio solicitado ***/
