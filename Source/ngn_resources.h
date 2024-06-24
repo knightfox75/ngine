@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-wip_0x02 ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -148,13 +148,13 @@ class NGN_Resources {
         bool Load(std::string repo_name, std::string filelist);
 
         // Busca y devuelve el recurso solicitado del repositorio especificado
-        NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name);
-        NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name);
-        NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name);
-        NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name);
-        NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name);
-        std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name);
-        NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name);
+        NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
+        NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+        NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
+        NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
+        NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
+        std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name, bool err = true);
+        NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name, bool err = true);
 
         // Busca y elimina el recurso solicitado del repositorio especificado
         bool RemoveTexture(std::string repo_name, std::string resource_name);
@@ -164,6 +164,7 @@ class NGN_Resources {
         bool RemoveSfx(std::string repo_name, std::string resource_name);
         bool RemoveTxt(std::string repo_name, std::string resource_name);
         bool RemoveTypeface(std::string repo_name, std::string resource_name);
+
 
 
     private:

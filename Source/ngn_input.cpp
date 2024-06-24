@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-wip_0x02 ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -87,8 +87,8 @@ NGN_Key::~NGN_Key() {
 /*** Actualiza la tecla ***/
 void NGN_Key::Update() {
 
-    down = held & !last;
-    up = !held & last;
+    down = held & (!last);
+    up = (!held) & last;
 
     last = held;
 

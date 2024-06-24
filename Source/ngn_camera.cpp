@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-wip_0x02 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -144,7 +144,7 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) 
     // Si la capa y la textura son validas
     if ((layer_number < layer.capacity()) && texture) {
 
-        // Indica al sprite en que capa se ha añadido
+        // Indica al fondo en que capa se ha añadido
         texture->camera_layer = layer_number;
 
         // Añade el fondo a la lista
@@ -164,7 +164,7 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) 
     }
 
     // Devuelve el indice
-    return (layer[layer_number].bg.size() - 1);
+    return (layer[layer_number].texture.size() - 1);
 
 }
 
@@ -348,7 +348,7 @@ void NGN_Camera::LookAt(Vector2I32 pos) {
 void NGN_Camera::Update() {
 
     // Si hay no capas definidas, sal
-    if (layer.size() <= 0) return;
+    if (layer.size() == 0) return;
 
     // Opten el area de render
     render_area.width = ngn->graphics->render_resolution.width;
@@ -358,14 +358,10 @@ void NGN_Camera::Update() {
     scroll.width = (world.width - render_area.width);
     scroll.height = (world.height - render_area.height);
 
-    // Control de la camara
-    Vector2I64 origin;     // Esquina superior-izquierda del mundo en pantalla
-    origin.x = origin.y = 0;
-    Vector2I32 screen;     // Posicion del objeto en la pantalla
-    screen.x = screen.y = 0;
-    Vector2I64 sprite;     // Posicion del sprite en la camara
-    sprite.x = sprite.y = 0;
-    Vector2I64 temp;       // Vector2 de uso general
+    // Reinicia los datos de control
+    world_origin.x = world_origin.y = 0;
+    screen_pos.x = screen_pos.y = 0;
+    sprite_campos.x = sprite_campos.y = 0;
     temp.x = temp.y = 0;
 
     // Calcula la posicion REAL de la camara en el mundo segun su target
@@ -377,14 +373,16 @@ void NGN_Camera::Update() {
         campos.x = position.x;
         campos.y = position.y;
     }
+
     // Ajusta su posicion para que quede dentro del mundo
     if (campos.x < (render_area.width / 2)) campos.x = (render_area.width / 2);
     if (campos.x > (world.width - (render_area.width / 2))) campos.x = (world.width - (render_area.width / 2));
     if (campos.y < (render_area.height / 2)) campos.y = (render_area.height / 2);
     if (campos.y > (world.height - (render_area.height / 2))) campos.y = (world.height - (render_area.height / 2));
+
     // Calcula la coordenada de origen del dibujado
-    origin.x = (campos.x - (render_area.width / 2));
-    origin.y = (campos.y - (render_area.height / 2));
+    world_origin.x = (campos.x - (render_area.width / 2));
+    world_origin.y = (campos.y - (render_area.height / 2));
 
     //std::cout << scroll.width << " " << scroll.height << std::endl;
 
@@ -395,192 +393,259 @@ void NGN_Camera::Update() {
         if (layer[l].in_use && layer[l].visible) {
 
             // Primero, dibuja los fondos de textura (si existen)
-            if (layer[l].texture.size() > 0) {
-                for (uint32_t b = 0; b < layer[l].texture.size(); b ++) {
-                    // Calcula el rango de desplazamiento de este fondo
-                    if (layer[l].texture[b]->virtual_texture.enabled) {
-                        temp.x = (layer[l].texture[b]->virtual_texture.texture_size.width - render_area.width);
-                        temp.y = (layer[l].texture[b]->virtual_texture.texture_size.height - render_area.height);
-                    } else {
-                        temp.x = (layer[l].texture[b]->width - render_area.width);
-                        temp.y = (layer[l].texture[b]->height - render_area.height);
-                    }
-                    // Calcula la posicion relativa en X (efecto parallax)
-                    if (scroll.width > 0) {
-                        screen.x = ((temp.x * origin.x) / scroll.width);
-                    } else {
-                        screen.x = 0;
-                    }
-                    // Auto scroll en X
-                    if (layer[l].texture[b]->virtual_texture.scroll.x != 0.0f) {
-                        layer[l].texture[b]->virtual_texture.offset.x += layer[l].texture[b]->virtual_texture.scroll.x;
-                        if (layer[l].texture[b]->virtual_texture.scroll.x > 0.0f) {
-                            if (layer[l].texture[b]->virtual_texture.offset.x > layer[l].texture[b]->virtual_texture.loop.x) layer[l].texture[b]->virtual_texture.offset.x -= layer[l].texture[b]->virtual_texture.loop.x;
-                        } else {
-                            if (layer[l].texture[b]->virtual_texture.offset.x < 0) layer[l].texture[b]->virtual_texture.offset.x += layer[l].texture[b]->virtual_texture.loop.x;
-                        }
-                        screen.x += (int32_t)layer[l].texture[b]->virtual_texture.offset.x;
-                    }
-                    // Punto de loop
-                    if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.x > 0)) screen.x %= layer[l].texture[b]->virtual_texture.loop.x;
-                    // Calcula la posicion relativa en Y (efecto parallax)
-                    if (scroll.height > 0) {
-                        screen.y = ((temp.y * origin.y) / scroll.height);
-                    } else {
-                        screen.y = 0;
-                    }
-                    // Auto scroll en Y
-                    if (layer[l].texture[b]->virtual_texture.scroll.y != 0.0f) {
-                        layer[l].texture[b]->virtual_texture.offset.y += layer[l].texture[b]->virtual_texture.scroll.y;
-                        if (layer[l].texture[b]->virtual_texture.scroll.y > 0.0f) {
-                            if (layer[l].texture[b]->virtual_texture.offset.y > layer[l].texture[b]->virtual_texture.loop.y) layer[l].texture[b]->virtual_texture.offset.y -= layer[l].texture[b]->virtual_texture.loop.y;
-                        } else {
-                            if (layer[l].texture[b]->virtual_texture.offset.y < 0) layer[l].texture[b]->virtual_texture.offset.y += layer[l].texture[b]->virtual_texture.loop.y;
-                        }
-                        screen.y += (int32_t)layer[l].texture[b]->virtual_texture.offset.y;
-                    }
-                    // Punto de loop Y
-                    if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.y > 0)) screen.y %= layer[l].texture[b]->virtual_texture.loop.y;
-                    // Y dibujalo en el renderer
-                    ngn->render->Texture(layer[l].texture[b], -screen.x, -screen.y);
-                }
-            }
-
-            // Luego, dibuja los fondos tileados (si existen)
-            if (layer[l].bg.size() > 0) {
-                for (uint32_t b = 0; b < layer[l].bg.size(); b ++) {
-                    // Calcula el rango de desplazamiento de este fondo, sea real o virtual
-                    if (layer[l].bg[b]->virtual_bg.enabled) {
-                        temp.x = (layer[l].bg[b]->virtual_bg.bg_size.width - render_area.width);
-                        temp.y = (layer[l].bg[b]->virtual_bg.bg_size.height - render_area.height);
-                    } else {
-                        temp.x = (layer[l].bg[b]->width - render_area.width);
-                        temp.y = (layer[l].bg[b]->height - render_area.height);
-                    }
-                    //if (b == 0) std::cout << layer[l].bg[b]->width << " " << layer[l].bg[b]->height << std::endl;
-                    // Calcula la posicion relativa en X (efecto parallax)
-                    if (scroll.width > 0) {
-                        screen.x = ((temp.x * origin.x) / scroll.width);
-                    } else {
-                        screen.x = 0;
-                    }
-                    // Auto scroll en X
-                    if (layer[l].bg[b]->virtual_bg.scroll.x != 0.0f) {
-                        layer[l].bg[b]->virtual_bg.offset.x += layer[l].bg[b]->virtual_bg.scroll.x;
-                        if (layer[l].bg[b]->virtual_bg.scroll.x > 0.0f) {
-                            if (layer[l].bg[b]->virtual_bg.offset.x > layer[l].bg[b]->virtual_bg.loop.x) layer[l].bg[b]->virtual_bg.offset.x -= layer[l].bg[b]->virtual_bg.loop.x;
-                        } else {
-                            if (layer[l].bg[b]->virtual_bg.offset.x < 0) layer[l].bg[b]->virtual_bg.offset.x += layer[l].bg[b]->virtual_bg.loop.x;
-                        }
-                        screen.x += (int32_t)layer[l].bg[b]->virtual_bg.offset.x;
-                    }
-                    // Punto de loop en X
-                    if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.x > 0)) screen.x %= layer[l].bg[b]->virtual_bg.loop.x;
-                    // Calcula la posicion relativa en Y (efecto parallax)
-                    if (scroll.height > 0) {
-                        screen.y = ((temp.y * origin.y) / scroll.height);
-                    } else {
-                        screen.y = 0;
-                    }
-                    // Auto scroll en Y
-                    if (layer[l].bg[b]->virtual_bg.scroll.y != 0.0f) {
-                        layer[l].bg[b]->virtual_bg.offset.y += layer[l].bg[b]->virtual_bg.scroll.y;
-                        if (layer[l].bg[b]->virtual_bg.scroll.y > 0.0f) {
-                            if (layer[l].bg[b]->virtual_bg.offset.y > layer[l].bg[b]->virtual_bg.loop.y) layer[l].bg[b]->virtual_bg.offset.y -= layer[l].bg[b]->virtual_bg.loop.y;
-                        } else {
-                            if (layer[l].bg[b]->virtual_bg.offset.y < 0) layer[l].bg[b]->virtual_bg.offset.y += layer[l].bg[b]->virtual_bg.loop.y;
-                        }
-                        screen.y += (int32_t)layer[l].bg[b]->virtual_bg.offset.y;
-                    }
-                    // Punto de loop en Y
-                    if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.y > 0)) screen.y %= layer[l].bg[b]->virtual_bg.loop.y;
-                    // Posiciona el fondo
-                    layer[l].bg[b]->Position(screen.x, screen.y);
-                    //std::cout << "L: " << l << " BG:" << b << " POS:" << layer[l].bg[b]->position.x << "x" << layer[l].bg[b]->position.y << std::endl;
-                    // Y dibujalo en el renderer
-                    ngn->render->TiledBg(layer[l].bg[b]);
-                }
-            }
+            RenderTextures(l);
+            // Luego, dibuja los fondos de tiles (si existen)
+            RenderTiles(l);
 
             // Dibuja las texturas encima de estos fondos (si existen)
-            if (layer[l].spr_t.size() > 0) {
-                // Calcula el rango de desplazamiento de este fondo
-                temp.x = (layer[l].sprite_layer.width - render_area.width);
-                temp.y = (layer[l].sprite_layer.height - render_area.height);
-                for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
-                    // Calcula la posicion relativa segun la capa que esta
-                    if (scroll.width > 0) {
-                        sprite.x = ((temp.x * origin.x) / scroll.width);
-                    } else {
-                        sprite.x = 0.0f;
-                    }
-                    if (scroll.height > 0) {
-                        sprite.y = ((temp.y * origin.y) / scroll.height);
-                    } else {
-                        sprite.y = 0.0f;
-                    }
-                    // Calcula la posicion del sprite en pantalla segun el origen de dibujado
-                    screen.x = layer[l].spr_t[s]->position.x - sprite.x;
-                    screen.y = layer[l].spr_t[s]->position.y - sprite.y;
-                    // Si esta dentro de la pantalla, dibujalo en el renderer e indicalo
-                    if (
-                        (screen.x > -layer[l].spr_t[s]->width)
-                        &&
-                        (screen.x < (render_area.width + layer[l].spr_t[s]->width))
-                        &&
-                        (screen.y > -layer[l].spr_t[s]->height)
-                        &&
-                        (screen.y < (render_area.height + layer[l].spr_t[s]->height))
-                    ) {
-                        // Dibujalo
-                        ngn->render->Texture(layer[l].spr_t[s], screen.x, screen.y);
-                    }
-                }
-            }
-
+            RenderTextureSprites(l);
             // Dibuja los sprites encima de estos fondos (si existen)
-            if (layer[l].spr.size() > 0) {
-                // Calcula el rango de desplazamiento de este fondo
-                temp.x = (layer[l].sprite_layer.width - render_area.width);
-                temp.y = (layer[l].sprite_layer.height - render_area.height);
-                for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
-                    // Resetea si es necesario el flag "on_screen"
-                    if (layer[l].spr[s]->runtime_frame != ngn->graphics->runtime_frame) layer[l].spr[s]->on_screen = false;
-                    // Calcula la posicion relativa segun la capa que esta
-                    if (scroll.width > 0) {
-                        sprite.x = ((temp.x * origin.x) / scroll.width);
-                    } else {
-                        sprite.x = 0.0f;
-                    }
-                    if (scroll.height > 0) {
-                        sprite.y = ((temp.y * origin.y) / scroll.height);
-                    } else {
-                        sprite.y = 0.0f;
-                    }
-                    // Calcula la posicion del sprite en pantalla segun el origen de dibujado
-                    screen.x = layer[l].spr[s]->position.x - sprite.x;
-                    screen.y = layer[l].spr[s]->position.y - sprite.y;
-                    // Si existe una animacion y no hay pausa, aplicala
-                    if (!animation_pause) layer[l].spr[s]->PlayAnimation();
-                    // Si esta dentro de la pantalla, dibujalo en el renderer e indicalo
-                    if (
-                        (screen.x > -(layer[l].spr[s]->width / 2.0f))
-                        &&
-                        (screen.x < (render_area.width + (layer[l].spr[s]->width / 2.0f)))
-                        &&
-                        (screen.y > -(layer[l].spr[s]->height / 2.0f))
-                        &&
-                        (screen.y < (render_area.height + (layer[l].spr[s]->height / 2.0f)))
-                    ) {
-                        // Indica que esta en pantalla
-                        layer[l].spr[s]->on_screen |= true;
-                        // Y dibujalo
-                        ngn->render->Sprite(layer[l].spr[s], screen.x, screen.y);
-                    }
-                }
-            }
+            RenderSprites(l);
 
         }
+
+    }
+
+}
+
+
+
+/*** Render de los fondos de textura de una capa ***/
+void NGN_Camera::RenderTextures(uint32_t l) {
+
+    if (layer[l].texture.size() == 0) return;
+
+    for (uint32_t b = 0; b < layer[l].texture.size(); b ++) {
+
+        // Calcula el rango de desplazamiento de este fondo
+        if (layer[l].texture[b]->virtual_texture.enabled) {
+            temp.x = (layer[l].texture[b]->virtual_texture.texture_size.width - render_area.width);
+            temp.y = (layer[l].texture[b]->virtual_texture.texture_size.height - render_area.height);
+        } else {
+            temp.x = (layer[l].texture[b]->width - render_area.width);
+            temp.y = (layer[l].texture[b]->height - render_area.height);
+        }
+
+        // Calcula la posicion relativa en X (efecto parallax)
+        if (scroll.width > 0) {
+            screen_pos.x = ((temp.x * world_origin.x) / scroll.width);
+        } else {
+            screen_pos.x = 0;
+        }
+
+        // Auto scroll en X
+        if (layer[l].texture[b]->virtual_texture.scroll.x != 0.0f) {
+            layer[l].texture[b]->virtual_texture.offset.x += layer[l].texture[b]->virtual_texture.scroll.x;
+            if (layer[l].texture[b]->virtual_texture.scroll.x > 0.0f) {
+                if (layer[l].texture[b]->virtual_texture.offset.x > layer[l].texture[b]->virtual_texture.loop.x) layer[l].texture[b]->virtual_texture.offset.x -= layer[l].texture[b]->virtual_texture.loop.x;
+            } else {
+                if (layer[l].texture[b]->virtual_texture.offset.x < 0) layer[l].texture[b]->virtual_texture.offset.x += layer[l].texture[b]->virtual_texture.loop.x;
+            }
+            screen_pos.x += (int32_t)layer[l].texture[b]->virtual_texture.offset.x;
+        }
+
+        // Punto de loop
+        if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.x > 0)) screen_pos.x %= layer[l].texture[b]->virtual_texture.loop.x;
+
+        // Calcula la posicion relativa en Y (efecto parallax)
+        if (scroll.height > 0) {
+            screen_pos.y = ((temp.y * world_origin.y) / scroll.height);
+        } else {
+            screen_pos.y = 0;
+        }
+
+        // Auto scroll en Y
+        if (layer[l].texture[b]->virtual_texture.scroll.y != 0.0f) {
+            layer[l].texture[b]->virtual_texture.offset.y += layer[l].texture[b]->virtual_texture.scroll.y;
+            if (layer[l].texture[b]->virtual_texture.scroll.y > 0.0f) {
+                if (layer[l].texture[b]->virtual_texture.offset.y > layer[l].texture[b]->virtual_texture.loop.y) layer[l].texture[b]->virtual_texture.offset.y -= layer[l].texture[b]->virtual_texture.loop.y;
+            } else {
+                if (layer[l].texture[b]->virtual_texture.offset.y < 0) layer[l].texture[b]->virtual_texture.offset.y += layer[l].texture[b]->virtual_texture.loop.y;
+            }
+            screen_pos.y += (int32_t)layer[l].texture[b]->virtual_texture.offset.y;
+        }
+
+        // Punto de loop Y
+        if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.y > 0)) screen_pos.y %= layer[l].texture[b]->virtual_texture.loop.y;
+
+        // Y dibujalo en el renderer
+        ngn->render->Texture(layer[l].texture[b], -screen_pos.x, -screen_pos.y);
+
+    }
+
+}
+
+
+
+/*** Render de los fondos de tiles de una capa ***/
+void NGN_Camera::RenderTiles(uint32_t l) {
+
+    if (layer[l].bg.size() == 0) return;
+
+    for (uint32_t b = 0; b < layer[l].bg.size(); b ++) {
+
+        // Calcula el rango de desplazamiento de este fondo, sea real o virtual
+        if (layer[l].bg[b]->virtual_bg.enabled) {
+            temp.x = (layer[l].bg[b]->virtual_bg.bg_size.width - render_area.width);
+            temp.y = (layer[l].bg[b]->virtual_bg.bg_size.height - render_area.height);
+        } else {
+            temp.x = (layer[l].bg[b]->width - render_area.width);
+            temp.y = (layer[l].bg[b]->height - render_area.height);
+        }
+        //if (b == 0) std::cout << layer[l].bg[b]->width << " " << layer[l].bg[b]->height << std::endl;
+
+        // Calcula la posicion relativa en X (efecto parallax)
+        if (scroll.width > 0) {
+            screen_pos.x = ((temp.x * world_origin.x) / scroll.width);
+        } else {
+            screen_pos.x = 0;
+        }
+
+        // Auto scroll en X
+        if (layer[l].bg[b]->virtual_bg.scroll.x != 0.0f) {
+            layer[l].bg[b]->virtual_bg.offset.x += layer[l].bg[b]->virtual_bg.scroll.x;
+            if (layer[l].bg[b]->virtual_bg.scroll.x > 0.0f) {
+                if (layer[l].bg[b]->virtual_bg.offset.x > layer[l].bg[b]->virtual_bg.loop.x) layer[l].bg[b]->virtual_bg.offset.x -= layer[l].bg[b]->virtual_bg.loop.x;
+            } else {
+                if (layer[l].bg[b]->virtual_bg.offset.x < 0) layer[l].bg[b]->virtual_bg.offset.x += layer[l].bg[b]->virtual_bg.loop.x;
+            }
+            screen_pos.x += (int32_t)layer[l].bg[b]->virtual_bg.offset.x;
+        }
+
+        // Punto de loop en X
+        if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.x > 0)) screen_pos.x %= layer[l].bg[b]->virtual_bg.loop.x;
+
+        // Calcula la posicion relativa en Y (efecto parallax)
+        if (scroll.height > 0) {
+            screen_pos.y = ((temp.y * world_origin.y) / scroll.height);
+        } else {
+            screen_pos.y = 0;
+        }
+
+        // Auto scroll en Y
+        if (layer[l].bg[b]->virtual_bg.scroll.y != 0.0f) {
+            layer[l].bg[b]->virtual_bg.offset.y += layer[l].bg[b]->virtual_bg.scroll.y;
+            if (layer[l].bg[b]->virtual_bg.scroll.y > 0.0f) {
+                if (layer[l].bg[b]->virtual_bg.offset.y > layer[l].bg[b]->virtual_bg.loop.y) layer[l].bg[b]->virtual_bg.offset.y -= layer[l].bg[b]->virtual_bg.loop.y;
+            } else {
+                if (layer[l].bg[b]->virtual_bg.offset.y < 0) layer[l].bg[b]->virtual_bg.offset.y += layer[l].bg[b]->virtual_bg.loop.y;
+            }
+            screen_pos.y += (int32_t)layer[l].bg[b]->virtual_bg.offset.y;
+        }
+
+        // Punto de loop en Y
+        if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.y > 0)) screen_pos.y %= layer[l].bg[b]->virtual_bg.loop.y;
+
+        // Posiciona el fondo
+        layer[l].bg[b]->Position(screen_pos.x, screen_pos.y);
+        //std::cout << "L: " << l << " BG:" << b << " POS:" << layer[l].bg[b]->position.x << "x" << layer[l].bg[b]->position.y << std::endl;
+
+        // Y dibujalo en el renderer
+        ngn->render->TiledBg(layer[l].bg[b]);
+
+    }
+
+
+}
+
+
+
+/*** Render de los sprites de textura de una capa ***/
+void NGN_Camera::RenderTextureSprites(uint32_t l) {
+
+    if (layer[l].spr_t.size() == 0) return;
+
+    // Calcula el rango de desplazamiento de este fondo
+    temp.x = (layer[l].sprite_layer.width - render_area.width);
+    temp.y = (layer[l].sprite_layer.height - render_area.height);
+
+    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+
+        // Calcula la posicion relativa segun la capa que esta
+        if (scroll.width > 0) {
+            sprite_campos.x = ((temp.x * world_origin.x) / scroll.width);
+        } else {
+            sprite_campos.x = 0.0f;
+        }
+        if (scroll.height > 0) {
+            sprite_campos.y = ((temp.y * world_origin.y) / scroll.height);
+        } else {
+            sprite_campos.y = 0.0f;
+        }
+
+        // Calcula la posicion del sprite en pantalla segun el origen de dibujado
+        screen_pos.x = layer[l].spr_t[s]->position.x - sprite_campos.x;
+        screen_pos.y = layer[l].spr_t[s]->position.y - sprite_campos.y;
+
+        // Si esta dentro de la pantalla, dibujalo en el renderer
+        if (
+            (screen_pos.x > -layer[l].spr_t[s]->width)
+            &&
+            (screen_pos.x < (render_area.width + layer[l].spr_t[s]->width))
+            &&
+            (screen_pos.y > -layer[l].spr_t[s]->height)
+            &&
+            (screen_pos.y < (render_area.height + layer[l].spr_t[s]->height))
+        ) {
+            // Dibujalo
+            ngn->render->Texture(layer[l].spr_t[s], screen_pos.x, screen_pos.y);
+        }
+
+    }
+
+}
+
+
+
+/*** Render de los sprites de una capa ***/
+void NGN_Camera::RenderSprites(uint32_t l) {
+
+    if (layer[l].spr.size() == 0) return;
+
+    // Calcula el rango de desplazamiento de este fondo
+    temp.x = (layer[l].sprite_layer.width - render_area.width);
+    temp.y = (layer[l].sprite_layer.height - render_area.height);
+
+    for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
+
+        // Resetea si es necesario el flag "on_screen"
+        if (layer[l].spr[s]->runtime_frame != ngn->graphics->runtime_frame) layer[l].spr[s]->on_screen = false;
+
+        // Calcula la posicion relativa segun la capa que esta
+        if (scroll.width > 0) {
+            sprite_campos.x = ((temp.x * world_origin.x) / scroll.width);
+        } else {
+            sprite_campos.x = 0.0f;
+        }
+        if (scroll.height > 0) {
+            sprite_campos.y = ((temp.y * world_origin.y) / scroll.height);
+        } else {
+            sprite_campos.y = 0.0f;
+        }
+
+        // Calcula la posicion del sprite en pantalla segun el origen de dibujado
+        screen_pos.x = layer[l].spr[s]->position.x - sprite_campos.x;
+        screen_pos.y = layer[l].spr[s]->position.y - sprite_campos.y;
+
+        // Si existe una animacion y no hay pausa, aplicala
+        if (!animation_pause) layer[l].spr[s]->PlayAnimation();
+
+        // Si esta dentro de la pantalla, dibujalo en el renderer e indicalo
+        if (
+            (screen_pos.x > -(layer[l].spr[s]->width / 2.0f))
+            &&
+            (screen_pos.x < (render_area.width + (layer[l].spr[s]->width / 2.0f)))
+            &&
+            (screen_pos.y > -(layer[l].spr[s]->height / 2.0f))
+            &&
+            (screen_pos.y < (render_area.height + (layer[l].spr[s]->height / 2.0f)))
+        ) {
+            // Indica que esta en pantalla
+            layer[l].spr[s]->on_screen |= true;
+            // Y dibujalo
+            ngn->render->Sprite(layer[l].spr[s], screen_pos.x, screen_pos.y);
+        }
+
     }
 
 }

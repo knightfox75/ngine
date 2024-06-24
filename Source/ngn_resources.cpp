@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-wip_0x02 ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -485,7 +485,7 @@ bool NGN_Resources::ParseFileTable(std::vector<std::string> &text, std::vector<F
 
 
 /*** Busca una textura ***/
-NGN_TextureData* NGN_Resources::GetTexture(std::string repo_name, std::string resource_name) {
+NGN_TextureData* NGN_Resources::GetTexture(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) return NULL;
@@ -494,7 +494,7 @@ NGN_TextureData* NGN_Resources::GetTexture(std::string repo_name, std::string re
         if (resource_name.compare(repository[repo_id].texture[i].id) == 0) return repository[repo_id].texture[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] Texture with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] Texture with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return NULL;
 
 }
@@ -502,7 +502,7 @@ NGN_TextureData* NGN_Resources::GetTexture(std::string repo_name, std::string re
 
 
 /*** Busca un fondo de tiles ***/
-NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string resource_name) {
+NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) return NULL;
@@ -511,7 +511,7 @@ NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string re
         if (resource_name.compare(repository[repo_id].tiledbg[i].id) == 0) return repository[repo_id].tiledbg[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] Tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] Tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return NULL;
 
 }
@@ -519,7 +519,7 @@ NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string re
 
 
 /*** Busca un sprite ***/
-NGN_SpriteData* NGN_Resources::GetSprite(std::string repo_name, std::string resource_name) {
+NGN_SpriteData* NGN_Resources::GetSprite(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) return NULL;
@@ -528,7 +528,7 @@ NGN_SpriteData* NGN_Resources::GetSprite(std::string repo_name, std::string reso
         if (resource_name.compare(repository[repo_id].sprite[i].id) == 0) return repository[repo_id].sprite[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] Sprite with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] Sprite with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return NULL;
 
 }
@@ -536,7 +536,7 @@ NGN_SpriteData* NGN_Resources::GetSprite(std::string repo_name, std::string reso
 
 
 /*** Busca un mapa de colisiones ***/
-NGN_CollisionMapData* NGN_Resources::GetCmap(std::string repo_name, std::string resource_name) {
+NGN_CollisionMapData* NGN_Resources::GetCmap(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) return NULL;
@@ -545,7 +545,7 @@ NGN_CollisionMapData* NGN_Resources::GetCmap(std::string repo_name, std::string 
         if (resource_name.compare(repository[repo_id].cmap[i].id) == 0) return repository[repo_id].cmap[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] Collision map with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] Collision map with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return NULL;
 
 }
@@ -553,7 +553,7 @@ NGN_CollisionMapData* NGN_Resources::GetCmap(std::string repo_name, std::string 
 
 
 /*** Busca un efecto de sonido ***/
-NGN_AudioClipData* NGN_Resources::GetSfx(std::string repo_name, std::string resource_name) {
+NGN_AudioClipData* NGN_Resources::GetSfx(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) return NULL;
@@ -562,7 +562,7 @@ NGN_AudioClipData* NGN_Resources::GetSfx(std::string repo_name, std::string reso
         if (resource_name.compare(repository[repo_id].sfx[i].id) == 0) return repository[repo_id].sfx[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] SFX with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] SFX with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return NULL;
 
 }
@@ -570,7 +570,7 @@ NGN_AudioClipData* NGN_Resources::GetSfx(std::string repo_name, std::string reso
 
 
 /*** Busca un archivo de texto ***/
-std::vector<std::string> NGN_Resources::GetTxt(std::string repo_name, std::string resource_name) {
+std::vector<std::string> NGN_Resources::GetTxt(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) {
@@ -583,7 +583,7 @@ std::vector<std::string> NGN_Resources::GetTxt(std::string repo_name, std::strin
         if (resource_name.compare(repository[repo_id].txt[i].id) == 0) return repository[repo_id].txt[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] Text file with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] Text file with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     std::vector<std::string> txt;
     txt.clear();
     return txt;
@@ -593,7 +593,7 @@ std::vector<std::string> NGN_Resources::GetTxt(std::string repo_name, std::strin
 
 
 /*** Busca una tipografia ***/
-NGN_TextFont* NGN_Resources::GetTypeface(std::string repo_name, std::string resource_name) {
+NGN_TextFont* NGN_Resources::GetTypeface(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
     if (repo_id < 0) return NULL;
@@ -602,7 +602,7 @@ NGN_TextFont* NGN_Resources::GetTypeface(std::string repo_name, std::string reso
         if (resource_name.compare(repository[repo_id].typeface[i].id) == 0) return repository[repo_id].typeface[i].data;
     }
 
-    ngn->log->Message("[NGN_Resources error] Typeface with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    if (err) ngn->log->Message("[NGN_Resources error] Typeface with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return NULL;
 
 }

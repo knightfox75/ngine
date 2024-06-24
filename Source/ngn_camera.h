@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-wip_0x02 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -153,6 +153,18 @@ class NGN_Camera {
         NGN_Sprite* target;                     // Sprite al que seguira la camara
         Size2I64 scroll;                        // Tamaño total del scroll en el mundo
         Size2I32 render_area;                   // Tamaño del area del render
+
+        // Calculos de la camara
+        Vector2I64 world_origin;                // Esquina superior-izquierda del mundo en pantalla
+        Vector2I32 screen_pos;                  // Posicion del objeto en la pantalla
+        Vector2I64 sprite_campos;               // Posicion del sprite en la camara
+        Vector2I64 temp;                        // Vector2 de uso general
+
+        // Funciones de actualizacion
+        void RenderTextures(uint32_t l);            // Fondos de textura
+        void RenderTiles(uint32_t l);               // Fondos de tiles
+        void RenderTextureSprites(uint32_t l);      // Texturas
+        void RenderSprites(uint32_t l);             // Sprites
 
 
     // Vector de datos gestionados por la camara
