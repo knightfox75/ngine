@@ -1,4 +1,20 @@
 --------------------------------------------------------------------------------
+2024-07-29 Ver.1.17.0-stable
+--------------------------------------------------------------------------------
+- The "err" parameter has been added to the resource loading methods of the "NGN_Resources" class, allowing you to choose whether to display and log the error if the resource cannot be found.
+- The installation scripts for the library have been updated for Linux and Raspberry Pi OS environments.
+- A minor optimisation has been made to the key/button reading in the NGN_Input class.
+- A bug has been fixed in the NGN_Camera class, which prevented virtual backgrounds from being correctly enabled when using textures.
+- The update algorithm in the NGN_Camera class has been optimised.
+- The CheckIfRegistered() method has been added to the NGN_Camera class, which checks if a sprite is currently registered with the camera.
+- The GetLookAt() method has been added to the NGN_Camera class, which returns the point the camera is looking at in the world.
+- The GetRendererSize() method has been added to the NGN_Camera class, which returns the size of the camera’s renderer.
+- The Shake() method has been added to the NGN_Camera class, which creates a shaking effect in the scene.
+- In the templates, scripts have been added for dependency searching in Linux and Raspberry Pi OS environments.
+- On Windows, the library has been rebuilt using SDL2 2.30.5, SDL_TTF 2.22.0, and LodePNG 20230410 versions.
+
+
+--------------------------------------------------------------------------------
 2024-03-16 Ver.1.16.0-Stable
 --------------------------------------------------------------------------------
 - An orthographic error in the unknown file type error message has been corrected in the NGN_Resources class.

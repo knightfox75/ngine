@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -53,7 +53,7 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
-static const int32_t NGN_VERSION_MINOR = 16;                    // Version menor
+static const int32_t NGN_VERSION_MINOR = 17;                    // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
 static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
 

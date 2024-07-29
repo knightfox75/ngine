@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.16.0-stable ***
+    *** Version 1.17.0-stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -87,8 +87,8 @@ NGN_Key::~NGN_Key() {
 /*** Actualiza la tecla ***/
 void NGN_Key::Update() {
 
-    down = held & !last;
-    up = !held & last;
+    down = held & (!last);
+    up = (!held) & last;
 
     last = held;
 

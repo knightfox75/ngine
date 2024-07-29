@@ -1,5 +1,5 @@
 NGN_RESOURCES.H
-v1.16.0-stable
+v1.17.0-stable
 Español
 
 --------------------------------------------------------------------------------
@@ -109,16 +109,16 @@ if (!ngn->resources->Load("local", "data/resources.txt")) return false;
 --------------------------------------------------------------------------------
 
 - Métodos
-NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name);
-NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name);
-NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name);
-NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name);
-NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name);
-std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name);
-NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name);
+NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
+NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
+NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
+NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
+std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name, bool err = true);
+NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name, bool err = true);
 
 - Descripción
-Devuelve el puntero de memoria al recurso con el nombre solicitado, o un vector con el contenido en el caso de los archivos de texto. Si el recurso o el repositorio no se encuentran, devuelve NULL o un vector vacío.
+Devuelve el puntero de memoria al recurso con el nombre solicitado, o un vector con el contenido en el caso de los archivos de texto. Si el recurso o el repositorio no se encuentran, devuelve NULL o un vector vacío. Si el parámetro "err" está en TRUE (por defecto), además imprime en la consola de depuración y en el archivo de registro el error en caso de no encontrar el recurso.
 
 - Ejemplo
 NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.17.0-wip_0x02 ***
+    *** Version 1.17.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2023 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -42,6 +42,7 @@
 // C++
 #include <cstdio>
 #include <iostream>
+#include <cmath>
 
 // n'gine
 #include "ngn.h"
@@ -344,6 +345,15 @@ void NGN_Camera::LookAt(Vector2I32 pos) {
 
 
 
+/*** Recupera el punto central de la camara en el mundo ***/
+Vector2 NGN_Camera::GetLookAt() {
+
+    return world_look_at;
+
+}
+
+
+
 /*** Actualiza la vista de la camara ***/
 void NGN_Camera::Update() {
 
@@ -380,6 +390,9 @@ void NGN_Camera::Update() {
     if (campos.y < (render_area.height / 2)) campos.y = (render_area.height / 2);
     if (campos.y > (world.height - (render_area.height / 2))) campos.y = (world.height - (render_area.height / 2));
 
+    // Registra la posicion de donde esta mirando la camara actualmente
+    world_look_at = campos;
+
     // Calcula la coordenada de origen del dibujado
     world_origin.x = (campos.x - (render_area.width / 2));
     world_origin.y = (campos.y - (render_area.height / 2));
@@ -391,6 +404,9 @@ void NGN_Camera::Update() {
 
         // Si la capa tiene contenido y es visible
         if (layer[l].in_use && layer[l].visible) {
+
+            // De ser aplicable, calcula el offset de esta capa para el efecto "shake"
+            ApplyShake(l);
 
             // Primero, dibuja los fondos de textura (si existen)
             RenderTextures(l);
@@ -405,6 +421,9 @@ void NGN_Camera::Update() {
         }
 
     }
+
+    // Registra el id de frame actual (se asegura que solo se ejecute la funcion 1 vez por frame)
+    runtime_frame = ngn->graphics->runtime_frame;
 
 }
 
@@ -469,7 +488,7 @@ void NGN_Camera::RenderTextures(uint32_t l) {
         if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.y > 0)) screen_pos.y %= layer[l].texture[b]->virtual_texture.loop.y;
 
         // Y dibujalo en el renderer
-        ngn->render->Texture(layer[l].texture[b], -screen_pos.x, -screen_pos.y);
+        ngn->render->Texture(layer[l].texture[b], -screen_pos.x, -((float)screen_pos.y - shake_effect.offset.y));
 
     }
 
@@ -537,7 +556,7 @@ void NGN_Camera::RenderTiles(uint32_t l) {
         if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.y > 0)) screen_pos.y %= layer[l].bg[b]->virtual_bg.loop.y;
 
         // Posiciona el fondo
-        layer[l].bg[b]->Position(screen_pos.x, screen_pos.y);
+        layer[l].bg[b]->Position(screen_pos.x, ((float)screen_pos.y + shake_effect.offset.y));
         //std::cout << "L: " << l << " BG:" << b << " POS:" << layer[l].bg[b]->position.x << "x" << layer[l].bg[b]->position.y << std::endl;
 
         // Y dibujalo en el renderer
@@ -588,7 +607,7 @@ void NGN_Camera::RenderTextureSprites(uint32_t l) {
             (screen_pos.y < (render_area.height + layer[l].spr_t[s]->height))
         ) {
             // Dibujalo
-            ngn->render->Texture(layer[l].spr_t[s], screen_pos.x, screen_pos.y);
+            ngn->render->Texture(layer[l].spr_t[s], screen_pos.x, ((float)screen_pos.y + shake_effect.offset.y));
         }
 
     }
@@ -643,7 +662,7 @@ void NGN_Camera::RenderSprites(uint32_t l) {
             // Indica que esta en pantalla
             layer[l].spr[s]->on_screen |= true;
             // Y dibujalo
-            ngn->render->Sprite(layer[l].spr[s], screen_pos.x, screen_pos.y);
+            ngn->render->Sprite(layer[l].spr[s], screen_pos.x, ((float)screen_pos.y + shake_effect.offset.y));
         }
 
     }
@@ -795,7 +814,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number) {
             if (layer[l].spr[s] == sprite) {
                 // Borra el elemento de la capa actual
                 layer[l].spr.erase((layer[l].spr.begin() + s));
-                // Y a�adelo a su nueva capa de destino
+                // Y añadelo a su nueva capa de destino
                 r = PushSprite(layer_number, sprite);
                 // Fuerza la salida del bucle
                 break;
@@ -828,7 +847,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
             if (layer[l].spr_t[s] == texture) {
                 // Borra el elemento de la capa actual
                 layer[l].spr_t.erase((layer[l].spr_t.begin() + s));
-                // Y a�adelo a su nueva capa de destino
+                // Y añadelo a su nueva capa de destino
                 r = PushSprite(layer_number, texture);
                 // Fuerza la salida del bucle
                 break;
@@ -977,6 +996,76 @@ int32_t NGN_Camera::SendToBack(NGN_Texture* texture) {
 
 
 
+/*** Verifica si un sprite esta registrado en la camara [1a sobrecarga] ***/
+bool NGN_Camera::CheckIfRegistered(NGN_Sprite* sprite) {
+
+    if (!sprite) return false;          // Si el sprite es nulo, sal
+
+    int32_t l = sprite->camera_layer;   // Capa donde esta el sprite alojado
+    if (l < 0) return false;            // Si la capa es invalida, no esta en la camara
+
+    // Busca el sprite en la camara
+    for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
+        if (layer[l].spr[s] == sprite) return true;
+    }
+
+    // Si no lo encuentras, devuelve false
+    return false;
+
+}
+
+
+
+/*** Verifica si un sprite (textura) esta registrado en la camara [2a sobrecarga] ***/
+bool NGN_Camera::CheckIfRegistered(NGN_Texture* texture) {
+
+    if (!texture) return false;             // Si la textura es nula, sal
+
+    int32_t l = texture->camera_layer;      // Capa donde esta alojada
+    if (l < 0) return false;                // Si la capa es invalida, no esta en la camara
+
+    // Busca la textura en la camara
+    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+        if (layer[l].spr_t[s] == texture) return true;
+    }
+
+    // Si no la encuentras, devuelve false
+    return false;
+
+}
+
+
+
+/*** Devuelve el tamaño actual del renderer de esta camara ***/
+Size2I32 NGN_Camera::GetRendererSize() {
+
+    return render_area;
+
+}
+
+
+
+/*** Ejecuta el efecto de "temblor" en la camara ***/
+void NGN_Camera::Shake(float intensity, float frequency, bool split) {
+
+    // Si no hay capas, sal
+    if (layer.size() == 0) return;
+
+    // Si la intensidad es 0, desactiva y reinicia el efecto
+    if (intensity == 0.0f) {
+        shake_effect.angle = 0.0f;
+        shake_effect.offset = {0.0f, 0.0f};
+    }
+
+    // Almacena los valores
+    shake_effect.intensity = intensity;
+    shake_effect.frequency = split ? (frequency / (float)layer.size()):frequency;
+    shake_effect.split = split;
+
+}
+
+
+
 /*** Reinicia la camara ***/
 void NGN_Camera::Reset() {
 
@@ -992,6 +1081,49 @@ void NGN_Camera::Reset() {
     target = NULL;
     position.x = position.y = 0.0f;
     scroll.width = scroll.height = 0.0f;
+    world_look_at.x = world_look_at.y = 0.0f;
     animation_pause = false;
+    runtime_frame = 0;
+    shake_effect.intensity = 0.0f;
+    shake_effect.frequency = 0.0f;
+    shake_effect.angle = 0.0f;
+    shake_effect.offset = {0.0f, 0.0f};
+    shake_effect.split = false;
+    shake_effect.angle_increased = false;
+
+}
+
+
+
+/*** Calcula el efecto "shake" para esta capa ***/
+void NGN_Camera::ApplyShake(uint32_t l) {
+
+    // Si ya se ha actualizado en este frame, ignora la orden
+    if (runtime_frame == ngn->graphics->runtime_frame) return;
+
+    // Si esta en pausa, ignora la orden
+    if (animation_pause) return;
+
+    // De existir, actualiza el efecto "shake"
+    if (shake_effect.intensity <= 0.0f) return;
+
+    // Calcula el factor de intensidad segun el tamaño de la capa
+    float deep = 0.0f;
+    if (l == 0) shake_effect.angle_increased = false;
+    if (world.width > world.height) {
+        deep = ((float)layer[l].sprite_layer.width / (float) world.width);
+    } else {
+        deep = ((float)layer[l].sprite_layer.height / (float) world.height);
+    }
+
+    // Calcula el angulo segun la frecuencia
+    if (!shake_effect.angle_increased || shake_effect.split) {
+        shake_effect.angle += shake_effect.frequency;
+        while (shake_effect.angle > shake_effect.angle_limit) shake_effect.angle -= shake_effect.angle_limit;
+        shake_effect.angle_increased = true;
+    }
+
+    // Calcula el offset
+    shake_effect.offset.y = std::round(std::sin(shake_effect.angle) * (shake_effect.intensity * deep));
 
 }

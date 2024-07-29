@@ -127,9 +127,8 @@
 			<Target title="RASPBIAN - Debug">
 				<Option platforms="Unix;" />
 				<Option output="./Demo_Sound" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
 				<Option object_output="obj/raspbian_debug/" />
-				<Option type="5" />
+				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-Og" />
@@ -188,6 +187,8 @@
 		</Compiler>
 		<Unit filename="resource/resource.rc">
 			<Option compilerVar="WINDRES" />
+			<Option target="WIN - Debug" />
+			<Option target="WIN - Release" />
 		</Unit>
 		<Unit filename="source/demo/demo.cpp" />
 		<Unit filename="source/demo/demo.h" />

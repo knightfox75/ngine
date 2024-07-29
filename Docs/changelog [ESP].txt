@@ -1,4 +1,20 @@
 --------------------------------------------------------------------------------
+2024-07-29 Ver.1.17.0-stable
+--------------------------------------------------------------------------------
+- Se ha añadido el parámetro "err" a los métodos de carga de recursos de la clase "NGN_Resources", el cual permite escoger si mostrar y registrar el error en caso de que el recurso no se encuentre.
+- Se han actualizado los scripts de instalación de la librería para los entornos Linux y Raspberry Pi OS.
+- Se ha realizado una optimización menor en la lectura de teclas/botones de la clase NGN_Input.
+- Se ha corregido un error en la clase NGN_Camera, que impedía habilitar correctamente los fondos virtuales cuando se usaban texturas.
+- Se ha optimizado el algoritmo de actualización de la clase NGN_Camera.
+- Se ha añadido el método CheckIfRegistered() en la clase NGN_Camera, el cual verifica si un sprite está registrado actualmente en la cámara.
+- Se ha añadido el método GetLookAt() en la clase NGN_Camera, el cual devuelve el punto al que está mirando la cámara en el mundo.
+- Se ha añadido el método GetRendererSize() en la clase NGN_Camera, el cual devuelve el tamaño del renderizador de la cámara.
+- Se ha añadido el método Shake() en la clase NGN_Camera, el cual crea un efecto de temblor en la escena.
+- En los templates, se han añadido scripts para la búsqueda de dependencias en los entornos Linux y Raspberry Pi OS.
+- En Windows, se ha actualizado la compilación de la librería usando las versiones SDL2 2.30.5, SDL_TTF 2.22.0 y LodePNG 20230410.
+
+
+--------------------------------------------------------------------------------
 2024-03-16 Ver.1.16.0-estable
 --------------------------------------------------------------------------------
 - Se ha corregido un error ortográfico en el mensaje de error del tipo de archivo desconocido en la clase NGN_Resources.

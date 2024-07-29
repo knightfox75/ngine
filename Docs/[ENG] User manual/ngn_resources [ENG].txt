@@ -1,5 +1,5 @@
 NGN_RESOURCES.H
-v1.16.0-stable
+v1.17.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -111,16 +111,16 @@ if (!ngn->resources->Load("local", "data/resources.txt")) return false;
 --------------------------------------------------------------------------------
 
 - Method
-NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name);
-NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name);
-NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name);
-NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name);
-NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name);
-std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name);
-NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name);
+NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
+NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
+NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
+NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
+std::vector<std::string> GetTxt(std::string repo_name, std::string resource_name, bool err = true);
+NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name, bool err = true);
 
 - Description
-Returns a memory pointer to the resource with the requested name or a vector with the content in the case of text files. If the resource or the repository is not found, it returns NULL or an empty vector.
+Returns the memory pointer to the resource with the requested name or a vector with the content in the case of text files. If the resource or repository is not found, it returns NULL or an empty vector. If the "err" parameter is TRUE (by default), it also prints the error in the debug console and in the log file if the resource is not found.
 
 - Example
 NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);

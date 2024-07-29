@@ -1,5 +1,5 @@
 NGN_CAMERA.H
-v1.16.0-stable
+v1.17.0-stable
 Español
 
 --------------------------------------------------------------------------------
@@ -191,6 +191,54 @@ Reinicia la camara, eliminando todas las capas y las referencias contenidas.
 
 - Ejemplo
 ngn->camera->Reset();
+
+--------------------------------------------------------------------------------
+
+- Método
+bool CheckIfRegistered(NGN_Sprite* sprite);
+bool CheckIfRegistered(NGN_Texture* texture);
+
+- Descripción
+Determina si un sprite o una textura están actualmente registrados y gestionados por la cámara 2D.
+
+- Ejemplo
+bool i = ngn->camera->CheckIfRegistered(bullet->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+Vector2 GetLookAt();
+
+- Descripción
+Devuelve un Vector2 con la posición a la que está mirando actualmente la cámara en el mundo.
+
+- Ejemplo
+Vector2 look = ngn->camera->GetLookAt();
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2I32 GetRendererSize();
+
+- Descripción
+Devuelve una variable Size2I32 con el tamaño actual del área de renderizado de la cámara.
+
+- Ejemplo
+Size2I32 renderer_area = ngn->camera->GetRendererSize();
+
+--------------------------------------------------------------------------------
+
+- Método
+void Shake(float intensity, float frequency, bool split = true);
+
+- Descripción
+Genera un efecto de temblor vertical en la escena de la cámara.
+El parámetro "intensity" especifica la magnitud del efecto en píxeles.
+El parámetro "frequency" especifica la velocidad del efecto (en radianes por segundo).
+El parámetro "split" determina si el efecto se aplica por separado a las diferentes capas de la escena.
+
+- Ejemplo
+ngn->camera->Shake(3.0f, 0.2f, false);
 
 --------------------------------------------------------------------------------
 

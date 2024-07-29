@@ -1,5 +1,5 @@
 NGN_CAMERA.H
-v1.16.0-stable
+v1.17.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -195,34 +195,82 @@ ngn->camera->Reset();
 
 --------------------------------------------------------------------------------
 
+- Method
+bool CheckIfRegistered(NGN_Sprite* sprite);
+bool CheckIfRegistered(NGN_Texture* texture);
+
+- Description
+Determines if a sprite or a texture is currently registered and managed by the 2D camera.
+
+- Example
+bool i = ngn->camera->CheckIfRegistered(bullet->sprite);
+
+--------------------------------------------------------------------------------
+
+- Method
+Vector2 GetLookAt();
+
+- Description
+Returns a Vector2 representing the position the camera is currently looking at in the world.
+
+- Example
+Vector2 look = ngn->camera->GetLookAt();
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2I32 GetRendererSize();
+
+- Description
+Returns a Size2I32 variable with the current size of the camera's rendering area.
+
+- Example
+Size2I32 renderer_area = ngn->camera->GetRendererSize();
+
+--------------------------------------------------------------------------------
+
+- Method
+void Shake(float intensity, float frequency, bool split = true);
+
+- Description
+Creates a vertical shaking effect in the camera's scene.
+The "intensity" parameter specifies the magnitude of the effect in pixels.
+The "frequency" parameter specifies the speed of the effect (in radians per second).
+The "split" parameter determines whether the effect is applied separately to the different layers of the scene.
+
+- Example
+ngn->camera->Shake(3.0f, 0.2f, false);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------
-	PROPIEDADES de la clase
+	PROPERTIES of the class
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 Size2I world
 
 - Description
-Almacena el tamaño actual del mundo.
+Stores the current size of the world.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 Vector2I position
 
 - Description
-Almacena la posición actual de la cámara en el mundo.
+Stores the current position of the camera in the world.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 bool animation_pause
 
 - Description
-Pausa la animación de todos los sprites si su valor es TRUE.
+Pauses the animation of all sprites if its value is TRUE.
 
 --------------------------------------------------------------------------------
