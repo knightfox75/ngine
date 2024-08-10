@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.17.0-stable ***
+    *** Version 1.18.0-wip_0x01 ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -58,7 +58,7 @@
 ******************************************************************************/
 
 /*** Clase Vector2 (float) - Calcula la magnitud del vector ***/
-float Vector2::Magnitude() {
+float Vector2::Magnitude() const {
 
     return std::sqrt(std::pow(x, 2.0f) + std::pow(y, 2.0f));
 
@@ -78,8 +78,24 @@ void Vector2::Normalize() {
 
 }
 
+/*** Clase Vector2 (float) - Normaliza el vector ***/
+Vector2 Vector2::Normal() const {
+
+    float m = Magnitude();
+    Vector2 r;
+    if (m > 0.0f) {
+        r.x = x / m;
+        r.y = y / m;
+    } else {
+        r.x = 0.0f;
+        r.y = 0.0f;
+    }
+    return r;
+
+}
+
 /*** Operadores de la clase Vector2 (float) ***/
-Vector2 Vector2::operator+(Vector2 p) {
+Vector2 Vector2::operator+(const Vector2 &p) const {
 
     Vector2 v = {x, y};
     v.x += p.x;
@@ -88,7 +104,7 @@ Vector2 Vector2::operator+(Vector2 p) {
 
 }
 
-Vector2 Vector2::operator-(Vector2 p) {
+Vector2 Vector2::operator-(const Vector2 &p) const {
 
     Vector2 v = {x, y};
     v.x -= p.x;
@@ -97,7 +113,7 @@ Vector2 Vector2::operator-(Vector2 p) {
 
 }
 
-Vector2 Vector2::operator*(float p) {
+Vector2 Vector2::operator*(float p) const {
 
     Vector2 v = {x, y};
     v.x *= p;
@@ -106,7 +122,7 @@ Vector2 Vector2::operator*(float p) {
 
 }
 
-Vector2 Vector2::operator/(float p) {
+Vector2 Vector2::operator/(float p) const {
 
     Vector2 v = {x, y};
     v.x /= p;
@@ -115,26 +131,26 @@ Vector2 Vector2::operator/(float p) {
 
 }
 
-bool Vector2::operator==(Vector2 p) {
+bool Vector2::operator==(const Vector2 &p) const {
 
     if ((x == p.x) && (y == p.y)) return true; else return false;
 
 }
 
-bool Vector2::operator!=(Vector2 p) {
+bool Vector2::operator!=(const Vector2 &p) const {
 
     if ((x != p.x) || (y != p.y)) return true; else return false;
 
 }
 
-void Vector2::operator+=(Vector2 p) {
+void Vector2::operator+=(const Vector2 &p) {
 
     x += p.x;
     y += p.y;
 
 }
 
-void Vector2::operator-=(Vector2 p) {
+void Vector2::operator-=(const Vector2 &p) {
 
     x -= p.x;
     y -= p.y;
@@ -155,17 +171,24 @@ void Vector2::operator/=(float p) {
 
 }
 
+/*** Clase Vector2 (float) - Devuelve un vector de valor 0 ***/
+Vector2 Vector2::Zero() {
+
+    return Vector2 {0.0f, 0.0f};
+
+}
+
 
 
 /*** Clase Vector2I32 (int32_t) - Calcula la magnitud del vector ***/
-int32_t Vector2I32::Magnitude() {
+int32_t Vector2I32::Magnitude() const {
 
     return std::round(std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
 
 }
 
 /*** Operadores de la clase Vector2I32 (int32_t) ***/
-Vector2I32 Vector2I32::operator+(Vector2I32 p) {
+Vector2I32 Vector2I32::operator+(const Vector2I32 &p) const {
 
     Vector2I32 v = {x, y};
     v.x += p.x;
@@ -174,7 +197,7 @@ Vector2I32 Vector2I32::operator+(Vector2I32 p) {
 
 }
 
-Vector2I32 Vector2I32::operator-(Vector2I32 p) {
+Vector2I32 Vector2I32::operator-(const Vector2I32 &p) const {
 
     Vector2I32 v = {x, y};
     v.x -= p.x;
@@ -183,7 +206,7 @@ Vector2I32 Vector2I32::operator-(Vector2I32 p) {
 
 }
 
-Vector2I32 Vector2I32::operator*(int32_t p) {
+Vector2I32 Vector2I32::operator*(int32_t p) const {
 
     Vector2I32 v = {x, y};
     v.x *= p;
@@ -192,7 +215,7 @@ Vector2I32 Vector2I32::operator*(int32_t p) {
 
 }
 
-Vector2I32 Vector2I32::operator/(int32_t p) {
+Vector2I32 Vector2I32::operator/(int32_t p) const {
 
     Vector2I32 v = {x, y};
     v.x /= p;
@@ -201,26 +224,26 @@ Vector2I32 Vector2I32::operator/(int32_t p) {
 
 }
 
-bool Vector2I32::operator==(Vector2I32 p) {
+bool Vector2I32::operator==(const Vector2I32 &p) const {
 
     if ((x == p.x) && (y == p.y)) return true; else return false;
 
 }
 
-bool Vector2I32::operator!=(Vector2I32 p) {
+bool Vector2I32::operator!=(const Vector2I32 &p) const {
 
     if ((x != p.x) || (y != p.y)) return true; else return false;
 
 }
 
-void Vector2I32::operator+=(Vector2I32 p) {
+void Vector2I32::operator+=(const Vector2I32 &p) {
 
     x += p.x;
     y += p.y;
 
 }
 
-void Vector2I32::operator-=(Vector2I32 p) {
+void Vector2I32::operator-=(const Vector2I32 &p) {
 
     x -= p.x;
     y -= p.y;
@@ -241,17 +264,24 @@ void Vector2I32::operator/=(int32_t p) {
 
 }
 
+/*** Clase Vector2 (int32_t) - Devuelve un vector de valor 0 ***/
+Vector2I32 Vector2I32::Zero() {
+
+    return Vector2I32 {0, 0};
+
+}
+
 
 
 /*** Clase Vector2I64 (int64_t) - Calcula la magnitud del vector ***/
-int64_t Vector2I64::Magnitude() {
+int64_t Vector2I64::Magnitude() const {
 
     return std::round(std::sqrt(std::pow(x, 2) + std::pow(y, 2)));
 
 }
 
 /*** Operadores de la clase Vector2I64 (int64_t) ***/
-Vector2I64 Vector2I64::operator+(Vector2I64 p) {
+Vector2I64 Vector2I64::operator+(const Vector2I64 &p) const {
 
     Vector2I64 v = {x, y};
     v.x += p.x;
@@ -260,7 +290,7 @@ Vector2I64 Vector2I64::operator+(Vector2I64 p) {
 
 }
 
-Vector2I64 Vector2I64::operator-(Vector2I64 p) {
+Vector2I64 Vector2I64::operator-(const Vector2I64 &p) const {
 
     Vector2I64 v = {x, y};
     v.x -= p.x;
@@ -269,7 +299,7 @@ Vector2I64 Vector2I64::operator-(Vector2I64 p) {
 
 }
 
-Vector2I64 Vector2I64::operator*(int64_t p) {
+Vector2I64 Vector2I64::operator*(int64_t p) const {
 
     Vector2I64 v = {x, y};
     v.x *= p;
@@ -278,7 +308,7 @@ Vector2I64 Vector2I64::operator*(int64_t p) {
 
 }
 
-Vector2I64 Vector2I64::operator/(int64_t p) {
+Vector2I64 Vector2I64::operator/(int64_t p) const {
 
     Vector2I64 v = {x, y};
     v.x /= p;
@@ -287,26 +317,26 @@ Vector2I64 Vector2I64::operator/(int64_t p) {
 
 }
 
-bool Vector2I64::operator==(Vector2I64 p) {
+bool Vector2I64::operator==(const Vector2I64 &p) const {
 
     if ((x == p.x) && (y == p.y)) return true; else return false;
 
 }
 
-bool Vector2I64::operator!=(Vector2I64 p) {
+bool Vector2I64::operator!=(const Vector2I64 &p) const {
 
     if ((x != p.x) || (y != p.y)) return true; else return false;
 
 }
 
-void Vector2I64::operator+=(Vector2I64 p) {
+void Vector2I64::operator+=(const Vector2I64 &p) {
 
     x += p.x;
     y += p.y;
 
 }
 
-void Vector2I64::operator-=(Vector2I64 p) {
+void Vector2I64::operator-=(const Vector2I64 &p) {
 
     x -= p.x;
     y -= p.y;
@@ -324,6 +354,13 @@ void Vector2I64::operator/=(int64_t p) {
 
     x /= p;
     y /= p;
+
+}
+
+/*** Clase Vector2I64 (int64_t) - Devuelve un vector de valor 0 ***/
+Vector2I64 Vector2I64::Zero() {
+
+    return Vector2I64 {0, 0};
 
 }
 

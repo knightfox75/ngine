@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.17.0-stable ***
+    *** Version 1.18.0-wip_0x01 ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -65,21 +65,26 @@ class Vector2 {
         float y;
 
         // Calcula la magnitud del vector
-        float Magnitude();
+        float Magnitude() const;
         // Normaliza este vector, actualizando el contenido actual
         void Normalize();
+        // Devuelve el valor normalizado de este vector
+        Vector2 Normal() const;
 
         // Operaciones
-        Vector2 operator+(Vector2);
-        Vector2 operator-(Vector2);
-        Vector2 operator*(float);
-        Vector2 operator/(float);
-        bool operator==(Vector2);
-        bool operator!=(Vector2);
-        void operator+=(Vector2);
-        void operator-=(Vector2);
+        Vector2 operator+(const Vector2&) const;
+        Vector2 operator-(const Vector2&) const;
+        Vector2 operator*(float) const;
+        Vector2 operator/(float) const;
+        bool operator==(const Vector2&) const;
+        bool operator!=(const Vector2&) const;
+        void operator+=(const Vector2&);
+        void operator-=(const Vector2&);
         void operator*=(float);
         void operator/=(float);
+
+        // Metodo estatico para devolver un Vector2 a 0
+        static Vector2 Zero();
 
 
     private:
@@ -98,19 +103,22 @@ class Vector2I32 {
         int32_t y;
 
         // Calcula la magnitud del vector
-        int32_t Magnitude();
+        int32_t Magnitude() const;
 
         // Operaciones
-        Vector2I32 operator+(Vector2I32);
-        Vector2I32 operator-(Vector2I32);
-        Vector2I32 operator*(int32_t);
-        Vector2I32 operator/(int32_t);
-        bool operator==(Vector2I32);
-        bool operator!=(Vector2I32);
-        void operator+=(Vector2I32);
-        void operator-=(Vector2I32);
+        Vector2I32 operator+(const Vector2I32&) const;
+        Vector2I32 operator-(const Vector2I32&) const;
+        Vector2I32 operator*(int32_t) const;
+        Vector2I32 operator/(int32_t) const;
+        bool operator==(const Vector2I32&) const;
+        bool operator!=(const Vector2I32&) const;
+        void operator+=(const Vector2I32&);
+        void operator-=(const Vector2I32&);
         void operator*=(int32_t);
         void operator/=(int32_t);
+
+        // Metodo estatico para devolver un Vector2I32 a 0
+        static Vector2I32 Zero();
 
 
     private:
@@ -129,19 +137,22 @@ class Vector2I64 {
         int64_t y;
 
         // Calcula la magnitud del vector
-        int64_t Magnitude();
+        int64_t Magnitude() const;
 
         // Operaciones
-        Vector2I64 operator+(Vector2I64);
-        Vector2I64 operator-(Vector2I64);
-        Vector2I64 operator*(int64_t);
-        Vector2I64 operator/(int64_t);
-        bool operator==(Vector2I64);
-        bool operator!=(Vector2I64);
-        void operator+=(Vector2I64);
-        void operator-=(Vector2I64);
+        Vector2I64 operator+(const Vector2I64&) const;
+        Vector2I64 operator-(const Vector2I64&) const;
+        Vector2I64 operator*(int64_t) const;
+        Vector2I64 operator/(int64_t) const;
+        bool operator==(const Vector2I64&) const;
+        bool operator!=(const Vector2I64&) const;
+        void operator+=(const Vector2I64&);
+        void operator-=(const Vector2I64&);
         void operator*=(int64_t);
         void operator/=(int64_t);
+
+        // Metodo estatico para devolver un Vector2I64 a 0
+        static Vector2I64 Zero();
 
 
     private:
