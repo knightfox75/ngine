@@ -4,18 +4,18 @@
     - Convierte un archivo PNG en tiles -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (c) 2016 - 2024 by Cesar Rincon "NightFox"
+    (c) 2016 - 2025 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere LodePNG (20220717)
-    (c) 2005 - 2022 by Lode Vandevenne
+    Requiere LodePNG (20241228)
+    (c) 2005 - 2024 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
 	Conversor de PNG a Mapa de Colisiones is under MIT License
 
-	Copyright (c) 2016 - 2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -376,11 +376,14 @@ bool ConvertToMap::WriteFile(std::string filename) {
 bool ConvertToMap::ReadPng(std::string filename, std::vector<uint8_t> &data) {
 
     // Variables
-    uint32_t width = 0, height = 0;     // tamaño del archivo cargado
+    uint32_t width = 0, height = 0;     // Tamaño del archivo cargado
+    uint32_t palette_size = 0;          // Tamaño de la paleta de colores
+    LodePNGState png_state;             // Informacion extendida del archivo PNG
 
     // Prepara el buffer temporal
     std::vector<uint8_t> png_data;
     png_data.clear();
+    uint8_t* raw_data = NULL;
 
     // Prepara el buffer para los datos decodificados
     data.clear();
@@ -393,19 +396,70 @@ bool ConvertToMap::ReadPng(std::string filename, std::vector<uint8_t> &data) {
     }
 
     // Si se ha cargado correctamente, decodifica la imagen
-    if (lodepng::decode(data, width, height, png_data) != 0) {
+    lodepng_state_init(&png_state);
+    if (lodepng_decode(&raw_data, &width, &height, &png_state, png_data.data(), png_data.size()) != 0) {
         std::cout << "Error decoding " << filename << "." << std::endl;
+        free(raw_data);
+        lodepng_state_cleanup(&png_state);
+        png_data.clear();
+        data.clear();
+        return false;
+    }
+    std::cout << filename << " file successfully loaded and decoded." << std::endl;
+
+    // Verifica si la imagen es indexada con un máximo de 256 colores
+    if (png_state.info_png.color.colortype == LCT_PALETTE) {
+        size_t _palette_size = png_state.info_png.color.palettesize;
+        if (_palette_size > 256) {
+            std::cout << "Error: The image has a palette with more than 256 colors." << std::endl;
+            free(raw_data);
+            lodepng_state_cleanup(&png_state);
+            png_data.clear();
+            data.clear();
+            return false;
+        } else {
+            palette_size = _palette_size;
+        }
+    } else {
+        std::cout << "Error: The image is not in indexed mode (256 colors)." << std::endl;
+        free(raw_data);
+        lodepng_state_cleanup(&png_state);
         png_data.clear();
         data.clear();
         return false;
     }
 
+    // Verifica los DPI del archivo cargado
+    uint32_t dpi_x = std::round((float)png_state.info_png.phys_x / MT2INCH);
+    uint32_t dpi_y = std::round((float)png_state.info_png.phys_x / MT2INCH);
+
+    // Si el tamaño difiere de los 72dpi, informa del error
+    if ((dpi_x != DPI72) || (dpi_y != DPI72)) {
+        std::cout << "Error: DPI mismatch. The image must have a DPI of " << DPI72 << "." << std::endl;
+        free(raw_data);
+        lodepng_state_cleanup(&png_state);
+        png_data.clear();
+        data.clear();
+        return false;
+    }
+
+    // Informacion de la imagen cargada
+    std::string dpi_text = (dpi_x != dpi_y) ? (std::to_string(dpi_x) + "x" + std::to_string(dpi_y)) : std::to_string(dpi_x);
+    std::cout << "Image details: " << width << "x" << height << " pixels, " << dpi_text << " DPI, palette of " << palette_size << " colors." << std::endl;
+
+    // Asigna los datos al buffer de pixeles
+    data.assign(raw_data, (raw_data + (width * height * 4)));   // RGBA: 4 bytes por píxel
+
     // Guarda el tamaño del mapa
     map_width = width;
     map_height = height;
 
+    // Elimina los datos adicionales
+    lodepng_state_cleanup(&png_state);
+
     // Borra el buffer temporal
     png_data.clear();
+    free(raw_data);
 
     // Fin de la funcion de carga
     return true;
@@ -439,7 +493,7 @@ void ConvertToMap::GetTile(std::vector<uint8_t> &data, uint32_t pos_x, uint32_t 
 
     // Prepara el buffer de salida
     data.clear();
-    data.resize(size_of_tile * size_of_tile);
+    data.resize((size_of_tile * size_of_tile), 0);
     // Calcula los puntos de corte
     uint32_t start_x = (pos_x * size_of_tile);
     uint32_t end_x = (start_x + size_of_tile);

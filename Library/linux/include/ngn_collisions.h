@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.17.0-stable ***
+    *** Version 1.18.0-stable ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2024 by Cesar Rincon "NightFox"
+    (c) 2016 - 2025 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 

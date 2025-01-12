@@ -4,22 +4,22 @@
     Archivo de Demo (Programa)
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2024 by Cesar Rincon "NightFox"
+    (c) 2016 - 2025 by Cesar Rincon "NightFox"
     http://www.nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere N'gine 1.17.0-stable o superior
+    Requiere N'gine 1.18.0-stable o superior
 
     Requiere GCC 13.2.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
-    Requiere SDL2 (2.30.5) - 64-bits
+    Requiere SDL2 (2.30.11) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SDL2_TTF (2.22.0) - 64-bits
+    Requiere SDL2_TTF (2.24.0) - 64-bits
     http://www.libsdl.org/download-2.0.php
 
-    Requiere SFML (3.0.0) - 64-bits
+    Requiere SFML (2.6.2) - 64-bits
     http://www.sfml-dev.org/
 
     Requiere LodePNG (20190615)

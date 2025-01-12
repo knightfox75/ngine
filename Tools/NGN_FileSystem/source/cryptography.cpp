@@ -4,14 +4,14 @@
 	- Funciones criptograficas -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (c) 2021 - 2024 by Cesar Rincon "NightFox"
+    (c) 2021 - 2025 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	Sistema de empaquetado de archivos para N'gine is under MIT License
 
-	Copyright (c) 2016 - 2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -131,7 +131,7 @@ void Cryptography::KeyToValues(std::string key) {
 
     // Prepara el vector de destino
     key_values.clear();
-    key_values.resize(key.length());
+    key_values.resize(key.length(), 0);
 
     // Convierte los caracteres a su valor ASCII
     for (uint32_t i = 0; i < key.length(); i ++) key_values[i] = key[i];

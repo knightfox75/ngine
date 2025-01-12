@@ -4,18 +4,18 @@
 	- Sistema de mensages -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (c) 2016-2024 by Cesar Rincon "NightFox"
+    (c) 2016-2025 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere LodePNG (20220717)
-    (c) 2005 - 2022 by Lode Vandevenne
+    Requiere LodePNG (20241228)
+    (c) 2005 - 2024 by Lode Vandevenne
     http://lodev.org/lodepng/
 
 
 	Conversor de PNG a Fondo de Tiles is under MIT License
 
-	Copyright (c) 2016 - 2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation

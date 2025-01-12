@@ -1,11 +1,11 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.17.0-stable ***
+    *** Version 1.18.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2024 by Cesar Rincon "NightFox"
+    (c) 2016 - 2025 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -107,7 +107,9 @@ class NGN_Camera {
         void LookAt(NGN_Sprite* target_sprite);                     // Sigue a un sprite
         void LookAt(uint32_t position_x, uint32_t position_y);      // Colocala en la coordenada indicada
         void LookAt(Vector2I32 pos);
-        Vector2 GetLookAt();        // Recupera el punto central de la camara en el mundo
+        Vector2 GetLookAt();                // Recupera el punto central de la camara en el mundo
+        NGN_Sprite* GetTargetSprite();      // Recupera el sprite al que sigue la camara, si es que sigue alguno
+        Vector2 GetTargetPosition();        // Recupera la posicion a la que se le ha ordenado colocarse la camara
 
         // Actualiza la vista de la camara
         void Update();
@@ -172,7 +174,8 @@ class NGN_Camera {
         Vector2I32 screen_pos;                  // Posicion del objeto en la pantalla
         Vector2I32 sprite_campos;               // Posicion del sprite en la camara
         Vector2I64 temp;                        // Vector2 de uso general (64 bits de rango para evitar desvordes)
-        Vector2 world_look_at;                  // Posicion a la que mira la camara en el mundo
+        Vector2 world_lookat;                  // Posicion a la que mira la camara en el mundo
+        Vector2 world_position;                 // Posicion real en la que la camara esta colocada
 
         // Funciones de actualizacion
         void RenderTextures(uint32_t l);            // Fondos de textura

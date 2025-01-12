@@ -92,7 +92,7 @@
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
 				<Compiler>
-					<Add option="-O3" />
+					<Add option="-O2" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_RELEASE" />
 				</Compiler>
