@@ -11,9 +11,9 @@ Esta clase incluye todos los métodos y propiedades necesarios para el uso bási
 --------------------------------------------------------------------------------
 
 - Método
-float Vector2.Magnitude();
-int32_t Vector2I32.Magnitude();
-int64_t Vector2I64.Magnitude();
+float Vector2.Magnitude() const;
+int32_t Vector2I32.Magnitude() const;
+int64_t Vector2I64.Magnitude() const;
 
 - Descripción
 Devuelve la magnitud del vector. En el caso de vectores de números enteros, devuelve el resultado más aproximado posible.
@@ -33,6 +33,31 @@ Este método solo está disponible en los vectores de punto flotante. Normaliza 
 - Ejemplo
 Vector2 my_vector = {10.0f, 25.0f};
 my_vector.Normalize();
+
+--------------------------------------------------------------------------------
+
+- Método
+Vector2 Normal() const;
+
+- Descripción
+Este método solo está disponible en los vectores de punto flotante. Devuelve el valor normalizado del contenido de un vector, sin modificar el contenido del vector.
+
+- Ejemplo
+Vector2 my_vector = {10.0f, 25.0f};
+Vector2 normal = my_vector.Normal();
+
+--------------------------------------------------------------------------------
+
+- Método
+static Vector2 Zero();
+static Vector2I32 Zero();
+static Vector2I64 Zero();
+
+- Descripción
+Devuelve un vector donde todos sus componentes tienen un valor de cero.
+
+- Ejemplo
+Vector2 my_vector = Vector2::Zero();
 
 --------------------------------------------------------------------------------
 

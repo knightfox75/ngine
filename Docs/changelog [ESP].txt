@@ -1,4 +1,25 @@
 --------------------------------------------------------------------------------
+2025-01-13 Ver.1.18.0-stable
+--------------------------------------------------------------------------------
+- Se han modificado las clases "Vector2", "Vector2I32" y "Vector2I64" para soportar ciertas operaciones cuando están declaradas como constantes.  
+- Se ha añadido el método "Normal()" a todas estas clases, el cual devuelve el vector normalizado.  
+- Se ha añadido el método estático "Zero()" a todas estas clases, el cual devuelve un vector con valor 0.  
+- Se ha añadido el método "GetTargetSprite()" a la clase "NGN_Camera", el cual devuelve el sprite actual al que sigue, en caso de existir. En caso contrario, devuelve "NULL".  
+- Se ha añadido el método "GetTargetPosition()" a la clase "NGN_Camera", el cual devuelve la posición a la que se le ha ordenado a la cámara colocarse. Este método puede devolver un resultado que no coincida con el devuelto por el método "GetLookAt()", que indica la posición en el mundo de la cámara respetando los límites de la pantalla.  
+- Se compila la biblioteca N'gine por defecto en modo dinámico (.dll en Windows, .so en Linux y Raspberry Pi OS), ofreciendo también la versión estática de dicha biblioteca.  
+- En los templates de Linux y Raspberry Pi OS, se cambian las rutas de instalación de las bibliotecas al directorio "/usr/local".  
+- Se compila la biblioteca con las últimas versiones de SDL2 (2.30.11), SDL2_ttf (2.24.0), SFML (2.6.2) y LodePNG (20241228).  
+- Se cambia el script de instalación del entorno en Linux y Raspberry Pi OS para instalar las versiones compiladas de las bibliotecas SDL2 (2.30.11), SDL2_ttf (2.24.0), SFML (2.6.2) y N'gine en el directorio "/usr/local".  
+- Se añaden los scripts necesarios para eliminar, en los sistemas basados en Linux, las bibliotecas SDL2, SDL2_ttf, SFML y N'gine instaladas.  
+- Se añade el script para instalar en los sistemas basados en Linux todas las dependencias necesarias para compilar las bibliotecas SDL2 (2.30.11), SDL2_ttf (2.24.0), SFML (2.6.2) y N'gine.  
+- Se añaden los scripts para compilar en los sistemas Linux las bibliotecas SDL2 (2.30.11), SDL2_ttf (2.24.0) y SFML (2.6.2). Es necesario descargar previamente el código fuente de dichas bibliotecas.  
+- Se actualiza el proyecto de Code::Blocks para compilar N'gine tanto en modo dinámico como en modo estático.  
+- Se actualizan todas las utilidades de N'gine que utilizan la biblioteca LodePNG a su última versión.  
+- Se han modificado los templates para poder incorporar información adicional al ejecutable a través del archivo "resource.rc".
+- La librería y utilidades se han compilado con la versión 14.2 de MinGW64.
+
+
+--------------------------------------------------------------------------------
 2024-07-29 Ver.1.17.0-stable
 --------------------------------------------------------------------------------
 - Se ha añadido el parámetro "err" a los métodos de carga de recursos de la clase "NGN_Resources", el cual permite escoger si mostrar y registrar el error en caso de que el recurso no se encuentre.

@@ -1,4 +1,25 @@
 --------------------------------------------------------------------------------
+2025-01-13 Ver.1.18.0-stable
+--------------------------------------------------------------------------------
+- The classes "Vector2", "Vector2I32", and "Vector2I64" have been modified to support certain operations when declared as constants.  
+- The "Normal()" method has been added to all these classes, which returns the normalized vector.  
+- The static method "Zero()" has been added to all these classes, which returns a vector with a value of 0.  
+- The "GetTargetSprite()" method has been added to the "NGN_Camera" class, which returns the current sprite that it follows, if it exists. Otherwise, it returns "NULL".  
+- The "GetTargetPosition()" method has been added to the "NGN_Camera" class, which returns the position where the camera has been ordered to place itself. This method may return a result that differs from the one returned by the "GetLookAt()" method, which indicates the camera's world position respecting screen boundaries.  
+- The N'gine library compiles by default in dynamic mode (.dll on Windows, .so on Linux and Raspberry Pi OS), also offering the static version of that library.  
+- In the Linux and Raspberry Pi OS templates, the installation paths for the libraries are changed to the "/usr/local" directory.  
+- The library compiles with the latest versions of SDL2 (2.30.11), SDL2_ttf (2.24.0), SFML (2.6.2), and LodePNG (20241228).  
+- The environment installation script in Linux and Raspberry Pi OS is changed to install the compiled versions of the SDL2 (2.30.11), SDL2_ttf (2.24.0), SFML (2.6.2), and N'gine libraries in the "/usr/local" directory.  
+- The necessary scripts are added to remove, in Linux-based systems, the SDL2, SDL2_ttf, SFML, and N'gine libraries installed.  
+- The script to install all dependencies necessary for compiling the SDL2 (2.30.11), SDL2_ttf (2.24.0), SFML (2.6.2), and N'gine libraries is added in Linux-based systems.  
+- The scripts for compiling the SDL2 (2.30.11), SDL2_ttf (2.24.0), and SFML (2.6.2) libraries are added in Linux systems. The source code for these libraries needs to be downloaded beforehand.  
+- The Code::Blocks project is updated to compile N'gine both in dynamic and static mode.  
+- All N'gine utilities that use the LodePNG library are updated to their latest version.  
+- The templates have been modified to incorporate additional information into the executable through the "resource.rc" file.
+- The library and utilities have been compiled with version 14.2 of MinGW64.
+
+
+--------------------------------------------------------------------------------
 2024-07-29 Ver.1.17.0-stable
 --------------------------------------------------------------------------------
 - The "err" parameter has been added to the resource loading methods of the "NGN_Resources" class, allowing you to choose whether to display and log the error if the resource cannot be found.

@@ -11,9 +11,9 @@ This class includes all the necessary methods and properties for basic usage of 
 --------------------------------------------------------------------------------
 
 - Method
-float Vector2.Magnitude();
-int32_t Vector2I32.Magnitude();
-int64_t Vector2I64.Magnitude();
+float Vector2.Magnitude() const;
+int32_t Vector2I32.Magnitude() const;
+int64_t Vector2I64.Magnitude() const;
 
 - Description
 Returns the magnitude of the vector. In the case of integer vectors, it returns the closest possible result.
@@ -33,6 +33,31 @@ This method is only available for floating-point vectors. It normalizes and upda
 - Example
 Vector2 my_vector = {10.0f, 25.0f};
 my_vector.Normalize();
+
+--------------------------------------------------------------------------------
+
+- Method
+Vector2 Normal() const;
+
+- Description
+This method is only available in floating-point vectors. It returns the normalized value of the vector's contents without modifying the vector's contents.
+
+- Example
+Vector2 my_vector = {10.0f, 25.0f};
+Vector2 normal = my_vector.Normal();
+
+--------------------------------------------------------------------------------
+
+- Method
+static Vector2 Zero();
+static Vector2I32 Zero();
+static Vector2I64 Zero();
+
+- Description
+Returns a vector where all its components have a value of zero.
+
+- Example
+Vector2 my_vector = Vector2::Zero();
 
 --------------------------------------------------------------------------------
 

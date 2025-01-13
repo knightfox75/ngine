@@ -219,6 +219,28 @@ Vector2 look = ngn->camera->GetLookAt();
 --------------------------------------------------------------------------------
 
 - Method
+NGN_Sprite* GetTargetSprite();
+
+- Description
+Returns the sprite that is the target the camera follows. If it is not following any sprite, it returns NULL.
+
+- Example
+NGN_Sprite* target = ngn->camera->GetTargetSprite();
+
+--------------------------------------------------------------------------------
+
+- Method
+Vector2 GetTargetPosition();
+
+- Description
+Returns the position where the camera has been ordered to place itself. This method may return a result that differs from the one returned by the "GetLookAt()" method, which indicates the camera's world position respecting screen boundaries.
+
+- Example
+Vector2 camera_position = ngn->camera->GetTargetPosition();
+
+--------------------------------------------------------------------------------
+
+- Method
 Size2I32 GetRendererSize();
 
 - Description
