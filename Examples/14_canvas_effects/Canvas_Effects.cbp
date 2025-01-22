@@ -14,6 +14,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-m64" />
+					<Add option="-Og" />
 					<Add option="-g" />
 					<Add option="-DOS_WINDOWS" />
 					<Add option="-DMODE_DEBUG" />
@@ -22,7 +23,6 @@
 					<Add directory="$(CODEBLOCKS)/Libs/sfml/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-m64" />
 					<Add library="mingw32" />
 					<Add library="ngn_d" />
@@ -43,7 +43,7 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-m64" />
 					<Add option="-DOS_WINDOWS" />
 					<Add option="-DMODE_RELEASE" />
@@ -74,6 +74,10 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-m64" />
+					<Add option="-Og" />
+					<Add option="-g" />
+					<Add option="-Wl,-rpath,libs/x86_64-linux-gnu/" />
+					<Add option="-Wl,--disable-new-dtags" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_DEBUG" />
 					<Add directory="/usr/local/include/NGN" />
@@ -82,7 +86,6 @@
 					<Add directory="/usr/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-m64" />
 					<Add option="-Wl,-rpath,libs/x86_64-linux-gnu/" />
 					<Add option="-Wl,--disable-new-dtags" />
@@ -101,7 +104,7 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-m64" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_RELEASE" />
@@ -131,6 +134,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-Og" />
+					<Add option="-g" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_DEBUG" />
 					<Add directory="/usr/local/include/NGN" />
@@ -139,7 +143,6 @@
 					<Add directory="/usr/include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-Wl,-rpath,libs/aarch64-linux-gnu/" />
 					<Add option="-Wl,--disable-new-dtags" />
 					<Add library="ngn_d" />
@@ -157,7 +160,7 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_RELEASE" />
 					<Add directory="/usr/local/include/NGN" />

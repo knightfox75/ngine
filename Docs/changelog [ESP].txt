@@ -1,4 +1,14 @@
 --------------------------------------------------------------------------------
+2025-01-22 Ver.1.18.1-stable
+--------------------------------------------------------------------------------
+- Corregidos varios flags de compilación en los archivos de proyecto de Code::Blocks incluidos en las plantillas y ejemplos de uso.
+- Se añade la opción de compilar e instalar la librería utilizando CMake en sistemas Linux y Raspberry Pi OS.
+- Actualizado el script de instalación de las librerías precompiladas para Linux Mint Xia 22.1 y Raspberry Pi OS Bookworm.
+- Actualizado el script de adquisición de dependencias para sistemas Linux y Raspberry Pi OS.
+- Reestructurada la carpeta de la versión de la librería.
+
+
+--------------------------------------------------------------------------------
 2025-01-13 Ver.1.18.0-stable
 --------------------------------------------------------------------------------
 - Se han modificado las clases "Vector2", "Vector2I32" y "Vector2I64" para soportar ciertas operaciones cuando están declaradas como constantes.  
