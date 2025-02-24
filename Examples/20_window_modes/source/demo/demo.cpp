@@ -268,7 +268,7 @@ void Demo::Logic() {
     }
 
     // GUI
-    if (update_gui || ngn->graphics->force_redaw) {
+    if (update_gui || ngn->graphics->force_redraw) {
         std::string txt = "";
         text->Cls();
         txt += "NATIVE RESOLUTION: " + ngn->toolbox->Int2String(ngn->graphics->native_w, 1, "0") + "x" + ngn->toolbox->Int2String(ngn->graphics->native_h, 1, "0") + "\n";

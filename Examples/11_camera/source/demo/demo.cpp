@@ -251,6 +251,7 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
 
     // Calculos de la posicion
     int32_t x, y;
+    Size2I32 layer_size = ngn->camera->GetLayerSize(ly);
 
     // Calculos de la velocidad
     int32_t _min = (int32_t)(BIRD_MIN_SPEED * 100.0f);
@@ -260,15 +261,15 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
     for (uint32_t i = 0; i < num; i ++) {
         // Crea un nuevo sprite
         b.sprite = new NGN_Sprite(bird_data);
-        // Calcula el nuevo tama�o
+        // Calcula el nuevo tamaño
         b.sprite->width *= scale;
         b.sprite->height *= scale;
         // Calcula los limites del desplazamiento
         b.left = -b.sprite->width;
-        b.right = (ngn->camera->layer[ly].sprite_layer.width + b.sprite->width);
+        b.right = (layer_size.width + b.sprite->width);
         // Calcula la posicion
-        x = (rand() % ngn->camera->layer[ly].sprite_layer.width);
-        y = ((rand() % (int32_t)(ngn->camera->layer[ly].sprite_layer.height * 0.80f)) + (ngn->camera->layer[ly].sprite_layer.height * 0.05f));
+        x = (rand() % layer_size.width);
+        y = ((rand() % (int32_t)(layer_size.height * 0.80f)) + (layer_size.height * 0.05f));
         b.sprite->Position(x, y);
         // Calcula la velocidad
         b.speed = ((float)((rand() % (_max - _min)) + _min) / 100.0f) * scale;

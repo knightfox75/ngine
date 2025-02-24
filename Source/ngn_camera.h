@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.18.1-stable ***
+    *** Version 1.19.0-wip_0x01 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -85,8 +85,8 @@ class NGN_Camera {
         // Define en numero de capas a crear (elimina las existentes)
         void CreateLayers(uint32_t layers);
 
-        // Define el tamaño la capa de sprites (por defecto, todas las capas tienen el tamaño del mundo)
-        void SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height);
+        // Define el tamaño la capa de sprites, si en esa capa no existe ningun fondo
+        void SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height);
 
         // Inicializa la camara
         void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = NULL);
@@ -141,6 +141,9 @@ class NGN_Camera {
         // Devuelve el tamaño actual del renderer de esta camara
         Size2I32 GetRendererSize();
 
+        // Devuelve el tamaño asignado a una capa
+        Size2I32 GetLayerSize(uint32_t layer_number);
+
         // Ejecuta el efecto de "temblor" en la camara
         void Shake(float intensity, float frequency, bool split = true);
 
@@ -153,14 +156,22 @@ class NGN_Camera {
     private:
 
         // Estructura de capas de dibujado
-        struct layer_data{
-            std::vector<NGN_Texture*> texture;  // Fondos de textura en esta capa
-            std::vector<NGN_TiledBg*> bg;       // Fondos de tiles en esta capa
-            std::vector<NGN_Texture*> spr_t;    // Textura como Sprites para esta capa
+        struct LayerData{
+            NGN_Texture* texture;               // Fondo de textura en esta capa
+            NGN_TiledBg* tiled_bg;              // Fondo de tiles en esta capa
+            std::vector<NGN_Texture*> spr_t;    // Texturas como Sprites para esta capa
             std::vector<NGN_Sprite*> spr;       // Sprites en esta capa
-            Size2I32 sprite_layer;              // Tamaño para la capa de sprites
+            struct {
+                Size2I32 texture;
+                Size2I32 tiled_bg;
+                Size2I32 virtual_bg;
+                Size2I32 sprites;
+            } layer_size;                       // Tamaño de la capa
             bool visible;                       // Visibilidad de la capa
             bool in_use;                        // Hay datos en la capa
+            bool is_texture;                    // Es una capa de textura
+            bool is_tiled;                      // Es una capa de fondo de tiles
+            bool is_virtual;                    // Es una capa de tamaño virtual
         };
 
         // Parametros internos de la camara para su funcionamiento
@@ -200,7 +211,7 @@ class NGN_Camera {
     public:
 
         // Vector de memoria con las capas
-        std::vector<layer_data> layer;
+        std::vector<LayerData> layer;
 
 };
 

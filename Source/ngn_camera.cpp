@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.18.1-stable ***
+    *** Version 1.19.0-wip_0x01 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -90,32 +90,42 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
     // Borra el contenido actual
     Reset();
 
-    // Asigna el espacio solicitado
-    layer.resize(layers);
+    // Datos iniciales
+    LayerData ld;
+    ld.texture = NULL;
+    ld.tiled_bg = NULL;
+    ld.spr_t.clear();
+    ld.spr.clear();
+    ld.layer_size.texture.width = ld.layer_size.texture.height = 0;
+    ld.layer_size.tiled_bg.width = ld.layer_size.tiled_bg.height = 0;
+    ld.layer_size.virtual_bg.width = ld.layer_size.virtual_bg.height = 0;
+    ld.layer_size.sprites.width = ld.layer_size.sprites.height = NGN_DEFAULT_VALUE;
+    ld.visible = true;
+    ld.in_use = false;
+    ld.is_texture = false;
+    ld.is_tiled = false;
+    ld.is_virtual = false;
 
-    // Inicializa los datos
-    for (uint32_t i = 0; i < layer.capacity(); i ++) {
-        layer[i].sprite_layer.width = NGN_DEFAULT_VALUE;
-        layer[i].sprite_layer.height = NGN_DEFAULT_VALUE;
-        layer[i].in_use = false;
-        layer[i].visible = true;
-        layer[i].texture.clear();
-        layer[i].bg.clear();
-        layer[i].spr_t.clear();
-        layer[i].spr.clear();
-    }
+    // Asigna el espacio solicitado e inicializa todas las capas
+    layer.clear();
+    layer.assign(layers, ld);
 
 }
 
 
 
 /*** Especifica el tamaño de la capa para los sprites ***/
-void NGN_Camera::SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height) {
+void NGN_Camera::SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height) {
 
-    if (layer_number < layer.size()) {
-        if (width > 0) layer[layer_number].sprite_layer.width = width;
-        if (height > 0) layer[layer_number].sprite_layer.height = height;
-    }
+    if (layer_number >= layer.size()) return;
+
+    if (layer[layer_number].texture || layer[layer_number].tiled_bg) return;
+
+    if ((width == 0) || (height == 0)) return;
+
+    layer[layer_number].layer_size.sprites.width = width;
+    layer[layer_number].layer_size.sprites.height = height;
+    layer[layer_number].in_use = true;
 
 }
 
@@ -143,29 +153,32 @@ void NGN_Camera::Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* 
 int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) {
 
     // Si la capa y la textura son validas
-    if ((layer_number < layer.capacity()) && texture) {
+    if ((layer_number >= layer.size()) || !texture) return -1;
 
-        // Indica al fondo en que capa se ha añadido
-        texture->camera_layer = layer_number;
+    // Si ya hay un fondo en esta capa, ignora la orden
+    if (layer[layer_number].texture || layer[layer_number].tiled_bg) return -1;
 
-        // Añade el fondo a la lista
-        layer[layer_number].texture.push_back(texture);
-        // Y registra que esta en uso la capa
-        layer[layer_number].in_use = true;
+    // Indica al fondo en que capa se ha añadido
+    texture->camera_layer = layer_number;
 
-        // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
-        if ((layer[layer_number].sprite_layer.width == NGN_DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == NGN_DEFAULT_VALUE)) {
-            SizeOfLayer(layer_number, texture->width, texture->height);
-        }
+    // Registra la textura como fondo
+    layer[layer_number].texture = texture;
+    // Y registra que esta en uso la capa
+    layer[layer_number].is_texture = true;
+    layer[layer_number].in_use = true;
 
-    } else {
+    // Guarda el tamaño de la capa
+    layer[layer_number].layer_size.texture.width = texture->width;
+    layer[layer_number].layer_size.texture.height = texture->height;
 
-        return -1;
-
+    // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
+    if ((layer[layer_number].layer_size.sprites.width == NGN_DEFAULT_VALUE) || (layer[layer_number].layer_size.sprites.height == NGN_DEFAULT_VALUE)) {
+        layer[layer_number].layer_size.sprites.width = texture->width;
+        layer[layer_number].layer_size.sprites.height = texture->height;
     }
 
-    // Devuelve el indice
-    return (layer[layer_number].texture.size() - 1);
+    // Devuelve 0
+    return 0;
 
 }
 
@@ -174,30 +187,33 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_Texture* texture) 
 /*** Añade un fondo de tiles a la capa especificada ***/
 int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* background) {
 
-    // Si la capa y el fondo son validos
-    if ((layer_number < layer.capacity()) && background) {
+    // Si la capa y la textura son validas
+    if ((layer_number >= layer.size()) || !background) return -1;
 
-        // Indica al sprite en que capa se ha añadido
-        background->camera_layer = layer_number;
+    // Si ya hay un fondo en esta capa, ignora la orden
+    if (layer[layer_number].texture || layer[layer_number].tiled_bg) return -1;
 
-        // Añade el fondo a la lista
-        layer[layer_number].bg.push_back(background);
-        // Y registra que esta en uso la capa
-        layer[layer_number].in_use = true;
+    // Indica al fondo en que capa se ha añadido
+    background->camera_layer = layer_number;
 
-        // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
-        if ((layer[layer_number].sprite_layer.width == NGN_DEFAULT_VALUE) || (layer[layer_number].sprite_layer.height == NGN_DEFAULT_VALUE)) {
-            SizeOfLayer(layer_number, background->width, background->height);
-        }
+    // Registra la textura como fondo
+    layer[layer_number].tiled_bg = background;
+    // Y registra que esta en uso la capa
+    layer[layer_number].is_tiled = true;
+    layer[layer_number].in_use = true;
 
-    } else {
+    // Guarda el tamaño de la capa
+    layer[layer_number].layer_size.tiled_bg.width = background->width;
+    layer[layer_number].layer_size.tiled_bg.height = background->height;
 
-        return -1;
-
+    // Si es necesario, registra el tamaño del fondo como el de la capa de Sprites
+    if ((layer[layer_number].layer_size.sprites.width == NGN_DEFAULT_VALUE) || (layer[layer_number].layer_size.sprites.height == NGN_DEFAULT_VALUE)) {
+        layer[layer_number].layer_size.sprites.width = background->width;
+        layer[layer_number].layer_size.sprites.height = background->height;
     }
 
-    // Devuelve el indice
-    return (layer[layer_number].bg.size() - 1);
+    // Devuelve 0
+    return 0;
 
 }
 
@@ -207,23 +223,25 @@ int32_t NGN_Camera::PushBackground(uint32_t layer_number, NGN_TiledBg* backgroun
 int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x, float auto_y) {
 
     // Añade el fondo a la camara
-    int32_t id = PushBackground(layer_number, texture);
+    int32_t r = PushBackground(layer_number, texture);
+    if (r < 0) return r;
 
     // Registra los parametros virtuales
-    if (id >= 0) {
-        layer[layer_number].texture[id]->virtual_texture.enabled = true;
-        layer[layer_number].texture[id]->virtual_texture.texture_size.width = bg_width;
-        layer[layer_number].texture[id]->virtual_texture.texture_size.height = bg_height;
-        layer[layer_number].texture[id]->virtual_texture.loop.x = loop_x;
-        layer[layer_number].texture[id]->virtual_texture.loop.y = loop_y;
-        layer[layer_number].texture[id]->virtual_texture.scroll.x = -auto_x;
-        layer[layer_number].texture[id]->virtual_texture.scroll.y = -auto_y;
-        layer[layer_number].sprite_layer.width = bg_width;
-        layer[layer_number].sprite_layer.height = bg_height;
-    }
+    layer[layer_number].texture->virtual_texture.enabled = true;
+    layer[layer_number].texture->virtual_texture.texture_size.width = bg_width;
+    layer[layer_number].texture->virtual_texture.texture_size.height = bg_height;
+    layer[layer_number].texture->virtual_texture.loop.x = loop_x;
+    layer[layer_number].texture->virtual_texture.loop.y = loop_y;
+    layer[layer_number].texture->virtual_texture.scroll.x = -auto_x;
+    layer[layer_number].texture->virtual_texture.scroll.y = -auto_y;
+    layer[layer_number].layer_size.sprites.width = bg_width;
+    layer[layer_number].layer_size.sprites.height = bg_height;
+    layer[layer_number].layer_size.virtual_bg.width = bg_width;
+    layer[layer_number].layer_size.virtual_bg.height = bg_height;
+    layer[layer_number].is_virtual = true;
 
     // Devuelve el indice
-    return id;
+    return r;
 
 }
 
@@ -233,23 +251,25 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_Texture* texture, u
 int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background, uint32_t bg_width, uint32_t bg_height, uint32_t loop_x, uint32_t loop_y, float auto_x, float auto_y) {
 
     // Añade el fondo a la camara
-    int32_t id = PushBackground(layer_number, background);
+    int32_t r = PushBackground(layer_number, background);
+    if (r < 0) return r;
 
     // Registra los parametros virtuales
-    if (id >= 0) {
-        layer[layer_number].bg[id]->virtual_bg.enabled = true;
-        layer[layer_number].bg[id]->virtual_bg.bg_size.width = bg_width;
-        layer[layer_number].bg[id]->virtual_bg.bg_size.height = bg_height;
-        layer[layer_number].bg[id]->virtual_bg.loop.x = loop_x;
-        layer[layer_number].bg[id]->virtual_bg.loop.y = loop_y;
-        layer[layer_number].bg[id]->virtual_bg.scroll.x = -auto_x;
-        layer[layer_number].bg[id]->virtual_bg.scroll.y = -auto_y;
-        layer[layer_number].sprite_layer.width = bg_width;
-        layer[layer_number].sprite_layer.height = bg_height;
-    }
+    layer[layer_number].tiled_bg->virtual_bg.enabled = true;
+    layer[layer_number].tiled_bg->virtual_bg.bg_size.width = bg_width;
+    layer[layer_number].tiled_bg->virtual_bg.bg_size.height = bg_height;
+    layer[layer_number].tiled_bg->virtual_bg.loop.x = loop_x;
+    layer[layer_number].tiled_bg->virtual_bg.loop.y = loop_y;
+    layer[layer_number].tiled_bg->virtual_bg.scroll.x = -auto_x;
+    layer[layer_number].tiled_bg->virtual_bg.scroll.y = -auto_y;
+    layer[layer_number].layer_size.sprites.width = bg_width;
+    layer[layer_number].layer_size.sprites.height = bg_height;
+    layer[layer_number].layer_size.virtual_bg.width = bg_width;
+    layer[layer_number].layer_size.virtual_bg.height = bg_height;
+    layer[layer_number].is_virtual = true;
 
     // Devuelve el indice
-    return id;
+    return r;
 
 }
 
@@ -259,7 +279,7 @@ int32_t NGN_Camera::PushVirtualBg(uint32_t layer_number, NGN_TiledBg* background
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 
     // Si la capa y el sprite son validos
-    if ((layer_number < layer.capacity()) && sprite) {
+    if ((layer_number < layer.size()) && sprite) {
 
         // Indica al sprite en que capa se ha añadido
         sprite->camera_layer = layer_number;
@@ -285,7 +305,7 @@ int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Sprite* sprite) {
 int32_t NGN_Camera::PushSprite(uint32_t layer_number, NGN_Texture* texture) {
 
     // Si la capa y la textura son validas
-    if ((layer_number < layer.capacity()) && texture) {
+    if ((layer_number < layer.size()) && texture) {
 
         // Indica al sprite en que capa se ha añadido
         texture->camera_layer = layer_number;
@@ -453,65 +473,63 @@ void NGN_Camera::Update() {
 /*** Render de los fondos de textura de una capa ***/
 void NGN_Camera::RenderTextures(uint32_t l) {
 
-    if (layer[l].texture.size() == 0) return;
+    // Si no hay textura, sal
+    if (!layer[l].texture) return;
 
-    for (uint32_t b = 0; b < layer[l].texture.size(); b ++) {
+	// Calcula el rango de desplazamiento de este fondo
+	if (layer[l].texture->virtual_texture.enabled) {
+		temp.x = (layer[l].texture->virtual_texture.texture_size.width - render_area.width);
+		temp.y = (layer[l].texture->virtual_texture.texture_size.height - render_area.height);
+	} else {
+		temp.x = (layer[l].texture->width - render_area.width);
+		temp.y = (layer[l].texture->height - render_area.height);
+	}
 
-        // Calcula el rango de desplazamiento de este fondo
-        if (layer[l].texture[b]->virtual_texture.enabled) {
-            temp.x = (layer[l].texture[b]->virtual_texture.texture_size.width - render_area.width);
-            temp.y = (layer[l].texture[b]->virtual_texture.texture_size.height - render_area.height);
-        } else {
-            temp.x = (layer[l].texture[b]->width - render_area.width);
-            temp.y = (layer[l].texture[b]->height - render_area.height);
-        }
+	// Calcula la posicion relativa en X (efecto parallax)
+	if (scroll.width > 0) {
+		screen_pos.x = ((temp.x * world_origin.x) / scroll.width);
+	} else {
+		screen_pos.x = 0;
+	}
 
-        // Calcula la posicion relativa en X (efecto parallax)
-        if (scroll.width > 0) {
-            screen_pos.x = ((temp.x * world_origin.x) / scroll.width);
-        } else {
-            screen_pos.x = 0;
-        }
+	// Auto scroll en X
+	if (layer[l].texture->virtual_texture.scroll.x != 0.0f) {
+		layer[l].texture->virtual_texture.offset.x += layer[l].texture->virtual_texture.scroll.x;
+		if (layer[l].texture->virtual_texture.scroll.x > 0.0f) {
+			if (layer[l].texture->virtual_texture.offset.x > layer[l].texture->virtual_texture.loop.x) layer[l].texture->virtual_texture.offset.x -= layer[l].texture->virtual_texture.loop.x;
+		} else {
+			if (layer[l].texture->virtual_texture.offset.x < 0) layer[l].texture->virtual_texture.offset.x += layer[l].texture->virtual_texture.loop.x;
+		}
+		screen_pos.x += (int32_t)layer[l].texture->virtual_texture.offset.x;
+	}
 
-        // Auto scroll en X
-        if (layer[l].texture[b]->virtual_texture.scroll.x != 0.0f) {
-            layer[l].texture[b]->virtual_texture.offset.x += layer[l].texture[b]->virtual_texture.scroll.x;
-            if (layer[l].texture[b]->virtual_texture.scroll.x > 0.0f) {
-                if (layer[l].texture[b]->virtual_texture.offset.x > layer[l].texture[b]->virtual_texture.loop.x) layer[l].texture[b]->virtual_texture.offset.x -= layer[l].texture[b]->virtual_texture.loop.x;
-            } else {
-                if (layer[l].texture[b]->virtual_texture.offset.x < 0) layer[l].texture[b]->virtual_texture.offset.x += layer[l].texture[b]->virtual_texture.loop.x;
-            }
-            screen_pos.x += (int32_t)layer[l].texture[b]->virtual_texture.offset.x;
-        }
+	// Punto de loop
+	if (layer[l].texture->virtual_texture.enabled && (layer[l].texture->virtual_texture.loop.x > 0)) screen_pos.x %= layer[l].texture->virtual_texture.loop.x;
 
-        // Punto de loop
-        if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.x > 0)) screen_pos.x %= layer[l].texture[b]->virtual_texture.loop.x;
+	// Calcula la posicion relativa en Y (efecto parallax)
+	if (scroll.height > 0) {
+		screen_pos.y = ((temp.y * world_origin.y) / scroll.height);
+	} else {
+		screen_pos.y = 0;
+	}
 
-        // Calcula la posicion relativa en Y (efecto parallax)
-        if (scroll.height > 0) {
-            screen_pos.y = ((temp.y * world_origin.y) / scroll.height);
-        } else {
-            screen_pos.y = 0;
-        }
+	// Auto scroll en Y
+	if (layer[l].texture->virtual_texture.scroll.y != 0.0f) {
+		layer[l].texture->virtual_texture.offset.y += layer[l].texture->virtual_texture.scroll.y;
+		if (layer[l].texture->virtual_texture.scroll.y > 0.0f) {
+			if (layer[l].texture->virtual_texture.offset.y > layer[l].texture->virtual_texture.loop.y) layer[l].texture->virtual_texture.offset.y -= layer[l].texture->virtual_texture.loop.y;
+		} else {
+			if (layer[l].texture->virtual_texture.offset.y < 0) layer[l].texture->virtual_texture.offset.y += layer[l].texture->virtual_texture.loop.y;
+		}
+		screen_pos.y += (int32_t)layer[l].texture->virtual_texture.offset.y;
+	}
 
-        // Auto scroll en Y
-        if (layer[l].texture[b]->virtual_texture.scroll.y != 0.0f) {
-            layer[l].texture[b]->virtual_texture.offset.y += layer[l].texture[b]->virtual_texture.scroll.y;
-            if (layer[l].texture[b]->virtual_texture.scroll.y > 0.0f) {
-                if (layer[l].texture[b]->virtual_texture.offset.y > layer[l].texture[b]->virtual_texture.loop.y) layer[l].texture[b]->virtual_texture.offset.y -= layer[l].texture[b]->virtual_texture.loop.y;
-            } else {
-                if (layer[l].texture[b]->virtual_texture.offset.y < 0) layer[l].texture[b]->virtual_texture.offset.y += layer[l].texture[b]->virtual_texture.loop.y;
-            }
-            screen_pos.y += (int32_t)layer[l].texture[b]->virtual_texture.offset.y;
-        }
+	// Punto de loop Y
+	if (layer[l].texture->virtual_texture.enabled && (layer[l].texture->virtual_texture.loop.y > 0)) screen_pos.y %= layer[l].texture->virtual_texture.loop.y;
 
-        // Punto de loop Y
-        if (layer[l].texture[b]->virtual_texture.enabled && (layer[l].texture[b]->virtual_texture.loop.y > 0)) screen_pos.y %= layer[l].texture[b]->virtual_texture.loop.y;
+	// Y dibujalo en el renderer
+	ngn->render->Texture(layer[l].texture, -screen_pos.x, -((float)screen_pos.y - shake_effect.offset.y));
 
-        // Y dibujalo en el renderer
-        ngn->render->Texture(layer[l].texture[b], -screen_pos.x, -((float)screen_pos.y - shake_effect.offset.y));
-
-    }
 
 }
 
@@ -520,70 +538,68 @@ void NGN_Camera::RenderTextures(uint32_t l) {
 /*** Render de los fondos de tiles de una capa ***/
 void NGN_Camera::RenderTiles(uint32_t l) {
 
-    if (layer[l].bg.size() == 0) return;
+    // Si no hay fondo de tiles, sal
+    if (!layer[l].tiled_bg) return;
 
-    for (uint32_t b = 0; b < layer[l].bg.size(); b ++) {
 
-        // Calcula el rango de desplazamiento de este fondo, sea real o virtual
-        if (layer[l].bg[b]->virtual_bg.enabled) {
-            temp.x = (layer[l].bg[b]->virtual_bg.bg_size.width - render_area.width);
-            temp.y = (layer[l].bg[b]->virtual_bg.bg_size.height - render_area.height);
-        } else {
-            temp.x = (layer[l].bg[b]->width - render_area.width);
-            temp.y = (layer[l].bg[b]->height - render_area.height);
-        }
-        //if (b == 0) std::cout << layer[l].bg[b]->width << " " << layer[l].bg[b]->height << std::endl;
+	// Calcula el rango de desplazamiento de este fondo, sea real o virtual
+	if (layer[l].tiled_bg->virtual_bg.enabled) {
+		temp.x = (layer[l].tiled_bg->virtual_bg.bg_size.width - render_area.width);
+		temp.y = (layer[l].tiled_bg->virtual_bg.bg_size.height - render_area.height);
+	} else {
+		temp.x = (layer[l].tiled_bg->width - render_area.width);
+		temp.y = (layer[l].tiled_bg->height - render_area.height);
+	}
+	//if (b == 0) std::cout << layer[l].tiled_bg->width << " " << layer[l].tiled_bg->height << std::endl;
 
-        // Calcula la posicion relativa en X (efecto parallax)
-        if (scroll.width > 0) {
-            screen_pos.x = ((temp.x * world_origin.x) / scroll.width);
-        } else {
-            screen_pos.x = 0;
-        }
+	// Calcula la posicion relativa en X (efecto parallax)
+	if (scroll.width > 0) {
+		screen_pos.x = ((temp.x * world_origin.x) / scroll.width);
+	} else {
+		screen_pos.x = 0;
+	}
 
-        // Auto scroll en X
-        if (layer[l].bg[b]->virtual_bg.scroll.x != 0.0f) {
-            layer[l].bg[b]->virtual_bg.offset.x += layer[l].bg[b]->virtual_bg.scroll.x;
-            if (layer[l].bg[b]->virtual_bg.scroll.x > 0.0f) {
-                if (layer[l].bg[b]->virtual_bg.offset.x > layer[l].bg[b]->virtual_bg.loop.x) layer[l].bg[b]->virtual_bg.offset.x -= layer[l].bg[b]->virtual_bg.loop.x;
-            } else {
-                if (layer[l].bg[b]->virtual_bg.offset.x < 0) layer[l].bg[b]->virtual_bg.offset.x += layer[l].bg[b]->virtual_bg.loop.x;
-            }
-            screen_pos.x += (int32_t)layer[l].bg[b]->virtual_bg.offset.x;
-        }
+	// Auto scroll en X
+	if (layer[l].tiled_bg->virtual_bg.scroll.x != 0.0f) {
+		layer[l].tiled_bg->virtual_bg.offset.x += layer[l].tiled_bg->virtual_bg.scroll.x;
+		if (layer[l].tiled_bg->virtual_bg.scroll.x > 0.0f) {
+			if (layer[l].tiled_bg->virtual_bg.offset.x > layer[l].tiled_bg->virtual_bg.loop.x) layer[l].tiled_bg->virtual_bg.offset.x -= layer[l].tiled_bg->virtual_bg.loop.x;
+		} else {
+			if (layer[l].tiled_bg->virtual_bg.offset.x < 0) layer[l].tiled_bg->virtual_bg.offset.x += layer[l].tiled_bg->virtual_bg.loop.x;
+		}
+		screen_pos.x += (int32_t)layer[l].tiled_bg->virtual_bg.offset.x;
+	}
 
-        // Punto de loop en X
-        if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.x > 0)) screen_pos.x %= layer[l].bg[b]->virtual_bg.loop.x;
+	// Punto de loop en X
+	if (layer[l].tiled_bg->virtual_bg.enabled && (layer[l].tiled_bg->virtual_bg.loop.x > 0)) screen_pos.x %= layer[l].tiled_bg->virtual_bg.loop.x;
 
-        // Calcula la posicion relativa en Y (efecto parallax)
-        if (scroll.height > 0) {
-            screen_pos.y = ((temp.y * world_origin.y) / scroll.height);
-        } else {
-            screen_pos.y = 0;
-        }
+	// Calcula la posicion relativa en Y (efecto parallax)
+	if (scroll.height > 0) {
+		screen_pos.y = ((temp.y * world_origin.y) / scroll.height);
+	} else {
+		screen_pos.y = 0;
+	}
 
-        // Auto scroll en Y
-        if (layer[l].bg[b]->virtual_bg.scroll.y != 0.0f) {
-            layer[l].bg[b]->virtual_bg.offset.y += layer[l].bg[b]->virtual_bg.scroll.y;
-            if (layer[l].bg[b]->virtual_bg.scroll.y > 0.0f) {
-                if (layer[l].bg[b]->virtual_bg.offset.y > layer[l].bg[b]->virtual_bg.loop.y) layer[l].bg[b]->virtual_bg.offset.y -= layer[l].bg[b]->virtual_bg.loop.y;
-            } else {
-                if (layer[l].bg[b]->virtual_bg.offset.y < 0) layer[l].bg[b]->virtual_bg.offset.y += layer[l].bg[b]->virtual_bg.loop.y;
-            }
-            screen_pos.y += (int32_t)layer[l].bg[b]->virtual_bg.offset.y;
-        }
+	// Auto scroll en Y
+	if (layer[l].tiled_bg->virtual_bg.scroll.y != 0.0f) {
+		layer[l].tiled_bg->virtual_bg.offset.y += layer[l].tiled_bg->virtual_bg.scroll.y;
+		if (layer[l].tiled_bg->virtual_bg.scroll.y > 0.0f) {
+			if (layer[l].tiled_bg->virtual_bg.offset.y > layer[l].tiled_bg->virtual_bg.loop.y) layer[l].tiled_bg->virtual_bg.offset.y -= layer[l].tiled_bg->virtual_bg.loop.y;
+		} else {
+			if (layer[l].tiled_bg->virtual_bg.offset.y < 0) layer[l].tiled_bg->virtual_bg.offset.y += layer[l].tiled_bg->virtual_bg.loop.y;
+		}
+		screen_pos.y += (int32_t)layer[l].tiled_bg->virtual_bg.offset.y;
+	}
 
-        // Punto de loop en Y
-        if (layer[l].bg[b]->virtual_bg.enabled && (layer[l].bg[b]->virtual_bg.loop.y > 0)) screen_pos.y %= layer[l].bg[b]->virtual_bg.loop.y;
+	// Punto de loop en Y
+	if (layer[l].tiled_bg->virtual_bg.enabled && (layer[l].tiled_bg->virtual_bg.loop.y > 0)) screen_pos.y %= layer[l].tiled_bg->virtual_bg.loop.y;
 
-        // Posiciona el fondo
-        layer[l].bg[b]->Position(screen_pos.x, ((float)screen_pos.y + shake_effect.offset.y));
-        //std::cout << "L: " << l << " BG:" << b << " POS:" << layer[l].bg[b]->position.x << "x" << layer[l].bg[b]->position.y << std::endl;
+	// Posiciona el fondo
+	layer[l].tiled_bg->Position(screen_pos.x, ((float)screen_pos.y + shake_effect.offset.y));
+	//std::cout << "L: " << l << " BG:" << b << " POS:" << layer[l].tiled_bg->position.x << "x" << layer[l].tiled_bg->position.y << std::endl;
 
-        // Y dibujalo en el renderer
-        ngn->render->TiledBg(layer[l].bg[b]);
-
-    }
+	// Y dibujalo en el renderer
+	ngn->render->TiledBg(layer[l].tiled_bg);
 
 
 }
@@ -593,11 +609,15 @@ void NGN_Camera::RenderTiles(uint32_t l) {
 /*** Render de los sprites de textura de una capa ***/
 void NGN_Camera::RenderTextureSprites(uint32_t l) {
 
+    // Si no hay sprites, sal
     if (layer[l].spr_t.size() == 0) return;
 
+    // Si el tamaño de la capa es invalido, sal
+    if ((layer[l].layer_size.sprites.width == NGN_DEFAULT_VALUE) || (layer[l].layer_size.sprites.height == NGN_DEFAULT_VALUE)) return;
+
     // Calcula el rango de desplazamiento de este fondo
-    temp.x = (layer[l].sprite_layer.width - render_area.width);
-    temp.y = (layer[l].sprite_layer.height - render_area.height);
+    temp.x = (layer[l].layer_size.sprites.width - render_area.width);
+    temp.y = (layer[l].layer_size.sprites.height - render_area.height);
 
     for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
 
@@ -640,11 +660,15 @@ void NGN_Camera::RenderTextureSprites(uint32_t l) {
 /*** Render de los sprites de una capa ***/
 void NGN_Camera::RenderSprites(uint32_t l) {
 
+    // Si no hay sprites sal
     if (layer[l].spr.size() == 0) return;
 
+    // Si el tamaño de la capa es invalido, sal
+    if ((layer[l].layer_size.sprites.width == NGN_DEFAULT_VALUE) || (layer[l].layer_size.sprites.height == NGN_DEFAULT_VALUE)) return;
+
     // Calcula el rango de desplazamiento de este fondo
-    temp.x = (layer[l].sprite_layer.width - render_area.width);
-    temp.y = (layer[l].sprite_layer.height - render_area.height);
+    temp.x = (layer[l].layer_size.sprites.width - render_area.width);
+    temp.y = (layer[l].layer_size.sprites.height - render_area.height);
 
     for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
 
@@ -697,21 +721,30 @@ int32_t NGN_Camera::RemoveBackground(NGN_Texture* texture) {
 
     int32_t r = -1;
 
+    if (!texture) return r;
+
     // Capas
     for (uint32_t l = 0; l < layer.size(); l ++) {
-        // Fondos
-        if (layer[l].texture.size() > 0) {
-            for (uint32_t b = 0; b < layer[l].texture.size(); b ++) {
-                // Si el fondo es el solicitado...
-                if (layer[l].texture[b] == texture) {
-                    // Borra el elemento
-                    layer[l].texture.erase((layer[l].texture.begin() + b));
-                    r = 0;
-                    break;
-                }
-            }
-        }
-        if (r == 0) break;
+        // Si no es la textura que buscas, continua
+        if (layer[l].texture != texture) continue;
+        // Si encuentras la textura, limpia la capa de fondos (conserva los sprites)
+        layer[l].texture = NULL;
+        r = l;
+        // Sal del bucle
+        break;
+    }
+
+    // Si no queda contenido en esta capa, restaura los valores de esa capa
+    if (!layer[r].texture && !layer[r].tiled_bg && (layer[r].spr_t.size() == 0) && (layer[r].spr.size() == 0) && (r >= 0)) {
+        layer[r].layer_size.texture.width = layer[r].layer_size.texture.height = 0;
+        layer[r].layer_size.tiled_bg.width = layer[r].layer_size.tiled_bg.height = 0;
+        layer[r].layer_size.virtual_bg.width = layer[r].layer_size.virtual_bg.height = 0;
+        layer[r].layer_size.sprites.width = layer[r].layer_size.sprites.height = NGN_DEFAULT_VALUE;
+        layer[r].visible = true;
+        layer[r].in_use = false;
+        layer[r].is_texture = false;
+        layer[r].is_tiled = false;
+        layer[r].is_virtual = false;
     }
 
     return r;
@@ -724,23 +757,31 @@ int32_t NGN_Camera::RemoveBackground(NGN_Texture* texture) {
 int32_t NGN_Camera::RemoveBackground(NGN_TiledBg* background) {
 
     int32_t r = -1;
+
     if (!background) return r;
 
     // Capas
     for (uint32_t l = 0; l < layer.size(); l ++) {
-        // Fondos
-        if (layer[l].bg.size() > 0) {
-            for (uint32_t b = 0; b < layer[l].bg.size(); b ++) {
-                // Si el fondo es el solicitado...
-                if (layer[l].bg[b] == background) {
-                    // Borra el elemento
-                    layer[l].bg.erase((layer[l].bg.begin() + b));
-                    r = 0;
-                    break;
-                }
-            }
-        }
-        if (r == 0) break;
+        // Si no es la textura que buscas, continua
+        if (layer[l].tiled_bg != background) continue;
+        // Si encuentras la textura, limpia la capa de fondos (conserva los sprites)
+        layer[l].tiled_bg = NULL;
+        r = l;
+        // Sal del bucle
+        break;
+    }
+
+    // Si no queda contenido en esta capa, restaura los valores de esa capa
+    if (!layer[r].texture && !layer[r].tiled_bg && (layer[r].spr_t.size() == 0) && (layer[r].spr.size() == 0) && (r >= 0)) {
+        layer[r].layer_size.texture.width = layer[r].layer_size.texture.height = 0;
+        layer[r].layer_size.tiled_bg.width = layer[r].layer_size.tiled_bg.height = 0;
+        layer[r].layer_size.virtual_bg.width = layer[r].layer_size.virtual_bg.height = 0;
+        layer[r].layer_size.sprites.width = layer[r].layer_size.sprites.height = NGN_DEFAULT_VALUE;
+        layer[r].visible = true;
+        layer[r].in_use = false;
+        layer[r].is_texture = false;
+        layer[r].is_tiled = false;
+        layer[r].is_virtual = false;
     }
 
     return r;
@@ -825,7 +866,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number) {
     int32_t r = -1;
 
     // Verifica que la capa sea valida y el sprite no sea nulo
-    if ((layer_number < layer.capacity()) && sprite) {
+    if ((layer_number < layer.size()) && sprite) {
         // Capa actual
         l = sprite->camera_layer;
         // Si la capa de origen y destino son identicas, sal y devuelve error
@@ -858,7 +899,7 @@ int32_t NGN_Camera::ChangeLayer(NGN_Texture* texture, uint32_t layer_number) {
     int32_t r = -1;
 
     // Verifica que la capa sea valida y el sprite no sea nulo
-    if ((layer_number < layer.capacity()) && texture) {
+    if ((layer_number < layer.size()) && texture) {
         // Capa actual
         l = texture->camera_layer;
         // Si la capa de origen y destino son identicas, sal y devuelve error
@@ -1066,6 +1107,25 @@ Size2I32 NGN_Camera::GetRendererSize() {
 
 
 
+/*** Devuelve el tamaño asignado a una capa ***/
+Size2I32 NGN_Camera::GetLayerSize(uint32_t layer_number) {
+
+    Size2I32 layer_size = {0, 0};
+
+    if (layer_number >= layer.size()) return layer_size;
+
+    if (layer[layer_number].is_virtual) return layer[layer_number].layer_size.virtual_bg;
+    if (layer[layer_number].is_tiled) return layer[layer_number].layer_size.tiled_bg;
+    if (layer[layer_number].is_texture) return layer[layer_number].layer_size.texture;
+
+    if ((layer[layer_number].spr.size() > 0) || (layer[layer_number].spr_t.size() > 0)) return layer[layer_number].layer_size.sprites;
+
+    return layer_size;
+
+}
+
+
+
 /*** Ejecuta el efecto de "temblor" en la camara ***/
 void NGN_Camera::Shake(float intensity, float frequency, bool split) {
 
@@ -1090,12 +1150,12 @@ void NGN_Camera::Shake(float intensity, float frequency, bool split) {
 /*** Reinicia la camara ***/
 void NGN_Camera::Reset() {
 
-    for (uint32_t i = 0; i < layer.capacity(); i ++) {
-        layer[i].texture.clear();
-        layer[i].bg.clear();
+    // Limpia las listas de sprites
+    for (uint32_t i = 0; i < layer.size(); i ++) {
         layer[i].spr_t.clear();
         layer[i].spr.clear();
     }
+    // Limpia la lista de capas
     layer.clear();
 
     // Parametros iniciales
@@ -1131,11 +1191,12 @@ void NGN_Camera::ApplyShake(uint32_t l) {
 
     // Calcula el factor de intensidad segun el tamaño de la capa
     float deep = 0.0f;
+    Size2I32 layer_size = GetLayerSize(l);
     if (l == 0) shake_effect.angle_increased = false;
     if (world.width > world.height) {
-        deep = ((float)layer[l].sprite_layer.width / (float) world.width);
+        deep = ((float)layer_size.width / (float) world.width);
     } else {
-        deep = ((float)layer[l].sprite_layer.height / (float) world.height);
+        deep = ((float)layer_size.height / (float) world.height);
     }
 
     // Calcula el angulo segun la frecuencia

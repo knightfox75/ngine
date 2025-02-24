@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.18.1-stable ***
+    *** Version 1.19.0-wip_0x01 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -570,7 +570,7 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
     int32_t last_tile_y = std::floor(bg->last_position.y / (float)bg->tile_size);
 
     // Si hay desplazamiento o se ha forzado, redibuja la textura en el backbuffer
-    if ((current_tile_x != last_tile_x) || (current_tile_y != last_tile_y) || (ngn->graphics->current_viewport != bg->last_viewport) || !bg->tile_mode || ngn->graphics->force_redaw) {
+    if ((current_tile_x != last_tile_x) || (current_tile_y != last_tile_y) || (ngn->graphics->current_viewport != bg->last_viewport) || !bg->tile_mode || ngn->graphics->force_redraw) {
 
         // Calcula el centro del tile
         _center->x = _center->y = ((float)bg->tile_size / 2.0f);
@@ -733,7 +733,7 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
     int32_t bg_offset_y = (std::floor(bg->position.y) - std::floor(bg->last_position.y));
 
     // Si hay desplazamiento o se ha forzado, redibuja la textura en el backbuffer
-    if ((bg_offset_x != 0) || (bg_offset_y != 0) || (ngn->graphics->current_viewport != bg->last_viewport) || bg->tile_mode || ngn->graphics->force_redaw) {
+    if ((bg_offset_x != 0) || (bg_offset_y != 0) || (ngn->graphics->current_viewport != bg->last_viewport) || bg->tile_mode || ngn->graphics->force_redraw) {
 
         // Calcula el centro del tile
         _center->x = _center->y = ((float)bg->tile_size / 2.0f);

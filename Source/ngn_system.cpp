@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.18.1-stable ***
+    *** Version 1.19.0-wip_0x01 ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -190,7 +190,7 @@ void NGN_System::EventUpdate() {
                     case SDL_WINDOWEVENT_MAXIMIZED:
                     case SDL_WINDOWEVENT_RESTORED:
                     case SDL_WINDOWEVENT_FOCUS_GAINED:
-                        ngn->graphics->force_redaw |= true;
+                        ngn->graphics->force_redraw |= true;
                         break;
                 }
                 switch (sdl_event.window.event) {
@@ -303,7 +303,7 @@ void NGN_System::ResetFlags() {
     ngn->input->mouse.raw_y = 0;
 
     // Redibujado de la pantalla
-    ngn->graphics->force_redaw = false;
+    ngn->graphics->force_redraw = false;
 
 }
 

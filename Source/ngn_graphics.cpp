@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.18.1-stable ***
+    *** Version 1.19.0-wip_0x01 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -99,7 +99,7 @@ NGN_Graphics::NGN_Graphics() {
     #if !defined (DISABLE_BACKBUFFER)
         backbuffer = NULL;
     #endif
-    force_redaw = true;
+    force_redraw = true;
 
     // Inicializa el control de frame rate
     last_frame_count = SDL_GetPerformanceCounter();     // Duracion del ultimo frame
@@ -915,7 +915,7 @@ void NGN_Graphics::ChangeScreenMode() {
 
         // Actualiza los flags
         _screen_mode = screen_mode;
-        force_redaw |= true;
+        force_redraw |= true;
 
     }
 

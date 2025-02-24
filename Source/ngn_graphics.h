@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.18.1-stable ***
+    *** Version 1.19.0-wip_0x01 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -102,7 +102,7 @@ class NGN_Graphics {
 
         Size2I32 render_resolution;     // Resolucion de salida del render
 
-        bool force_redaw;               // Indicar que se debe forzar el redibujado
+        bool force_redraw;               // Indicar que se debe forzar el redibujado
 
         // Estable el destino del render al seleccionado por defecto
         void RenderToSelected();
