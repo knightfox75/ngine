@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -116,7 +116,7 @@ NGN_Sprite::NGN_Sprite(
 NGN_Sprite::~NGN_Sprite() {
 
     // Elimina la referencia al grafico
-    data = NULL;
+    data = nullptr;
 
 }
 
@@ -397,6 +397,35 @@ void NGN_Sprite::PlayAnimation() {
 
 
 
+/*** Selecciona un color de tinte (sin parametros, resetea el color) ***/
+void NGN_Sprite::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
+
+    // Registra el color
+    tint_color.r = r;
+    tint_color.g = g;
+    tint_color.b = b;
+
+}
+
+
+
+/*** Devuelve si se ha cambiado el color de tinta en este frame ***/
+bool NGN_Sprite::NewTint() {
+
+    if (runtime_frame == ngn->graphics->runtime_frame) return true;
+
+    bool color_mod = ((tint_color.r != last_tint_color.r) || (tint_color.g != last_tint_color.g) || (tint_color.b != last_tint_color.b));
+    color_mod |= frame != last_frame;
+
+    if (!color_mod) return false;
+
+    last_tint_color = tint_color;
+    last_frame = frame;
+    return true;
+
+}
+
+
 
 /*** Crea el objeto que contiene el sprite ***/
 void NGN_Sprite::CreateSprite(
@@ -465,7 +494,7 @@ void NGN_Sprite::CreateSprite(
 
     // Valores por defecto
     frame = 0;                                  // Primer fotograma
-    total_frames = data->header.total_frames;   // N� total de fotogramas
+    total_frames = data->header.total_frames;   // Nº total de fotogramas
     visible = true;                             // Visibilidad
     alpha = 0xFF;                               // Alpha
     blend_mode = NGN_BLENDMODE_ALPHA;           // Modo de mezcla
@@ -487,5 +516,11 @@ void NGN_Sprite::CreateSprite(
 
     // Otros parametros
     camera_layer = -1;      // Por defecto, no estas en la camara
+
+    // Color de tinta
+    tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    last_frame = 0;
+    ignore_camera_tint = false;
 
 }

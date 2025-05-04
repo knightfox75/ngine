@@ -47,36 +47,36 @@
 Demo::Demo() {
 
     // Fondo
-    bg_data = NULL;
-    bg = NULL;
+    bg_data = nullptr;
+    bg = nullptr;
 
     // Target del renderer
-    target_texture = NULL;
+    target_texture = nullptr;
 
     // CrystalBall
     for (uint8_t i = 0; i < layers; i ++) {
-        tbg_data[i] = NULL;
-        tbg[i] = NULL;
+        tbg_data[i] = nullptr;
+        tbg[i] = nullptr;
     }
 
     // Captura del renderer
-    renderer_surface = NULL;
-    renderer_target = NULL;
+    renderer_surface = nullptr;
+    renderer_target = nullptr;
 
     // Mascara a aplicar
-    mask_texture = NULL;
+    mask_texture = nullptr;
 
     // Efecto del interior de la bola de cristal
-    glass_data = NULL;
-    glass = NULL;
+    glass_data = nullptr;
+    glass = nullptr;
 
     // Bola de cristal
-    crystal_ball_data = NULL;
-    crystal_ball = NULL;
+    crystal_ball_data = nullptr;
+    crystal_ball = nullptr;
 
     // Sprites del fondo
-    bird_data = NULL;
-    for (uint32_t i = 0; i < NUMBER_OF_BIRDS; i ++) bird[i].sprite = NULL;
+    bird_data = nullptr;
+    for (uint32_t i = 0; i < NUMBER_OF_BIRDS; i ++) bird[i].sprite = nullptr;
 
 }
 
@@ -86,41 +86,41 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Fondo
-    delete bg; bg = NULL;
-    delete bg_data; bg_data = NULL;
+    delete bg; bg = nullptr;
+    delete bg_data; bg_data = nullptr;
 
     // Target del renderer
-    delete target_texture; target_texture = NULL;
+    delete target_texture; target_texture = nullptr;
 
     // CrystalBall
     for (uint8_t i = 0; i < layers; i ++) {
         delete tbg[i];
-        tbg[i] = NULL;
+        tbg[i] = nullptr;
         delete tbg_data[i];
-        tbg_data[i] = NULL;
+        tbg_data[i] = nullptr;
     }
 
     // Captura del renderer
-    delete renderer_surface; renderer_surface = NULL;
-    delete renderer_target; renderer_target = NULL;
+    delete renderer_surface; renderer_surface = nullptr;
+    delete renderer_target; renderer_target = nullptr;
 
     // Mascara a aplicar
-    delete mask_texture; mask_texture = NULL;
+    delete mask_texture; mask_texture = nullptr;
 
     // Efecto del interior de la bola de cristal
-    delete glass; glass = NULL;
-    delete glass_data; glass_data = NULL;
+    delete glass; glass = nullptr;
+    delete glass_data; glass_data = nullptr;
 
     // Bola de cristal
-    delete crystal_ball; crystal_ball = NULL;
-    delete crystal_ball_data; crystal_ball_data = NULL;
+    delete crystal_ball; crystal_ball = nullptr;
+    delete crystal_ball_data; crystal_ball_data = nullptr;
 
     // Sprites del fondo
     for (uint32_t i = 0; i < NUMBER_OF_BIRDS; i ++) {
         delete bird[i].sprite;
-        bird[i].sprite = NULL;
+        bird[i].sprite = nullptr;
     }
-    delete bird_data; bird_data = NULL;
+    delete bird_data; bird_data = nullptr;
 
 
 
@@ -361,8 +361,8 @@ void Demo::CrystalBall() {
     ngn->image->SurfaceToRaw(renderer_surface, renderer_target, mask_texture);
 
     // Crea el interior de la bola de cristal a partir del resultado
-    delete glass; glass = NULL;
-    delete glass_data; glass_data = NULL;
+    delete glass; glass = nullptr;
+    delete glass_data; glass_data = nullptr;
     glass_data = ngn->image->ConvertRawToTextureData(renderer_target);
     glass = new NGN_Texture(glass_data, px, py);
 

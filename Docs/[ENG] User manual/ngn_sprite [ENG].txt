@@ -201,6 +201,18 @@ player->PlayAnimation();
 
 --------------------------------------------------------------------------------
 
+- Method
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets a tint color that will be applied to the sprite. A white tint (255, 255, 255)
+will display the sprite with its original unaltered colors.
+
+- Example
+player->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------
@@ -325,5 +337,13 @@ bool flip_v
 
 - Description
 Horizontal and vertical flipping of the sprite.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool ignore_camera_tint
+
+- Description
+Indicates whether the sprite should ignore the tint color assigned to the camera layer.
 
 --------------------------------------------------------------------------------

@@ -49,13 +49,13 @@ Demo::Demo() {
 
     // Punteros de datos de los fondos
     for (uint8_t i = 0; i < bg_number; i ++) {
-        bg_data[i] = NULL;
-        bg[i] = NULL;
+        bg_data[i] = nullptr;
+        bg[i] = nullptr;
     }
 
     // GUI
-    font = NULL;
-    text = NULL;
+    font = nullptr;
+    text = nullptr;
 
 }
 
@@ -67,14 +67,14 @@ Demo::~Demo() {
     // Punteros de datos de los fondos
     for (uint8_t i = 0; i < bg_number; i ++) {
         delete bg[i];
-        bg[i] = NULL;
+        bg[i] = nullptr;
         delete bg_data[i];
-        bg_data[i] = NULL;
+        bg_data[i] = nullptr;
     }
 
     // GUI
-    delete text; text = NULL;
-    delete font; font = NULL;
+    delete text; text = nullptr;
+    delete font; font = nullptr;
 
 }
 

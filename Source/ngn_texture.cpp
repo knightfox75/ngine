@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -136,7 +136,7 @@ NGN_Texture::~NGN_Texture() {
     // Elimina la textura si no es enlazada
     if (!linked) delete data;
     // Elimina la referencia al grafico
-    data = NULL;
+    data = nullptr;
 
 }
 
@@ -167,6 +167,11 @@ void NGN_Texture::DefaultValues() {
     virtual_texture.offset.x = 0.0f;
     virtual_texture.offset.y = 0.0f;
     virtual_texture.enabled = false;
+
+    // Color de tinta
+    tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    ignore_camera_tint = false;
 
 }
 
@@ -273,10 +278,33 @@ void NGN_Texture::ClearContent(uint32_t rgba) {
     SDL_SetRenderTarget(ngn->graphics->renderer, data->gfx);
     // Borra el contenido de la textura actual
     SDL_SetRenderDrawColor(ngn->graphics->renderer, r, g, b, a);
-    SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+    SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
 
     // Devuelve el render al seleccionado
     ngn->graphics->RenderToSelected();
+
+}
+
+
+
+/*** Selecciona un color de tinte (sin parametros, resetea el color) ***/
+void NGN_Texture::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
+
+    // Registra el color
+    tint_color.r = r;
+    tint_color.g = g;
+    tint_color.b = b;
+
+}
+
+
+
+/*** Devuelve si se ha cambiado el color de tinta en este frame ***/
+bool NGN_Texture::NewTint() {
+
+    bool color_mod = ((tint_color.r != last_tint_color.r) || (tint_color.g != last_tint_color.g) || (tint_color.b != last_tint_color.b));
+    last_tint_color = tint_color;
+    return color_mod;
 
 }
 

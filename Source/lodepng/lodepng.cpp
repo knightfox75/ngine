@@ -78,7 +78,7 @@ static void* lodepng_malloc(size_t size) {
   return malloc(size);
 }
 
-/* NOTE: when realloc returns NULL, it leaves the original memory untouched */
+/* NOTE: when realloc returns nullptr, it leaves the original memory untouched */
 static void* lodepng_realloc(void* ptr, size_t new_size) {
 #ifdef LODEPNG_MAX_ALLOC
   if(new_size > LODEPNG_MAX_ALLOC) return 0;
@@ -223,7 +223,7 @@ typedef struct uivector {
 static void uivector_cleanup(void* p) {
   ((uivector*)p)->size = ((uivector*)p)->allocsize = 0;
   lodepng_free(((uivector*)p)->data);
-  ((uivector*)p)->data = NULL;
+  ((uivector*)p)->data = nullptr;
 }
 
 /*returns 1 if success, 0 if failure ==> nothing done*/
@@ -243,7 +243,7 @@ static unsigned uivector_resize(uivector* p, size_t size) {
 }
 
 static void uivector_init(uivector* p) {
-  p->data = NULL;
+  p->data = nullptr;
   p->size = p->allocsize = 0;
 }
 
@@ -297,10 +297,10 @@ static ucvector ucvector_init(unsigned char* buffer, size_t size) {
 #ifdef LODEPNG_COMPILE_PNG
 #ifdef LODEPNG_COMPILE_ANCILLARY_CHUNKS
 
-/*free string pointer and set it to NULL*/
+/*free string pointer and set it to nullptr*/
 static void string_cleanup(char** out) {
   lodepng_free(*out);
-  *out = NULL;
+  *out = nullptr;
 }
 
 /*also appends null termination character*/
@@ -1352,7 +1352,7 @@ static unsigned inflateNoCompression(ucvector* out, LodePNGBitReader* reader,
   /*read the literal data: LEN bytes are now stored in the out buffer*/
   if(bytepos + LEN > size) return 23; /*error: reading outside of in buffer*/
 
-  /*out->data can be NULL (when LEN is zero), and arithmetics on NULL ptr is undefined*/
+  /*out->data can be nullptr (when LEN is zero), and arithmetics on nullptr ptr is undefined*/
   if (LEN) {
     lodepng_memcpy(out->data + out->size - LEN, reader->data + bytepos, LEN);
     bytepos += LEN;
@@ -2240,7 +2240,7 @@ unsigned lodepng_zlib_compress(unsigned char** out, size_t* outsize, const unsig
 
   error = deflate(&deflatedata, &deflatesize, in, insize, settings);
 
-  *out = NULL;
+  *out = nullptr;
   *outsize = 0;
   if(!error) {
     *outsize = deflatesize + 6;
@@ -3155,8 +3155,8 @@ static unsigned LodePNGUnknownChunks_copy(LodePNGInfo* dest, const LodePNGInfo* 
 
 static void LodePNGText_init(LodePNGInfo* info) {
   info->text_num = 0;
-  info->text_keys = NULL;
-  info->text_strings = NULL;
+  info->text_keys = nullptr;
+  info->text_strings = nullptr;
 }
 
 static void LodePNGText_cleanup(LodePNGInfo* info) {
@@ -3171,8 +3171,8 @@ static void LodePNGText_cleanup(LodePNGInfo* info) {
 
 static unsigned LodePNGText_copy(LodePNGInfo* dest, const LodePNGInfo* source) {
   size_t i = 0;
-  dest->text_keys = NULL;
-  dest->text_strings = NULL;
+  dest->text_keys = nullptr;
+  dest->text_strings = nullptr;
   dest->text_num = 0;
   for(i = 0; i != source->text_num; ++i) {
     CERROR_TRY_RETURN(lodepng_add_text(dest, source->text_keys[i], source->text_strings[i]));
@@ -3209,10 +3209,10 @@ void lodepng_clear_text(LodePNGInfo* info) {
 
 static void LodePNGIText_init(LodePNGInfo* info) {
   info->itext_num = 0;
-  info->itext_keys = NULL;
-  info->itext_langtags = NULL;
-  info->itext_transkeys = NULL;
-  info->itext_strings = NULL;
+  info->itext_keys = nullptr;
+  info->itext_langtags = nullptr;
+  info->itext_transkeys = nullptr;
+  info->itext_strings = nullptr;
 }
 
 static void LodePNGIText_cleanup(LodePNGInfo* info) {
@@ -3231,10 +3231,10 @@ static void LodePNGIText_cleanup(LodePNGInfo* info) {
 
 static unsigned LodePNGIText_copy(LodePNGInfo* dest, const LodePNGInfo* source) {
   size_t i = 0;
-  dest->itext_keys = NULL;
-  dest->itext_langtags = NULL;
-  dest->itext_transkeys = NULL;
-  dest->itext_strings = NULL;
+  dest->itext_keys = nullptr;
+  dest->itext_langtags = nullptr;
+  dest->itext_transkeys = nullptr;
+  dest->itext_strings = nullptr;
   dest->itext_num = 0;
   for(i = 0; i != source->itext_num; ++i) {
     CERROR_TRY_RETURN(lodepng_add_itext(dest, source->itext_keys[i], source->itext_langtags[i],
@@ -3300,7 +3300,7 @@ unsigned lodepng_set_icc(LodePNGInfo* info, const char* name, const unsigned cha
 void lodepng_clear_icc(LodePNGInfo* info) {
   string_cleanup(&info->iccp_name);
   lodepng_free(info->iccp_profile);
-  info->iccp_profile = NULL;
+  info->iccp_profile = nullptr;
   info->iccp_profile_size = 0;
   info->iccp_defined = 0;
 }
@@ -3320,7 +3320,7 @@ unsigned lodepng_set_exif(LodePNGInfo* info, const unsigned char* exif, unsigned
 
 void lodepng_clear_exif(LodePNGInfo* info) {
   lodepng_free(info->exif);
-  info->exif = NULL;
+  info->exif = nullptr;
   info->exif_size = 0;
   info->exif_defined = 0;
 }
@@ -3345,8 +3345,8 @@ void lodepng_info_init(LodePNGInfo* info) {
   info->chrm_defined = 0;
   info->srgb_defined = 0;
   info->iccp_defined = 0;
-  info->iccp_name = NULL;
-  info->iccp_profile = NULL;
+  info->iccp_name = nullptr;
+  info->iccp_profile = nullptr;
   info->cicp_defined = 0;
   info->cicp_color_primaries = 0;
   info->cicp_transfer_function = 0;
@@ -3368,7 +3368,7 @@ void lodepng_info_init(LodePNGInfo* info) {
   info->clli_max_fall = 0;
 
   info->exif_defined = 0;
-  info->exif = NULL;
+  info->exif = nullptr;
   info->exif_size = 0;
 
   info->sbit_defined = 0;
@@ -6472,7 +6472,7 @@ unsigned lodepng_encode(unsigned char** out, size_t* outsize,
                         LodePNGState* state) {
   unsigned char* data = 0; /*uncompressed version of the IDAT chunk data*/
   size_t datasize = 0;
-  ucvector outv = ucvector_init(NULL, 0);
+  ucvector outv = ucvector_init(nullptr, 0);
   LodePNGInfo info;
   const LodePNGInfo* info_png = &state->info_png;
   LodePNGColorMode auto_color;
@@ -7139,7 +7139,7 @@ unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h,
 unsigned decode(std::vector<unsigned char>& out, unsigned& w, unsigned& h,
                 State& state,
                 const unsigned char* in, size_t insize) {
-  unsigned char* buffer = NULL;
+  unsigned char* buffer = nullptr;
   unsigned error = lodepng_decode(&buffer, &w, &h, &state, in, insize);
   if(buffer && !error) {
     size_t buffersize = lodepng_get_raw_size(w, h, &state.info_raw);

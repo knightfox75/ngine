@@ -49,26 +49,26 @@
 Demo::Demo() {
 
     // Inicializa los punteros a los datos
-    bg0_data = NULL;
-    bg1_data = NULL;
-    bg2_data = NULL;
-    aim_data = NULL;
-    bird_data = NULL;
+    bg0_data = nullptr;
+    bg1_data = nullptr;
+    bg2_data = nullptr;
+    aim_data = nullptr;
+    bird_data = nullptr;
 
     // Inicializa los punteros a los objetos
-    bg0 = NULL;
-    bg1 = NULL;
-    bg2 = NULL;
-    aim = NULL;
+    bg0 = nullptr;
+    bg1 = nullptr;
+    bg2 = nullptr;
+    aim = nullptr;
     bird.clear();
 
     // GUI
-    mono = NULL;
-    text = NULL;
+    mono = nullptr;
+    text = nullptr;
 
     // Screenshoot
-    shutter = NULL;
-    overlay = NULL;
+    shutter = nullptr;
+    overlay = nullptr;
 
 }
 
@@ -78,29 +78,29 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg0; bg0 = NULL;
-    delete bg1; bg1 = NULL;
-    delete bg2; bg2 = NULL;
-    delete aim; aim = NULL;
+    delete bg0; bg0 = nullptr;
+    delete bg1; bg1 = nullptr;
+    delete bg2; bg2 = nullptr;
+    delete aim; aim = nullptr;
     for (uint32_t i = 0; i < bird.size(); i ++) {
         delete bird[i].sprite;
-        bird[i].sprite = NULL;
+        bird[i].sprite = nullptr;
     }
 
     // Borra los datos
-    delete bg0_data; bg0_data = NULL;
-    delete bg1_data; bg1_data = NULL;
-    delete bg2_data; bg2_data = NULL;
-    delete aim_data; aim_data = NULL;
-    delete bird_data; bird_data = NULL;
+    delete bg0_data; bg0_data = nullptr;
+    delete bg1_data; bg1_data = nullptr;
+    delete bg2_data; bg2_data = nullptr;
+    delete aim_data; aim_data = nullptr;
+    delete bird_data; bird_data = nullptr;
 
     // GUI
-    delete text; text = NULL;
-    delete mono; mono = NULL;
+    delete text; text = nullptr;
+    delete mono; mono = nullptr;
 
     // Screenshoot
-    delete shutter; shutter = NULL;
-    delete overlay; overlay = NULL;
+    delete shutter; shutter = nullptr;
+    delete overlay; overlay = nullptr;
 
 }
 
@@ -260,7 +260,7 @@ void Demo::CreateStage() {
     // Parametros de la camara
     ngn->camera->Setup(bg2->width, bg2->height, aim);
 
-    // A�ade los fondos a la camara para su gestion
+    // Añade los fondos a la camara para su gestion
     ngn->camera->PushBackground(0, bg0);
     ngn->camera->PushBackground(1, bg1);
     ngn->camera->PushBackground(2, bg2);
@@ -270,7 +270,7 @@ void Demo::CreateStage() {
     CreateBirds(1, 15, 0.66f);
     CreateBirds(2, 10, 1.0f);
 
-    // A�ade el sprite de la mirilla a la camara para su gestion
+    // Añade el sprite de la mirilla a la camara para su gestion
     ngn->camera->PushSprite(2, aim);
 
     // Define los Viewports
@@ -280,7 +280,7 @@ void Demo::CreateStage() {
     ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, false);    // Filtro local desactivado
 
     // Crea la capa de texto para la GUI
-    text = new NGN_TextLayer(mono, NULL, 16, 16, 380, 192);
+    text = new NGN_TextLayer(mono, nullptr, 16, 16, 380, 192);
     text->Padding(16);
     text->CanvasColor(0x20202080);
 
@@ -293,7 +293,7 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
 
     // Objeto temporal para crear pajaros
     bird_type b;
-    b.sprite = NULL;
+    b.sprite = nullptr;
 
     // Calculos de la posicion
     int32_t x, y;
@@ -307,7 +307,7 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
     for (uint32_t i = 0; i < num; i ++) {
         // Crea un nuevo sprite
         b.sprite = new NGN_Sprite(bird_data);
-        // Calcula el nuevo tama�o
+        // Calcula el nuevo tamaño
         b.sprite->width *= scale;
         b.sprite->height *= scale;
         // Calcula los limites del desplazamiento
@@ -334,7 +334,7 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
     }
 
     // Limpia el puntero temporal
-    b.sprite = NULL;
+    b.sprite = nullptr;
 
 }
 
@@ -523,7 +523,7 @@ void Demo::TakeScreenshot() {
 
     if (ngn->input->key_F12->down) {
         // Lee la marca de tiempo
-        current_time = time(NULL);
+        current_time = time(nullptr);
         // Conviertela al formato TM
         datetime = localtime(&current_time);
         // Crea el nombre de archivo

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -45,6 +45,8 @@
 #include <string>
 #include <cmath>
 #include <fstream>
+#include <chrono>
+#include <thread>
 
 
 // SDL
@@ -58,8 +60,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Graphics* NGN_Graphics::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Graphics* NGN_Graphics::instance = nullptr;
 
 
 
@@ -83,7 +85,7 @@ void NGN_Graphics::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -94,20 +96,23 @@ void NGN_Graphics::RemoveInstance() {
 NGN_Graphics::NGN_Graphics() {
 
     // Inicializa las variables de la clase
-    window = NULL;
-    renderer = NULL;
+    window = nullptr;
+    renderer = nullptr;
     #if !defined (DISABLE_BACKBUFFER)
-        backbuffer = NULL;
+        backbuffer = nullptr;
     #endif
     force_redraw = true;
 
     // Inicializa el control de frame rate
-    last_frame_count = SDL_GetPerformanceCounter();     // Duracion del ultimo frame
+    uint64_t current_count = SDL_GetPerformanceCounter();
+    sdl_performance_freq = SDL_GetPerformanceFrequency();           // Frecuencia del contador
+    current_frame_count = last_frame_count = current_count;         // Duracion del ultimo frame
 
     // Inicializa el control del contador FPS
-    fps_frames = 0;
     fps = 0;
-    fps_last_time = SDL_GetPerformanceCounter();
+    fps_last_time = current_count;
+    fps_ticks_last = fps_ticks_now = current_count;
+    fps_total_ticks = 0;
 
     // Inicia los viewports
     SetupViewports();
@@ -129,7 +134,7 @@ NGN_Graphics::NGN_Graphics() {
     png_pixels.clear();
     png_buffer.clear();
     screenshot_filename = "";
-    screenshot_overlay = NULL;
+    screenshot_overlay = nullptr;
     screenshot_overlay_alpha = 0xFF;
     take_screenshot = false;
 
@@ -142,7 +147,7 @@ NGN_Graphics::~NGN_Graphics() {
 
     // Elimina los vectores de memoria
     for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
-        if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
+        if (viewport_list[i].surface != nullptr) SDL_DestroyTexture(viewport_list[i].surface);
     }
     viewport_list.clear();
 
@@ -152,12 +157,12 @@ NGN_Graphics::~NGN_Graphics() {
 
     // Elimina los contenedores graficos
     #if !defined (DISABLE_BACKBUFFER)
-        if (backbuffer != NULL) SDL_DestroyTexture(backbuffer);
+        if (backbuffer != nullptr) SDL_DestroyTexture(backbuffer);
     #endif
     SDL_DestroyRenderer(renderer);
-    renderer = NULL;
+    renderer = nullptr;
     SDL_DestroyWindow(window);
-    window = NULL;
+    window = nullptr;
 
 }
 
@@ -204,7 +209,7 @@ bool NGN_Graphics::Init(
     // Crea la ventana para el renderer, con las opciones por defecto
     window = SDL_CreateWindow((const char*)window_caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, native_w, native_h, SDL_WINDOW_SHOWN);
     // Verifica si ha ocurrido un error en la creacion de la ventana
-    if (window == NULL) {
+    if (window == nullptr) {
         ngn->log->Message("[NGN_Graphics error] SDL is unable to create the main Window.");
         return false;
     }
@@ -213,9 +218,9 @@ bool NGN_Graphics::Init(
     // Si la ventana se ha creado, intenta crear la superficie de renderizado, con el dibujado sincronizado al frame
     renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE));
     // Si no se puede crear, destruye la venta e informa del error
-    if (renderer == NULL) {
+    if (renderer == nullptr) {
         SDL_DestroyWindow(window);
-        window = NULL;
+        window = nullptr;
         ngn->log->Message("[NGN_Graphics error] SDL is unable to create the rendering surface.");
         return false;
     }
@@ -334,7 +339,7 @@ void NGN_Graphics::RenderToSelected() {
         #if !defined (DISABLE_BACKBUFFER)
             SDL_SetRenderTarget(renderer, backbuffer);
         #else
-            SDL_SetRenderTarget(renderer, NULL);
+            SDL_SetRenderTarget(renderer, nullptr);
         #endif
     }
     // Restaura el color y alpha del renderer
@@ -365,7 +370,6 @@ void NGN_Graphics::Update() {
 
     // Espera al siguiente frame (60fps soft limit, definido en NGN_FPS_LIMIT)
     SyncFrame();
-
     // Contador de frames por segundo
     CountFramesPerSecond();
 
@@ -422,7 +426,7 @@ void NGN_Graphics::OpenViewport(
 
     // Si existe una textura de destino, eliminala
     if (viewport_list[id].available) {
-        if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
+        if (viewport_list[id].surface != nullptr) SDL_DestroyTexture(viewport_list[id].surface);
     }
 
     // Este viewport ha de disponer de filtrado local?
@@ -480,7 +484,7 @@ void NGN_Graphics::CloseViewport(uint8_t id) {
 
     // Elimina la textura del surface
     if (viewport_list[id].available) {
-        if (viewport_list[id].surface != NULL) SDL_DestroyTexture(viewport_list[id].surface);
+        if (viewport_list[id].surface != nullptr) SDL_DestroyTexture(viewport_list[id].surface);
     }
 
     // Datos del viewport por defecto
@@ -492,7 +496,7 @@ void NGN_Graphics::CloseViewport(uint8_t id) {
     v.h = 0;
     v.render_w = 0;
     v.render_h = 0;
-    v.surface = NULL;
+    v.surface = nullptr;
     v._local_filter = v.local_filter = false;
     v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
@@ -673,7 +677,7 @@ void NGN_Graphics::ScreenShot(std::string path,  NGN_TextureData* overlay, uint8
 NGN_Sprite* NGN_Graphics::CloneSprite(NGN_Sprite* sprite) {
 
     // Si el sprite no es valido...
-    if (!sprite) return NULL;
+    if (!sprite) return nullptr;
 
     // Sprite base para recibir el clon
     NGN_Sprite* _spr = new NGN_Sprite(
@@ -761,13 +765,16 @@ Vector2 NGN_Graphics::ScaleAndFitCoordinates(Vector2 coord) {
 void NGN_Graphics::SyncFrame() {
 
     // Calcula el tiempo actual
-    uint64_t current_frame_count = SDL_GetPerformanceCounter();
+    current_frame_count = SDL_GetPerformanceCounter();
 
     // Calcula el diferencial
-    float time_elapsed = ((float)(current_frame_count - last_frame_count) / (float)SDL_GetPerformanceFrequency());
+    double delta_time = ((double)(current_frame_count - last_frame_count) / (double)sdl_performance_freq);
 
     // Si es necesario, esperate los ticks necesarios
-    if (time_elapsed < frame_time) SDL_Delay((uint32_t)((frame_time - time_elapsed) * 1000));
+    if (delta_time < frame_time) {
+        uint32_t time_lapse = std::floor((frame_time - delta_time) * 1000.0);
+        SDL_Delay(time_lapse);
+    }
 
     // Guarda la marca de tiempo de este frame
     last_frame_count = SDL_GetPerformanceCounter();
@@ -991,18 +998,21 @@ void NGN_Graphics::CountFramesPerSecond() {
 
     // Marca actual
     uint64_t current_time = SDL_GetPerformanceCounter();
+    fps_ticks_now = current_time;
 
     // Tiempo transcurrido
-    float time_elapsed = ((float)(current_time - fps_last_time) / (float)SDL_GetPerformanceFrequency());
+    double time_elapsed = ((double)(current_time - fps_last_time) / (double)sdl_performance_freq);
 
     // Contador de fps
-    if (time_elapsed >= 1.0f) {
-        fps = fps_frames;
-        fps_frames = 0;
-        fps_last_time = SDL_GetPerformanceCounter();
+    if (time_elapsed >= 1.0) {
+        fps = std::round(((double)fps_total_ticks / (double)sdl_performance_freq) / frame_time);
+        fps_total_ticks = 0;
+        fps_last_time = current_time;
     } else {
-        fps_frames ++;
+        fps_total_ticks += (fps_ticks_now - fps_ticks_last);
     }
+
+    fps_ticks_last = fps_ticks_now;
 
 }
 
@@ -1021,7 +1031,7 @@ void NGN_Graphics::SetupViewports() {
     v.render_w = 0;
     v.render_h = 0;
     v.clip_area = {0, 0, 0, 0};
-    v.surface = NULL;
+    v.surface = nullptr;
     v._local_filter = v.local_filter = false;
     v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
@@ -1046,7 +1056,7 @@ void NGN_Graphics::ClearViewports() {
             // Si hay un cambio de modo en el filtrado...
             if (viewport_list[i].local_filter != viewport_list[i]._local_filter) {
                 // Destruye la textura actual
-                if (viewport_list[i].surface != NULL) SDL_DestroyTexture(viewport_list[i].surface);
+                if (viewport_list[i].surface != nullptr) SDL_DestroyTexture(viewport_list[i].surface);
                 // Selecciona el modo de filtrado correspondiente
                 if (viewport_list[i].local_filter) {
                     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
@@ -1078,7 +1088,7 @@ void NGN_Graphics::ClearViewports() {
                 viewport_list[i].backdrop_color.b,
                 viewport_list[i].backdrop_color.a
             );
-            SDL_RenderFillRect(renderer, NULL);
+            SDL_RenderFillRect(renderer, nullptr);
             // Actualiza el estado del filtrado local
             viewport_list[i]._local_filter = viewport_list[i].local_filter;
         }
@@ -1112,7 +1122,7 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
     void NGN_Graphics::SetBackbuffer() {
 
         // Si existe un backbuffer, eliminalo
-        if (backbuffer != NULL) SDL_DestroyTexture(backbuffer);
+        if (backbuffer != nullptr) SDL_DestroyTexture(backbuffer);
 
         // Este backbuffer ha de disponer de filtrado?
         if (filtering) {
@@ -1142,7 +1152,7 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
         );
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0xFF);
-        SDL_RenderFillRect(renderer, NULL);
+        SDL_RenderFillRect(renderer, nullptr);
 
     }
 #endif
@@ -1154,7 +1164,7 @@ void NGN_Graphics::RenderBackbuffer() {
     #if !defined (DISABLE_BACKBUFFER)
 
         // Selecciona el renderer principal
-        SDL_SetRenderTarget(renderer, NULL);
+        SDL_SetRenderTarget(renderer, nullptr);
 
         // Datos para renderizar el backbuffer
         double _rotation = 0.0f;
@@ -1200,7 +1210,7 @@ void NGN_Graphics::RenderBackbuffer() {
 void NGN_Graphics::ClearBackbuffer() {
 
     // Borra el contenido del renderer
-    SDL_SetRenderTarget(renderer, NULL);
+    SDL_SetRenderTarget(renderer, nullptr);
     SDL_RenderClear(renderer);
 
     #if !defined (DISABLE_BACKBUFFER)
@@ -1221,7 +1231,7 @@ void NGN_Graphics::ClearBackbuffer() {
             );
             SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
             SDL_SetTextureAlphaMod(backbuffer, 0xFF);
-            SDL_RenderFillRect(renderer, NULL);
+            SDL_RenderFillRect(renderer, nullptr);
         }
 
     #endif
@@ -1251,7 +1261,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     #if !defined (DISABLE_BACKBUFFER)
 
         // Selecciona el renderer principal
-        SDL_SetRenderTarget(renderer, NULL);
+        SDL_SetRenderTarget(renderer, nullptr);
 
         // Borra el contenido actual
         SDL_RenderClear(renderer);
@@ -1288,7 +1298,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     #endif
 
     // Overlay en la captura?
-    if (screenshot_overlay != NULL) {
+    if (screenshot_overlay != nullptr) {
         // Tamaño de origen (textura)
         _src.w = screenshot_overlay->width;
         _src.h = screenshot_overlay->height;
@@ -1322,7 +1332,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     );
 
     // Copia los pixeles del renderer al surface
-    if (SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_RGBA8888, png_surface->pixels, png_surface->pitch) != 0) {
+    if (SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGBA8888, png_surface->pixels, png_surface->pitch) != 0) {
         ngn->log->Message("[NGN_Graphics error] PNG Screenshot: Error creating surface.");
         SDL_FreeSurface(png_surface);
         take_screenshot = false;

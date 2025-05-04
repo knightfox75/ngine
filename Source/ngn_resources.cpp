@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -46,8 +46,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Resources* NGN_Resources::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Resources* NGN_Resources::instance = nullptr;
 
 
 
@@ -71,7 +71,7 @@ void NGN_Resources::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -181,7 +181,7 @@ void NGN_Resources::Clear(std::string repo_name) {
             std::cout << "Deleting Texture in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].texture[i].id << std::endl;
         #endif
         delete repository[repo_id].texture[i].data;
-        repository[repo_id].texture[i].data = NULL;
+        repository[repo_id].texture[i].data = nullptr;
     }
     repository[repo_id].texture.clear();
 
@@ -191,7 +191,7 @@ void NGN_Resources::Clear(std::string repo_name) {
             std::cout << "Deleting Tiled Background in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].tiledbg[i].id << std::endl;
         #endif
         delete repository[repo_id].tiledbg[i].data;
-        repository[repo_id].tiledbg[i].data = NULL;
+        repository[repo_id].tiledbg[i].data = nullptr;
     }
     repository[repo_id].tiledbg.clear();
 
@@ -201,7 +201,7 @@ void NGN_Resources::Clear(std::string repo_name) {
             std::cout << "Deleting Sprite in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].sprite[i].id << std::endl;
         #endif
         delete repository[repo_id].sprite[i].data;
-        repository[repo_id].sprite[i].data = NULL;
+        repository[repo_id].sprite[i].data = nullptr;
     }
     repository[repo_id].sprite.clear();
 
@@ -211,7 +211,7 @@ void NGN_Resources::Clear(std::string repo_name) {
             std::cout << "Deleting Collisions Map in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].cmap[i].id << std::endl;
         #endif
         delete repository[repo_id].cmap[i].data;
-        repository[repo_id].cmap[i].data = NULL;
+        repository[repo_id].cmap[i].data = nullptr;
     }
     repository[repo_id].cmap.clear();
 
@@ -221,7 +221,7 @@ void NGN_Resources::Clear(std::string repo_name) {
             std::cout << "Deleting Sound Effect in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].sfx[i].id << std::endl;
         #endif
         delete repository[repo_id].sfx[i].data;
-        repository[repo_id].sfx[i].data = NULL;
+        repository[repo_id].sfx[i].data = nullptr;
     }
     repository[repo_id].sfx.clear();
 
@@ -239,7 +239,7 @@ void NGN_Resources::Clear(std::string repo_name) {
             std::cout << "Deleting Type Face in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].typeface[i].id << std::endl;
         #endif
         delete repository[repo_id].typeface[i].data;
-        repository[repo_id].typeface[i].data = NULL;
+        repository[repo_id].typeface[i].data = nullptr;
     }
     repository[repo_id].typeface.clear();
 
@@ -488,14 +488,14 @@ bool NGN_Resources::ParseFileTable(std::vector<std::string> &text, std::vector<F
 NGN_TextureData* NGN_Resources::GetTexture(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
-    if (repo_id < 0) return NULL;
+    if (repo_id < 0) return nullptr;
 
     for (uint32_t i = 0; i < repository[repo_id].texture.size(); i ++) {
         if (resource_name.compare(repository[repo_id].texture[i].id) == 0) return repository[repo_id].texture[i].data;
     }
 
     if (err) ngn->log->Message("[NGN_Resources error] Texture with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
-    return NULL;
+    return nullptr;
 
 }
 
@@ -505,14 +505,14 @@ NGN_TextureData* NGN_Resources::GetTexture(std::string repo_name, std::string re
 NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
-    if (repo_id < 0) return NULL;
+    if (repo_id < 0) return nullptr;
 
     for (uint32_t i = 0; i < repository[repo_id].tiledbg.size(); i ++) {
         if (resource_name.compare(repository[repo_id].tiledbg[i].id) == 0) return repository[repo_id].tiledbg[i].data;
     }
 
     if (err) ngn->log->Message("[NGN_Resources error] Tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
-    return NULL;
+    return nullptr;
 
 }
 
@@ -522,14 +522,14 @@ NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string re
 NGN_SpriteData* NGN_Resources::GetSprite(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
-    if (repo_id < 0) return NULL;
+    if (repo_id < 0) return nullptr;
 
     for (uint32_t i = 0; i < repository[repo_id].sprite.size(); i ++) {
         if (resource_name.compare(repository[repo_id].sprite[i].id) == 0) return repository[repo_id].sprite[i].data;
     }
 
     if (err) ngn->log->Message("[NGN_Resources error] Sprite with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
-    return NULL;
+    return nullptr;
 
 }
 
@@ -539,14 +539,14 @@ NGN_SpriteData* NGN_Resources::GetSprite(std::string repo_name, std::string reso
 NGN_CollisionMapData* NGN_Resources::GetCmap(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
-    if (repo_id < 0) return NULL;
+    if (repo_id < 0) return nullptr;
 
     for (uint32_t i = 0; i < repository[repo_id].cmap.size(); i ++) {
         if (resource_name.compare(repository[repo_id].cmap[i].id) == 0) return repository[repo_id].cmap[i].data;
     }
 
     if (err) ngn->log->Message("[NGN_Resources error] Collision map with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
-    return NULL;
+    return nullptr;
 
 }
 
@@ -556,14 +556,14 @@ NGN_CollisionMapData* NGN_Resources::GetCmap(std::string repo_name, std::string 
 NGN_AudioClipData* NGN_Resources::GetSfx(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
-    if (repo_id < 0) return NULL;
+    if (repo_id < 0) return nullptr;
 
     for (uint32_t i = 0; i < repository[repo_id].sfx.size(); i ++) {
         if (resource_name.compare(repository[repo_id].sfx[i].id) == 0) return repository[repo_id].sfx[i].data;
     }
 
     if (err) ngn->log->Message("[NGN_Resources error] SFX with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
-    return NULL;
+    return nullptr;
 
 }
 
@@ -596,14 +596,14 @@ std::vector<std::string> NGN_Resources::GetTxt(std::string repo_name, std::strin
 NGN_TextFont* NGN_Resources::GetTypeface(std::string repo_name, std::string resource_name, bool err) {
 
     int8_t repo_id = GetRepositoryId(repo_name);
-    if (repo_id < 0) return NULL;
+    if (repo_id < 0) return nullptr;
 
     for (uint32_t i = 0; i < repository[repo_id].typeface.size(); i ++) {
         if (resource_name.compare(repository[repo_id].typeface[i].id) == 0) return repository[repo_id].typeface[i].data;
     }
 
     if (err) ngn->log->Message("[NGN_Resources error] Typeface with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
-    return NULL;
+    return nullptr;
 
 }
 

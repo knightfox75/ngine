@@ -48,8 +48,8 @@
 Demo::Demo() {
 
     // Inicializa los punteros a objetos
-    canvas_bg = NULL;
-    canvas_snow = NULL;
+    canvas_bg = nullptr;
+    canvas_snow = nullptr;
 
     // Variables
     animate = true;
@@ -62,8 +62,8 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los punteros de datos
-    delete canvas_bg; canvas_bg = NULL;
-    delete canvas_snow; canvas_snow = NULL;
+    delete canvas_bg; canvas_bg = nullptr;
+    delete canvas_snow; canvas_snow = nullptr;
 
 }
 

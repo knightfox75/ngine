@@ -48,19 +48,19 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    sprite_data = NULL;
-    brush_data = NULL;
+    bg_data = nullptr;
+    sprite_data = nullptr;
+    brush_data = nullptr;
 
     // Inicializa las listas de sprites
     bird.clear();
     bird.resize(NUMBER_OF_SPRITES);
-    for (uint32_t i = 0; i < bird.capacity(); i ++) bird[i].sprite = NULL;
-    brush = NULL;
+    for (uint32_t i = 0; i < bird.capacity(); i ++) bird[i].sprite = nullptr;
+    brush = nullptr;
 
     // Inicializa los punteros de objetos
-    bg = NULL;
-    canvas = NULL;
+    bg = nullptr;
+    canvas = nullptr;
 
 }
 
@@ -72,19 +72,19 @@ Demo::~Demo() {
     // Borra los sprites
     for (uint32_t i = 0; i < bird.capacity(); i ++) {
         delete bird[i].sprite;
-        bird[i].sprite = NULL;
+        bird[i].sprite = nullptr;
     }
     bird.clear();
-    delete brush; brush = NULL;
+    delete brush; brush = nullptr;
 
     // Borra los objetos
-    delete bg; bg = NULL;
-    delete canvas; canvas = NULL;
+    delete bg; bg = nullptr;
+    delete canvas; canvas = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
-    delete sprite_data; sprite_data = NULL;
-    delete brush_data; brush_data = NULL;
+    delete bg_data; bg_data = nullptr;
+    delete sprite_data; sprite_data = nullptr;
+    delete brush_data; brush_data = nullptr;
 
 }
 
@@ -142,7 +142,7 @@ bool Demo::Awake() {
 bool Demo::Start() {
 
     // Cambia la semilla del random
-    srand(time(NULL));
+    srand(time(nullptr));
 
     // Carga los archivos
     if (!Load()) return false;
@@ -198,15 +198,15 @@ bool Demo::Load() {
 
     // Carga la imagen para el fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Carga el grafico del sprite
     sprite_data = ngn->load->Sprite("data/blue_bird.spr");
-    if (sprite_data == NULL) return false;
+    if (sprite_data == nullptr) return false;
 
     // Carga el grafico del pincel
     brush_data = ngn->load->Sprite("data/brush.spr");
-    if (brush_data == NULL) return false;
+    if (brush_data == nullptr) return false;
 
     // Carga correcta
     return true;

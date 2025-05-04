@@ -48,15 +48,15 @@ Demo::Demo() {
 
     // Inicia los punteros
 
-    bg_data = NULL;
-    bg = NULL;
+    bg_data = nullptr;
+    bg = nullptr;
 
     for (uint8_t i = 0; i < NUMBER_OF_SPRITES; i ++) {
-        spr_data[i] = NULL;
-        spr[i] = NULL;
+        spr_data[i] = nullptr;
+        spr[i] = nullptr;
     }
-    aim_data = NULL;
-    aim = NULL;
+    aim_data = nullptr;
+    aim = nullptr;
 
 }
 
@@ -67,16 +67,16 @@ Demo::~Demo() {
 
     // Elimina los datos
 
-    delete bg; bg = NULL;
-    delete bg_data; bg_data = NULL;
+    delete bg; bg = nullptr;
+    delete bg_data; bg_data = nullptr;
 
     for (uint8_t i = 0; i < NUMBER_OF_SPRITES; i ++) {
-        delete spr[i]; spr[i] = NULL;
-        delete spr_data[i]; spr_data[i] = NULL;
+        delete spr[i]; spr[i] = nullptr;
+        delete spr_data[i]; spr_data[i] = nullptr;
     }
 
-    delete aim; aim = NULL;
-    delete aim_data; aim_data = NULL;
+    delete aim; aim = nullptr;
+    delete aim_data; aim_data = nullptr;
 
 }
 
@@ -220,11 +220,11 @@ bool Demo::Load() {
 
     // Carga los fondos
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Carga los sprites
     aim_data = ngn->load->Sprite("data/aim.spr");
-    if (aim_data == NULL) return false;
+    if (aim_data == nullptr) return false;
     spr_data[SPR_NORMAL] = ngn->load->Sprite("data/bluemark_normal.spr");
     spr_data[SPR_TOP] = ngn->load->Sprite("data/bluemark_top.spr");
     spr_data[SPR_BOTTOM] = ngn->load->Sprite("data/bluemark_bottom.spr");
@@ -232,7 +232,7 @@ bool Demo::Load() {
     spr_data[SPR_RIGHT] = ngn->load->Sprite("data/bluemark_right.spr");
     spr_data[SPR_TOP_LEFT] = ngn->load->Sprite("data/bluemark_topleft.spr");
     spr_data[SPR_BOTTOM_RIGHT] = ngn->load->Sprite("data/bluemark_bottomright.spr");
-    for (uint8_t i = 0; i < NUMBER_OF_SPRITES; i ++) if (spr_data[i] == NULL) return false;
+    for (uint8_t i = 0; i < NUMBER_OF_SPRITES; i ++) if (spr_data[i] == nullptr) return false;
 
     // Carga correcta
     return true;

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -117,8 +117,8 @@ void NGN_Key::Reset() {
 /*** Metodos de entrada (Clase NGN_Input) ***/
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Input* NGN_Input::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Input* NGN_Input::instance = nullptr;
 
 
 
@@ -142,7 +142,7 @@ void NGN_Input::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -345,7 +345,7 @@ void NGN_Input::AddKeys() {
 // Realiza la lectura del teclado
 void NGN_Input::ReadKeyboard() {
 
-    const uint8_t* kb = SDL_GetKeyboardState(NULL);
+    const uint8_t* kb = SDL_GetKeyboardState(nullptr);
 
     key_1->held = kb[SDL_SCANCODE_1];
     key_2->held = kb[SDL_SCANCODE_2];
@@ -467,12 +467,12 @@ void NGN_Input::RemoveKeys() {
     uint32_t n = 0;
     for (n = 0; n < keylist.size(); n ++) {
         delete keylist[n];
-        keylist[n] = NULL;
+        keylist[n] = nullptr;
     }
     keylist.clear();
 
     // Teclas especiales
-    delete key_ANY_KEY; key_ANY_KEY = NULL;
+    delete key_ANY_KEY; key_ANY_KEY = nullptr;
 
 }
 
@@ -686,7 +686,7 @@ void NGN_Input::UpdateGameController() {
 void NGN_Input::AddControllers(int32_t gc) {
 
     // Variables
-    SDL_GameController* gamepad = NULL;     // Puntero a la instancia
+    SDL_GameController* gamepad = nullptr;     // Puntero a la instancia
     bool found = false;                     // Control de busqueda
     ControllerListData gamepad_data;        // Temporal para añadirlo a la lista
     std::string name = "";                  // Nombre del gamepad

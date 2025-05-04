@@ -47,25 +47,25 @@
 Demo::Demo() {
 
     // Fondo
-    bg_data = NULL;
-    bg = NULL;
+    bg_data = nullptr;
+    bg = nullptr;
 
     // Imagen en RAW
-    ball_raw = NULL;
-    ball_data = NULL;
-    ball = NULL;
+    ball_raw = nullptr;
+    ball_data = nullptr;
+    ball = nullptr;
 
     // Sprite en RAW
-    bird_data = NULL;
-    bird = NULL;
+    bird_data = nullptr;
+    bird = nullptr;
     bird_frames.clear();
     bird_fr = 0;
     bird_timer = 0;
 
     // Mascara
-    mask_result_data = NULL;
-    mask_result = NULL;
-    mask_raw = NULL;
+    mask_result_data = nullptr;
+    mask_result = nullptr;
+    mask_raw = nullptr;
     mask_mode = NGN_MASKMODE_HOLLOW;
 
 }
@@ -76,24 +76,24 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Fondo
-    delete bg; bg = NULL;
-    delete bg_data; bg_data = NULL;
+    delete bg; bg = nullptr;
+    delete bg_data; bg_data = nullptr;
 
     // Imagen en RAW
-    delete ball; ball = NULL;
-    delete ball_data; ball_data = NULL;
-    delete ball_raw; ball_raw = NULL;
+    delete ball; ball = nullptr;
+    delete ball_data; ball_data = nullptr;
+    delete ball_raw; ball_raw = nullptr;
 
     // Sprite en RAW
-    delete bird; bird = NULL;
-    delete bird_data; bird_data = NULL;
+    delete bird; bird = nullptr;
+    delete bird_data; bird_data = nullptr;
     for (uint32_t i = 0; i < bird_frames.size(); i ++) delete bird_frames[i];
     bird_frames.clear();
 
     // Mascara
-    delete mask_raw; mask_raw = NULL;
-    delete mask_result; mask_result = NULL;
-    delete mask_result_data; mask_result_data = NULL;
+    delete mask_raw; mask_raw = nullptr;
+    delete mask_result; mask_result = nullptr;
+    delete mask_result_data; mask_result_data = nullptr;
 
 }
 
@@ -245,9 +245,9 @@ void Demo::Create() {
 void Demo::Update() {
 
     // Genera la textura con la referencia visual de la mascara
-    delete bird_data; bird_data = NULL;
+    delete bird_data; bird_data = nullptr;
     bird_data = ngn->image->ConvertRawToTextureData(bird_frames[bird_fr]);
-    delete bird; bird = NULL;
+    delete bird; bird = nullptr;
     bird = new NGN_Texture(bird_data);
 
     // Posicion
@@ -263,10 +263,10 @@ void Demo::Update() {
     ngn->image->AdvancedMask(ball_raw, bird_frames[bird_fr], mask_raw, offset, mask_mode);
 
     // Crea los datos de textura con el resultado
-    delete mask_result_data; mask_result_data = NULL;
+    delete mask_result_data; mask_result_data = nullptr;
     mask_result_data = ngn->image->ConvertRawToTextureData(mask_raw);
     // Crea la textura con la mascara aplicada
-    delete mask_result; mask_result = NULL;
+    delete mask_result; mask_result = nullptr;
     mask_result = new NGN_Texture(mask_result_data, 740, 300);
 
     // Animacion

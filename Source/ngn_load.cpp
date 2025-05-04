@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -61,8 +61,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Load* NGN_Load::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Load* NGN_Load::instance = nullptr;
 
 
 
@@ -86,7 +86,7 @@ void NGN_Load::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -111,7 +111,7 @@ NGN_Load::~NGN_Load() {
 
     // Objeto para el acceso al file system
     delete file_system;
-    file_system = NULL;
+    file_system = nullptr;
 
 }
 
@@ -141,16 +141,16 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
             ngn->log->Message("[NGN_Load error] Error decoding <" + filepath + "> texture.");
             buffer.clear();
             pixels.clear();
-            return NULL;
+            return nullptr;
         }
     } else {
         ngn->log->Message("[NGN_Load error] Error loading <" + filepath + ">.");
         buffer.clear();
-        return NULL;
+        return nullptr;
     }
 
     // Crea un surface temporal para guardar la imagen cargada
-    SDL_Surface* surface = NULL;
+    SDL_Surface* surface = nullptr;
 
     // Crea la superficie en base a los pixeles cargados
     surface = SDL_CreateRGBSurfaceFrom(
@@ -172,7 +172,7 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
     // Verifica si el archivo se ha creado correctamente
     if (!surface) {
          ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a surface.");
-         return NULL;
+         return nullptr;
     }
 
 
@@ -186,7 +186,7 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
     if (!texture->gfx) {
          ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a texture.");
          SDL_FreeSurface(surface);
-         return NULL;
+         return nullptr;
     }
 
     // Guarda los datos de la textura
@@ -237,7 +237,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
         ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         delete bg;
-        return NULL;
+        return nullptr;
 
     }
 
@@ -249,7 +249,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
     if (std::string(bg->header.magic) != MAGIC_STRING_TBG) {
         ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
         delete bg;
-        return NULL;
+        return nullptr;
     }
 
     // Decodifica los datos del tileset en PNG a Pixeles
@@ -260,7 +260,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
         tiles.clear();
         pixels.clear();
         delete bg;
-        return NULL;
+        return nullptr;
     }
     // Borra los buffers temporales
     tiles.clear();
@@ -283,7 +283,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
     tile_pixels.resize((tw * th) << 2);
 
     // Copia cada tile en una textura independiente
-    SDL_Surface* surface = NULL;        // Crea una superficie temporal para la generacion de cada tile
+    SDL_Surface* surface = nullptr;        // Crea una superficie temporal para la generacion de cada tile
     uint32_t pixel_pos = 0;             // Offset de cada pixel en el tileset descomprimido
     uint32_t tile_pos = 0;              // Offset de cada pixel en el tile generado
     // Recorre la matriz de pixeles
@@ -312,23 +312,23 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
                     0xff000000                  // Mascara A
             );
             // Verifica si se ha generado el surface
-            if (surface == NULL) {
+            if (surface == nullptr) {
                  ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> tileset to a surface.");
                  pixels.clear();
                  tile_pixels.clear();
                  delete bg;
-                 return NULL;
+                 return nullptr;
             }
             // Crea una textura a partir del surface
             bg->tiles[tl] = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
             // Verifica si se ha creado con exito
-            if (bg->tiles[tl] == NULL) {
+            if (bg->tiles[tl] == nullptr) {
                  ngn->log->Message("[NGN_Load error] Unable to create <" + filepath + "> tileset.");
                  pixels.clear();
                  tile_pixels.clear();
                  SDL_FreeSurface(surface);
                  delete bg;
-                 return NULL;
+                 return nullptr;
             }
             tl ++;
             // Borra el surface creado
@@ -360,16 +360,16 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     if (!LoadSpriteData(filepath, pixels, spr)) {
         delete spr;
         pixels.clear();
-        return NULL;
+        return nullptr;
     }
 
     // Redimensiona el vector
     spr->gfx.resize(spr->header.total_frames);
-    for (uint32_t i = 0; i < spr->gfx.size(); i ++) spr->gfx[i] = NULL;
+    for (uint32_t i = 0; i < spr->gfx.size(); i ++) spr->gfx[i] = nullptr;
     uint32_t frame_data_size = (spr->header.frame_width * spr->header.frame_height);
 
     // Crea una superficie temporal para la generacion del spritesheet
-    SDL_Surface* surface = NULL;
+    SDL_Surface* surface = nullptr;
 
     // Crea una textura por cada fotograma
     for (uint32_t i = 0; i < spr->header.total_frames; i ++) {
@@ -388,21 +388,21 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
                                             );
 
 
-        if (surface == NULL) {
+        if (surface == nullptr) {
             ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a surface.");
             pixels.clear();
-            return NULL;
+            return nullptr;
         }
 
         // Si se ha creado la superficie con exito, conviertela a textura
         spr->gfx[i] = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
 
         // Verifica que la conversion ha sido correcta
-        if (spr->gfx[i] == NULL) {
+        if (spr->gfx[i] == nullptr) {
             ngn->log->Message("[NGN_Load error] Unable to load <" + filepath + "> as a sprite.");
             SDL_FreeSurface(surface);
             pixels.clear();
-            return NULL;
+            return nullptr;
         }
 
         // Borra el surface creado
@@ -457,7 +457,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
         ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
         delete collision;
-        return NULL;
+        return nullptr;
 
     }
 
@@ -469,7 +469,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
     if (std::string(collision->header.magic) != MAGIC_STRING_CMAP) {
         ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
         delete collision;
-        return NULL;
+        return nullptr;
     }
 
     // Calcula los datos adicionales del mapa de colisiones
@@ -513,7 +513,7 @@ NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
         // Error leyendo el archivo solicitado
         ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
-        return NULL;
+        return nullptr;
     }
 
     // Crea un archivo temporal con el audio
@@ -531,7 +531,7 @@ NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
         // Elimina los datos del buffer del archivo temporal
         buffer.clear();
         // Error en la carga
-        return NULL;
+        return nullptr;
     }
 
 }
@@ -557,14 +557,14 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
         // Error leyendo el archivo solicitado
         ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> for read.");
         buffer.clear();
-        return NULL;
+        return nullptr;
     }
 
     // Intenta iniciar el subsitema de TTF para SDL
     if (TTF_Init() < 0) {
         ngn->log->Message("[NGN_Load error] SDL TTF initialization failed.");
         buffer.clear();
-        return NULL;
+        return nullptr;
     }
 
     // Crea un objeto temporal para almacenar la fuente resultante
@@ -572,11 +572,11 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
 
     // Intenta cargar la tipografia
     TTF_Font* ttf = TTF_OpenFontRW(SDL_RWFromMem((uint8_t*)&buffer[0], file_length), 0, height);
-    if (ttf == NULL) {
+    if (ttf == nullptr) {
         ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> from memory.");
         buffer.clear();
         delete font;
-        return NULL;
+        return nullptr;
     }
 
     // Elimina los datos del buffer del archivo temporal
@@ -597,8 +597,8 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     */
 
     // Crea una superficie temporal para la generacion de la tipografia
-    SDL_Surface* surface = NULL;
-    SDL_Surface* surface_outline = NULL;
+    SDL_Surface* surface = nullptr;
+    SDL_Surface* surface_outline = nullptr;
 
     // Crea el color por defecto del texto (blanco por defecto)
     SDL_Color _font_color;
@@ -716,7 +716,7 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     // Paso de limpieza
     SDL_FreeSurface(surface);
     SDL_FreeSurface(surface_outline);
-    TTF_CloseFont(ttf); ttf = NULL;
+    TTF_CloseFont(ttf); ttf = nullptr;
 
     // Cierra el subsistema de TTF
     TTF_Quit();
@@ -745,13 +745,13 @@ NGN_RawImage* NGN_Load::PngAsRaw(std::string filepath) {
             ngn->log->Message("[NGN_Load error] Error decoding <" + filepath + "> image.");
             buffer.clear();
             delete raw;
-            return NULL;
+            return nullptr;
         }
     } else {
         ngn->log->Message("[NGN_Load error] Error loading <" + filepath + ">.");
         buffer.clear();
         delete raw;
-        return NULL;
+        return nullptr;
     }
 
     // Elimina el buffer temporal
@@ -777,7 +777,7 @@ NGN_RawImage* NGN_Load::SpriteAsRaw(std::string filepath, uint32_t frame) {
     if (!LoadSpriteData(filepath, pixels, spr)) {
         delete spr;
         pixels.clear();
-        return NULL;
+        return nullptr;
     }
 
     // Proteccion de frame

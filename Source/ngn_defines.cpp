@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -55,7 +55,7 @@
 // Constructor
 NGN_TextureData::NGN_TextureData() {
 
-    gfx = NULL;
+    gfx = nullptr;
     width = 0;
     height = 0;
 
@@ -64,8 +64,8 @@ NGN_TextureData::NGN_TextureData() {
 // Destructor
 NGN_TextureData::~NGN_TextureData() {
 
-    if (gfx != NULL) SDL_DestroyTexture(gfx);
-    gfx = NULL;
+    if (gfx != nullptr) SDL_DestroyTexture(gfx);
+    gfx = nullptr;
 
 }
 
@@ -85,8 +85,8 @@ NGN_TiledBgData::NGN_TiledBgData() {
 NGN_TiledBgData::~NGN_TiledBgData() {
 
     for (uint32_t i = 0; i < tiles.size(); i ++) {
-        if (tiles[i] != NULL) SDL_DestroyTexture(tiles[i]);
-        tiles[i] = NULL;
+        if (tiles[i] != nullptr) SDL_DestroyTexture(tiles[i]);
+        tiles[i] = nullptr;
     }
     tiles.clear();
     tmap.clear();
@@ -108,8 +108,8 @@ NGN_SpriteData::NGN_SpriteData() {
 NGN_SpriteData::~NGN_SpriteData() {
 
     for (uint32_t i = 0; i < gfx.size(); i ++) {
-        if (gfx[i] != NULL) SDL_DestroyTexture(gfx[i]);
-        gfx[i] = NULL;
+        if (gfx[i] != nullptr) SDL_DestroyTexture(gfx[i]);
+        gfx[i] = nullptr;
     }
     gfx.clear();
 
@@ -154,7 +154,7 @@ NGN_TextFont::NGN_TextFont() {
 
     character.reserve(256);
     for (uint32_t i = 0; i < character.capacity(); i ++) {
-        character[i] = NULL;
+        character[i] = nullptr;
         character[i] = new NGN_TextureData();
     }
 
@@ -167,7 +167,7 @@ NGN_TextFont::NGN_TextFont() {
 NGN_TextFont::~NGN_TextFont() {
 
     for (uint32_t i = 0; i < character.capacity(); i ++) {
-        delete character[i]; character[i] = NULL;
+        delete character[i]; character[i] = nullptr;
     }
 
     character.clear();
@@ -202,7 +202,7 @@ NGN_RawImage::~NGN_RawImage() {
 NGN_RendererSurface::NGN_RendererSurface() {
 
     // Surface
-    surface = NULL;
+    surface = nullptr;
 
     // Guarda el tamaño
     width = -1;
@@ -215,7 +215,7 @@ NGN_RendererSurface::~NGN_RendererSurface() {
 
     // Elimina el surface
     SDL_FreeSurface(surface);
-    surface = NULL;
+    surface = nullptr;
 
 }
 

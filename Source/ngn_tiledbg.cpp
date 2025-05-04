@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -84,9 +84,9 @@ NGN_TiledBg::~NGN_TiledBg() {
 
     // Destruye el backbuffer
     SDL_DestroyTexture(backbuffer);
-    backbuffer = NULL;
+    backbuffer = nullptr;
     // Elimina la referencia al fondo
-    bgdata = NULL;
+    bgdata = nullptr;
 
 }
 
@@ -165,6 +165,28 @@ void NGN_TiledBg::SetCenter(float x, float y) {
 
 
 
+/*** Selecciona un color de tinte (sin parametros, resetea el color) ***/
+void NGN_TiledBg::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
+
+    // Registra el color
+    tint_color.r = r;
+    tint_color.g = g;
+    tint_color.b = b;
+
+}
+
+
+
+/*** Devuelve si se ha cambiado el color de tinta en este frame ***/
+bool NGN_TiledBg::NewTint() {
+
+    bool color_mod = ((tint_color.r != last_tint_color.r) || (tint_color.g != last_tint_color.g) || (tint_color.b != last_tint_color.b));
+    last_tint_color = tint_color;
+    return color_mod;
+
+}
+
+
 
 /*** Crea el objeto que contiene el fondo ***/
 void NGN_TiledBg::CreateTiledBg(
@@ -231,5 +253,10 @@ void NGN_TiledBg::CreateTiledBg(
     virtual_bg.offset.x = 0.0f;
     virtual_bg.offset.y = 0.0f;
     virtual_bg.enabled = false;
+
+    // Color de tinta
+    tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    ignore_camera_tint = false;
 
 }

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -44,6 +44,7 @@
 
 /*** Includes C++ ***/
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
+#include <random>                   // Numeros aleatorios avanzados
 
 
 
@@ -200,6 +201,17 @@ class NGN_Math {
         // Distancia entre 2 puntos (2 parametros, entero, 4a sobrecarga)
         uint32_t GetManhattan(Vector2I32 a, Vector2I32 b);
 
+        // Devuelve un numero aleatorio en un rango dado (entero)
+        int32_t RandomInt(int32_t min_value, int32_t max_value);
+        int32_t RandomInt();
+        // Devuelve un numero aleatorio en un rango dado (punto flotante)
+        float RandomFloat(float min_value, float max_value);
+        float RandomFloat();
+        // Devuelve un numero aleatorio en un rango dado (punto flotante de doble precision)
+        double RandomDouble(double min_value, double max_value);
+        double RandomDouble();
+
+
 
 
     // Segmento privado
@@ -214,6 +226,9 @@ class NGN_Math {
         // Puntero de memoria a la instancia
         static NGN_Math* instance;
 
+        // Semilla del random
+        std::random_device rand_dev;        // Dispositivo para la semilla
+        std::mt19937 mt_gen;                // Generador Mersenne Twister
 
 };
 

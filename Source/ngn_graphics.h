@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -168,7 +168,7 @@ class NGN_Graphics {
         void ShowMouse(bool visible);
 
         // Crea una captura del frame actual en formato PNG
-        void ScreenShot(std::string path, NGN_TextureData* overlay = NULL, uint8_t alpha = 0xFF);
+        void ScreenShot(std::string path, NGN_TextureData* overlay = nullptr, uint8_t alpha = 0xFF);
 
         // ID del frame en tiempo de ejecucion
         uint32_t runtime_frame;
@@ -182,7 +182,7 @@ class NGN_Graphics {
         Size2I32 GetDesktopResolution();                    // Devuelve la resolucion actual del escritorio
 
         /*** Devuelve el numero de FPS actual ***/
-        uint32_t GetFps();                                  // Devuelve el n� de fotogramas renderizado en el ultimo segundo
+        uint32_t GetFps();                                  // Devuelve el nº de fotogramas renderizado en el ultimo segundo
 
         /*** Metodos de uso interno ***/
         Vector2 ScaleAndFitCoordinates(Vector2 coord);      // Escala las coordenadas al area visible
@@ -213,8 +213,9 @@ class NGN_Graphics {
 
         // Control del framerate (definido el framerate maximo en NGN_FPS_LIMIT)
         void SyncFrame();
-        uint64_t last_frame_count;
-        const float frame_time = (1.0f / (float)NGN_FPS_LIMIT);
+        uint64_t current_frame_count, last_frame_count;
+        uint64_t sdl_performance_freq;
+        const double frame_time = (1.0 / (double)NGN_FPS_LIMIT);
 
         // Control de la pantalla (verificacion)
         int8_t _screen_mode;        // Modo actual de pantalla?
@@ -232,7 +233,9 @@ class NGN_Graphics {
 
         // Contador de FPS (Debug)
         uint64_t fps_last_time;         // Marca de tiempo
-        uint32_t fps_frames;            // Contador de frames renderizados desde el ultimo conteo
+        uint64_t fps_ticks_last;
+        uint64_t fps_ticks_now;
+        uint64_t fps_total_ticks;
         uint32_t fps;                   // Guarda el numero actual de FPS del ultimo segundo
         void FpsCounter();
         void CountFramesPerSecond();

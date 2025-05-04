@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -374,8 +374,8 @@ Vector2I64 Vector2I64::Zero() {
 
 ******************************************************************************/
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Math* NGN_Math::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Math* NGN_Math::instance = nullptr;
 
 
 
@@ -399,7 +399,7 @@ void NGN_Math::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -422,6 +422,10 @@ NGN_Math::~NGN_Math() {
 
 /*** Procesos iniciales despues de crear la instancia ***/
 void NGN_Math::BootUp() {
+
+    // Semilla del random avanzado
+    mt_gen.seed(rand_dev());
+
 }
 
 
@@ -502,5 +506,79 @@ uint32_t NGN_Math::GetManhattan(Vector2I32 a, Vector2I32 b) {
 
     Vector2I32 v = (a - b);
     return (std::abs(v.x) + std::abs(v.y));
+
+}
+
+
+
+/*** Devuelve un numero aleatorio en un rango dado (entero) [1a sobrecarga] ***/
+int32_t NGN_Math::RandomInt(int32_t min_value, int32_t max_value) {
+
+    // Si no hay rango, devuelve el valor tal cual
+    if (min_value == max_value) return min_value;
+
+    // Ordena los valores
+    int32_t _min = std::min(min_value, max_value);
+    int32_t _max = std::max(min_value, max_value);
+
+    // Genera un numero en el rango y devuelvelo
+    return std::uniform_int_distribution<int32_t>(_min, _max)(mt_gen);
+
+}
+
+/*** Devuelve un numero aleatorio en un rango dado (entero) [2a sobrecarga] ***/
+int32_t NGN_Math::RandomInt() {
+
+    return RandomInt(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max());
+
+}
+
+
+
+/*** Devuelve un numero aleatorio en un rango dado (punto flotante) [1a sobrecarga] ***/
+float NGN_Math::RandomFloat(float min_value, float max_value) {
+
+    // Si no hay rango, devuelve el valor tal cual
+    if (min_value == max_value) return min_value;
+
+    // Ordena los valores
+    float _min = std::fmin(min_value, max_value);
+    float _max = std::fmax(min_value, max_value);
+
+    // Genera un numero en el rango y devuelvelo
+    return std::uniform_real_distribution<float>(_min, _max)(mt_gen);
+
+}
+
+/*** Devuelve un numero aleatorio en un rango dado (punto flotante) [2a sobrecarga] ***/
+float NGN_Math::RandomFloat() {
+
+    constexpr float SAFE_RANGE = 1.0e6;
+    return RandomFloat(-SAFE_RANGE, SAFE_RANGE);
+
+}
+
+
+
+/*** Devuelve un numero aleatorio en un rango dado (punto flotante de doble precision) [1a sobrecarga] ***/
+double NGN_Math::RandomDouble(double min_value, double max_value) {
+
+    // Si no hay rango, devuelve el valor tal cual
+    if (min_value == max_value) return min_value;
+
+    // Ordena los valores
+    double _min = std::fmin(min_value, max_value);
+    double _max = std::fmax(min_value, max_value);
+
+    // Genera un numero en el rango y devuelvelo
+    return std::uniform_real_distribution<double>(_min, _max)(mt_gen);
+
+}
+
+/*** Devuelve un numero aleatorio en un rango dado (punto flotante de doble precision) [2a sobrecarga] ***/
+double NGN_Math::RandomDouble() {
+
+    constexpr double SAFE_RANGE = 1.0e6;
+    return RandomDouble(-SAFE_RANGE, SAFE_RANGE);
 
 }

@@ -47,17 +47,17 @@
 Demo::Demo() {
 
     // Inicializa los punteros a los datos
-    bg0_data = NULL;
-    bg1_data = NULL;
-    bg2_data = NULL;
-    aim_data = NULL;
-    bird_data = NULL;
+    bg0_data = nullptr;
+    bg1_data = nullptr;
+    bg2_data = nullptr;
+    aim_data = nullptr;
+    bird_data = nullptr;
 
     // Inicializa los punteros a los objetos
-    bg0 = NULL;
-    bg1 = NULL;
-    bg2 = NULL;
-    aim = NULL;
+    bg0 = nullptr;
+    bg1 = nullptr;
+    bg2 = nullptr;
+    aim = nullptr;
     bird.clear();
 
 }
@@ -68,21 +68,21 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg0; bg0 = NULL;
-    delete bg1; bg1 = NULL;
-    delete bg2; bg2 = NULL;
-    delete aim; aim = NULL;
+    delete bg0; bg0 = nullptr;
+    delete bg1; bg1 = nullptr;
+    delete bg2; bg2 = nullptr;
+    delete aim; aim = nullptr;
     for (uint32_t i = 0; i < bird.size(); i ++) {
         delete bird[i].sprite;
-        bird[i].sprite = NULL;
+        bird[i].sprite = nullptr;
     }
 
     // Borra los datos
-    delete bg0_data; bg0_data = NULL;
-    delete bg1_data; bg1_data = NULL;
-    delete bg2_data; bg2_data = NULL;
-    delete aim_data; aim_data = NULL;
-    delete bird_data; bird_data = NULL;
+    delete bg0_data; bg0_data = nullptr;
+    delete bg1_data; bg1_data = nullptr;
+    delete bg2_data; bg2_data = nullptr;
+    delete aim_data; aim_data = nullptr;
+    delete bird_data; bird_data = nullptr;
 
 }
 
@@ -190,17 +190,17 @@ bool Demo::Load() {
 
     // Carga los datos de los fondos
     bg0_data = ngn->load->TiledBg("data/bg0.tbg");
-    if (bg0_data == NULL) return false;
+    if (bg0_data == nullptr) return false;
     bg1_data = ngn->load->TiledBg("data/bg1.tbg");
-    if (bg1_data == NULL) return false;
+    if (bg1_data == nullptr) return false;
     bg2_data = ngn->load->TiledBg("data/bg2.tbg");
-    if (bg2_data == NULL) return false;
+    if (bg2_data == nullptr) return false;
 
     // Carga los sprites
     bird_data = ngn->load->Sprite("data/bird_small.spr");
-    if (bird_data == NULL) return false;
+    if (bird_data == nullptr) return false;
     aim_data = ngn->load->Sprite("data/aim.spr");
-    if (aim_data == NULL) return false;
+    if (aim_data == nullptr) return false;
 
     // Carga correcta
     return true;
@@ -225,7 +225,7 @@ void Demo::CreateStage() {
     // Parametros de la camara
     ngn->camera->Setup(bg2->width, bg2->height, aim);
 
-    // A�ade los fondos a la camara para su gestion
+    // Añade los fondos a la camara para su gestion
     ngn->camera->PushBackground(0, bg0);
     ngn->camera->PushBackground(1, bg1);
     ngn->camera->PushBackground(2, bg2);
@@ -235,7 +235,7 @@ void Demo::CreateStage() {
     CreateBirds(1, 15, 0.66f);
     CreateBirds(2, 10, 1.0f);
 
-    // A�ade el sprite de la mirilla a la camara para su gestion
+    // Añade el sprite de la mirilla a la camara para su gestion
     ngn->camera->PushSprite(2, aim);
 
 }
@@ -247,7 +247,7 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
 
     // Objeto temporal para crear pajaros
     bird_type b;
-    b.sprite = NULL;
+    b.sprite = nullptr;
 
     // Calculos de la posicion
     int32_t x, y;
@@ -288,7 +288,7 @@ void Demo::CreateBirds(uint32_t ly, uint32_t num, float scale) {
     }
 
     // Limpia el puntero temporal
-    b.sprite = NULL;
+    b.sprite = nullptr;
 
 }
 

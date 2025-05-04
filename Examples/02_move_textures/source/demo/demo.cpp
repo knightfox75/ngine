@@ -49,11 +49,11 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    ball_data = NULL;
+    bg_data = nullptr;
+    ball_data = nullptr;
 
     // Inicializa los punteros de objetos
-    bg = NULL;
+    bg = nullptr;
 
     // Inicializa los vectores
     ball.clear();
@@ -67,14 +67,14 @@ Demo::~Demo() {
 
     // Borra los objetos
     for (uint32_t i = 0; i < ball.capacity(); i ++) {
-        delete ball[i].gfx; ball[i].gfx = NULL;
+        delete ball[i].gfx; ball[i].gfx = nullptr;
     }
     ball.clear();
-    delete bg; bg = NULL;
+    delete bg; bg = nullptr;
 
     // Borra los datos
-    delete ball_data; ball_data = NULL;
-    delete bg_data; bg_data = NULL;
+    delete ball_data; ball_data = nullptr;
+    delete bg_data; bg_data = nullptr;
 
 }
 
@@ -132,7 +132,7 @@ bool Demo::Awake() {
 bool Demo::Start() {
 
     // Cambia la semilla del random
-    srand(time(NULL));
+    srand(time(nullptr));
 
     // Carga los archivos
     if (!Load()) return false;
@@ -188,11 +188,11 @@ bool Demo::Load() {
 
     // Carga la imagen para el fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Carga la imagen para los objetos
     ball_data = ngn->load->Texture("data/basketball.png");
-    if (ball_data == NULL) return false;
+    if (ball_data == nullptr) return false;
 
     // Carga correcta
     return true;
@@ -215,7 +215,7 @@ void Demo::CreateObjects() {
     for (uint32_t i = 0; i < ball.capacity(); i ++) {
         // Crea la textura
         ball[i].gfx = new NGN_Texture(ball_data);
-        // Tama�o aleatorio
+        // Tamaño aleatorio
         _size = ((rand() % 96) + 32);
         ball[i].gfx->Size(_size, _size);
         // Posicion aleatoria (esquina superior izquierda)

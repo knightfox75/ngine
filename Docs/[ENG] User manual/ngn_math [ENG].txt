@@ -134,3 +134,25 @@ Returns the Manhattan distance between 2 points (4 overloads). This distance is 
 float d = ngn->math->GetGetManhattan(100.0f, 100.0f, 200.0f, 300.0f);
 
 --------------------------------------------------------------------------------
+
+- Method(s)
+int32_t RandomInt(int32_t min_value, int32_t max_value);
+int32_t RandomInt();
+float RandomFloat(float min_value, float max_value);
+float RandomFloat();
+double RandomDouble(double min_value, double max_value);
+double RandomDouble();
+
+- Description
+Returns a random number based on the method type, within the specified range.
+If no range is provided, the number will be generated between 0 and the maximum value for the given type.
+
+- Example(s)
+int32_t a = ngn->math->RandomInt(-3, 120);
+int32_t b = ngn->math->RandomInt();
+float c = ngn->math->RandomFloat(100.0f, 999.9f);
+float d = ngn->math->RandomFloat();
+double e = ngn->math->RandomDouble(-99.99, 99.99);
+double f = ngn->math->RandomDouble();
+
+--------------------------------------------------------------------------------

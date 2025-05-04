@@ -95,9 +95,9 @@ class Demo {
         /*** Metodos y propiedades del ejemplo ***/
 
         // Parametros
-        const uint32_t tile_size = 64;          // Tama�o de la tile del fondo
-        const uint32_t frame_size = 128;        // Tama�o del marco de vista previa
-        const uint32_t shadow_size = 8;         // Tama�o de la sombra
+        const uint32_t tile_size = 64;          // Tamaño de la tile del fondo
+        const uint32_t frame_size = 128;        // Tamaño del marco de vista previa
+        const uint32_t shadow_size = 8;         // Tamaño de la sombra
 
         // Punteros a los canvas necesarios
         NGN_Canvas* bg;         // Fondo

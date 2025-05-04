@@ -201,6 +201,18 @@ player->PlayAnimation();
 
 --------------------------------------------------------------------------------
 
+- Método
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Descripción
+Establece un color de tinte que se aplicará al sprite. Un tinte blanco (255, 255, 255),
+mostrará el sprite con sus colores originales, sin alteraciones.
+
+- Ejemplo
+player->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------
@@ -325,5 +337,13 @@ bool flip_v
 
 - Descripción
 Volteado vertical y horizontal del Sprite.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool ignore_camera_tint
+
+- Descripción
+Indica si el sprite debe ignorar el color de tinte asignado a la capa de la cámara.
 
 --------------------------------------------------------------------------------

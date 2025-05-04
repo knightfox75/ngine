@@ -47,11 +47,11 @@
 Demo::Demo() {
 
     // Inicializa los punteros a los datos
-    bg_data = NULL;
+    bg_data = nullptr;
 
     // Inicializa los punteros a los objetos
-    bg = NULL;
-    bgm = NULL;
+    bg = nullptr;
+    bgm = nullptr;
 
 }
 
@@ -62,13 +62,13 @@ Demo::~Demo() {
 
     // Deten la musica si es necesario
     ngn->sound->CloseMusic(bgm);
-    bgm = NULL;
+    bgm = nullptr;
 
     // Borra los objetos
-    delete bg; bg = NULL;
+    delete bg; bg = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
+    delete bg_data; bg_data = nullptr;
 
 }
 
@@ -178,7 +178,7 @@ bool Demo::Load() {
 
     // Carga los graficos
     bg_data = ngn->load->Texture("data/music_loop.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Abre el stream de musica
     bgm = ngn->sound->OpenMusic("data/mirrorball_loop.ogg", 13721);

@@ -84,6 +84,18 @@ bg_front->SetCenter(-10.0f, 20.0f);
 
 --------------------------------------------------------------------------------
 
+- Method
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets a tint color that will be applied to the background. A white tint (255, 255, 255)
+will display the background with its original unaltered colors.
+
+- Example
+bg_front->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------
@@ -141,5 +153,13 @@ double rotation
 
 // Description
 Rotation angle of the background, in degrees.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool ignore_camera_tint
+
+- Description
+Indicates whether the background should ignore the tint color assigned to the camera layer.
 
 --------------------------------------------------------------------------------

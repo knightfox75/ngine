@@ -20,13 +20,13 @@ ngn->camera->CreateLayers(4);
 --------------------------------------------------------------------------------
 
 - Method
-void SizeOfLayer(uint32_t layer_number, uint32_t width, uint32_t height);
+void SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height);
 
 - Description
 Defines the size of the sprites layer (by default, all layers have the size of the background of that layer).
 
 - Example
-ngn->camera->SizeOfLayer(3, 4000.0f, 2000.0f);
+ngn->camera->SetSizeOfSpritesLayer(3, 4000.0f, 2000.0f);
 
 --------------------------------------------------------------------------------
 
@@ -252,6 +252,28 @@ Size2I32 renderer_area = ngn->camera->GetRendererSize();
 --------------------------------------------------------------------------------
 
 - Method
+Size2I32 GetLayerSize(uint32_t layer_number);
+
+- Description
+Returns a Size2I32 variable with the size of the specified layer.
+
+- Example
+Size2I32 layer_size = ngn->camera->GetLayerSize(2);
+
+--------------------------------------------------------------------------------
+
+- Method
+Vector2 GetLayerPosition(uint32_t layer_number);
+
+- Description
+Returns a Vector2 variable with the position of the center point of the specified layer.
+
+- Example
+Vector2 layer_pos = ngn->camera->GetLayerPosition(2);
+
+--------------------------------------------------------------------------------
+
+- Method
 void Shake(float intensity, float frequency, bool split = true);
 
 - Description
@@ -262,6 +284,18 @@ The "split" parameter determines whether the effect is applied separately to the
 
 - Example
 ngn->camera->Shake(3.0f, 0.2f, false);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b);
+
+- Description
+Applies a tint color to all elements (textures, tile backgrounds, and sprites) on the specified layer.
+If an element has the "ignore_camera_tint" flag set to "true", it will ignore this setting.
+
+- Example
+ngn->camera->SetLayerTintColor(4, 96, 255, 192);
 
 --------------------------------------------------------------------------------
 

@@ -69,12 +69,12 @@
 Demo::Demo() {
 
     // Inicia los punteros
-    bg_img = NULL;
-    bg = NULL;
-    aim_img = NULL;
-    aim = NULL;
-    colliders_img = NULL;
-    colliders = NULL;
+    bg_img = nullptr;
+    bg = nullptr;
+    aim_img = nullptr;
+    aim = nullptr;
+    colliders_img = nullptr;
+    colliders = nullptr;
 
 }
 
@@ -84,12 +84,12 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Elimina los datos
-    delete bg; bg = NULL;
-    delete bg_img; bg_img = NULL;
-    delete aim; aim = NULL;
-    delete colliders; colliders = NULL;
-    delete aim_img; aim_img = NULL;
-    delete colliders_img; colliders_img = NULL;
+    delete bg; bg = nullptr;
+    delete bg_img; bg_img = nullptr;
+    delete aim; aim = nullptr;
+    delete colliders; colliders = nullptr;
+    delete aim_img; aim_img = nullptr;
+    delete colliders_img; colliders_img = nullptr;
 
 }
 

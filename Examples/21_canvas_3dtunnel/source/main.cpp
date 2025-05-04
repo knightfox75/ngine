@@ -49,11 +49,11 @@ int main(int argc, char* args[]) {
     int r = 0x00;
 
     // Crea el objeto de la libreria
-    ngn = NULL;
+    ngn = nullptr;
     ngn = new NGN();
 
     // Crea el objecto de la demo
-    Demo* demo = NULL;
+    Demo* demo = nullptr;
     demo = new Demo();
 
     // Intenta iniciar N'gine para ejecutar el programa
@@ -77,10 +77,10 @@ int main(int argc, char* args[]) {
     }
 
     // Elimina el objecto demo
-    delete demo; demo = NULL;
+    delete demo; demo = nullptr;
 
     // Elimina el objeto de la libreria
-    delete ngn; ngn = NULL;
+    delete ngn; ngn = nullptr;
 
     // Devuelve el resultado de la ejecucion
     return r;

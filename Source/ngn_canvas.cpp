@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -86,7 +86,7 @@ NGN_Canvas::NGN_Canvas(
     surface_height = (uint32_t)height;
 
     // Crea la superficie en base al buffer de pixeles
-    surface = NULL;
+    surface = nullptr;
     surface = SDL_CreateRGBSurface(
         0,                      // Flag
         surface_width,          // Ancho
@@ -105,7 +105,7 @@ NGN_Canvas::NGN_Canvas(
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
         }
     #endif
-    backbuffer = NULL;
+    backbuffer = nullptr;
     backbuffer = SDL_CreateTexture(
         ngn->graphics->renderer,       // Renderer
         SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
@@ -130,6 +130,10 @@ NGN_Canvas::NGN_Canvas(
     scale.width = 1.0f;         // Escala
     scale.height = 1.0f;
 
+    // Color de tinta
+    tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+
     // Borra el contenido de la textura del canvas (basura RAM)
     BackbufferCleanUp();
 
@@ -145,11 +149,11 @@ NGN_Canvas::~NGN_Canvas() {
 
     // Destruye el backbuffer
     SDL_DestroyTexture(backbuffer);
-    backbuffer = NULL;
+    backbuffer = nullptr;
 
     // Destruye el surface
     SDL_FreeSurface(surface);
-    surface = NULL;
+    surface = nullptr;
 
 }
 
@@ -250,7 +254,7 @@ void NGN_Canvas::SetCenter(float x, float y) {
 /*** Borra el contenido del canvas ***/
 void NGN_Canvas::Cls(uint32_t color) {
 
-    SDL_FillRect(surface, NULL, color);
+    SDL_FillRect(surface, nullptr, color);
 
     // Marca el blit
     blit = true;
@@ -569,7 +573,7 @@ void NGN_Canvas::Blit() {
 
     // Convierte la superficie generada en textura
     SDL_DestroyTexture(backbuffer);
-    backbuffer = NULL;
+    backbuffer = nullptr;
     #if !defined (DISABLE_BACKBUFFER)
         if (filtering) {
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
@@ -582,6 +586,29 @@ void NGN_Canvas::Blit() {
 
     // Marca la conversion como realizada
     blit = false;
+
+}
+
+
+
+/*** Selecciona un color de tinte (sin parametros, resetea el color) ***/
+void NGN_Canvas::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
+
+    // Registra el color
+    tint_color.r = r;
+    tint_color.g = g;
+    tint_color.b = b;
+
+}
+
+
+
+/*** Devuelve si se ha cambiado el color de tinta en este frame ***/
+bool NGN_Canvas::NewTint() {
+
+    bool color_mod = ((tint_color.r != last_tint_color.r) || (tint_color.g != last_tint_color.g) || (tint_color.b != last_tint_color.b));
+    last_tint_color = tint_color;
+    return color_mod;
 
 }
 

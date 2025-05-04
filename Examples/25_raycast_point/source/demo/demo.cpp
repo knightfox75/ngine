@@ -47,12 +47,12 @@
 Demo::Demo() {
 
     // Elementos del fondo
-    bg_data = NULL;
-    bg = NULL;
+    bg_data = nullptr;
+    bg = nullptr;
 
     // Elementos del sprite
-    spr_data = NULL;
-    spr = NULL;
+    spr_data = nullptr;
+    spr = nullptr;
 
 }
 
@@ -62,12 +62,12 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Elementos del fondo
-    delete bg; bg = NULL;
-    delete bg_data; bg_data = NULL;
+    delete bg; bg = nullptr;
+    delete bg_data; bg_data = nullptr;
 
     // Elementos del sprite
-    delete spr; spr = NULL;
-    delete spr_data; spr_data = NULL;
+    delete spr; spr = nullptr;
+    delete spr_data; spr_data = nullptr;
 
 }
 

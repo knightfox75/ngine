@@ -47,8 +47,8 @@
 Demo::Demo() {
 
     // Inicializa los punteros
-    data = NULL;
-    texture = NULL;
+    data = nullptr;
+    texture = nullptr;
 
 }
 
@@ -58,8 +58,8 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete texture; texture = NULL;
-    delete data; data = NULL;
+    delete texture; texture = nullptr;
+    delete data; data = nullptr;
 
 }
 
@@ -118,7 +118,7 @@ bool Demo::Start() {
 
     // Carga el archivo de la texura
     data = ngn->load->Texture("data/nlogo.png");
-    if (data == NULL) return false;
+    if (data == nullptr) return false;
 
     // Crea la textura con los datos cargados
     texture = new NGN_Texture(data, 0, 0);

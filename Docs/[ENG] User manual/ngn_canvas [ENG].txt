@@ -95,6 +95,18 @@ canvas->SetCenter(-10, -5);
 
 --------------------------------------------------------------------------------
 
+- Method
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets a tint color that will be applied to the canvas. A white tint (255, 255, 255)
+will display the canvas with its original unaltered colors.
+
+- Example
+canvas->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------

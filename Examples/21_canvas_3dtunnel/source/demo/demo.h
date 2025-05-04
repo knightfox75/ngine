@@ -110,7 +110,7 @@ class Demo {
         const float deep_step = 1.2f;           // Incremento de los segmentos de profundidad
         const float tunnel_speed = 1.005f;      // Multiplicador de velocidad del tunel
         const float z_size = 100.0f;            // Valor de profundidad relativa
-        int32_t w, h;                           // Tama�o del fondo del tunel
+        int32_t w, h;                           // Tamaño del fondo del tunel
 
         std::vector<float> deep;                // Calculo de profundidad
 

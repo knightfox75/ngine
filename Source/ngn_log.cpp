@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Funciones de mensages de depuracion
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -49,8 +49,8 @@
 #include "ngn.h"
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Log* NGN_Log::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Log* NGN_Log::instance = nullptr;
 
 
 
@@ -74,7 +74,7 @@ void NGN_Log::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -191,7 +191,7 @@ std::string NGN_Log::GetTimeStamp() {
     // Acceso a la fecha actual del sistema
     time_t current_time;
     struct  tm* datetime;
-    current_time = time(NULL);
+    current_time = time(nullptr);
     datetime = localtime(&current_time);
 
     // Genera el texto

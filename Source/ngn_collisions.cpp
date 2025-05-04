@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -52,8 +52,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Collisions* NGN_Collisions::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Collisions* NGN_Collisions::instance = nullptr;
 
 
 
@@ -77,7 +77,7 @@ void NGN_Collisions::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -107,7 +107,7 @@ uint32_t NGN_Collisions::GetPixel(NGN_CollisionMapData* cmap, int32_t position_x
 
     // Proteccion de errores (pixel fuera del mapa)
     if (
-        (cmap == NULL)
+        (cmap == nullptr)
         ||
         (position_x < 0)
         ||
@@ -139,7 +139,7 @@ Size2 NGN_Collisions::GetMapSize(NGN_CollisionMapData* cmap) {
     temp.width = -1;
     temp.height = -1;
 
-    if (cmap != NULL) {
+    if (cmap != nullptr) {
         temp.width = cmap->header.width;
         temp.height = cmap->header.height;
     }
@@ -153,7 +153,7 @@ Size2 NGN_Collisions::GetMapSize(NGN_CollisionMapData* cmap) {
 bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
     // Proteccion de errores
-    if ((spr1 == NULL) || (spr2 == NULL)) return false;
+    if ((spr1 == nullptr) || (spr2 == nullptr)) return false;
 
     // Almacena el resultado
     bool r = false;
@@ -282,7 +282,7 @@ bool NGN_Collisions::CheckBoxColliders(float x1, float y1, float w1, float h1, f
 bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
     // Proteccion de errores
-    if ((spr1 == NULL) || (spr2 == NULL)) return false;
+    if ((spr1 == nullptr) || (spr2 == nullptr)) return false;
 
     // Verifica que ambos sprites sean visibles
     if (!spr1->visible || !spr2->visible) return false;
@@ -365,12 +365,12 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
     // Sprite 1
     x = ((int32_t)spr1->position.x - xa);
     y = ((int32_t)spr1->position.y - ya);
-    SDL_Surface* srf1 = NULL;
+    SDL_Surface* srf1 = nullptr;
     srf1 = RenderSpriteInSurface(spr1, x, y, area_w, area_h);
     // Sprite 2
     x = (spr2->position.x - xa);
     y = (spr2->position.y - ya);
-    SDL_Surface* srf2 = NULL;
+    SDL_Surface* srf2 = nullptr;
     srf2 = RenderSpriteInSurface(spr2, x, y, area_w, area_h);
 
     // Deteccion de la colision
@@ -387,9 +387,9 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 
     // Paso de limpieza
     SDL_FreeSurface(srf1);
-    srf1 = NULL;
+    srf1 = nullptr;
     SDL_FreeSurface(srf2);
-    srf2 = NULL;
+    srf2 = nullptr;
 
     // Resultado de la colision
     return collision;
@@ -402,7 +402,7 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, float position_x, float position_y) {
 
     // Sprite invalido
-    if (spr == NULL) return false;
+    if (spr == nullptr) return false;
     // Sprite invisible
     if (!spr->visible) return false;
 
@@ -425,7 +425,7 @@ bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, float position_x, float posit
     // Renderiza una textura de 1x1 para la comprobacion
     int32_t x = (int32_t)(spr->position.x - position_x);
     int32_t y = (int32_t)(spr->position.y - position_y);
-    SDL_Surface* srf = NULL;
+    SDL_Surface* srf = nullptr;
     srf = RenderSpriteInSurface(spr, x, y, 1, 1);
 
     // Analiza si hay datos en el pixel solicitado
@@ -435,7 +435,7 @@ bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, float position_x, float posit
 
     // Paso de limpieza
     SDL_FreeSurface(srf);
-    srf = NULL;
+    srf = nullptr;
 
     // Resultado final
     return collision;
@@ -455,7 +455,7 @@ bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, Vector2 position) {
 SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x, int32_t y, uint32_t w, uint32_t h) {
 
     // Crea una nueva textura como buffer del tamaño necesario
-    SDL_Texture* backbuffer = NULL;
+    SDL_Texture* backbuffer = nullptr;
     backbuffer = SDL_CreateTexture(
         ngn->graphics->renderer,        // Renderer
         SDL_PIXELFORMAT_BGRA8888,       // Formato del pixel
@@ -470,7 +470,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(backbuffer, 0xFF);
-    SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+    SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
 
     // Calculos
     int32_t _x, _y;
@@ -550,14 +550,14 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     SDL_RenderReadPixels(ngn->graphics->renderer, &area, SDL_PIXELFORMAT_BGRA8888, surface->pixels, surface->pitch);
 
     // Cambia el destino del renderer a la pantalla
-    SDL_SetRenderTarget(ngn->graphics->renderer, NULL);
+    SDL_SetRenderTarget(ngn->graphics->renderer, nullptr);
     // Restaura el color y alpha del renderer
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
 
     // Paso de limpieza
     delete _center;
     SDL_DestroyTexture(backbuffer);
-    backbuffer = NULL;
+    backbuffer = nullptr;
 
     // Devuelve la superficie creada
     return surface;

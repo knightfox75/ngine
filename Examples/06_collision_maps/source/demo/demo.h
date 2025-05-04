@@ -110,7 +110,7 @@ class Demo {
         // Crea la escena
         void CreateStage();
 
-        // A�ade cerezas
+        // Añade cerezas
         void AddCherries();
 
         // Update

@@ -47,14 +47,14 @@
 Demo::Demo() {
 
     // Punteros de datos
-    bg_data = NULL;
-    star_data = NULL;
-    cake_data = NULL;
+    bg_data = nullptr;
+    star_data = nullptr;
+    cake_data = nullptr;
 
     // Punteros de objetos
-    bg = NULL;
-    star = NULL;
-    cake = NULL;
+    bg = nullptr;
+    star = nullptr;
+    cake = nullptr;
 
     // Variables
     zoom.x = zoom.y = 1.0f;
@@ -67,14 +67,14 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg; bg = NULL;
-    delete star; star = NULL;
-    delete cake; cake = NULL;
+    delete bg; bg = nullptr;
+    delete star; star = nullptr;
+    delete cake; cake = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
-    delete star_data; star_data = NULL;
-    delete cake_data; cake_data = NULL;
+    delete bg_data; bg_data = nullptr;
+    delete star_data; star_data = nullptr;
+    delete cake_data; cake_data = nullptr;
 
 }
 
@@ -182,13 +182,13 @@ bool Demo::Load() {
 
     // Fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Sprites
     star_data = ngn->load->Sprite("data/red_star.spr");
-    if (star_data == NULL) return false;
+    if (star_data == nullptr) return false;
     cake_data = ngn->load->Sprite("data/cake.spr");
-    if (cake_data == NULL) return false;
+    if (cake_data == nullptr) return false;
 
     // Carga correcta
     return true;

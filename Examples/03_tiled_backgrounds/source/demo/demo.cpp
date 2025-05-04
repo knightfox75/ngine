@@ -47,14 +47,14 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_main_data = NULL;
-    bg_water_data = NULL;
-    bg_sky_data = NULL;
+    bg_main_data = nullptr;
+    bg_water_data = nullptr;
+    bg_sky_data = nullptr;
 
     // Inicializa los punteros de objetos
-    bg_main = NULL;
-    bg_water = NULL;
-    bg_sky = NULL;
+    bg_main = nullptr;
+    bg_water = nullptr;
+    bg_sky = nullptr;
 
 }
 
@@ -64,14 +64,14 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg_main; bg_main = NULL;
-    delete bg_water; bg_water = NULL;
-    delete bg_sky; bg_sky = NULL;
+    delete bg_main; bg_main = nullptr;
+    delete bg_water; bg_water = nullptr;
+    delete bg_sky; bg_sky = nullptr;
 
     // Borra los datos de los punteros
-    delete bg_main_data; bg_main_data = NULL;
-    delete bg_water_data; bg_water_data = NULL;
-    delete bg_sky_data; bg_sky_data = NULL;
+    delete bg_main_data; bg_main_data = nullptr;
+    delete bg_water_data; bg_water_data = nullptr;
+    delete bg_sky_data; bg_sky_data = nullptr;
 
 }
 
@@ -183,11 +183,11 @@ bool Demo::Load() {
 
     // Carga los datos de los fondos
     bg_main_data = ngn->load->TiledBg("data/bg_main.tbg");
-    if (bg_main_data == NULL) return false;
+    if (bg_main_data == nullptr) return false;
     bg_water_data = ngn->load->TiledBg("data/bg_water.tbg");
-    if (bg_water_data == NULL) return false;
+    if (bg_water_data == nullptr) return false;
     bg_sky_data = ngn->load->TiledBg("data/bg_sky.tbg");
-    if (bg_sky_data == NULL) return false;
+    if (bg_sky_data == nullptr) return false;
 
     // Carga correcta
     return true;

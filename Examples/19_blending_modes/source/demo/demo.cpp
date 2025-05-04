@@ -48,34 +48,34 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    sprite_data = NULL;
+    bg_data = nullptr;
+    sprite_data = nullptr;
 
     // Inicializa las listas de sprites
     sprite.clear();
     sprite.resize(8);   // <--- Numero de frames de la animacion, para mostrarlos todos
-    for (uint32_t i = 0; i < sprite.capacity(); i ++) sprite[i] = NULL;
+    for (uint32_t i = 0; i < sprite.capacity(); i ++) sprite[i] = nullptr;
 
     bird.clear();
     bird.resize(NUMBER_OF_SPRITES);
-    for (uint32_t i = 0; i < bird.capacity(); i ++) bird[i].sprite = NULL;
+    for (uint32_t i = 0; i < bird.capacity(); i ++) bird[i].sprite = nullptr;
 
     // Inicializa los punteros de objetos
-    bg = NULL;
+    bg = nullptr;
 
     // Mascaras
     for (uint32_t i = 0; i < 4; i ++) {
-        mask_data[i] = NULL;
-        mask[i] = NULL;
+        mask_data[i] = nullptr;
+        mask[i] = nullptr;
     }
 
     // Tipografia
-    font = NULL;
+    font = nullptr;
     // Capa de texto
-    text = NULL;
+    text = nullptr;
 
     // Valores iniciales
-    current_mask = NULL;
+    current_mask = nullptr;
     mask_num = 0;
     mask_alpha = 0xFF;
     mask_mode = 1;
@@ -90,30 +90,30 @@ Demo::~Demo() {
     // Borra los sprites
     for (uint32_t i = 0; i < sprite.capacity(); i ++) {
         delete sprite[i];
-        sprite[i] = NULL;
+        sprite[i] = nullptr;
     }
     for (uint32_t i = 0; i < bird.capacity(); i ++) {
         delete bird[i].sprite;
-        bird[i].sprite = NULL;
+        bird[i].sprite = nullptr;
     }
     bird.clear();
 
     // Borra las mascaras
     for (uint32_t i = 0; i < 4; i ++) {
-        delete mask[i]; mask[i] = NULL;
-        delete mask_data[i]; mask_data[i] = NULL;
+        delete mask[i]; mask[i] = nullptr;
+        delete mask_data[i]; mask_data[i] = nullptr;
     }
 
     // Capa de texto
-    delete text; text = NULL;
+    delete text; text = nullptr;
     // Tipografia
-    delete font; font = NULL;
+    delete font; font = nullptr;
 
     // Borra los objetos
-    delete bg; bg = NULL;
+    delete bg; bg = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
+    delete bg_data; bg_data = nullptr;
 
 }
 
@@ -171,7 +171,7 @@ bool Demo::Awake() {
 bool Demo::Start() {
 
     // Cambia la semilla del random
-    srand(time(NULL));
+    srand(time(nullptr));
 
     // Carga los archivos
     if (!Load()) return false;
@@ -227,11 +227,11 @@ bool Demo::Load() {
 
     // Carga la imagen para el fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Carga el grafico del sprite
     sprite_data = ngn->load->Sprite("data/blue_bird.spr");
-    if (sprite_data == NULL) return false;
+    if (sprite_data == nullptr) return false;
 
     // Carga las mascaras
     mask_data[0] = ngn->load->Texture("data/black_lines.png");
@@ -261,7 +261,7 @@ void Demo::CreateStage() {
     current_mask = mask[0];
 
     // Crea la capa de texto
-    text = new NGN_TextLayer(font, NULL, 16, 16, 512, 96);
+    text = new NGN_TextLayer(font, nullptr, 16, 16, 512, 96);
     text->Cls();
 
 
@@ -395,7 +395,7 @@ void Demo::MaskUpdate() {
 
     // Datos en pantalla
     std::string txt = "";
-    txt += "MASK N�" + ngn->toolbox->Int2String((mask_num + 1), 1, "0") + "\n";
+    txt += "MASK Nº" + ngn->toolbox->Int2String((mask_num + 1), 1, "0") + "\n";
     txt += "ALPHA LV: " + ngn->toolbox->Int2String((mask_alpha), 3, "0") + "\n";
     txt += "BLEND MODE: ";
 

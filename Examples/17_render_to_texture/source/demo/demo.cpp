@@ -46,13 +46,13 @@
 /*** Constructor de la clase ***/
 Demo::Demo() {
 
-    // Punteros a NULL
-    man_gfx = NULL;
-    man[0].sprite = NULL;
-    man[1].sprite = NULL;
-    bg_gfx = NULL;
-    bg = NULL;
-    render_texture = NULL;
+    // Punteros a nullptr
+    man_gfx = nullptr;
+    man[0].sprite = nullptr;
+    man[1].sprite = nullptr;
+    bg_gfx = nullptr;
+    bg = nullptr;
+    render_texture = nullptr;
 
 }
 
@@ -62,16 +62,16 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Destruye los sprites
-    delete man[0].sprite; man[0].sprite = NULL;
-    delete man[1].sprite; man[1].sprite = NULL;
-    delete man_gfx; man_gfx = NULL;
+    delete man[0].sprite; man[0].sprite = nullptr;
+    delete man[1].sprite; man[1].sprite = nullptr;
+    delete man_gfx; man_gfx = nullptr;
 
     // Destruye el fondo
-    delete bg; bg = NULL;
-    delete bg_gfx; bg_gfx = NULL;
+    delete bg; bg = nullptr;
+    delete bg_gfx; bg_gfx = nullptr;
 
     // Destruye el render
-    delete render_texture; render_texture = NULL;
+    delete render_texture; render_texture = nullptr;
 
 }
 

@@ -134,3 +134,25 @@ Devuelve la distancia Manhattan entre 2 puntos (4 sobrecargas). Esta distancia e
 float d = ngn->math->GetGetManhattan(100.0f, 100.0f, 200.0f, 300.0f);
 
 --------------------------------------------------------------------------------
+
+- Método(s)
+int32_t RandomInt(int32_t min_value, int32_t max_value);
+int32_t RandomInt();
+float RandomFloat(float min_value, float max_value);
+float RandomFloat();
+double RandomDouble(double min_value, double max_value);
+double RandomDouble();
+
+- Descripción
+Devuelve un número aleatorio según el tipo del método, comprendido entre el rango especificado.
+Si no se especifica un rango, el número se generará entre 0 y el valor máximo del tipo correspondiente.
+
+- Ejemplo(s)
+int32_t a = ngn->math->RandomInt(-3, 120);
+int32_t b = ngn->math->RandomInt();
+float c = ngn->math->RandomFloat(100.0f, 999.9f);
+float d = ngn->math->RandomFloat();
+double e = ngn->math->RandomDouble(-99.99, 99.99);
+double f = ngn->math->RandomDouble();
+
+--------------------------------------------------------------------------------

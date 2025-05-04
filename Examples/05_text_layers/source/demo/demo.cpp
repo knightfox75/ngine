@@ -47,18 +47,18 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    textbox_data = NULL;
-    fnt_banner = NULL;
-    fnt_box_aa = NULL;
-    fnt_box_px = NULL;
-    fnt_cursor = NULL;
+    bg_data = nullptr;
+    textbox_data = nullptr;
+    fnt_banner = nullptr;
+    fnt_box_aa = nullptr;
+    fnt_box_px = nullptr;
+    fnt_cursor = nullptr;
 
     // Inicializa los punteros de objetos
-    bg = NULL;
-    textbox = NULL;
-    banner = NULL;
-    cursor = NULL;
+    bg = nullptr;
+    textbox = nullptr;
+    banner = nullptr;
+    cursor = nullptr;
 
 }
 
@@ -68,18 +68,18 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg; bg = NULL;
-    delete textbox; textbox = NULL;
-    delete banner; banner = NULL;
-    delete cursor; cursor = NULL;
+    delete bg; bg = nullptr;
+    delete textbox; textbox = nullptr;
+    delete banner; banner = nullptr;
+    delete cursor; cursor = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
-    delete textbox_data; textbox_data = NULL;
-    delete fnt_banner; fnt_banner = NULL;
-    delete fnt_box_aa; fnt_box_aa = NULL;
-    delete fnt_box_px; fnt_box_px = NULL;
-    delete fnt_cursor; fnt_cursor = NULL;
+    delete bg_data; bg_data = nullptr;
+    delete textbox_data; textbox_data = nullptr;
+    delete fnt_banner; fnt_banner = nullptr;
+    delete fnt_box_aa; fnt_box_aa = nullptr;
+    delete fnt_box_px; fnt_box_px = nullptr;
+    delete fnt_cursor; fnt_cursor = nullptr;
 
 }
 
@@ -187,21 +187,21 @@ bool Demo::Load() {
 
     // Imagen de fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Imagen para la caja de texto
     textbox_data = ngn->load->Texture("data/text_box.png");
-    if (textbox_data == NULL) return false;
+    if (textbox_data == nullptr) return false;
 
     // Tipografias
     fnt_banner = ngn->load->TrueTypeFont("data/quadrangle.ttf", 48, true, 0xFFFFFF, 3, 0x808080);
-    if (fnt_banner == NULL) return false;
+    if (fnt_banner == nullptr) return false;
     fnt_box_aa = ngn->load->TrueTypeFont("data/nk57.ttf", 24, true);
-    if (fnt_box_aa == NULL) return false;
+    if (fnt_box_aa == nullptr) return false;
     fnt_box_px = ngn->load->TrueTypeFont("data/nk57.ttf", 24, false);
-    if (fnt_box_px == NULL) return false;
+    if (fnt_box_px == nullptr) return false;
     fnt_cursor = ngn->load->TrueTypeFont("data/nk57.ttf", 16, true, 0xFFFFFF, 2, 0x000000);
-    if (fnt_cursor == NULL) return false;
+    if (fnt_cursor == nullptr) return false;
 
     // Carga correcta
     return true;
@@ -232,7 +232,7 @@ void Demo::CreateStage() {
 /*** Crea la caja de texto ***/
 void Demo::CreateTextBox() {
 
-    // Crea la caja con el tama�o de la textura de fondo
+    // Crea la caja con el tamaño de la textura de fondo
     textbox = new NGN_TextLayer(fnt_box_aa, textbox_data);
 
     // Posicionala en el centro
@@ -269,7 +269,7 @@ void Demo::CreateTextBox() {
 void Demo::CreateBanner() {
 
     // Crea una capa para el banner superior de texto
-    banner = new NGN_TextLayer(fnt_banner, NULL, 16, 16, (ngn->graphics->native_w - 32), 64);
+    banner = new NGN_TextLayer(fnt_banner, nullptr, 16, 16, (ngn->graphics->native_w - 32), 64);
 
     // Selecciona los colores y borra la capa de texto
     banner->InkColor(0xFFFF00);
@@ -284,7 +284,7 @@ void Demo::CreateBanner() {
 void Demo::CreateCursor() {
 
     // Crea la capa de texto
-    cursor = new NGN_TextLayer(fnt_cursor, NULL, 0.0f, 0.0f, 120, 32);
+    cursor = new NGN_TextLayer(fnt_cursor, nullptr, 0.0f, 0.0f, 120, 32);
 
     // Parametros de la capa
     cursor->Padding(4);

@@ -110,6 +110,18 @@ Size2I32 s = textbox->GetSize();
 
 --------------------------------------------------------------------------------
 
+- Method
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets a tint color that will be applied to the text layer. A white tint (255, 255, 255)
+will display the text layer with its original unaltered colors.
+
+- Example
+textbox->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------

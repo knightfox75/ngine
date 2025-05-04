@@ -107,7 +107,7 @@ class Demo {
 
         // Mascara a mostrar
         NGN_Texture* current_mask;      // Guarda la textura que se renderizara
-        int32_t mask_num;               // n� de mascara a mostrar
+        int32_t mask_num;               // nº de mascara a mostrar
         int32_t mask_alpha;             // nivel de alpha
         int32_t mask_mode;              // modo de mezcla de color
 

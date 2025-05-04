@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -69,7 +69,7 @@ class NGN_TextLayer {
         // Constructor de la clase (1ra sobrecarga)
         NGN_TextLayer(
             NGN_TextFont* default_font,                         // Fuente por defecto
-            NGN_TextureData* bg = NULL,                         // Textura de fondo
+            NGN_TextureData* bg = nullptr,                         // Textura de fondo
             int32_t position_x = 0,                             // Posicion X (0 por defecto)
             int32_t position_y = 0,                             // Posicion Y (0 por defecto)
             uint32_t _width = (uint32_t)NGN_DEFAULT_VALUE,      // Ancho de la capa (Toda la pantalla por defecto)
@@ -189,6 +189,13 @@ class NGN_TextLayer {
         } text_boundaries;
 
 
+        // Tinte de la capa de texto
+        Rgba tint_color;        // Color a aplicar
+        // Selecciona un color de tinte (sin parametros, resetea el color)
+        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+        bool NewTint();
+
+
 
     // Segmento privado
     private:
@@ -214,6 +221,9 @@ class NGN_TextLayer {
             uint32_t _height,               // Alto de la capa (Toda la pantalla por defecto)
             bool _filtering                 // Filtrado del contenido?
         );
+
+        // Ultimo color de tinta usado
+        Rgba last_tint_color;
 
 };
 

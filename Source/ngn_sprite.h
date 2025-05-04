@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -200,7 +200,14 @@ class NGN_Sprite {
 
         // Si se da el caso, capa en la camara virtual 2D donde esta ubicado.
         int32_t camera_layer;
-        uint32_t runtime_frame;         // ID del frame en tiempo de ejecuci�n
+        uint32_t runtime_frame;         // ID del frame en tiempo de ejecucion
+
+        // Tinte del sprite
+        Rgba tint_color;        // Color a aplicar
+        // Selecciona un color de tinte (sin parametros, resetea el color)
+        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+        bool NewTint();
+        bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
 
 
 
@@ -223,6 +230,11 @@ class NGN_Sprite {
             int32_t box_offset_x,       // Offset horizontal de la caja de colisiones
             int32_t box_offset_y        // Offset vertical de la de colisiones
         );
+
+        // Ultimo color de tinta usado
+        Rgba last_tint_color;
+        int32_t last_frame;
+
 
 };
 

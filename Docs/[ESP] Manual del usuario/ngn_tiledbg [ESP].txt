@@ -84,6 +84,18 @@ bg_front->SetCenter(-10.0f, 20.0f);
 
 --------------------------------------------------------------------------------
 
+- Método
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Descripción
+Establece un color de tinte que se aplicará al fondo. Un tinte blanco (255, 255, 255),
+mostrará fondo con sus colores originales, sin alteraciones.
+
+- Ejemplo
+bg_front->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------
@@ -141,5 +153,13 @@ double rotation
 
 - Descripción
 Angulo de rotación del fondo, en grados.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool ignore_camera_tint
+
+- Descripción
+Indica si el fondo debe ignorar el color de tinte asignado a la capa de la cámara.
 
 --------------------------------------------------------------------------------

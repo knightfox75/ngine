@@ -48,13 +48,13 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    cursor_data = NULL;
+    bg_data = nullptr;
+    cursor_data = nullptr;
 
     // Inicializa los punteros de objetos
-    bg = NULL;
-    canvas = NULL;
-    cursor = NULL;
+    bg = nullptr;
+    canvas = nullptr;
+    cursor = nullptr;
 
 }
 
@@ -64,13 +64,13 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg; bg = NULL;
-    delete canvas; canvas = NULL;
-    delete cursor; cursor = NULL;
+    delete bg; bg = nullptr;
+    delete canvas; canvas = nullptr;
+    delete cursor; cursor = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
-    delete cursor_data; cursor_data = NULL;
+    delete bg_data; bg_data = nullptr;
+    delete cursor_data; cursor_data = nullptr;
 
 }
 
@@ -178,11 +178,11 @@ bool Demo::Load() {
 
     // Carga la imagen para el fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Carga el cursor
     cursor_data = ngn->load->Sprite("data/mouse_pointer.spr");
-    if (cursor_data == NULL) return false;
+    if (cursor_data == nullptr) return false;
 
     // Carga correcta
     return true;

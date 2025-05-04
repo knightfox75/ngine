@@ -124,6 +124,18 @@ clouds->ClearContent();
 
 --------------------------------------------------------------------------------
 
+- Método
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Descripción
+Establece un color de tinte que se aplicará a la textura. Un tinte blanco (255, 255, 255),
+mostrará la textura con sus colores originales, sin alteraciones.
+
+- Ejemplo
+clouds->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------
@@ -190,5 +202,13 @@ bool flip_v
 
 - Descripción
 Volteado vertical y horizontal de la textura.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool ignore_camera_tint
+
+- Descripción
+Indica si la textura debe ignorar el color de tinte asignado a la capa de la cámara.
 
 --------------------------------------------------------------------------------

@@ -47,14 +47,14 @@
 Demo::Demo() {
 
     // Punteros a objetos
-    background.texture = NULL;
-    island.texture = NULL;
-    clouds.tilemap = NULL;
-    boat.sprite = NULL;
-    for (uint8_t k = 0; k < BIRDS; k ++) bird.sprite[k] = NULL;
-    textbox.layer = NULL;
-    sound.seaside = NULL;
-    sound.horn = NULL;
+    background.texture = nullptr;
+    island.texture = nullptr;
+    clouds.tilemap = nullptr;
+    boat.sprite = nullptr;
+    for (uint8_t k = 0; k < BIRDS; k ++) bird.sprite[k] = nullptr;
+    textbox.layer = nullptr;
+    sound.seaside = nullptr;
+    sound.horn = nullptr;
 
     // Datos iniciales
     textbox.textlines.clear();
@@ -69,24 +69,24 @@ Demo::~Demo() {
 
     // Deten el sonido
     ngn->sound->CloseMusic(sound.seaside);
-    sound.seaside = NULL;
+    sound.seaside = nullptr;
 
     // Anula las referencias
-    sound.horn = NULL;
+    sound.horn = nullptr;
 
     // Elimina los datos adicionales
     textbox.textlines.clear();
 
     // Elimina los objetos creados
-    delete background.texture; background.texture = NULL;
-    delete island.texture; island.texture = NULL;
-    delete clouds.tilemap; clouds.tilemap = NULL;
-    delete boat.sprite; boat.sprite = NULL;
+    delete background.texture; background.texture = nullptr;
+    delete island.texture; island.texture = nullptr;
+    delete clouds.tilemap; clouds.tilemap = nullptr;
+    delete boat.sprite; boat.sprite = nullptr;
     for (uint8_t k = 0; k < BIRDS; k ++) {
         delete bird.sprite[k];
-        bird.sprite[k] = NULL;
+        bird.sprite[k] = nullptr;
     }
-    delete textbox.layer; textbox.layer = NULL;
+    delete textbox.layer; textbox.layer = nullptr;
 
     // Elimina el repositorio y los datos que contiene
     ngn->resources->RemoveRepository("demo");
@@ -245,7 +245,7 @@ void Demo::Create() {
         bird.sprite[k]->SetAnimation("fly");
         bird.sprite[k]->frame = (std::rand() % 8);
     }
-    bird_data = NULL;
+    bird_data = nullptr;
 
     // Crea la caja de texto
     textbox.layer = new NGN_TextLayer("demo", "chary_64", "textbg", textbox.position.x, textbox.position.y);

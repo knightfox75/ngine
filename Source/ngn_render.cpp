@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -52,8 +52,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Render* NGN_Render::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Render* NGN_Render::instance = nullptr;
 
 
 
@@ -77,7 +77,7 @@ void NGN_Render::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -89,7 +89,7 @@ NGN_Render::NGN_Render() {
 
     // Parametros iniciales
     render2texture = false;
-    rend2text = NULL;
+    rend2text = nullptr;
     _center = new SDL_Point();
     _x = _y = 0;
     _width = _height = 0;
@@ -106,7 +106,7 @@ NGN_Render::NGN_Render() {
 /*** Destructor ***/
 NGN_Render::~NGN_Render() {
 
-    rend2text = NULL;
+    rend2text = nullptr;
     delete _center;
 
 }
@@ -168,6 +168,9 @@ void NGN_Render::Texture(NGN_Texture* texture, float position_x, float position_
         SDL_SetTextureBlendMode(texture->data->gfx, texture->blend_mode);
         SDL_SetTextureAlphaMod(texture->data->gfx, (uint8_t)_alpha);
     }
+
+    // Color mod
+    if (texture->NewTint()) SDL_SetTextureColorMod(texture->data->gfx, texture->tint_color.r, texture->tint_color.g, texture->tint_color.b);
 
 
     /* Dibujado de la textura */
@@ -251,6 +254,8 @@ void NGN_Render::Sprite(NGN_Sprite* sprite, float position_x, float position_y) 
         SDL_SetTextureAlphaMod(sprite->data->gfx[sprite->frame], (uint8_t)_alpha);
     }
 
+    // Color mod
+    if (sprite->NewTint()) SDL_SetTextureColorMod(sprite->data->gfx[sprite->frame], sprite->tint_color.r, sprite->tint_color.g, sprite->tint_color.b);
 
     /* Dibujado del sprite */
 
@@ -347,6 +352,9 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
         SDL_SetTextureAlphaMod(layer->backbuffer, (uint8_t)_alpha);
     }
 
+    // Color mod
+    if (layer->NewTint()) SDL_SetTextureColorMod(layer->backbuffer, layer->tint_color.r, layer->tint_color.g, layer->tint_color.b);
+
 
     /* Dibujado de la textura */
 
@@ -428,6 +436,9 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
         SDL_SetTextureBlendMode(canvas->backbuffer, canvas->blend_mode);
         SDL_SetTextureAlphaMod(canvas->backbuffer, (uint8_t)_alpha);
     }
+
+    // Color mod
+    if (canvas->NewTint()) SDL_SetTextureColorMod(canvas->backbuffer, canvas->tint_color.r, canvas->tint_color.g, canvas->tint_color.b);
 
 
     /* Dibujado de la textura */
@@ -599,7 +610,7 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
         SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
         SDL_SetTextureBlendMode(bg->backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(bg->backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
 
         // Tamaño del area de dibujado
         int32_t tile_last_x = (std::floor(render_area.width / bg->tile_size) + 2);      // +2 soluciona el encage en resoluciones anamorficas
@@ -651,7 +662,7 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
                         _rotation = 0.0f;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 8:     // 180�         (BIT 3) [1 << 3]
+                    case 8:     // 180º         (BIT 3) [1 << 3]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 180.0f;
                         // Compensa el desplazamiento
@@ -659,14 +670,14 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 16:     // 90� CW      (BIT 4) [1 << 4]
+                    case 16:     // 90º CW      (BIT 4) [1 << 4]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 270.0f;
                         // Compensa el desplazamiento
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 32:     // 90� ACW     (BIT 5) [1 << 5]
+                    case 32:     // 90º ACW     (BIT 5) [1 << 5]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 90.0f;
                         // Compensa el desplazamiento
@@ -691,6 +702,9 @@ void NGN_Render::TiledBgTiles(NGN_TiledBg* bg) {
     }
     SDL_SetTextureBlendMode(bg->backbuffer, bg->blend_mode);
     SDL_SetTextureAlphaMod(bg->backbuffer, (uint8_t)_alpha);
+
+    // Color mod
+    if (bg->NewTint()) SDL_SetTextureColorMod(bg->backbuffer, bg->tint_color.r, bg->tint_color.g, bg->tint_color.b);
 
     // Define los puntos de entrada y salida de la textura
     _source.x = 0; _source.y = 0; _source.w = render_area.width; _source.h = render_area.height;
@@ -762,7 +776,7 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
         SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
         SDL_SetTextureBlendMode(bg->backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(bg->backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
 
         // Tamaño del area de dibujado
         int32_t tile_last_x = (std::floor(render_area.width / bg->tile_size) + 2);      // +2 soluciona el encage en resoluciones anamorficas
@@ -818,7 +832,7 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
                         _rotation = 0.0f;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 8:     // 180�         (BIT 3) [1 << 3]
+                    case 8:     // 180º         (BIT 3) [1 << 3]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 180.0f;
                         // Compensa el desplazamiento
@@ -826,14 +840,14 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 16:     // 90� CW      (BIT 4) [1 << 4]
+                    case 16:     // 90º CW      (BIT 4) [1 << 4]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 270.0f;
                         // Compensa el desplazamiento
                         _destination.y --;
                         SDL_RenderCopyEx(ngn->graphics->renderer, bg->bgdata->tiles[tile], &_source, &_destination, _rotation, _center, _flip);
                         break;
-                    case 32:     // 90� ACW     (BIT 5) [1 << 5]
+                    case 32:     // 90º ACW     (BIT 5) [1 << 5]
                         _flip = SDL_FLIP_NONE;
                         _rotation = 90.0f;
                         // Compensa el desplazamiento
@@ -858,6 +872,9 @@ void NGN_Render::TiledBgTransform(NGN_TiledBg* bg) {
     }
     SDL_SetTextureBlendMode(bg->backbuffer, bg->blend_mode);
     SDL_SetTextureAlphaMod(bg->backbuffer, (uint8_t)_alpha);
+
+    // Color mod
+    if (bg->NewTint()) SDL_SetTextureColorMod(bg->backbuffer, bg->tint_color.r, bg->tint_color.g, bg->tint_color.b);
 
     // Define los puntos de entrada y salida de la textura
     _source.x = 0; _source.y = 0; _source.w = render_area.width; _source.h = render_area.height;

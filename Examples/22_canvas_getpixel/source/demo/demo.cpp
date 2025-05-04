@@ -49,15 +49,15 @@
 Demo::Demo() {
 
     // Canvas
-    bg = NULL;
-    frame = NULL;
+    bg = nullptr;
+    frame = nullptr;
 
     // Texto
-    mono = NULL;
-    text = NULL;
+    mono = nullptr;
+    text = nullptr;
 
     // Semilla del random
-    srand(time(NULL));
+    srand(time(nullptr));
 
 }
 
@@ -67,12 +67,12 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Canvas
-    delete bg; bg = NULL;
-    delete frame; frame = NULL;
+    delete bg; bg = nullptr;
+    delete frame; frame = nullptr;
 
     // Texto
-    delete text; text = NULL;
-    delete mono; mono = NULL;
+    delete text; text = nullptr;
+    delete mono; mono = nullptr;
 
 }
 
@@ -220,7 +220,7 @@ void Demo::Create() {
     }
 
     // Crea la capa de texto
-    text = new NGN_TextLayer(mono, NULL, 672, 32, 512, 64);
+    text = new NGN_TextLayer(mono, nullptr, 672, 32, 512, 64);
     text->CanvasColor(0x202020B0);
     text->InkColor(0xFFFFFFFF);
     text->Cls();

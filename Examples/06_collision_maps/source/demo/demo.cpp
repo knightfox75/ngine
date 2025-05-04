@@ -48,16 +48,16 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    lightmap_data = NULL;
-    cmap_data = NULL;
-    player_data = NULL;
-    cherry_data = NULL;
+    bg_data = nullptr;
+    lightmap_data = nullptr;
+    cmap_data = nullptr;
+    player_data = nullptr;
+    cherry_data = nullptr;
 
     // Inicializa los punteros a objetos
-    bg = NULL;
-    lightmap = NULL;
-    player = NULL;
+    bg = nullptr;
+    lightmap = nullptr;
+    player = nullptr;
     cherry.clear();
 
 }
@@ -68,20 +68,20 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Borra los objetos
-    delete bg; bg = NULL;
-    delete lightmap; lightmap = NULL;
-    delete player; player = NULL;
+    delete bg; bg = nullptr;
+    delete lightmap; lightmap = nullptr;
+    delete player; player = nullptr;
     for (uint32_t i = 0; i < cherry.size(); i ++) {
-        delete cherry[i]; cherry[i] = NULL;
+        delete cherry[i]; cherry[i] = nullptr;
     }
     cherry.clear();
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
-    delete lightmap_data; lightmap_data = NULL;
-    delete cmap_data; cmap_data = NULL;
-    delete player_data; player_data = NULL;
-    delete cherry_data; cherry_data = NULL;
+    delete bg_data; bg_data = nullptr;
+    delete lightmap_data; lightmap_data = nullptr;
+    delete cmap_data; cmap_data = nullptr;
+    delete player_data; player_data = nullptr;
+    delete cherry_data; cherry_data = nullptr;
 
 }
 
@@ -192,19 +192,19 @@ bool Demo::Load() {
 
     // Datos de los fondos
     bg_data = ngn->load->TiledBg("data/maze.tbg");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
     lightmap_data = ngn->load->TiledBg("data/maze_shadows.tbg");
-    if (lightmap_data == NULL) return false;
+    if (lightmap_data == nullptr) return false;
 
     // Mapa de collisiones
     cmap_data = ngn->load->CollisionMap("data/maze.map");
-    if (cmap_data == NULL) return false;
+    if (cmap_data == nullptr) return false;
 
     // Sprites
     player_data = ngn->load->Sprite("data/block.spr");
-    if (player_data == NULL) return false;
+    if (player_data == nullptr) return false;
     cherry_data = ngn->load->Sprite("data/cherry.spr");
-    if (cherry_data == NULL) return false;
+    if (cherry_data == nullptr) return false;
 
     // Carga correcto
     return true;
@@ -220,7 +220,7 @@ void Demo::CreateStage() {
     bg = new NGN_TiledBg(bg_data);
     // Crea el mapa de iluminacion
     lightmap = new NGN_TiledBg(lightmap_data);
-    // A�ade las cerezas
+    // Añade las cerezas
     AddCherries();
 
 }
@@ -231,9 +231,9 @@ void Demo::CreateStage() {
 void Demo::AddCherries() {
 
     Vector2I32 pos;     // Calculo de las posiciones
-    Size2 map_size = ngn->collisions->GetMapSize(cmap_data);     // Obten el tama�o del mapa de colisiones
+    Size2 map_size = ngn->collisions->GetMapSize(cmap_data);     // Obten el tamaño del mapa de colisiones
 
-    for (int32_t y = 0; y < map_size.height; y += cmap_data->header.tile_size) {      // Steps del tama�o del tile del mapa de colisiones
+    for (int32_t y = 0; y < map_size.height; y += cmap_data->header.tile_size) {      // Steps del tamaño del tile del mapa de colisiones
         pos.y = y + (cmap_data->header.tile_size / 2);
         for (int32_t x = 0; x < map_size.width; x += cmap_data->header.tile_size) {
             // Punto para colocar el objeto
@@ -471,7 +471,7 @@ bool Demo::EatCherry() {
             for (uint32_t i = 0; i < cherry.size(); i ++) {
                 if (ngn->collisions->HitBox(player, cherry[i])) {
                     // Si hay colision, borra el elemento de la lista
-                    delete cherry[i]; cherry[i] = NULL;
+                    delete cherry[i]; cherry[i] = nullptr;
                     cherry.erase(cherry.begin() + i);
                     r = true;
                     c = true;

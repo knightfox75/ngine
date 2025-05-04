@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -154,6 +154,12 @@ class NGN_Canvas {
         // Convierte el buffer a textura
         void Blit();
 
+        // Tinte del canvas
+        Rgba tint_color;        // Color a aplicar
+        // Selecciona un color de tinte (sin parametros, resetea el color)
+        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+        bool NewTint();
+
 
 
     // Segmento privado
@@ -175,6 +181,9 @@ class NGN_Canvas {
 
         // Flag de conversion a textura
         bool blit;
+
+        // Ultimo color de tinta usado
+        Rgba last_tint_color;
 
 };
 

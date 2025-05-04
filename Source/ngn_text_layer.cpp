@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -97,7 +97,7 @@ NGN_TextLayer::NGN_TextLayer(
 ) {
 
     // Decide si hay que aplicar o no una textura de fondo
-    NGN_TextureData* bg = NULL;
+    NGN_TextureData* bg = nullptr;
     if (bg_name.size() > 0) bg = ngn->resources->GetTexture(repo_name, bg_name);
 
     // Crea la capa de texto
@@ -120,13 +120,13 @@ NGN_TextLayer::~NGN_TextLayer() {
 
     // Destruye el backbuffer
     SDL_DestroyTexture(backbuffer);
-    backbuffer = NULL;
+    backbuffer = nullptr;
 
     // Desvincula la fuente
-    font = NULL;
+    font = nullptr;
 
     // Desvincula la textura del fondo
-    background = NULL;
+    background = nullptr;
 
 }
 
@@ -145,17 +145,17 @@ void NGN_TextLayer::Cls() {
     SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
 
     // Segun si hay o no fondo...
-    if (background != NULL) {
+    if (background != nullptr) {
         // Bugfix SDL2 en linux (previene el fallo de transparencia)
         SDL_SetRenderDrawColor(ngn->graphics->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
         // Borra el contenido de la textura actual
         SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
         // Define el origen
         source.w = background->width;
         source.h = background->height;
@@ -172,11 +172,11 @@ void NGN_TextLayer::Cls() {
         SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
         SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
         // Rellenalo del color de fondo
         if (canvas.a > 0) {
             SDL_SetRenderDrawColor(ngn->graphics->renderer, canvas.r, canvas.g, canvas.b, canvas.a);
-            SDL_RenderFillRect(ngn->graphics->renderer, NULL);
+            SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
         }
     }
 
@@ -208,6 +208,29 @@ Size2I32 NGN_TextLayer::GetSize() {
     s.width = layer_width;
     s.height = layer_height;
     return s;
+
+}
+
+
+
+/*** Selecciona un color de tinte (sin parametros, resetea el color) ***/
+void NGN_TextLayer::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
+
+    // Registra el color
+    tint_color.r = r;
+    tint_color.g = g;
+    tint_color.b = b;
+
+}
+
+
+
+/*** Devuelve si se ha cambiado el color de tinta en este frame ***/
+bool NGN_TextLayer::NewTint() {
+
+    bool color_mod = ((tint_color.r != last_tint_color.r) || (tint_color.g != last_tint_color.g) || (tint_color.b != last_tint_color.b));
+    last_tint_color = tint_color;
+    return color_mod;
 
 }
 
@@ -288,7 +311,7 @@ void NGN_TextLayer::CanvasColor(uint32_t rgba) {    // 0xRRGGBBAA
 void NGN_TextLayer::Print(std::string text) {
 
     // Si no hay texto o fuente definida, sal
-    if ((text.size() ==  0) || (font == NULL)) return;
+    if ((text.size() ==  0) || (font == nullptr)) return;
 
     // Prepara el render al backbuffer
     // Centro de la rotacion
@@ -321,7 +344,7 @@ void NGN_TextLayer::Print(std::string text) {
             // Calculo del tamaño del texto escrito
             GetTextBoundaries(locate.x, locate.y);
             // Si el caracter es invalido, selecciona el caracter de espacio
-            if (font->character[c]->gfx == NULL) c = 0x20;
+            if (font->character[c]->gfx == nullptr) c = 0x20;
             // Prepara las dimensiones de la copia de la textura
             source.w = font->character[c]->width;
             source.h = font->character[c]->height;
@@ -496,7 +519,7 @@ void NGN_TextLayer::CreateTextLayer(
     if ((_width != NGN_DEFAULT_VALUE) && (_height != NGN_DEFAULT_VALUE)) {
         width = _width;
         height = _height;
-    } else if (bg != NULL) {
+    } else if (bg != nullptr) {
         width = bg->width;
         height = bg->height;
     } else {
@@ -518,7 +541,7 @@ void NGN_TextLayer::CreateTextLayer(
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
         }
     #endif
-    backbuffer = NULL;
+    backbuffer = nullptr;
     backbuffer = SDL_CreateTexture(
                          ngn->graphics->renderer,       // Renderer
                          SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
@@ -562,6 +585,10 @@ void NGN_TextLayer::CreateTextLayer(
     canvas.b = 0x00;
     canvas.g = 0x00;
     canvas.r = 0x00;
+
+    // Color de tinta
+    tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
 
     // Prepara la capa
     SurfaceCleanUp();

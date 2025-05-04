@@ -48,20 +48,20 @@
 Demo::Demo() {
 
     // Inicializa los punteros de datos
-    bg_data = NULL;
-    sprite_data = NULL;
+    bg_data = nullptr;
+    sprite_data = nullptr;
 
     // Inicializa las listas de sprites
     sprite.clear();
     sprite.resize(8);   // <--- Numero de frames de la animacion, para mostrarlos todos
-    for (uint32_t i = 0; i < sprite.capacity(); i ++) sprite[i] = NULL;
+    for (uint32_t i = 0; i < sprite.capacity(); i ++) sprite[i] = nullptr;
 
     bird.clear();
     bird.resize(NUMBER_OF_SPRITES);
-    for (uint32_t i = 0; i < bird.capacity(); i ++) bird[i].sprite = NULL;
+    for (uint32_t i = 0; i < bird.capacity(); i ++) bird[i].sprite = nullptr;
 
     // Inicializa los punteros de objetos
-    bg = NULL;
+    bg = nullptr;
 
 }
 
@@ -73,20 +73,20 @@ Demo::~Demo() {
     // Borra los sprites
     for (uint32_t i = 0; i < sprite.capacity(); i ++) {
         delete sprite[i];
-        sprite[i] = NULL;
+        sprite[i] = nullptr;
     }
     for (uint32_t i = 0; i < bird.capacity(); i ++) {
         delete bird[i].sprite;
-        bird[i].sprite = NULL;
+        bird[i].sprite = nullptr;
     }
     bird.clear();
 
     // Borra los objetos
-    delete bg; bg = NULL;
+    delete bg; bg = nullptr;
 
     // Borra los datos
-    delete bg_data; bg_data = NULL;
-	delete sprite_data; sprite_data = NULL;
+    delete bg_data; bg_data = nullptr;
+	delete sprite_data; sprite_data = nullptr;
 
 }
 
@@ -144,7 +144,7 @@ bool Demo::Awake() {
 bool Demo::Start() {
 
     // Cambia la semilla del random
-    srand(time(NULL));
+    srand(time(nullptr));
 
     // Carga los archivos
     if (!Load()) return false;
@@ -200,11 +200,11 @@ bool Demo::Load() {
 
     // Carga la imagen para el fondo
     bg_data = ngn->load->Texture("data/bg_sample.png");
-    if (bg_data == NULL) return false;
+    if (bg_data == nullptr) return false;
 
     // Carga el grafico del sprite
     sprite_data = ngn->load->Sprite("data/blue_bird.spr");
-    if (sprite_data == NULL) return false;
+    if (sprite_data == nullptr) return false;
 
     // Carga correcta
     return true;

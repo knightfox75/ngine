@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Funciones para la manipulacion de imagenes en RAW
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -48,8 +48,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Image* NGN_Image::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Image* NGN_Image::instance = nullptr;
 
 
 
@@ -73,7 +73,7 @@ void NGN_Image::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -103,10 +103,10 @@ void NGN_Image::BootUp() {
 NGN_TextureData* NGN_Image::ConvertRawToTextureData(NGN_RawImage* raw) {
 
     // Textura nula
-    if (!raw) return NULL;
+    if (!raw) return nullptr;
 
     // Crea un surface temporal para convertir la imagen
-    SDL_Surface* surface = NULL;
+    SDL_Surface* surface = nullptr;
 
     // Crea la superficie en base a los pixeles cargados
     surface = SDL_CreateRGBSurfaceFrom(
@@ -124,7 +124,7 @@ NGN_TextureData* NGN_Image::ConvertRawToTextureData(NGN_RawImage* raw) {
     // Verifica si el surface se ha creado correctamente
     if (!surface) {
          ngn->log->Message("[NGN_Image error] Unable to convert RAW image to a surface.");
-         return NULL;
+         return nullptr;
     }
 
     // Crea unos datos de textura temporales para convertir la imagen
@@ -137,7 +137,7 @@ NGN_TextureData* NGN_Image::ConvertRawToTextureData(NGN_RawImage* raw) {
     if (!texture_data->gfx) {
          ngn->log->Message("[NGN_Image error] Unable to convert RAW image to a texture.");
          SDL_FreeSurface(surface);
-         return NULL;
+         return nullptr;
     }
 
     // Guarda los datos de la textura
@@ -369,7 +369,7 @@ bool NGN_Image::RendererToSurface(NGN_RendererSurface* destination) {
 
 
     // Copia los pixeles del renderer al surface
-    if (SDL_RenderReadPixels(ngn->graphics->renderer, NULL, SDL_PIXELFORMAT_RGBA8888, destination->surface->pixels, destination->surface->pitch) != 0) {
+    if (SDL_RenderReadPixels(ngn->graphics->renderer, nullptr, SDL_PIXELFORMAT_RGBA8888, destination->surface->pixels, destination->surface->pitch) != 0) {
         ngn->log->Message("[NGN_Image error] RendererToSurface: Error creating surface.");
         SDL_FreeSurface(destination->surface);
         return false;

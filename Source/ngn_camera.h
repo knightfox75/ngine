@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -89,7 +89,7 @@ class NGN_Camera {
         void SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height);
 
         // Inicializa la camara
-        void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = NULL);
+        void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = nullptr);
 
         // Añade un fondo de textura o de tiles a la capa y devuelve su indice en la lista. En caso de error, devuelve -1
         int32_t PushBackground(uint32_t layer_number, NGN_Texture* texture);
@@ -141,11 +141,17 @@ class NGN_Camera {
         // Devuelve el tamaño actual del renderer de esta camara
         Size2I32 GetRendererSize();
 
+
+        // Devuelve la posicion de una capa en la camara (punto central de la misma)
+        Vector2 GetLayerPosition(uint32_t layer_number);
         // Devuelve el tamaño asignado a una capa
         Size2I32 GetLayerSize(uint32_t layer_number);
 
         // Ejecuta el efecto de "temblor" en la camara
         void Shake(float intensity, float frequency, bool split = true);
+
+        // Asigna el conlor de tinte a una capa
+        void SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b);
 
         // Reset de la camara
         void Reset();
@@ -172,6 +178,9 @@ class NGN_Camera {
             bool is_texture;                    // Es una capa de textura
             bool is_tiled;                      // Es una capa de fondo de tiles
             bool is_virtual;                    // Es una capa de tamaño virtual
+            Vector2 central_point;              // Posicion del centro de la capa en el mundo (es decir donde ha desplazado la capa la camara)
+            Rgba tint_color;                    // Color de tinte de la capa
+            Rgba last_tint_color;               // Ultimo color asignado (para el control de cambios)
         };
 
         // Parametros internos de la camara para su funcionamiento
@@ -185,10 +194,11 @@ class NGN_Camera {
         Vector2I32 screen_pos;                  // Posicion del objeto en la pantalla
         Vector2I32 sprite_campos;               // Posicion del sprite en la camara
         Vector2I64 temp;                        // Vector2 de uso general (64 bits de rango para evitar desvordes)
-        Vector2 world_lookat;                  // Posicion a la que mira la camara en el mundo
+        Vector2 world_lookat;                   // Posicion a la que mira la camara en el mundo
         Vector2 world_position;                 // Posicion real en la que la camara esta colocada
 
         // Funciones de actualizacion
+        void ApplyTintColor(uint32_t l);            // Aplica el tinte a las capas que lo requieran
         void RenderTextures(uint32_t l);            // Fondos de textura
         void RenderTiles(uint32_t l);               // Fondos de tiles
         void RenderTextureSprites(uint32_t l);      // Texturas
@@ -205,6 +215,8 @@ class NGN_Camera {
             bool angle_increased;
         } shake_effect;
         void ApplyShake(uint32_t l);
+
+
 
 
     // Vector de datos gestionados por la camara

@@ -48,7 +48,7 @@
 Demo::Demo() {
 
     // Prepara los punteros
-    bg = NULL;      // Canvas del fondo
+    bg = nullptr;      // Canvas del fondo
 
     // Vector de datos
     deep.clear();
@@ -61,7 +61,7 @@ Demo::Demo() {
 Demo::~Demo() {
 
     // Elimina los canvas
-    delete bg; bg = NULL;       // Fondo
+    delete bg; bg = nullptr;       // Fondo
 
     // Vacia el vector de datos
     deep.clear();

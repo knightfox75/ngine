@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -52,8 +52,8 @@
 
 
 
-/*** Puntero de la instancia a NULL ***/
-NGN_Sound* NGN_Sound::instance = NULL;
+/*** Puntero de la instancia a nullptr ***/
+NGN_Sound* NGN_Sound::instance = nullptr;
 
 
 
@@ -77,7 +77,7 @@ void NGN_Sound::RemoveInstance() {
     // Si la instancia aun existe, eliminala
     if (instance) {
         delete instance;
-        instance = NULL;
+        instance = nullptr;
     }
 
 }
@@ -472,7 +472,7 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
             // Si hay un error, eliminalo y sal
             delete music_cue[id];
             music_cue.erase(music_cue.begin() + id);
-            return NULL;
+            return nullptr;
         }
 
         // Y reproducelo si esta el flag de autostart
@@ -484,7 +484,7 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
     } else {
 
-        return NULL;
+        return nullptr;
 
     }
 
@@ -519,7 +519,7 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
             // Si hay un error, eliminalo y sal
             delete music_cue[id];
             music_cue.erase(music_cue.begin() + id);
-            return NULL;
+            return nullptr;
         }
 
         // Aplicale los puntos de loop
@@ -534,7 +534,7 @@ NGN_MusicClip* NGN_Sound::OpenMusic(
 
     } else {
 
-        return NULL;
+        return nullptr;
 
     }
 
@@ -579,7 +579,7 @@ void NGN_Sound::CloseMusic(NGN_MusicClip* music) {
     MusicUpdate();
 
     // Anula la referencia a al stream
-    music = NULL;
+    music = nullptr;
 
 }
 
@@ -839,12 +839,12 @@ void NGN_Sound::PauseAll() {
 
     // Intenta pausar los SFX
     for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-        if (sfx_cue[i] != NULL) sfx_cue[i]->Pause();
+        if (sfx_cue[i] != nullptr) sfx_cue[i]->Pause();
     }
 
     // Intenta pausar los streams de sonido
     for (uint32_t i = 0; i < music_cue.size(); i ++) {
-        if (music_cue[i] != NULL) music_cue[i]->Pause();
+        if (music_cue[i] != nullptr) music_cue[i]->Pause();
     }
 
 }
@@ -856,12 +856,12 @@ void NGN_Sound::ResumeAll() {
 
     // Intenta quitar la pausa a los SFX
     for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-        if (sfx_cue[i] != NULL) sfx_cue[i]->Resume();
+        if (sfx_cue[i] != nullptr) sfx_cue[i]->Resume();
     }
 
     // Intenta quitar la pausa a los streams de sonido
     for (uint32_t i = 0; i < music_cue.size(); i ++) {
-        if (music_cue[i] != NULL) music_cue[i]->Resume();
+        if (music_cue[i] != nullptr) music_cue[i]->Resume();
     }
 
 }
@@ -873,12 +873,12 @@ void NGN_Sound::StopAll() {
 
     // Intenta detener los SFX
     for (uint32_t i = 0; i < sfx_cue.size(); i ++) {
-        if (sfx_cue[i] != NULL) sfx_cue[i]->Stop();
+        if (sfx_cue[i] != nullptr) sfx_cue[i]->Stop();
     }
 
     // Intenta cerrar los streams de musica
     for (uint32_t i = 0; i < music_cue.size(); i ++) {
-        if (music_cue[i] != NULL) music_cue[i]->Stop();
+        if (music_cue[i] != nullptr) music_cue[i]->Stop();
     }
 
 }
@@ -974,7 +974,7 @@ NGN_AudioClip* NGN_Sound::_PlaySfx(
 
     } else {
 
-        return NULL;
+        return nullptr;
 
     }
 

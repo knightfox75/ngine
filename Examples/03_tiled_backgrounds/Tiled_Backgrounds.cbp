@@ -76,8 +76,6 @@
 					<Add option="-m64" />
 					<Add option="-Og" />
 					<Add option="-g" />
-					<Add option="-Wl,-rpath,libs/x86_64-linux-gnu/" />
-					<Add option="-Wl,--disable-new-dtags" />
 					<Add option="-DOS_LINUX" />
 					<Add option="-DMODE_DEBUG" />
 					<Add directory="/usr/local/include/NGN" />

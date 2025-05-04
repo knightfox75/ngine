@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x01 ***
+    *** Version 1.19.0-wip_0x07 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -12,7 +12,7 @@
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2024 by Cesar Rincon "NightFox"
+	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -65,7 +65,7 @@ NGN_Camera::NGN_Camera() {
     layer.clear();
 
     // Parametros iniciales
-    target = NULL;
+    target = nullptr;
     position.x = position.y = 0.0f;
     scroll.width = scroll.height = 0.0f;
     animation_pause = false;
@@ -92,8 +92,8 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
 
     // Datos iniciales
     LayerData ld;
-    ld.texture = NULL;
-    ld.tiled_bg = NULL;
+    ld.texture = nullptr;
+    ld.tiled_bg = nullptr;
     ld.spr_t.clear();
     ld.spr.clear();
     ld.layer_size.texture.width = ld.layer_size.texture.height = 0;
@@ -105,6 +105,9 @@ void NGN_Camera::CreateLayers(uint32_t layers) {
     ld.is_texture = false;
     ld.is_tiled = false;
     ld.is_virtual = false;
+    ld.central_point = Vector2::Zero();
+    ld.tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
+    ld.last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
 
     // Asigna el espacio solicitado e inicializa todas las capas
     layer.clear();
@@ -341,7 +344,7 @@ void NGN_Camera::LookAt(NGN_Sprite* target_sprite) {
 void NGN_Camera::LookAt(uint32_t position_x, uint32_t position_y) {
 
     // Anula el target actual si este existe
-    target = NULL;
+    target = nullptr;
 
     // Posiciona la camara en estas coordenadas
     position.x = position_x;
@@ -355,7 +358,7 @@ void NGN_Camera::LookAt(uint32_t position_x, uint32_t position_y) {
 void NGN_Camera::LookAt(Vector2I32 pos) {
 
     // Anula el target actual si este existe
-    target = NULL;
+    target = nullptr;
 
     // Posiciona la camara en estas coordenadas
     position.x = (pos.x >= 0) ? (uint32_t)pos.x : 0;
@@ -414,7 +417,7 @@ void NGN_Camera::Update() {
 
     // Calcula la posicion REAL de la camara en el mundo segun su target
     Vector2 campos;
-    if (target != NULL) {
+    if (target != nullptr) {
         campos.x = target->position.x;
         campos.y = target->position.y;
     } else {
@@ -446,8 +449,14 @@ void NGN_Camera::Update() {
         // Si la capa tiene contenido y es visible
         if (layer[l].in_use && layer[l].visible) {
 
+            // Reset del punto central
+            layer[l].central_point = Vector2::Zero();
+
             // De ser aplicable, calcula el offset de esta capa para el efecto "shake"
             ApplyShake(l);
+
+            // Aplica el efecto de tinta si se requiere
+            ApplyTintColor(l);
 
             // Primero, dibuja los fondos de textura (si existen)
             RenderTextures(l);
@@ -465,6 +474,54 @@ void NGN_Camera::Update() {
 
     // Registra el id de frame actual (se asegura que solo se ejecute la funcion 1 vez por frame)
     runtime_frame = ngn->graphics->runtime_frame;
+
+}
+
+
+
+/*** Aplica el color de tinte si es necesario ***/
+void NGN_Camera::ApplyTintColor(uint32_t l) {
+
+    // Si ya se ha actualizado en este frame, ignora la orden
+    if (runtime_frame == ngn->graphics->runtime_frame) return;
+
+    // Si esta en pausa, ignora la orden
+    if (animation_pause) return;
+
+    // Hay cambios en el color de tinte?
+    if (
+        (layer[l].tint_color.r == layer[l].last_tint_color.r)
+        &&
+        (layer[l].tint_color.g == layer[l].last_tint_color.g)
+        &&
+        (layer[l].tint_color.b == layer[l].last_tint_color.b)
+    ) return;
+
+
+    // Aplica los cambios a la capa de texturas
+    if (layer[l].texture) {
+        if (!layer[l].texture->ignore_camera_tint) layer[l].texture->SetTintColor(layer[l].tint_color.r, layer[l].tint_color.g, layer[l].tint_color.b);
+    }
+
+    // Aplica los cambios a la capa de tiles
+    if (layer[l].tiled_bg) {
+        if (!layer[l].tiled_bg->ignore_camera_tint) layer[l].tiled_bg->SetTintColor(layer[l].tint_color.r, layer[l].tint_color.g, layer[l].tint_color.b);
+    }
+
+    // Aplica los cambios a los sprites (texturas como sprites)
+    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+        if (!layer[l].spr_t[s]->ignore_camera_tint) layer[l].spr_t[s]->SetTintColor(layer[l].tint_color.r, layer[l].tint_color.g, layer[l].tint_color.b);
+    }
+
+    // Aplica los cambios a los sprites
+    for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
+        if (!layer[l].spr[s]->ignore_camera_tint) layer[l].spr[s]->SetTintColor(layer[l].tint_color.r, layer[l].tint_color.g, layer[l].tint_color.b);
+    }
+
+    // Guarda el color actual
+    layer[l].last_tint_color = layer[l].tint_color;
+
+    //std::cout << "Tint update!" << std::endl;
 
 }
 
@@ -491,6 +548,7 @@ void NGN_Camera::RenderTextures(uint32_t l) {
 	} else {
 		screen_pos.x = 0;
 	}
+	if (layer[l].central_point.x == 0.0f) layer[l].central_point.x = (screen_pos.x + (render_area.width / 2));
 
 	// Auto scroll en X
 	if (layer[l].texture->virtual_texture.scroll.x != 0.0f) {
@@ -512,6 +570,7 @@ void NGN_Camera::RenderTextures(uint32_t l) {
 	} else {
 		screen_pos.y = 0;
 	}
+	if (layer[l].central_point.y == 0.0f) layer[l].central_point.y = (screen_pos.y + (render_area.height / 2));
 
 	// Auto scroll en Y
 	if (layer[l].texture->virtual_texture.scroll.y != 0.0f) {
@@ -558,6 +617,7 @@ void NGN_Camera::RenderTiles(uint32_t l) {
 	} else {
 		screen_pos.x = 0;
 	}
+	if (layer[l].central_point.x == 0.0f) layer[l].central_point.x = (screen_pos.x + (render_area.width / 2));
 
 	// Auto scroll en X
 	if (layer[l].tiled_bg->virtual_bg.scroll.x != 0.0f) {
@@ -579,6 +639,7 @@ void NGN_Camera::RenderTiles(uint32_t l) {
 	} else {
 		screen_pos.y = 0;
 	}
+	if (layer[l].central_point.y == 0.0f) layer[l].central_point.y = (screen_pos.y + (render_area.height / 2));
 
 	// Auto scroll en Y
 	if (layer[l].tiled_bg->virtual_bg.scroll.y != 0.0f) {
@@ -619,19 +680,23 @@ void NGN_Camera::RenderTextureSprites(uint32_t l) {
     temp.x = (layer[l].layer_size.sprites.width - render_area.width);
     temp.y = (layer[l].layer_size.sprites.height - render_area.height);
 
-    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
+    // Calcula la posicion relativa segun la capa que esta
+    if (scroll.width > 0) {
+        sprite_campos.x = ((temp.x * world_origin.x) / scroll.width);
+    } else {
+        sprite_campos.x = 0.0f;
+    }
+    if (scroll.height > 0) {
+        sprite_campos.y = ((temp.y * world_origin.y) / scroll.height);
+    } else {
+        sprite_campos.y = 0.0f;
+    }
+    if ((layer[l].central_point.x == 0.0f) && (layer[l].central_point.y == 0.0f)) {
+        layer[l].central_point.x = (sprite_campos.x + (render_area.width / 2));
+        layer[l].central_point.y = (sprite_campos.y + (render_area.height / 2));
+    }
 
-        // Calcula la posicion relativa segun la capa que esta
-        if (scroll.width > 0) {
-            sprite_campos.x = ((temp.x * world_origin.x) / scroll.width);
-        } else {
-            sprite_campos.x = 0.0f;
-        }
-        if (scroll.height > 0) {
-            sprite_campos.y = ((temp.y * world_origin.y) / scroll.height);
-        } else {
-            sprite_campos.y = 0.0f;
-        }
+    for (uint32_t s = 0; s < layer[l].spr_t.size(); s ++) {
 
         // Calcula la posicion del sprite en pantalla segun el origen de dibujado
         screen_pos.x = layer[l].spr_t[s]->position.x - sprite_campos.x;
@@ -670,22 +735,26 @@ void NGN_Camera::RenderSprites(uint32_t l) {
     temp.x = (layer[l].layer_size.sprites.width - render_area.width);
     temp.y = (layer[l].layer_size.sprites.height - render_area.height);
 
+    // Calcula la posicion relativa segun la capa que esta
+    if (scroll.width > 0) {
+        sprite_campos.x = ((temp.x * world_origin.x) / scroll.width);
+    } else {
+        sprite_campos.x = 0.0f;
+    }
+    if (scroll.height > 0) {
+        sprite_campos.y = ((temp.y * world_origin.y) / scroll.height);
+    } else {
+        sprite_campos.y = 0.0f;
+    }
+    if ((layer[l].central_point.x == 0.0f) && (layer[l].central_point.y == 0.0f)) {
+        layer[l].central_point.x = (sprite_campos.x + (render_area.width / 2));
+        layer[l].central_point.y = (sprite_campos.y + (render_area.height / 2));
+    }
+
     for (uint32_t s = 0; s < layer[l].spr.size(); s ++) {
 
         // Resetea si es necesario el flag "on_screen"
         if (layer[l].spr[s]->runtime_frame != ngn->graphics->runtime_frame) layer[l].spr[s]->on_screen = false;
-
-        // Calcula la posicion relativa segun la capa que esta
-        if (scroll.width > 0) {
-            sprite_campos.x = ((temp.x * world_origin.x) / scroll.width);
-        } else {
-            sprite_campos.x = 0.0f;
-        }
-        if (scroll.height > 0) {
-            sprite_campos.y = ((temp.y * world_origin.y) / scroll.height);
-        } else {
-            sprite_campos.y = 0.0f;
-        }
 
         // Calcula la posicion del sprite en pantalla segun el origen de dibujado
         screen_pos.x = layer[l].spr[s]->position.x - sprite_campos.x;
@@ -728,7 +797,7 @@ int32_t NGN_Camera::RemoveBackground(NGN_Texture* texture) {
         // Si no es la textura que buscas, continua
         if (layer[l].texture != texture) continue;
         // Si encuentras la textura, limpia la capa de fondos (conserva los sprites)
-        layer[l].texture = NULL;
+        layer[l].texture = nullptr;
         r = l;
         // Sal del bucle
         break;
@@ -765,7 +834,7 @@ int32_t NGN_Camera::RemoveBackground(NGN_TiledBg* background) {
         // Si no es la textura que buscas, continua
         if (layer[l].tiled_bg != background) continue;
         // Si encuentras la textura, limpia la capa de fondos (conserva los sprites)
-        layer[l].tiled_bg = NULL;
+        layer[l].tiled_bg = nullptr;
         r = l;
         // Sal del bucle
         break;
@@ -1107,6 +1176,16 @@ Size2I32 NGN_Camera::GetRendererSize() {
 
 
 
+/*** Devuelve la posicion de una capa en la camara (punto central de la misma) ***/
+Vector2 NGN_Camera::GetLayerPosition(uint32_t layer_number) {
+
+    if (layer_number >= layer.size()) return Vector2::Zero();
+    return layer[layer_number].central_point;
+
+}
+
+
+
 /*** Devuelve el tamaño asignado a una capa ***/
 Size2I32 NGN_Camera::GetLayerSize(uint32_t layer_number) {
 
@@ -1147,6 +1226,19 @@ void NGN_Camera::Shake(float intensity, float frequency, bool split) {
 
 
 
+// Asigna el conlor de tinte a una capa
+void NGN_Camera::SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b) {
+
+    if (layer_number >= layer.size()) return;
+
+    layer[layer_number].tint_color.r = r;
+    layer[layer_number].tint_color.g = g;
+    layer[layer_number].tint_color.b = b;
+
+}
+
+
+
 /*** Reinicia la camara ***/
 void NGN_Camera::Reset() {
 
@@ -1159,7 +1251,7 @@ void NGN_Camera::Reset() {
     layer.clear();
 
     // Parametros iniciales
-    target = NULL;
+    target = nullptr;
     position = Vector2I32::Zero();
     scroll.width = scroll.height = 0.0f;
     world_lookat = Vector2::Zero();
