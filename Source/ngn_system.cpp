@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -139,6 +139,9 @@ bool NGN_System::Init() {
 
 /*** Gestor de eventos de SDL ***/
 void NGN_System::EventUpdate() {
+
+    // Prepara la pantalla para renderizar el frame actual
+    ngn->graphics->PrepareFrame();
 
     // Tiempo delta
     delta_time = (((float)(SDL_GetTicks() - _delta_time)) / 1000.0f);

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -111,13 +111,8 @@ class NGN_Render {
         // Puntero de memoria a la instancia
         static NGN_Render* instance;
 
-
         bool render2texture;        // Flag de render to texture
         NGN_Texture* rend2text;     // Textura de destino del render
-
-        /*** Metodos para el dibujado de fondos de tiles ***/
-        void TiledBgTiles(NGN_TiledBg* bg);
-        void TiledBgTransform(NGN_TiledBg* bg);
 
         /*** Propiedades comunes ***/
         SDL_RendererFlip _flip;             // Estado del flip

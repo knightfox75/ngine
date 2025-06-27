@@ -3,15 +3,15 @@
     Ejemplo del uso de las capas de texto
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2024 by Cesar Rincon "NightFox"
+    (c) 2016 - 2025 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-	Requiere N'gine 1.17.0-stable o superior
-	(c) 2016 - 2024 by Cesar Rincon "NightFox"
+	Requiere N'gine 1.19.0-stable o superior
+	(c) 2016 - 2025 by Cesar Rincon "NightFox"
 	https://nightfoxandco.com
 
-    Requiere GCC 13.2.0 MinGW64 (SEH) - 64-bits
+    Requiere GCC 14.2.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
     Requiere SDL2 (2.30.5) - 64-bits

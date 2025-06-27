@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -92,6 +92,8 @@ class NGN_Graphics {
             SDL_Texture* backbuffer;    // Backbufer para el renderizado
         #endif
 
+        SDL_BlendMode premultiplied_alpha_blend_mode;   // Modo especial de blending premultiplicado
+
         int8_t screen_mode;             // Modo de pantalla actual
         bool vsync;                     // VSYNC Activo?
         bool filtering;                 // Filtrado bilinear activo?
@@ -109,6 +111,9 @@ class NGN_Graphics {
 
         // Color del backdrop del viewport principal
         void SetBackdropColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+
+        // Prepara el frame
+        void PrepareFrame();
 
         // Actualiza el renderer a 60fps
         void Update();

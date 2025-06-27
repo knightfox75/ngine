@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     FLAGS de configuracion de la libreria
     La libreria debe compilarse para que estos FLAGS sean efectivos
 
@@ -10,7 +10,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-    Requiere GCC 13.2.0 MinGW64 (SEH) - 64-bits
+    Requiere GCC 14.2.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
     Requiere SDL2 (2.30.11) - 64-bits

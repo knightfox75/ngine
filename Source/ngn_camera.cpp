@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -552,7 +552,7 @@ void NGN_Camera::RenderTextures(uint32_t l) {
 
 	// Auto scroll en X
 	if (layer[l].texture->virtual_texture.scroll.x != 0.0f) {
-		layer[l].texture->virtual_texture.offset.x += layer[l].texture->virtual_texture.scroll.x;
+		if (!animation_pause && (runtime_frame != ngn->graphics->runtime_frame)) layer[l].texture->virtual_texture.offset.x += layer[l].texture->virtual_texture.scroll.x;
 		if (layer[l].texture->virtual_texture.scroll.x > 0.0f) {
 			if (layer[l].texture->virtual_texture.offset.x > layer[l].texture->virtual_texture.loop.x) layer[l].texture->virtual_texture.offset.x -= layer[l].texture->virtual_texture.loop.x;
 		} else {
@@ -573,8 +573,8 @@ void NGN_Camera::RenderTextures(uint32_t l) {
 	if (layer[l].central_point.y == 0.0f) layer[l].central_point.y = (screen_pos.y + (render_area.height / 2));
 
 	// Auto scroll en Y
-	if (layer[l].texture->virtual_texture.scroll.y != 0.0f) {
-		layer[l].texture->virtual_texture.offset.y += layer[l].texture->virtual_texture.scroll.y;
+	if (layer[l].texture->virtual_texture.scroll.y) {
+		if (!animation_pause && (runtime_frame != ngn->graphics->runtime_frame)) layer[l].texture->virtual_texture.offset.y += layer[l].texture->virtual_texture.scroll.y;
 		if (layer[l].texture->virtual_texture.scroll.y > 0.0f) {
 			if (layer[l].texture->virtual_texture.offset.y > layer[l].texture->virtual_texture.loop.y) layer[l].texture->virtual_texture.offset.y -= layer[l].texture->virtual_texture.loop.y;
 		} else {
@@ -621,7 +621,7 @@ void NGN_Camera::RenderTiles(uint32_t l) {
 
 	// Auto scroll en X
 	if (layer[l].tiled_bg->virtual_bg.scroll.x != 0.0f) {
-		layer[l].tiled_bg->virtual_bg.offset.x += layer[l].tiled_bg->virtual_bg.scroll.x;
+		if (!animation_pause && (runtime_frame != ngn->graphics->runtime_frame)) layer[l].tiled_bg->virtual_bg.offset.x += layer[l].tiled_bg->virtual_bg.scroll.x;
 		if (layer[l].tiled_bg->virtual_bg.scroll.x > 0.0f) {
 			if (layer[l].tiled_bg->virtual_bg.offset.x > layer[l].tiled_bg->virtual_bg.loop.x) layer[l].tiled_bg->virtual_bg.offset.x -= layer[l].tiled_bg->virtual_bg.loop.x;
 		} else {
@@ -643,7 +643,7 @@ void NGN_Camera::RenderTiles(uint32_t l) {
 
 	// Auto scroll en Y
 	if (layer[l].tiled_bg->virtual_bg.scroll.y != 0.0f) {
-		layer[l].tiled_bg->virtual_bg.offset.y += layer[l].tiled_bg->virtual_bg.scroll.y;
+		if (!animation_pause && (runtime_frame != ngn->graphics->runtime_frame)) layer[l].tiled_bg->virtual_bg.offset.y += layer[l].tiled_bg->virtual_bg.scroll.y;
 		if (layer[l].tiled_bg->virtual_bg.scroll.y > 0.0f) {
 			if (layer[l].tiled_bg->virtual_bg.offset.y > layer[l].tiled_bg->virtual_bg.loop.y) layer[l].tiled_bg->virtual_bg.offset.y -= layer[l].tiled_bg->virtual_bg.loop.y;
 		} else {

@@ -156,3 +156,17 @@ double e = ngn->math->RandomDouble(-99.99, 99.99);
 double f = ngn->math->RandomDouble();
 
 --------------------------------------------------------------------------------
+
+- Método(s)
+uint32_t Adler32Checksum(const std::vector<uint8_t>& buffer, uint32_t start_index = 0);
+
+- Descripción
+Calcula y devuelve una suma de verificación (checksum) Adler-32 de 32 bits para el búfer de datos proporcionado.
+Opcionalmente, se permite especificar el índice a partir del cual comenzará el cálculo. Por defecto, se procesan todos los datos.
+El tamaño máximo de los datos a procesar está limitado por el índice de 32 bits a 4 GiB (2^32 bytes).
+
+- Ejemplo(s)
+uint32_t chk_save = ngn->math->Adler32Checksum(save_data);
+uint32_t chk_config = ngn->math->Adler32Checksum(config_data, 64);
+
+--------------------------------------------------------------------------------

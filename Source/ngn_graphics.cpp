@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -225,6 +225,16 @@ bool NGN_Graphics::Init(
         return false;
     }
 
+    // Crea el modo de blending de premultiplicado
+    premultiplied_alpha_blend_mode = SDL_ComposeCustomBlendMode(
+        SDL_BLENDFACTOR_ONE,                    // Factor del color fuente
+        SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,    // Factor del color destino
+        SDL_BLENDOPERATION_ADD,                 // Operación para el color
+        SDL_BLENDFACTOR_ONE,                    // Factor del alfa fuente
+        SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,    // Factor del alfa destino
+        SDL_BLENDOPERATION_ADD                  // Operación para el alfa
+    );
+
     // Selecciona el color por defecto del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
 
@@ -355,6 +365,28 @@ void NGN_Graphics::RenderToSelected() {
         );
     #endif
 
+    // Por defecto, restablece el alpha blending
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+
+}
+
+
+
+/*** Prepara el frame actual ***/
+void NGN_Graphics::PrepareFrame() {
+
+    // Borra los viewports de existir estos
+    ClearViewports();
+
+    // Borra el contenido para el siguiente frame
+    ClearBackbuffer();
+
+    // Actualiza los flags del renderer
+    UpdateRendererFlags();
+
+    // Genera el Runtime Frame ID unico para este frame
+    GenerateRuntimeFrameId();
+
 }
 
 
@@ -375,18 +407,6 @@ void NGN_Graphics::Update() {
 
     // Contador de FPS en la consola [*** Debug ***]
     if (ngn->system->fps_counter) FpsCounter();
-
-    // Borra los viewports de existir estos
-    ClearViewports();
-
-    // Borra el contenido para el siguiente frame
-    ClearBackbuffer();
-
-    // Actualiza los flags del renderer
-    UpdateRendererFlags();
-
-    // Genera el Runtime Frame ID para el siguiente frame
-    GenerateRuntimeFrameId();
 
 }
 

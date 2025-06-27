@@ -55,6 +55,7 @@ void Scale(float scale);
 - Descripción
 Escala el fondo según el factor dado. 1.0f es la escala original.
 Según la sobrecarga usada, se escalaran los ejes por igual o por separado.
+Debido a la implementación interna de los fondos de tiles, el escalado está limitado a valores iguales o superiores a 1.0f.
 
 - Ejemplo
 bg_front->Scale(1.5f);
@@ -153,6 +154,15 @@ double rotation
 
 - Descripción
 Angulo de rotación del fondo, en grados.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool flip_h
+bool flip_v
+
+- Descripción
+Volteado vertical y horizontal del fondo.
 
 --------------------------------------------------------------------------------
 

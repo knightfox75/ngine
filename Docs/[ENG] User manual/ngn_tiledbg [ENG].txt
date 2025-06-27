@@ -55,6 +55,7 @@ void Scale(float scale);
 - Description
 Scales the background by the given factor. 1.0f is the original scale.
 Depending on the overload used, the axes will be scaled equally or separately.
+Due to their internal implementation, tilemaps can only be scaled to 1.0f or higher.
 
 - Example
 bg_front->Scale(1.5f);
@@ -153,6 +154,15 @@ double rotation
 
 // Description
 Rotation angle of the background, in degrees.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool flip_h
+bool flip_v
+
+- Description
+Vertical and horizontal flipping of the background.
 
 --------------------------------------------------------------------------------
 

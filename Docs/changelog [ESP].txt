@@ -1,4 +1,30 @@
 --------------------------------------------------------------------------------
+2025-06-27 Ver.1.19.0-stable
+--------------------------------------------------------------------------------
+- Se ha reescrito parte de la clase NGN_Camera para evitar conflictos al usar fondos de tamaño virtual. Con este propósito, se ha eliminado la opción de tener más de un fondo de tiles y textura por capa.
+- Se han añadido ciertos flags de control interno para identificar el tipo de fondo de cada capa y su tamaño.
+- Se han reescrito las funciones para añadir y quitar fondos.
+- Se ha cambiado el nombre del método SizeOfLayer() a SetSizeOfSpritesLayer().
+- Se ha añadido el método GetLayerSize(), que devuelve el tamaño de la capa especificada.
+- En la clase NGN_Graphics, se ha corregido el nombre de la propiedad force_redaw a force_redraw.
+- Se han corregido los ejemplos afectados por estos cambios en la librería.
+- Se han añadido los métodos RandomInt(), RandomFloat() y RandomDouble() a la clase NGN_Math.
+- Todas las asignaciones de puntero NULL se han cambiado al estándar de C++ nullptr.
+- Se ha añadido el método SetTintColor() a los objetos de Texturas, Sprites, Fondos de tiles, Canvas y Capas de texto.
+- Se ha añadido el método SetLayerTintColor() a la clase NGN_Camera, el cual aplica un color de tinte a todos los elementos de la capa.
+- Se ha añadido la propiedad ignore_camera_tint a las Texturas, Sprites y Fondos de tiles para que, si se aplica un color de tinte desde la cámara a la capa, este se ignore.
+- Se ha mejorado la precisión del limitador de frame rate por software, así como la del contador de frame rate.
+- Se ha añadido el método GetLayerPosition() a la clase NGN_Camera, el cual devuelve la posición del punto central de una capa.
+- Optimización en el algoritmo de cálculo de las posiciones de los sprites en su capa.
+- Añadido un ejemplo para los nuevos efectos de cámara (Shake y TintColor).
+- La propiedad animation_pause de la clase NGN_Camera ahora también detiene el desplazamiento automático (auto-scroll) de las capas de fondo.
+- Se ha añadido una comprobación para evitar que las capas con desplazamiento automático se actualicen más de una vez por frame al utilizar múltiples viewports.
+- Se ha añadido el método Adler32Checksum() a la clase NGN_Math. Este calcula una suma de verificación (checksum) de 32 bits de los datos proporcionados, utilizando el algoritmo Adler-32.
+- Se ha reescrito por completo el método de renderizado para fondos de tiles. Ahora utiliza un atlas de texturas y dibuja los tiles en una única llamada mediante un array de vértices y coordenadas UV. Esto reduce el número de llamadas a la GPU por cada fondo a 1, independientemente de la cantidad de tiles que lo compongan. En un fondo de tamaño medio, esta optimización reduce las llamadas de ~1000 a solo 1.
+- Se ha optimizado el manejo del canal alfa en los métodos de renderizado de la clase NGN_Render para mejorar la precisión del color.
+
+
+--------------------------------------------------------------------------------
 2025-01-22 Ver.1.18.1-stable
 --------------------------------------------------------------------------------
 - Corregidos varios flags de compilación en los archivos de proyecto de Code::Blocks incluidos en las plantillas y ejemplos de uso.

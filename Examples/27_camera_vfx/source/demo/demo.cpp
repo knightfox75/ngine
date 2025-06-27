@@ -12,7 +12,7 @@
 	(c) 2016 - 2025 by Cesar Rincon "NightFox"
 	https://nightfoxandco.com
 
-    Requiere GCC 13.2.0 MinGW64 (SEH) - 64-bits
+    Requiere GCC 14.2.0 MinGW64 (SEH) - 64-bits
     https://www.mingw-w64.org/
 
     Requiere SDL2 (2.30.11) - 64-bits
@@ -122,6 +122,11 @@ bool Demo::Awake() {
         ngn->graphics->SetMode(SCR_MODE_LINUX);
     #endif
     ngn->graphics->Update();
+
+    // Usa el archivo empaquetado de datos si es la version release
+    #if defined (MODE_RELEASE)
+        if(!ngn->load->SetPackage("data.pkg", "0123456789ABCDEF")) return false;
+    #endif
 
 	// Muestra la version de la libreria en la consola
 	#if defined (MODE_DEBUG)

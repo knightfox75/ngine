@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -471,7 +471,7 @@ std::vector<uint8_t> NGN_FileSystem::Checksum(std::vector<uint8_t> &data) {
         offset = target;
     } while (offset < data.size());
 
-    // Revuelve el resultado
+    // Devuelve el resultado
     return checksum;
 
 }

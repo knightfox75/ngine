@@ -1,4 +1,30 @@
 --------------------------------------------------------------------------------
+2025-06-27 Ver.1.19.0-stable
+--------------------------------------------------------------------------------
+- A part of the NGN_Camera class has been rewritten to avoid conflicts when using virtual-sized backgrounds. For this purpose, the option to have more than one tile and texture background per layer has been removed.
+- Certain internal control flags have been added to identify the type and size of each layer's background.
+- The functions for adding and removing backgrounds have been rewritten.
+- The method SizeOfLayer() has been renamed to SetSizeOfSpritesLayer().
+- The method GetLayerSize() has been added, which returns the size of the specified layer.
+- In the NGN_Graphics class, the property name force_redaw has been corrected to force_redraw.
+- The examples affected by these changes have been corrected in the library.
+- The methods RandomInt(), RandomFloat(), and RandomDouble() have been added to the NGN_Math class.
+- All NULL pointer assignments have been changed to the C++ standard nullptr.
+- The method SetTintColor() has been added to the Texture, Sprite, Tile Background, Canvas, and Text Layer objects.
+- The method SetLayerTintColor() has been added to the NGN_Camera class, which applies a tint color to all elements of a layer.
+- The property ignore_camera_tint has been added to Textures, Sprites, and Tile Backgrounds, so that if a tint color is applied from the camera to the layer, it will be ignored.
+- The precision of the software frame rate limiter has been improved, as well as the frame rate counter.
+- The method GetLayerPosition() has been added to the NGN_Camera class, which returns the position of the center point of a layer.
+- Optimization in the algorithm for calculating the positions of sprites within their layer.
+- Added an example for the new camera effects (Shake and TintColor).
+- The animation_pause property in the NGN_Camera class now also stops background layer auto-scrolling.
+ -Added a check to prevent auto-scrolling layers from being updated more than once per frame when using multiple viewports.
+- Added the Adler32Checksum() method to the NGN_Math class. It calculates a 32-bit checksum of the provided data using the Adler-32 algorithm.
+- Completely rewrote the rendering method for tilemaps. It now uses a texture atlas and draws all tiles in a single draw call via a vertex and UV coordinate array. This reduces the number of GPU draw calls per tilemap to 1, regardless of its tile count. For an average-sized background, this optimization cuts draw calls from ~1000 down to just 1.
+- Optimized alpha channel handling in the NGN_Render class's rendering methods to improve color accuracy.
+
+
+--------------------------------------------------------------------------------
 2025-01-22 Ver.1.18.1-stable
 --------------------------------------------------------------------------------
 - Fixed several compilation flags in the Code::Blocks project files included in the templates and usage examples.

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -85,6 +85,11 @@ NGN_TiledBg::~NGN_TiledBg() {
     // Destruye el backbuffer
     SDL_DestroyTexture(backbuffer);
     backbuffer = nullptr;
+
+    // De existir, elimina la textura de transformacion
+    if (transform_texture != nullptr) SDL_DestroyTexture(transform_texture);
+    transform_texture = nullptr;
+
     // Elimina la referencia al fondo
     bgdata = nullptr;
 
@@ -129,9 +134,11 @@ void NGN_TiledBg::Translate(Vector2 spd) {
 /*** Escala el fondo [Sobrecarga 1 - Ejes por separado] ***/
 void NGN_TiledBg::Scale(float w, float h) {
 
+    // Limita la escala del fondo a valores >= 1.0f
+
     // Aplica la escala
-    scale.x = w;
-    scale.y = h;
+    scale.x = (w < 1.0f) ? 1.0f:w;
+    scale.y = (h < 1.0f) ? 1.0f:h;
 
 }
 /*** Escala el fondo [Sobrecarga 2 - Ambos ejes a la vez] ***/
@@ -225,6 +232,9 @@ void NGN_TiledBg::CreateTiledBg(
 
     rotation = 0;
 
+    flip_h = false;
+    flip_v = false;
+
     visible = true;
     alpha = 0xFF;
     blend_mode = NGN_BLENDMODE_ALPHA;   // Modo de mezcla
@@ -241,6 +251,10 @@ void NGN_TiledBg::CreateTiledBg(
                              bb_size.width,                 // Ancho de la textura
                              bb_size.height                 // Alto de la textura
                              );
+
+    // Textura para aplicar la transformacion del fondo (si se requiere)
+    transform_texture = nullptr;
+    last_buffer = nullptr;
 
     // Parametros para el sistema de camaras
     camera_layer = -1;                      // Por defecto, no estas en la camara

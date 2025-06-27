@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -55,7 +55,7 @@
 static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
 static const int32_t NGN_VERSION_MINOR = 19;                    // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
-static const std::string NGN_VERSION_METADATA = "wip_0x07";     // Version metadatos
+static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;            // Valor de "defecto"
@@ -183,7 +183,7 @@ class NGN_TiledBgData {
         } header;
 
         // Contenido del fondo
-        std::vector<SDL_Texture*> tiles;    // Almacena el Tileset
+        SDL_Texture* tiles_atlas;           // Almacena el Tileset
         std::vector<uint8_t> tmap;          // Almacena el mapa
 
     // Private
@@ -248,9 +248,9 @@ class NGN_CollisionMapData {
             uint32_t width;                 // Ancho del mapa
             uint32_t height;                // Alto del mapa
             uint32_t tile_size;             // Tamaño del tile
-            uint32_t pal_length;            // Tamaño de los datos (n� de elementos) de la paleta
-            uint32_t tileset_length;        // Tamaño de los datos (n� de elementos) del tileset
-            uint32_t map_length;            // Tamaño de los datos (n� de elementos) del mapa
+            uint32_t pal_length;            // Tamaño de los datos (nº de elementos) de la paleta
+            uint32_t tileset_length;        // Tamaño de los datos (nº de elementos) del tileset
+            uint32_t map_length;            // Tamaño de los datos (nº de elementos) del mapa
             uint8_t reserve[256];           // Posible uso futuro
         } header;
 

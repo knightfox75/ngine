@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -86,6 +86,9 @@ class NGN_TiledBg {
 
         double rotation;                    // Rotacion del fondo
 
+        bool flip_h;                        // Flip de la capa
+        bool flip_v;
+
         bool visible;                       // Visibilidad
         int32_t alpha;                      // Nivel de alpha
         SDL_BlendMode blend_mode;           // Modo de mezcla de color
@@ -93,6 +96,8 @@ class NGN_TiledBg {
         Vector2 scale;                      // Escala del fondo
 
         SDL_Texture* backbuffer;            // Backbufer del fondo para su renderizado
+        SDL_Texture* transform_texture;     // Textura para aplicar la transformacion del fondo
+        SDL_Texture* last_buffer;           // Ultimo buffer usado
 
         // Tamaño del backbuffer
         Size2I32 bb_size;

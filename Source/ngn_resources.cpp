@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016

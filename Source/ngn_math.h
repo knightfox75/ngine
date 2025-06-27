@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -210,6 +210,9 @@ class NGN_Math {
         // Devuelve un numero aleatorio en un rango dado (punto flotante de doble precision)
         double RandomDouble(double min_value, double max_value);
         double RandomDouble();
+
+        // Devuelve el resultado en 32bits de un checksum de datos usando el algoritmo "Adler-32" (Maximo 4gb de datos)
+        uint32_t Adler32Checksum(const std::vector<uint8_t>& buffer, uint32_t start_index = 0);
 
 
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -135,46 +135,28 @@ NGN_TextLayer::~NGN_TextLayer() {
 /*** Borra el contenido de la capa de texto ***/
 void NGN_TextLayer::Cls() {
 
-    // Centro de la rotacion
-    SDL_Point* _center = new SDL_Point();
-    // Define las areas de origen y destino
-    SDL_Rect source = {0, 0, 0, 0};
-    SDL_Rect destination = {0, 0, 0, 0};
-
     // Informa al renderer que la textura "backbuffer" es su destino
     SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
 
+    // Borra el contenido previo
+    SDL_SetRenderDrawBlendMode(ngn->graphics->renderer, SDL_BLENDMODE_NONE);
+    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(ngn->graphics->renderer);
+
     // Segun si hay o no fondo...
     if (background != nullptr) {
-        // Bugfix SDL2 en linux (previene el fallo de transparencia)
-        SDL_SetRenderDrawColor(ngn->graphics->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
-        // Borra el contenido de la textura actual
-        SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
-        SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
-        // Define el origen
-        source.w = background->width;
-        source.h = background->height;
-        // Define el destino
-        destination.w = layer_width;
-        destination.h = layer_height;
-        // Calcula el centro de la textura
-        _center->x = (destination.w / 2);
-        _center->y = (destination.h / 2);
+        // Configura el modo de dibujado
+        SDL_SetTextureBlendMode(background->gfx, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(background->gfx, 0xFF);
+        // Define el origen y destino de la textura de fondo
+        SDL_Rect source_rect = { 0, 0, background->width, background->height };
+        SDL_Rect dest_rect = { 0, 0, layer_width, layer_height };
         // Renderiza el fondo en el backbuffer de la capa
-        SDL_RenderCopyEx(ngn->graphics->renderer, background->gfx, &source, &destination, 0.0f, _center, SDL_FLIP_NONE);
+        SDL_RenderCopy(ngn->graphics->renderer, background->gfx, &source_rect, &dest_rect);
     } else {
-        // Borra el contenido de la textura actual
-        SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
-        SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(backbuffer, 0x00);
-        SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
-        // Rellenalo del color de fondo
+        // Rellenalo del color de fondo si es necesario
         if (canvas.a > 0) {
+            SDL_SetRenderDrawBlendMode(ngn->graphics->renderer, SDL_BLENDMODE_BLEND);
             SDL_SetRenderDrawColor(ngn->graphics->renderer, canvas.r, canvas.g, canvas.b, canvas.a);
             SDL_RenderFillRect(ngn->graphics->renderer, nullptr);
         }
@@ -193,9 +175,6 @@ void NGN_TextLayer::Cls() {
     text_boundaries.right = -1;
     text_boundaries.width = 0;
     text_boundaries.height = 0;
-
-    // Paso de limpieza
-    delete _center;
 
 }
 

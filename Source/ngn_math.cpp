@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-wip_0x07 ***
+    *** Version 1.19.0-stable ***
     Funciones matematicas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -580,5 +580,68 @@ double NGN_Math::RandomDouble() {
 
     constexpr double SAFE_RANGE = 1.0e6;
     return RandomDouble(-SAFE_RANGE, SAFE_RANGE);
+
+}
+
+
+
+// Devuelve el resultado en 32bits de un checksum de datos usando el algoritmo "Adler-32" (Maximo 4gb de datos)
+// Primera sobrecarga usando los datos de un Vector.
+uint32_t NGN_Math::Adler32Checksum(const std::vector<uint8_t>& buffer, uint32_t start_index) {
+
+    // Si el indice de inicio esta fuera de los limites,
+    // o si la porcion del buffer a procesar esta vacia,
+    // devolvemos el checksum de una cadena vacia (s1=1, s2=0).
+    if (start_index >= buffer.size()) {
+        return ((0 << 16) | 1);
+    }
+
+    // Variables para la generacion del checksum
+    uint32_t s1 = 1;    // s1 se inicializa a 1
+    uint32_t s2 = 0;    // s2 se inicializa a 0
+
+    // Prepara las variables para el analisis de datos
+    const uint8_t* data_ptr = (buffer.data() + start_index);
+    uint32_t len = buffer.size() - start_index;
+    uint32_t bytes_to_process_in_block = 0;
+
+	// Constante para el modulo de Adler-32
+	const uint32_t MOD_ADLER = 65521;
+
+    // Optimizacion NMAX (de zlib): procesar en bloques para reducir la frecuencia de las operaciones de modulo.
+    // NMAX es el mayor numero de bytes que se pueden procesar antes de que s2 (como uint32_t)
+    // corra el riesgo de desbordarse, incluso en el peor de los casos (todos los bytes 0xFF).
+    // El valor 5552 es el estandar usado en zlib.
+    // NMAX = 5552 se elige porque es el limite matemático para el numero de bytes que pueden ser sumados en s1 y s2
+    // (siendo s2 el limitante) antes de que s2 corra el riesgo de desbordar un uint32_t, asumiendo el peor caso de valores de entrada.
+    // No tiene que ver con alineaciones de memoria o tamaños de cache como podrian tenerlo valores como 2048 o 4096 en otros contextos.
+    // Es puramente una restriccion aritmética para garantizar la correccion y optimizar el rendimiento.
+    const uint32_t NMAX = 5552;
+
+    // Bucle de analisis
+    while (len > 0) {
+
+        // Calcula el tamaño del bloque
+        bytes_to_process_in_block = (len < NMAX) ? len : NMAX;
+        len -= bytes_to_process_in_block;
+
+        // Bucle interno para procesar el bloque actual
+        for (uint32_t i = 0; i < bytes_to_process_in_block; i ++) {
+            s1 += data_ptr[i];
+            s2 += s1;
+        }
+
+        // Incrementa la posicion del puntero de datos
+        data_ptr += bytes_to_process_in_block;
+
+        // Aplicar módulo después de procesar el bloque
+        // (s1 puede haber excedido MOD_ADLER multiples veces, s2 mas aun)
+        s1 %= MOD_ADLER;
+        s2 %= MOD_ADLER;
+
+    }
+
+    // El checksum final se forma combinando s2 y s1
+    return (((s2 & 0xFFFF) << 16) | (s1 & 0xFFFF));
 
 }
