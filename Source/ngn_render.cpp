@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.0-stable ***
+    *** Version 1.19.1-stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -678,10 +678,10 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
                 float dest_y = (float)(map_y * bg->tile_size);
 
                 // Definimos las 4 esquinas de las coordenadas UV del tile original
-                SDL_FPoint uv_tl = {u1, v1};    // Top-Left
-                SDL_FPoint uv_tr = {u2, v1};    // Top-Right
-                SDL_FPoint uv_bl = {u1, v2};    // Bottom-Left
-                SDL_FPoint uv_br = {u2, v2};    // Bottom-Right
+                SDL_FPoint uv_a = {u1, v1};    // Top-Left
+                SDL_FPoint uv_b = {u2, v1};    // Top-Right
+                SDL_FPoint uv_c = {u1, v2};    // Bottom-Left
+                SDL_FPoint uv_d = {u2, v2};    // Bottom-Right
 
                 // Parametros del FLIP del tile
                 switch (flip) {
@@ -689,46 +689,52 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
                         // No hacer nada
                         break;
                     case 2: // Flip H
-                        std::swap(uv_tl, uv_tr);
-                        std::swap(uv_bl, uv_br);
+                        std::swap(uv_a, uv_b);
+                        std::swap(uv_c, uv_d);
                         break;
                     case 4: // Flip V
-                        std::swap(uv_tl, uv_bl);
-                        std::swap(uv_tr, uv_br);
+                        std::swap(uv_a, uv_c);
+                        std::swap(uv_b, uv_d);
                         break;
                     case 8: // 180º (Flip H + Flip V)
-                        std::swap(uv_tl, uv_br);
-                        std::swap(uv_tr, uv_bl);
+                        std::swap(uv_a, uv_d);
+                        std::swap(uv_b, uv_c);
                         break;
                     case 16: // 90º CW (Rotar a la derecha)
                         {
-                            SDL_FPoint temp = uv_tl;
-                            uv_tl = uv_bl;
-                            uv_bl = uv_br;
-                            uv_br = uv_tr;
-                            uv_tr = temp;
+                            SDL_FPoint temp_a = uv_a;
+                            SDL_FPoint temp_b = uv_b;
+                            SDL_FPoint temp_c = uv_c;
+                            SDL_FPoint temp_d = uv_d;
+                            uv_a = temp_b;
+                            uv_b = temp_d;
+                            uv_c = temp_a;
+                            uv_d = temp_c;
                         }
                         break;
                     case 32: // 90º CCW (Rotar a la izquierda)
                         {
-                            SDL_FPoint temp = uv_tl;
-                            uv_tl = uv_tr;
-                            uv_tr = uv_br;
-                            uv_br = uv_bl;
-                            uv_bl = temp;
+                            SDL_FPoint temp_a = uv_a;
+                            SDL_FPoint temp_b = uv_b;
+                            SDL_FPoint temp_c = uv_c;
+                            SDL_FPoint temp_d = uv_d;
+                            uv_a = temp_c;
+                            uv_b = temp_a;
+                            uv_c = temp_d;
+                            uv_d = temp_b;
                         }
                         break;
                 }
 
                 // Crea los 6 vertices para el quad con las UV's ya transformadas
                 // Triangulo 1
-                vertex.push_back({{dest_x, dest_y}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_tl });
-                vertex.push_back({{(dest_x + bg->tile_size), dest_y}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_tr});
-                vertex.push_back({{dest_x, (dest_y + bg->tile_size)}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_bl});
+                vertex.push_back({{dest_x, dest_y}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_a });
+                vertex.push_back({{(dest_x + bg->tile_size), dest_y}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_b});
+                vertex.push_back({{dest_x, (dest_y + bg->tile_size)}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_c});
                 // Triangulo 2
-                vertex.push_back({{(dest_x + bg->tile_size), dest_y}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_tr});
-                vertex.push_back({{(dest_x + bg->tile_size), (dest_y + bg->tile_size)}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_br});
-                vertex.push_back({{dest_x, (dest_y + bg->tile_size)}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_bl});
+                vertex.push_back({{(dest_x + bg->tile_size), dest_y}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_b});
+                vertex.push_back({{(dest_x + bg->tile_size), (dest_y + bg->tile_size)}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_d});
+                vertex.push_back({{dest_x, (dest_y + bg->tile_size)}, {0xFF, 0xFF, 0xFF, 0xFF}, uv_c});
 
             }
         }

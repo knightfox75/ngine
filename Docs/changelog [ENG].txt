@@ -1,4 +1,10 @@
 --------------------------------------------------------------------------------
+2025-06-29 Ver.1.19.1-stable
+--------------------------------------------------------------------------------
+- Fixed a bug in the TiledBg() method of the NGN_Render class, where tiles rotated to the right or left were not being rendered correctly.
+
+
+--------------------------------------------------------------------------------
 2025-06-27 Ver.1.19.0-stable
 --------------------------------------------------------------------------------
 - A part of the NGN_Camera class has been rewritten to avoid conflicts when using virtual-sized backgrounds. For this purpose, the option to have more than one tile and texture background per layer has been removed.
