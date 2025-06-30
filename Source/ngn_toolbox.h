@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.1-stable ***
+    *** Version 1.20.0-wip_0x01 ***
     TOOL BOX - Caja de herramientas
 
     Proyecto iniciado el 1 de Febrero del 2016

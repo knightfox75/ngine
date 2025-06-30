@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.1-stable ***
+    *** Version 1.20.0-wip_0x01 ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -425,7 +425,6 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
     // Elimina los datos del buffer temporal de archivo
     buffer.clear();
 
-
     // Verifica que el archivo es compatible
     if (std::string(collision->header.magic) != MAGIC_STRING_CMAP) {
         ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
@@ -437,6 +436,32 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
     collision->tiles_row_width = (collision->header.width / collision->header.tile_size);
     if ((collision->header.width % collision->header.tile_size) != 0) collision->tiles_row_width ++;
     collision->tile_bytes = (collision->header.tile_size * collision->header.tile_size);
+
+    // Datos de optimizacion para tiles de base 2
+    collision->is_power_of_two = (
+        (collision->header.tile_size > 0)
+        &&
+        ((collision->header.tile_size & (collision->header.tile_size - 1)) == 0)
+        &&
+        (collision->header.tile_size >= COLLISION_MAP_MIN_TILE_SIZE)
+        &&
+        (collision->header.tile_size <= COLLISION_MAP_MAX_TILE_SIZE)
+    );
+    if (collision->is_power_of_two) {
+        uint32_t shift = 0;
+        uint32_t temp = collision->header.tile_size;
+        while (temp > 1) {
+            temp >>= 1;
+            shift ++;
+        }
+        collision->bit_shift = shift;
+        collision->bit_mask = (collision->header.tile_size - 1);
+    } else {
+        collision->bit_shift = 0;
+        collision->bit_mask = 0;
+    }
+
+
 
     /*
     uint32_t bb = 0;

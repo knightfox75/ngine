@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.1-stable ***
+    *** Version 1.20.0-wip_0x01 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -120,6 +120,19 @@ NGN_SpriteData::~NGN_SpriteData() {
 
 // Constructor
 NGN_CollisionMapData::NGN_CollisionMapData() {
+
+    palette.clear();
+    tiles.clear();
+    tmap.clear();
+
+    tile_bytes = 0;                     // Tamaño de cada tile en bytes
+    tiles_row_width = 0;                // Tamaño en pixeles de una fila de tiles
+
+    is_power_of_two = false;            // El tamaño de tile es potencia de 2
+    bit_shift = 0;                      // De ser potencia de 2, que bitshift hay que utilizar en las operaciones de division
+    bit_mask = 0;                       // De ser potencia de 2, que bitmask hay que aplicar para el calculo de los modulos
+
+
 }
 
 // Destructor

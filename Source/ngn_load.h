@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.1-stable ***
+    *** Version 1.20.0-wip_0x01 ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -56,6 +56,8 @@
 static const std::string MAGIC_STRING_TBG = "NGN TILEDBG";
 static const std::string MAGIC_STRING_SPR = "NGN SPRITE";
 static const std::string MAGIC_STRING_CMAP = "NGN COLLISION MAP";
+static const uint32_t COLLISION_MAP_MIN_TILE_SIZE = 8;
+static const uint32_t COLLISION_MAP_MAX_TILE_SIZE = 1024;
 
 
 

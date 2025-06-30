@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.1-stable ***
+    *** Version 1.20.0-wip_0x01 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -53,9 +53,9 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
-static const int32_t NGN_VERSION_MINOR = 19;                    // Version menor
-static const int32_t NGN_VERSION_PATCH = 1;                     // Version parche
-static const std::string NGN_VERSION_METADATA = "stable";       // Version metadatos
+static const int32_t NGN_VERSION_MINOR = 20;                    // Version menor
+static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
+static const std::string NGN_VERSION_METADATA = "wip_0x01";     // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;            // Valor de "defecto"
@@ -260,6 +260,10 @@ class NGN_CollisionMapData {
 
         uint32_t tile_bytes;                // Tamaño de cada tile en bytes
         uint32_t tiles_row_width;           // Tamaño en pixeles de una fila de tiles
+
+        bool is_power_of_two;               // El tamaño de tile es potencia de 2
+        uint32_t bit_shift;                 // De ser potencia de 2, que bitshift hay que utilizar en las operaciones de division
+        uint32_t bit_mask;                  // De ser potencia de 2, que bitmask hay que aplicar para el calculo de los modulos
 
 
     // Private

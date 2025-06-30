@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.19.1-stable ***
+    *** Version 1.20.0-wip_0x01 ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -118,12 +118,26 @@ uint32_t NGN_Collisions::GetPixel(NGN_CollisionMapData* cmap, int32_t position_x
         (position_y >= (int32_t)cmap->header.height)
         ) return 0x00000000;
 
-    // Calcula el offset en el buffer del mapa
-    uint32_t offset = (((position_y / cmap->header.tile_size) * cmap->tiles_row_width) + (position_x / cmap->header.tile_size));
-    // Obten el tile
-    uint32_t t = cmap->tmap[offset];
-    // Calcula el offset en el buffer de tiles
-    offset = ((t * cmap->tile_bytes) + (((position_y % cmap->header.tile_size) * cmap->header.tile_size) + (position_x % cmap->header.tile_size)));
+    // Obtencion del tile/idx de pixel
+    uint32_t offset = 0;
+    uint32_t t = 0;
+    // Segun si el tamaño de tile se ha detectado como potencia de 2 o no
+    if (cmap->is_power_of_two) {
+        // Calcula el offset en el buffer del mapa
+        offset = (((position_y >> cmap->bit_shift) * cmap->tiles_row_width) + (position_x >> cmap->bit_shift));
+        // Obten el tile
+        t = cmap->tmap[offset];
+        // Calcula el offset en el buffer de tiles
+        offset = ((t * cmap->tile_bytes) + (((position_y & cmap->bit_mask) << cmap->bit_shift) + (position_x & cmap->bit_mask)));
+    } else {
+        // Calcula el offset en el buffer del mapa
+        offset = (((position_y / cmap->header.tile_size) * cmap->tiles_row_width) + (position_x / cmap->header.tile_size));
+        // Obten el tile
+        t = cmap->tmap[offset];
+        // Calcula el offset en el buffer de tiles
+        offset = ((t * cmap->tile_bytes) + (((position_y % cmap->header.tile_size) * cmap->header.tile_size) + (position_x % cmap->header.tile_size)));
+    }
+
     // Obten el pixel del tile
     uint8_t p = cmap->tiles[offset];
     // Devuelve el color del pixel segun la paleta
