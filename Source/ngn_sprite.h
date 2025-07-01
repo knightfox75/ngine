@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x01 ***
+    *** Version 1.20.0-wip_0x02 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -140,6 +140,8 @@ class NGN_Sprite {
         // Fija el centro del Sprite (Posicion relativa desde el centro REAL)
         void SetCenter(float x, float y);
 
+        // Funcion interna de la libreria: Calcula el radio del sprite para los calculos avanzados de colision
+        float GetSpriteRadius();
 
         // Gestion de colisionadores
         struct ColliderData{
@@ -217,6 +219,12 @@ class NGN_Sprite {
         // Propiedades internas del Sprite
         Size2 original;         		// Tamaño original
         int32_t animation_timer;        // Control de velocidad de la animacion
+        // Gestion del tamaño del radio del sprite
+        struct {
+            float radius;
+            float width;
+            float height;
+        } radius_info;
 
         // Crea el objeto que contiene el sprite
         void CreateSprite(

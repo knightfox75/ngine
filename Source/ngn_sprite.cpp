@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x01 ***
+    *** Version 1.20.0-wip_0x02 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -203,6 +203,22 @@ void NGN_Sprite::SetCenter(float x, float y) {
 
     center.x = x;
     center.y = y;
+
+}
+
+
+/*** Funcion interna de la libreria: Calcula el radio del sprite para los calculos avanzados de colision ***/
+float NGN_Sprite::GetSpriteRadius() {
+
+    // Decide si hay que recalcular el radio (ha cambiado de tamaño?)
+    if ((radius_info.width != width) || (radius_info.height != height)) {
+        radius_info.radius = (std::sqrt((width * width) + (height * height)) / 2.0f);
+        radius_info.width = width;
+        radius_info.height = height;
+    }
+
+    // Devuelve el valor del radio del sprite
+    return radius_info.radius;
 
 }
 
@@ -522,5 +538,11 @@ void NGN_Sprite::CreateSprite(
     last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
     last_frame = 0;
     ignore_camera_tint = false;
+
+    // Gestion de la geometria del sprite
+    radius_info.radius = -1.0f;
+    radius_info.width = -1.0f;
+    radius_info.height = -1.0f;
+    GetSpriteRadius();
 
 }

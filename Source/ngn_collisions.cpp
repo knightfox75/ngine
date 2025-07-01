@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x01 ***
+    *** Version 1.20.0-wip_0x02 ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -272,21 +272,8 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 /*** Algoritmo de colision por cajas ***/
 bool NGN_Collisions::CheckBoxColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
 
-    // Calculos previos (distancia entre sprites)
-    Vector2 distance;
-    distance.x = std::abs(x1 - x2);
-    distance.y = std::abs(y1 - y2);
-    // Calculos previos (tamaño de la colision)
-    Size2 collision_size;
-    collision_size.width = (w1 / 2.0f) + (w2 / 2.0f);
-    collision_size.height = (h1 / 2.0f) + (h2 / 2.0f);
-
     // Verifica si existe la colision
-    if ((distance.x < collision_size.width) && (distance.y < collision_size.height)) {
-        return true;
-    } else {
-        return false;
-    }
+    return ((std::abs(x1 - x2) < ((w1 + w2) / 2.0f)) && (std::abs(y1 - y2) < ((h1 + h2) / 2.0f)));
 
 }
 
@@ -301,25 +288,23 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
     // Verifica que ambos sprites sean visibles
     if (!spr1->visible || !spr2->visible) return false;
 
-    // Variables
-    int32_t r1 = 0, r2 = 0, dist = 0;   // Colision por circulos
-    Vector2 distance;                   // Colision por cajas
-    Size2 collision_size;
-
     // Decide el metodo para la primera comprobacion
     if ((spr1->rotation != 0.0f) || (spr2->rotation != 0.0f)) {
         // Si alguno esta rotado, colision por circulos
-        r1 = (int32_t)(std::sqrt(std::pow(spr1->width, 2.0f) + std::pow(spr1->height, 2.0f)) / 2.0f);
-        r2 = (int32_t)(std::sqrt(std::pow(spr2->width, 2.0f) + std::pow(spr2->height, 2.0f)) / 2.0f);
-        dist = (int32_t)std::sqrt(std::pow((spr1->position.x - spr2->position.x), 2.0f) + std::pow((spr1->position.y - spr2->position.y), 2.0f));
-        if (dist > (r1 + r2)) return false;
+        const int64_t r1 = (int64_t)spr1->GetSpriteRadius();
+        const int64_t r2 = (int64_t)spr2->GetSpriteRadius();
+        const int64_t rz = ((r1 + r2) * (r1 + r2));
+        const int64_t dx = (int64_t)(spr1->position.x - spr2->position.x);
+        const int64_t dy = (int64_t)(spr1->position.y - spr2->position.y);
+        const int64_t dz = ((dx * dx) + (dy * dy));
+        if (dz > rz) return false;
     } else {
         // Si no lo estan, colision por cajas
-        distance.x = (int32_t)(std::abs(spr1->position.x - spr2->position.x));
-        distance.y = (int32_t)(std::abs(spr1->position.y - spr2->position.y));
-        collision_size.width = (int32_t)((spr1->width / 2.0f) + (spr2->width / 2.0f));
-        collision_size.height = (int32_t)((spr1->height / 2.0f) + (spr2->height / 2.0f));
-        if ((distance.x > collision_size.width) || (distance.y > collision_size.height)) return false;
+        const uint32_t dx = (uint32_t)(std::abs(spr1->position.x - spr2->position.x));
+        const uint32_t dy = (uint32_t)(std::abs(spr1->position.y - spr2->position.y));
+        const uint32_t sw = (uint32_t)((spr1->width / 2.0f) + (spr2->width / 2.0f));
+        const uint32_t sh = (uint32_t)((spr1->height / 2.0f) + (spr2->height / 2.0f));
+        if ((dx > sw) || (dy > sh)) return false;
     }
 
     // Calculo de la zona de interseccion
@@ -331,14 +316,14 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
         w1 = (spr1->width / 2.0f);
         h1 = (spr1->height / 2.0f);
     } else {
-        w1 = (std::sqrt(std::pow(spr1->width, 2.0f) + std::pow(spr1->height, 2.0f)) / 2.0f);
+        w1 = (std::sqrt((spr1->width * spr1->width) + (spr1->height * spr1->height)) / 2.0f);
         h1 = w1;
     }
     if (spr2->rotation == 0.0f) {
         w2 = (spr2->width / 2.0f);
         h2 = (spr2->height / 2.0f);
     } else {
-        w2 = (std::sqrt(std::pow(spr2->width, 2.0f) + std::pow(spr2->height, 2.0f)) / 2.0f);
+        w2 = (std::sqrt((spr2->width * spr2->width) + (spr2->height * spr2->height)) / 2.0f);
         h2 = w2;
     }
 
@@ -421,26 +406,28 @@ bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, float position_x, float posit
     if (!spr->visible) return false;
 
     // Decide el metodo para la primera comprobacion
-    int32_t r = 0.0f;
-    int32_t d = 0.0f;
-    Vector2I32 distance;
     if (spr->rotation != 0.0f) {
         // Si esta rotado, colision por circulos
-        r = (int32_t)(std::sqrt(std::pow(spr->width, 2.0f) + std::pow(spr->height, 2.0f)) / 2.0f);
-        d = (int32_t)std::sqrt(std::pow((spr->position.x - position_x), 2.0f) + std::pow((spr->position.y - position_y), 2.0f));
-        if (d > r) return false;
+        const uint64_t dx = std::abs(spr->position.x - position_x);
+        const uint64_t dy = std::abs(spr->position.y - position_y);
+        const uint64_t r = (uint64_t)spr->GetSpriteRadius();
+        const uint64_t rz = (r * r);
+        const uint64_t dz = ((dx * dx) + (dy * dy));
+        if (dz > rz) return false;
     } else {
         // Si no lo estan, colision por cajas
-        distance.x = (int32_t)(std::abs(spr->position.x - position_x));
-        distance.y = (int32_t)(std::abs(spr->position.y - position_y));
-        if ((distance.x > (int32_t)(spr->width / 2.0f)) || (distance.y > (int32_t)(spr->height / 2.0f))) return false;
+        const uint32_t dx = std::abs(spr->position.x - position_x);
+        const uint32_t dy = std::abs(spr->position.y - position_y);
+        const uint32_t sw = (uint32_t)(spr->width / 2.0f);
+        const uint32_t sh = (uint32_t)(spr->height / 2.0f);
+        if ((dx > sw) || (dy > sh)) return false;
     }
 
     // Renderiza una textura de 1x1 para la comprobacion
-    int32_t x = (int32_t)(spr->position.x - position_x);
-    int32_t y = (int32_t)(spr->position.y - position_y);
+    const int32_t px = (int32_t)(spr->position.x - position_x);
+    const int32_t py = (int32_t)(spr->position.y - position_y);
     SDL_Surface* srf = nullptr;
-    srf = RenderSpriteInSurface(spr, x, y, 1, 1);
+    srf = RenderSpriteInSurface(spr, px, py, 1, 1);
 
     // Analiza si hay datos en el pixel solicitado
     bool collision = false;

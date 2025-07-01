@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x01 ***
+    *** Version 1.20.0-wip_0x02 ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
