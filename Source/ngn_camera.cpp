@@ -1269,36 +1269,54 @@ void NGN_Camera::Reset() {
 
 
 
-/*** Calcula el efecto "shake" para esta capa ***/
-void NGN_Camera::ApplyShake(uint32_t l) {
+//---------------------------------------------------------------
+//  Camera shake — refactored
+//---------------------------------------------------------------
 
-    // Si ya se ha actualizado en este frame, ignora la orden
-    if (runtime_frame == ngn->graphics->runtime_frame) return;
+void NGN_Camera::ApplyShake(std::uint32_t layerIdx)
+{
+    /*───────────────────────────────────────────────────────────
+      Fast‑fail check: if *any* of these is true, no work needed
+    ────────────────────────────────────────────────────────────*/
+    const bool noop =
+        (runtime_frame    == ngn->graphics->runtime_frame) ||
+        animation_pause                               ||
+        (shake_effect.intensity <= 0.0f);
 
-    // Si esta en pausa, ignora la orden
-    if (animation_pause) return;
+    if (noop) return;
 
-    // De existir, actualiza el efecto "shake"
-    if (shake_effect.intensity <= 0.0f) return;
+    /*────────────────────  Depth factor  ──────────────────────*/
+    const float depth = LayerDepth(layerIdx);             // 0.0 – 1.0
+    if (layerIdx == 0) shake_effect.angle_increased = false;
 
-    // Calcula el factor de intensidad segun el tamaño de la capa
-    float deep = 0.0f;
-    Size2I32 layer_size = GetLayerSize(l);
-    if (l == 0) shake_effect.angle_increased = false;
-    if (world.width > world.height) {
-        deep = ((float)layer_size.width / (float) world.width);
-    } else {
-        deep = ((float)layer_size.height / (float) world.height);
-    }
-
-    // Calcula el angulo segun la frecuencia
-    if (!shake_effect.angle_increased || shake_effect.split) {
-        shake_effect.angle += shake_effect.frequency;
-        while (shake_effect.angle > shake_effect.angle_limit) shake_effect.angle -= shake_effect.angle_limit;
+    /*────────────────────  Angle update  ──────────────────────*/
+    if (!shake_effect.angle_increased || shake_effect.split)
+    {
+        constexpr float TAU = 6.28318530718f;              // 2π for wrap‑around
+        shake_effect.angle = std::fmod(
+            shake_effect.angle + shake_effect.frequency,
+            shake_effect.angle_limit > 0.0f ? shake_effect.angle_limit : TAU
+        );
         shake_effect.angle_increased = true;
     }
 
-    // Calcula el offset
-    shake_effect.offset.y = std::round(std::sin(shake_effect.angle) * (shake_effect.intensity * deep));
+    /*────────────────────  Offset compute  ────────────────────*/
+    const float amplitude = shake_effect.intensity * depth;
+    shake_effect.offset.y = static_cast<int32_t>(
+        std::round( std::sin(shake_effect.angle) * amplitude )
+    );
+}
 
+/*-------------------------------------------------------------
+    Helper: relative depth of a layer (0 = back, 1 = front)
+-------------------------------------------------------------*/
+float NGN_Camera::LayerDepth(std::uint32_t layerIdx) const noexcept
+{
+    const Size2I32 size = GetLayerSize(layerIdx);
+    const float    ref  = (world.width > world.height)
+                        ? static_cast<float>(size.width)  / world.width
+                        : static_cast<float>(size.height) / world.height;
+
+    // Clamp to a sane range to avoid nasty surprises
+    return std::clamp(ref, 0.0f, 1.0f);
 }
