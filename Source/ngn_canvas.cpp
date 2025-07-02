@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -214,11 +214,21 @@ void NGN_Canvas::Scale(float w, float h) {
     blit = true;
 
 }
+
 /*** Escala el canvas [Sobrecarga 2 - Ambos ejes a la vez] ***/
 void NGN_Canvas::Scale(float sc) {
 
     // Guarda la escala
     Scale(sc, sc);
+
+}
+
+
+
+/*** Devuelve la escala actual del fondo ***/
+Size2 NGN_Canvas::GetCurrentScale() {
+
+    return scale;
 
 }
 

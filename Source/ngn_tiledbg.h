@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -79,9 +79,6 @@ class NGN_TiledBg {
         float width;                        // Tamaño
         float height;
 
-        uint32_t tile_size;                 // Tamaño del tile
-        Size2I32 map_size;                  // Tamaño del mapa de tiles
-
         Vector2 center;                     // Centro del fondo para su rotacion
 
         double rotation;                    // Rotacion del fondo
@@ -92,22 +89,6 @@ class NGN_TiledBg {
         bool visible;                       // Visibilidad
         int32_t alpha;                      // Nivel de alpha
         SDL_BlendMode blend_mode;           // Modo de mezcla de color
-
-        Vector2 scale;                      // Escala del fondo
-
-        SDL_Texture* backbuffer;            // Backbufer del fondo para su renderizado
-        SDL_Texture* transform_texture;     // Textura para aplicar la transformacion del fondo
-        SDL_Texture* last_buffer;           // Ultimo buffer usado
-
-        // Tamaño del backbuffer
-        Size2I32 bb_size;
-
-        // Ubicacion en el ultimo frame
-        Vector2 last_position;
-        int8_t last_viewport;
-
-        // Modo de render en el ultimo frame
-        bool tile_mode;
 
         // Posiciona el fondo
         void Position(float position_x, float position_y);
@@ -120,6 +101,7 @@ class NGN_TiledBg {
         //  Escala el fondo
         void Scale(float w, float h);   // [Sobrecarga 1]       Escala los dos ejes por separado
         void Scale(float factor);       // [Sobrecarga 2]       Escala ambos ejes a la vez
+        Size2 GetCurrentScale();        // Devuelve la escala actual
 
         // Rota el fondo
         void Rotate(double degrees);
@@ -127,8 +109,36 @@ class NGN_TiledBg {
         // Fija el centro del fondo (Posicion relativa desde el centro REAL)
         void SetCenter(float x, float y);
 
-        // Si se da el caso, capa en la camara virtual 2D donde esta ubicado
-        int32_t camera_layer;
+        // Selecciona un color de tinte (sin parametros, resetea el color)
+        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+        bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
+
+
+
+    // Private
+    private:
+
+        // Ajuste de permisos
+        friend class NGN_Render;
+        friend class NGN_Camera;
+
+        uint32_t tile_size;                 // Tamaño del tile
+        Size2I32 map_size;                  // Tamaño del mapa de tiles
+
+        // Buffers para la creacion de la textura final del fondo a partir de los tiles
+        SDL_Texture* backbuffer;            // Backbufer del fondo para su renderizado
+        SDL_Texture* transform_texture;     // Textura para aplicar la transformacion del fondo
+        SDL_Texture* last_buffer;           // Ultimo buffer usado
+
+        // Propiedades del fondo
+        Vector2 scale;                      // Escala del fondo
+
+        // Tamaño del backbuffer
+        Size2I32 bb_size;
+
+        // Ubicacion en el ultimo frame
+        Vector2 last_position;
+        int8_t last_viewport;
 
         // Datos del fondo virtual para la camara 2D
         struct {
@@ -139,16 +149,13 @@ class NGN_TiledBg {
             bool enabled;                       // El fondo lo gestiona la camara en modo virtual
         } virtual_bg;
 
+        // Si se da el caso, capa en la camara virtual 2D donde esta ubicado
+        int32_t camera_layer;
+
         // Tinte del fondo de tiles
-        Rgba tint_color;        // Color a aplicar
-        // Selecciona un color de tinte (sin parametros, resetea el color)
-        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+        Rgba tint_color;
+        Rgba last_tint_color;
         bool NewTint();
-        bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
-
-
-    // Private
-    private:
 
         // Crea el objeto que contiene el fondo
         void CreateTiledBg(
@@ -156,9 +163,6 @@ class NGN_TiledBg {
             int32_t position_x,     // Posicion X del fondo
             int32_t position_y      // Posicion Y del fondo
         );
-
-        // Ultimo color de tinta usado
-        Rgba last_tint_color;
 
 };
 

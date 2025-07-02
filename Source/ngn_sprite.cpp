@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -161,9 +161,11 @@ void NGN_Sprite::Size(float w, float h) {
 
     // Aplica el nuevo tamaño
     width = w;
-    original.width = width;
+    original_size.width = width;
     height = h;
-    original.height = height;
+    original_size.height = height;
+    current_scale.width = 1.0f;
+    current_scale.height = 1.0f;
 
 }
 
@@ -173,15 +175,29 @@ void NGN_Sprite::Size(float w, float h) {
 void NGN_Sprite::Scale(float w, float h) {
 
     // Aplica la escala
-    width = original.width * w;
-    height = original.height * h;
+    width = original_size.width * w;
+    height = original_size.height * h;
+
+    // Guarda la escala
+    current_scale.width = w;
+    current_scale.height = h;
 
 }
+
 /*** Escala un sprite [Sobrecarga 2 - Ambos ejes a la vez] ***/
 void NGN_Sprite::Scale(float scale) {
 
     // Aplica la escala
     Scale(scale, scale);
+
+}
+
+
+
+/*** Devuelve la escala actual del sprite ***/
+Size2 NGN_Sprite::GetCurrentScale() {
+
+    return current_scale;
 
 }
 
@@ -425,18 +441,27 @@ void NGN_Sprite::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
 
 
 
+/*** Devuelve la capa actual en la camara que tienes asignado (-1 si no estas en ninguna capa) ***/
+int32_t NGN_Sprite::GetCameraLayer() {
+
+    return camera_layer;
+
+}
+
+
+
 /*** Devuelve si se ha cambiado el color de tinta en este frame ***/
 bool NGN_Sprite::NewTint() {
 
     if (runtime_frame == ngn->graphics->runtime_frame) return true;
 
     bool color_mod = ((tint_color.r != last_tint_color.r) || (tint_color.g != last_tint_color.g) || (tint_color.b != last_tint_color.b));
-    color_mod |= frame != last_frame;
+    color_mod |= (frame != tint_last_frame);
 
     if (!color_mod) return false;
 
     last_tint_color = tint_color;
-    last_frame = frame;
+    tint_last_frame = frame;
     return true;
 
 }
@@ -471,8 +496,10 @@ void NGN_Sprite::CreateSprite(
     }
 
     // Guarda el tamaño original al crear el sprite
-    original.width = width;
-    original.height = height;
+    original_size.width = width;
+    original_size.height = height;
+    current_scale.width = 1.0f;
+    current_scale.height = 1.0f;
 
     // Tamaño de la caja de colisiones
     if ((box_width != NGN_DEFAULT_VALUE) && (box_height != NGN_DEFAULT_VALUE)) {
@@ -536,13 +563,12 @@ void NGN_Sprite::CreateSprite(
     // Color de tinta
     tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
     last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
-    last_frame = 0;
+    tint_last_frame = 0;
     ignore_camera_tint = false;
 
     // Gestion de la geometria del sprite
     radius_info.radius = -1.0f;
     radius_info.width = -1.0f;
     radius_info.height = -1.0f;
-    GetSpriteRadius();
 
 }

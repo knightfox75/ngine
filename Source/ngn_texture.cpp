@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -93,8 +93,10 @@ NGN_Texture::NGN_Texture(
     linked = false;
 
     // Guarda el tamaño original al crear la textura
-    original.width = width;
-    original.height = height;
+    original_size.width = width;
+    original_size.height = height;
+    current_scale.width = 1.0f;
+    current_scale.height = 1.0f;
 
     // Posicion
     if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {
@@ -216,9 +218,11 @@ void NGN_Texture::Size(float w, float h) {
 
     // Aplica el nuevo tamaño
     width = w;
-    original.width = width;
+    original_size.width = width;
     height = h;
-    original.height = height;
+    original_size.height = height;
+    current_scale.width = 1.0f;
+    current_scale.height = 1.0f;
 
 }
 
@@ -228,15 +232,29 @@ void NGN_Texture::Size(float w, float h) {
 void NGN_Texture::Scale(float w, float h) {
 
     // Aplica la escala
-    width = original.width * w;
-    height = original.height * h;
+    width = original_size.width * w;
+    height = original_size.height * h;
+
+    // Guarda la escala
+    current_scale.width = w;
+    current_scale.height = h;
 
 }
+
 /*** Escala una textura [Sobrecarga 2 - Ambos ejes a la vez] ***/
 void NGN_Texture::Scale(float scale) {
 
     // Aplica la escala
     Scale(scale, scale);
+
+}
+
+
+
+/*** Devuelve la escala actual ***/
+Size2 NGN_Texture::GetCurrentScale() {
+
+    return current_scale;
 
 }
 
@@ -299,6 +317,15 @@ void NGN_Texture::SetTintColor(uint8_t r, uint8_t g, uint8_t b) {
 
 
 
+/*** Capa en al camara 2d (de estar asignada, si no -1) ***/
+int32_t NGN_Texture::GetCameraLayer() {
+
+    return camera_layer;
+
+}
+
+
+
 /*** Devuelve si se ha cambiado el color de tinta en este frame ***/
 bool NGN_Texture::NewTint() {
 
@@ -335,8 +362,10 @@ void NGN_Texture::CreateTexture(
     linked = true;
 
     // Guarda el tamaño original al crear la textura
-    original.width = width;
-    original.height = height;
+    original_size.width = width;
+    original_size.height = height;
+    current_scale.width = 1.0f;
+    current_scale.height = 1.0f;
 
     // Posicion
     if ((position_x != NGN_DEFAULT_VALUE) && (position_y != NGN_DEFAULT_VALUE)) {

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -95,8 +95,6 @@ class NGN_Canvas {
         bool flip_h;                        // Flip de la capa
         bool flip_v;
 
-        Size2 scale;                        // Escala actual
-
         // Posiciona la capa
         void Position(float position_x, float position_y);
         void Position(Vector2 pos);
@@ -111,6 +109,7 @@ class NGN_Canvas {
         //  Escala una capa
         void Scale(float w, float h);   // [Sobrecarga 1]       Escala los dos ejes por separado
         void Scale(float sc);           // [Sobrecarga 2]       Escala ambos ejes a la vez
+        Size2 GetCurrentScale();        // Devuelve la escala actual
 
         // Rota la capa
         void Rotate(double degrees);
@@ -151,19 +150,16 @@ class NGN_Canvas {
         uint32_t GetPixelColor(int32_t x, int32_t y);
         Rgba GetPixelRgba(int32_t x, int32_t y);
 
-        // Convierte el buffer a textura
-        void Blit();
-
-        // Tinte del canvas
-        Rgba tint_color;        // Color a aplicar
         // Selecciona un color de tinte (sin parametros, resetea el color)
         void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
-        bool NewTint();
 
 
 
     // Segmento privado
     private:
+
+        // Ajuste de permisos
+        friend class NGN_Render;
 
         // Limpieza del surface
         void BackbufferCleanUp();
@@ -176,14 +172,20 @@ class NGN_Canvas {
         // Devuelve el color en formato RGBA
         Rgba GetRgbaColor(uint32_t color);
 
+        // Propiedades adicionales
+        Size2 scale;                        // Escala actual
+
         // Tamaño en pixeles del buffer de pixeles
         int32_t surface_width, surface_height;
 
-        // Flag de conversion a textura
+        // Convierte el buffer a textura
         bool blit;
+        void Blit();
 
-        // Ultimo color de tinta usado
+        // Tinte del canvas
+        Rgba tint_color;
         Rgba last_tint_color;
+        bool NewTint();
 
 };
 

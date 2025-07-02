@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -151,6 +151,18 @@ void NGN_TiledBg::Scale(float factor) {
 
 
 
+/*** Devuelve la escala actual del fondo ***/
+Size2 NGN_TiledBg::GetCurrentScale() {
+
+    Size2 s;
+    s.width = scale.x;
+    s.height = scale.y;
+    return s;
+
+}
+
+
+
 /*** Rota el fondo los grados solicitados ***/
 void NGN_TiledBg::Rotate(double degrees) {
 
@@ -225,7 +237,6 @@ void NGN_TiledBg::CreateTiledBg(
     last_position.x = NGN_DEFAULT_VALUE;
     last_position.y = NGN_DEFAULT_VALUE;
     last_viewport = -1;
-    tile_mode = true;
 
     center.x = 0;
     center.y = 0;

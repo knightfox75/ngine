@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -57,7 +57,39 @@
 /*** Definicion de la clase ***/
 class NGN_Sprite {
 
-   // Public
+    // Definicion de tipos internos
+    private:
+
+        // Ajuste de permisos
+        friend class NGN_Graphics;
+        friend class NGN_Render;
+        friend class NGN_Collisions;
+        friend class NGN_Camera;
+
+        // Datos de la animacion
+        struct animation_data{
+            std::string name;                   // Nombre de la animacion
+            int32_t id;                         // ID de la animacion
+            int32_t first_frame;                // Primer frame de la animacion
+            int32_t last_frame;                 // Ultimo frame (inclusive) de la animacion
+            int32_t loop;                       // Frame que es el punto de loop
+            int32_t frame_duration;             // Duracion de cada frame de la animacion en ciclos del juego
+        };
+
+        // Datos de las cajas de colision
+        struct ColliderData{
+            std::string name;                   // ID (nombre) del collider
+            struct {
+                float x;                        // Posicion X respecto al centro del sprite
+                float y;                        // Posicion Y respecto al centro del sprite
+            } offset;
+            float width;                        // Ancho del collider
+            float height;                       // Altura del Collider
+            bool enabled;                       // Colisionador activo
+        };
+
+
+    // Public
     public:
 
         // Contructor (1ra sobrecarga)
@@ -106,7 +138,6 @@ class NGN_Sprite {
                 float y;            // Offset vertical de la caja
             } offset;
         } box;                      // Caja principal de colision
-
         bool box_enabled;           // Caja principal de colisiones habilitada
 
         bool visible;               // Visibilidad
@@ -133,28 +164,13 @@ class NGN_Sprite {
         //  Escala un Sprite
         void Scale(float w, float h);   // [Sobrecarga 1]       Escala los dos ejes por separado
         void Scale(float scale);        // [Sobrecarga 2]       Escala ambos ejes a la vez
+        Size2 GetCurrentScale();        // Devuelve la escala actual del sprite
 
         // Rota el Sprite
         void Rotate(double degrees);
 
         // Fija el centro del Sprite (Posicion relativa desde el centro REAL)
         void SetCenter(float x, float y);
-
-        // Funcion interna de la libreria: Calcula el radio del sprite para los calculos avanzados de colision
-        float GetSpriteRadius();
-
-        // Gestion de colisionadores
-        struct ColliderData{
-            std::string name;       // ID (nombre) del collider
-            struct {
-                float x;            // Posicion X respecto al centro del sprite
-                float y;            // Posicion Y respecto al centro del sprite
-            } offset;
-            float width;            // Ancho del collider
-            float height;           // Altura del Collider
-            bool enabled;           // Colisionador activo
-        };
-        std::vector<ColliderData> colliders;    // Colisionadores adicionales
 
         // Añade un nuevo collider
         int32_t AddCollider(
@@ -164,67 +180,68 @@ class NGN_Sprite {
             float width,                // Ancho del colisionador
             float height                // Altura del colisionador
         );
-
         // Busca la ID de un collider, devuelve -1 si no se encuentra
         int32_t GetColliderId(std::string name);
-
         // Habilita o deshabilita un collider
         int32_t ColliderEnabled(std::string name, bool status);
-
         // Elimina un collider
         int32_t RemoveCollider(std::string name);
 
-
-
         // Gestor de animaciones
-        int32_t frame;                          // Fotograma actual
-        int32_t total_frames;                   // Numero total de fotogramas
-        struct animation_data{
-            std::string name;                   // Nombre de la animacion
-            int32_t id;                         // ID de la animacion
-            int32_t first_frame;                // Primer frame de la animacion
-            int32_t last_frame;                 // Ultimo frame (inclusive) de la animacion
-            int32_t loop;                       // Frame que es el punto de loop
-            int32_t frame_duration;             // Duracion de cada frame de la animacion en ciclos del juego
-        };
-        std::vector<animation_data> animation;      // Vector con las animaciones
+        int32_t frame;                                  // Fotograma actual
+        int32_t total_frames;                           // Numero total de fotogramas
         int32_t AddAnimation(
-            std::string name,                       // Nombre de la animacion
-            int32_t first_frame,                    // Primer fotograma de la animacion
-            int32_t last_frame,                     // Ultimo fotograma de la animacion
-            int32_t loop,                           // Fotograma "punto de loop"
-            int32_t frame_duration                  // Duracion en ciclos de cada fotograma
+            std::string name,                           // Nombre de la animacion
+            int32_t first_frame,                        // Primer fotograma de la animacion
+            int32_t last_frame,                         // Ultimo fotograma de la animacion
+            int32_t loop,                               // Fotograma "punto de loop"
+            int32_t frame_duration                      // Duracion en ciclos de cada fotograma
             );
         int32_t SetAnimation(std::string name = "");    // Selecciona una animacion a reproducir
         void PlayAnimation();                           // Reproduce la animacion seleccionada
         animation_data current_animation;               // Parametros de la animacion actual
         bool animation_pause;                           // Pausa la animacion actual
 
-        // Si se da el caso, capa en la camara virtual 2D donde esta ubicado.
-        int32_t camera_layer;
-        uint32_t runtime_frame;         // ID del frame en tiempo de ejecucion
-
-        // Tinte del sprite
-        Rgba tint_color;        // Color a aplicar
         // Selecciona un color de tinte (sin parametros, resetea el color)
         void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
-        bool NewTint();
         bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
+
+        // Devuelve la capa actual en la camara que tienes asignada (-1 si no estas en ninguna capa)
+        int32_t GetCameraLayer();
 
 
 
     // Private
     private:
 
-        // Propiedades internas del Sprite
-        Size2 original;         		// Tamaño original
-        int32_t animation_timer;        // Control de velocidad de la animacion
+        // Gestion de colisionadores
+        std::vector<ColliderData> colliders;        // Colisionadores adicionales
+
+        // Gestion de animaciones
+        std::vector<animation_data> animation;      // Vector con las animaciones
+        int32_t animation_timer;                    // Control de velocidad de la animacion
+
+        // Propiedades de la escala
+        Size2 original_size;         		        // Tamaño original
+        Size2 current_scale;                        // Escala actual
+
         // Gestion del tamaño del radio del sprite
         struct {
             float radius;
             float width;
             float height;
         } radius_info;
+        float GetSpriteRadius();
+
+        // Si se da el caso, capa en la camara virtual 2D donde esta ubicado.
+        int32_t camera_layer;
+        uint32_t runtime_frame;         // ID del frame en tiempo de ejecucion
+
+        // Gestion de la tinta
+        Rgba tint_color;
+        Rgba last_tint_color;
+        int32_t tint_last_frame;
+        bool NewTint();                 // Indica si ha cambiado el color de tinta desde el iltimo frame
 
         // Crea el objeto que contiene el sprite
         void CreateSprite(
@@ -238,11 +255,6 @@ class NGN_Sprite {
             int32_t box_offset_x,       // Offset horizontal de la caja de colisiones
             int32_t box_offset_y        // Offset vertical de la de colisiones
         );
-
-        // Ultimo color de tinta usado
-        Rgba last_tint_color;
-        int32_t last_frame;
-
 
 };
 

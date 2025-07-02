@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -597,8 +597,6 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
         ||
         (ngn->graphics->current_viewport != bg->last_viewport)
         ||
-        !bg->tile_mode
-        ||
         ngn->graphics->force_redraw
         ||
         (bg->last_buffer != target_texture)
@@ -801,7 +799,6 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     bg->last_position.x = bg->position.x;
     bg->last_position.y = bg->position.y;
     bg->last_viewport = ngn->graphics->current_viewport;
-    bg->tile_mode = true;
 
     // Guarda el buffer usando en este frame
     bg->last_buffer = target_texture;

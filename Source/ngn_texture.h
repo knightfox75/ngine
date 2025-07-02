@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -119,6 +119,7 @@ class NGN_Texture {
         //  Escala una textura
         void Scale(float w, float h);   // [Sobrecarga 1]       Escala los dos ejes por separado
         void Scale(float scale);        // [Sobrecarga 2]       Escala ambos ejes a la vez
+        Size2 GetCurrentScale();        // Devuelve la escala actual
 
         // Rota el Texture
         void Rotate(double degrees);
@@ -126,8 +127,29 @@ class NGN_Texture {
         // Fija el centro de la textura (Posicion relativa desde el centro REAL)
         void SetCenter(float x, float y);
 
-        // Si se da el caso, capa en la camara virtual 2D donde esta ubicada.
-        int32_t camera_layer;
+        // Si la textura no esta enlazada, borra el contenido
+        void ClearContent(uint32_t rgba = 0x00000000);
+
+        // Tinte de la textura
+        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);    // Selecciona un color de tinte (sin parametros, resetea el color)
+        bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
+
+        // Capa en al camara 2d (de estar asignada, si no -1)
+        int32_t GetCameraLayer();
+
+
+    // Private
+    private:
+
+        // Ajustes de permisos
+        friend class NGN_Render;
+        friend class NGN_Camera;
+
+        // Propiedades internas de la textura
+        Size2 original_size;         		// Tamaño original
+        Size2 current_scale;                // Escala actual
+        bool linked;                        // Textura creada o enlazada
+        void DefaultValues();               // Carga los parametros por defecto
 
         // Datos de la textura virtual para la camara 2D
         struct {
@@ -138,26 +160,13 @@ class NGN_Texture {
             bool enabled;                       // El fondo lo gestiona la camara en modo virtual
         } virtual_texture;
 
+        // Si se da el caso, capa en la camara virtual 2D donde esta ubicada.
+        int32_t camera_layer;
 
-        // Si la textura no esta enlazada, borra el contenido
-        void ClearContent(uint32_t rgba = 0x00000000);
-
-
-        // Tinte de la textura
-        Rgba tint_color;        // Color a aplicar
-        // Selecciona un color de tinte (sin parametros, resetea el color)
-        void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+        // Gestion de la tinta
+        Rgba tint_color;
+        Rgba last_tint_color;
         bool NewTint();
-        bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
-
-
-    // Private
-    private:
-
-        // Propiedades internas de la textura
-        Size2 original;         			// Tamaño original
-        bool linked;                        // Textura creada o enlazada
-        void DefaultValues();               // Carga los parametros por defecto
 
         // Crea el objeto que contiene la textura
         void CreateTexture(
@@ -167,9 +176,6 @@ class NGN_Texture {
             uint32_t texture_width,         // Ancho de la textura (por defecto, el de la textura)
             uint32_t texture_height         // Altura de la textura (por defecto, la de la textura)
         );
-
-        // Ultimo color de tinta usado
-        Rgba last_tint_color;
 
 };
 

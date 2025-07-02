@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -107,8 +107,6 @@ class NGN_TextLayer {
         bool flip_h;                        // Flip de la capa
         bool flip_v;
 
-        Size2 scale;                        // Escala actual
-
         // Posiciona la capa
         void Position(float position_x, float position_y);
         void Position(Vector2 pos);
@@ -123,15 +121,13 @@ class NGN_TextLayer {
         //  Escala una capa
         void Scale(float w, float h);   // [Sobrecarga 1]       Escala los dos ejes por separado
         void Scale(float sc);           // [Sobrecarga 2]       Escala ambos ejes a la vez
+        Size2 GetCurrentScale();        // Devuelve la escala actual
 
         // Rota la capa
         void Rotate(double degrees);
 
         // Fija el centro de la capa (Posicion relativa desde el centro REAL)
         void SetCenter(float x, float y);
-
-
-        SDL_Texture* backbuffer;            // Backbufer de la capa para su renderizado
 
         Vector2I32 locate;                  // Posicion del cabezal de escritura
 
@@ -188,20 +184,22 @@ class NGN_TextLayer {
             int32_t height;
         } text_boundaries;
 
-
-        // Tinte de la capa de texto
-        Rgba tint_color;        // Color a aplicar
         // Selecciona un color de tinte (sin parametros, resetea el color)
         void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
-        bool NewTint();
 
 
 
     // Segmento privado
     private:
 
-        NGN_TextFont* font;             // Fuente actual
-        NGN_TextureData* background;    // Textura de fondo (opcional)
+        // Ajuste de los permisos
+        friend class NGN_Render;
+
+        // Bufferes internos
+        SDL_Texture* backbuffer;            // Backbufer de la capa para su renderizado
+        NGN_TextFont* font;                 // Fuente actual
+        NGN_TextureData* background;        // Textura de fondo (opcional)
+
         // Tamaño en pixeles del tamaño original de la capa
         int32_t layer_width, layer_height;
 
@@ -210,6 +208,14 @@ class NGN_TextLayer {
 
         // Calcula el tamaño del texto escrito
         void GetTextBoundaries(int32_t x, int32_t y);
+
+        // Propiedades adicionales
+        Size2 scale;                        // Escala actual
+
+        // Tinte de la capa de texto
+        Rgba tint_color;
+        Rgba last_tint_color;
+        bool NewTint();
 
         // Crea el objeto que contiene la capa de texto
         void CreateTextLayer(
@@ -221,9 +227,6 @@ class NGN_TextLayer {
             uint32_t _height,               // Alto de la capa (Toda la pantalla por defecto)
             bool _filtering                 // Filtrado del contenido?
         );
-
-        // Ultimo color de tinta usado
-        Rgba last_tint_color;
 
 };
 

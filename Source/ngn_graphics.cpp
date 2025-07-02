@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x02 ***
+    *** Version 1.20.0-wip_0x03 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -717,6 +717,7 @@ NGN_Sprite* NGN_Graphics::CloneSprite(NGN_Sprite* sprite) {
     _spr->screen = sprite->screen;
     _spr->width = sprite->width;
     _spr->height = sprite->height;
+    _spr->current_scale = sprite->current_scale;
     _spr->center = sprite->center;
     _spr->box = sprite->box;
     _spr->box_enabled = sprite->box_enabled;
@@ -733,6 +734,13 @@ NGN_Sprite* NGN_Graphics::CloneSprite(NGN_Sprite* sprite) {
     _spr->animation_pause = sprite->animation_pause;
     _spr->camera_layer = sprite->camera_layer;
     _spr->runtime_frame = sprite->runtime_frame;
+    _spr->tint_color = sprite->tint_color;
+    _spr->last_tint_color = sprite->last_tint_color;
+    _spr->tint_last_frame = sprite->tint_last_frame;
+    _spr->ignore_camera_tint = sprite->ignore_camera_tint;
+    _spr->radius_info.radius = sprite->radius_info.radius;
+    _spr->radius_info.width = sprite->radius_info.width;
+    _spr->radius_info.height = sprite->radius_info.height;
 
     // Devuelve el clon creado
     return _spr;
