@@ -85,7 +85,7 @@ Actualmente, el motor funciona y se compila en:
 
 ## 📸 Capturas de Pantalla
 
-| Demo de Plataformas | Demo de Sprites | Demo de Tiles |
+| The Lost Mines | ADV Game Demo | Idunn's Grace |
 |:---:|:---:|:---:|
 | ![Screenshot 1](https://ngine.nightfoxandco.com/lib/images/scr01.png) | ![Screenshot 2](https://ngine.nightfoxandco.com/lib/images/scr02.png) | ![Screenshot 3](https://ngine.nightfoxandco.com/lib/images/scr01.png) |
 
