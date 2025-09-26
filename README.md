@@ -1,7 +1,7 @@
 # N'gine - Motor de Juegos 2D
 
 <div align="center">
-    <img src="https://ngine.nightfoxandco.com/images/ngn_logo.png" alt="Logo de N'gine" width="400"/>
+    <img src="https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/ngn_logo.png" alt="Logo de N'gine" width="400"/>
 </div>
 
 <div align="center">
@@ -82,6 +82,13 @@ Actualmente, el motor funciona y se compila en:
 *   **Windows**
 *   **Linux** (probado en Linux Mint)
 *   **Raspberry Pi OS** (anteriormente Raspbian)
+
+## 📸 Capturas de Pantalla
+
+| Demo de Plataformas | Demo de Sprites | Demo de Tiles |
+|:---:|:---:|:---:|
+| ![Screenshot 1](https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/scr01.png) | ![Screenshot 2](https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/scr02.png) | ![Screenshot 3](https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/scr03.png) |
+
 
 ## 📥 Descargar
 
