@@ -1,7 +1,7 @@
 # N'gine - Motor de Juegos 2D
 
 <div align="center">
-    <img src="https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/ngn_logo.png" alt="Logo de N'gine" width="400"/>
+    <img src="https://ngine.nightfoxandco.com/lib/images/ngn_logo.png" alt="Logo de N'gine" width="400"/>
 </div>
 
 <div align="center">
@@ -87,7 +87,7 @@ Actualmente, el motor funciona y se compila en:
 
 | Demo de Plataformas | Demo de Sprites | Demo de Tiles |
 |:---:|:---:|:---:|
-| ![Screenshot 1](https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/scr01.png) | ![Screenshot 2](https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/scr02.png) | ![Screenshot 3](https://raw.githubusercontent.com/knightfox75/ngine/main/docs/images/scr03.png) |
+| ![Screenshot 1](https://ngine.nightfoxandco.com/lib/images/scr01.png) | ![Screenshot 2](https://ngine.nightfoxandco.com/lib/images/scr02.png) | ![Screenshot 3](https://ngine.nightfoxandco.com/lib/images/scr01.png) |
 
 
 ## 📥 Descargar
