@@ -1,8 +1,8 @@
-# N'gine - 2D Game Engine
-
 <div align="center">
-    <img src="https://ngine.nightfoxandco.com/lib/images/ngn_logo.png" alt="N'gine Logo" width="400"/>
+    <img src="https://github.com/knightfox75/ngine/blob/master/Media/ngn_logo.png" alt="N'gine Logo" width="400"/>
 </div>
+
+</br>
 
 <div align="center">
 
@@ -87,7 +87,7 @@ The engine currently runs and compiles on:
 
 | The Lost Mines | ADV Game Demo | Idunn's Grace |
 |:---:|:---:|:---:|
-| ![Screenshot 1](https://ngine.nightfoxandco.com/lib/images/scr01.png) | ![Screenshot 2](https://ngine.nightfoxandco.com/lib/images/scr02.png) | ![Screenshot 3](https://ngine.nightfoxandco.com/lib/images/scr03.png) |
+| ![Screenshot 1](https://github.com/knightfox75/ngine/blob/master/Media/scr01.png) | ![Screenshot 2](https://github.com/knightfox75/ngine/blob/master/Media/images/scr02.png) | ![Screenshot 3](https://github.com/knightfox75/ngine/blob/master/Media/scr03.png) |
 
 ## 📥 Download
 
