@@ -87,7 +87,7 @@ The engine currently runs and compiles on:
 
 | The Lost Mines | ADV Game Demo | Idunn's Grace |
 |:---:|:---:|:---:|
-| ![Screenshot 1](https://github.com/knightfox75/ngine/blob/master/Media/scr01.png) | ![Screenshot 2](https://github.com/knightfox75/ngine/blob/master/Media/images/scr02.png) | ![Screenshot 3](https://github.com/knightfox75/ngine/blob/master/Media/scr03.png) |
+| ![Screenshot 1](https://github.com/knightfox75/ngine/blob/master/Media/scr01.png) | ![Screenshot 2](https://github.com/knightfox75/ngine/blob/master/Media/scr02.png) | ![Screenshot 3](https://github.com/knightfox75/ngine/blob/master/Media/scr03.png) |
 
 ## 📥 Download
 
