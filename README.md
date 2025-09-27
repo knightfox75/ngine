@@ -1,7 +1,5 @@
-# N'gine - Motor de Juegos 2D
-
 <div align="center">
-    <img src="https://ngine.nightfoxandco.com/lib/images/ngn_logo.png" alt="Logo de N'gine" width="400"/>
+    <img src="https://github.com/knightfox75/ngine/blob/master/Media/ngn_logo.png" alt="Logo de N'gine" width="400"/>
 </div>
 
 <div align="center">
