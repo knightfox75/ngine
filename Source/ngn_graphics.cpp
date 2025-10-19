@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x03 ***
+    *** Version 1.20.0-wip_0x04 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -176,13 +176,16 @@ void NGN_Graphics::BootUp() {
 
 /*** Inicializa el engine grafico ***/
 bool NGN_Graphics::Init(
-                          std::string window_name,          // Nombre en la ventana
-                          uint32_t native_width,            // Resolucion Nativa del juego
-                          uint32_t native_height,
-                          int8_t scr_mode,                  // Modo de pantalla
-                          bool bilinear_filter,             // Filtrado bilinear?
-                          bool sync                         // VSYNC activo?
-                         ) {
+    std::string window_name,          // Nombre en la ventana
+    uint32_t native_width,            // Resolucion Nativa del juego
+    uint32_t native_height,
+    int8_t scr_mode,                  // Modo de pantalla
+    bool bilinear_filter,             // Filtrado bilinear?
+    bool sync                         // VSYNC activo?
+) {
+
+    // Fuerza el uso de "OpenGL" como driver de renderizado
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
 
     // Guarda el titulo de la ventana
     window_caption = window_name;
@@ -225,15 +228,6 @@ bool NGN_Graphics::Init(
         return false;
     }
 
-    // Crea el modo de blending de premultiplicado
-    premultiplied_alpha_blend_mode = SDL_ComposeCustomBlendMode(
-        SDL_BLENDFACTOR_ONE,                    // Factor del color fuente
-        SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,    // Factor del color destino
-        SDL_BLENDOPERATION_ADD,                 // Operación para el color
-        SDL_BLENDFACTOR_ONE,                    // Factor del alfa fuente
-        SDL_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,    // Factor del alfa destino
-        SDL_BLENDOPERATION_ADD                  // Operación para el alfa
-    );
 
     // Selecciona el color por defecto del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);

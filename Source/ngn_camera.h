@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x03 ***
+    *** Version 1.20.0-wip_0x04 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -150,8 +150,11 @@ class NGN_Camera {
         // Ejecuta el efecto de "temblor" en la camara
         void Shake(float intensity, float frequency, bool split = true);
 
-        // Asigna el conlor de tinte a una capa
+        // Asigna el color de tinte a una capa
         void SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b);
+
+        // Modifica el valor del auto-scroll de una capa concreta (si es virtual y esta existe)
+        void SetLayerAutoScroll(uint32_t layer_number, float x, float y);
 
         // Reset de la camara
         void Reset();

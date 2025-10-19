@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x03 ***
+    *** Version 1.20.0-wip_0x04 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -334,7 +334,7 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(layer->backbuffer, ngn->graphics->premultiplied_alpha_blend_mode);
+        SDL_SetTextureBlendMode(layer->backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(layer->backbuffer, (uint8_t)_alpha);
     }
 
@@ -420,7 +420,7 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(canvas->backbuffer, ngn->graphics->premultiplied_alpha_blend_mode);
+        SDL_SetTextureBlendMode(canvas->backbuffer, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(canvas->backbuffer, (uint8_t)_alpha);
     }
 
@@ -779,7 +779,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     } else if (_alpha > 0xFF) {
         _alpha = 0xFF;
     }
-    SDL_SetTextureBlendMode(target_texture, ngn->graphics->premultiplied_alpha_blend_mode);
+    SDL_SetTextureBlendMode(target_texture, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(target_texture, (uint8_t)_alpha);
 
     // Color mod
@@ -831,7 +831,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
         _rotation = 180.0f;
     }
     // Modo de mezcla
-    SDL_SetTextureBlendMode(bg->backbuffer, ngn->graphics->premultiplied_alpha_blend_mode);
+    SDL_SetTextureBlendMode(bg->backbuffer, SDL_BLENDMODE_BLEND);
     SDL_SetTextureAlphaMod(bg->backbuffer, 0xFF);
     // Render de la textura con la transformacion aplicada
     SDL_RenderCopyEx(ngn->graphics->renderer, bg->backbuffer, &_source, &_destination, (bg->rotation + _rotation), _center, _flip);

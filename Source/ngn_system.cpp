@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x03 ***
+    *** Version 1.20.0-wip_0x04 ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -223,12 +223,14 @@ void NGN_System::EventUpdate() {
 /*** Devuelve un string con la version actual de N'gine ***/
 std::string NGN_System::GetVersion() {
 
-    std::string version = "";
+    std::string version = "\n";
 
+    version += "----------------------------------------\n";
+    version += " Core Libs\n";
     version += "----------------------------------------\n";
 
     // N'gine
-    version += "N'gine version ";
+    version += "  N'gine version: ";
     version += ngn->toolbox->Int2String(NGN_VERSION_MAJOR, 1, "0");
     version += ".";
     version += ngn->toolbox->Int2String(NGN_VERSION_MINOR, 1, "0");
@@ -241,7 +243,7 @@ std::string NGN_System::GetVersion() {
     // SDL2
     SDL_version sdl_version;
     SDL_GetVersion(&sdl_version);
-    version += "SDL2 version ";
+    version += "  SDL2 version: ";
     version += ngn->toolbox->Int2String(sdl_version.major, 1, "0");
     version += ".";
     version += ngn->toolbox->Int2String(sdl_version.minor, 1, "0");
@@ -251,7 +253,7 @@ std::string NGN_System::GetVersion() {
 
     // SDL_ttf
     const SDL_version* ttf = TTF_Linked_Version();
-    version += "SDL_ttf version ";
+    version += "  SDL_ttf version: ";
     version += ngn->toolbox->Int2String(ttf->major, 1, "0");
     version += ".";
     version += ngn->toolbox->Int2String(ttf->minor, 1, "0");
@@ -260,7 +262,7 @@ std::string NGN_System::GetVersion() {
     version += "\n";
 
     // SFML
-    version += "SFML version ";
+    version += "  SFML version: ";
     version += ngn->toolbox->Int2String(SFML_VERSION_MAJOR, 1, "0");
     version += ".";
     version += ngn->toolbox->Int2String(SFML_VERSION_MINOR, 1, "0");
@@ -270,11 +272,24 @@ std::string NGN_System::GetVersion() {
 
     // LodePNG
     std::string lode(LODEPNG_VERSION_STRING);
-    version += "LodePNG version ";
+    version += "  LodePNG version: ";
     version += lode;
     version += "\n";
 
-    version += "----------------------------------------";
+    // Renderer info
+    version += "----------------------------------------\n";
+    version += " Renderer Information\n";
+    version += "----------------------------------------\n";
+    SDL_RendererInfo renderer_info;
+    SDL_GetRendererInfo(ngn->graphics->renderer, &renderer_info);
+    version += "  Driver: ";
+    version += std::string(renderer_info.name);
+    version += "\n";
+    version += "  Max texture size: ";
+    version += std::to_string(renderer_info.max_texture_width) + "x" + std::to_string(renderer_info.max_texture_height);
+    version += "\n";
+
+    version += "----------------------------------------\n";
 
     return version;
 

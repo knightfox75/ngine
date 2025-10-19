@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x03 ***
+    *** Version 1.20.0-wip_0x04 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -91,8 +91,6 @@ class NGN_Graphics {
         #if !defined (DISABLE_BACKBUFFER)
             SDL_Texture* backbuffer;    // Backbufer para el renderizado
         #endif
-
-        SDL_BlendMode premultiplied_alpha_blend_mode;   // Modo especial de blending premultiplicado
 
         int8_t screen_mode;             // Modo de pantalla actual
         bool vsync;                     // VSYNC Activo?

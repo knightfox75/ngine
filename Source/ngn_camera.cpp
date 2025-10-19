@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x03 ***
+    *** Version 1.20.0-wip_0x04 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -1226,7 +1226,7 @@ void NGN_Camera::Shake(float intensity, float frequency, bool split) {
 
 
 
-// Asigna el conlor de tinte a una capa
+// Asigna el color de tinte a una capa
 void NGN_Camera::SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b) {
 
     if (layer_number >= layer.size()) return;
@@ -1234,6 +1234,24 @@ void NGN_Camera::SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, 
     layer[layer_number].tint_color.r = r;
     layer[layer_number].tint_color.g = g;
     layer[layer_number].tint_color.b = b;
+
+}
+
+
+
+// Modifica el valor del auto-scroll de una capa concreta (si es virtual y esta existe)
+void NGN_Camera::SetLayerAutoScroll(uint32_t layer_number, float x, float y) {
+
+    if (layer_number >= layer.size()) return;
+    if (!layer[layer_number].is_virtual) return;
+
+    if (layer[layer_number].is_tiled) {
+        layer[layer_number].tiled_bg->virtual_bg.scroll.x = -x;
+        layer[layer_number].tiled_bg->virtual_bg.scroll.y = -y;
+    } else if (layer[layer_number].is_texture) {
+        layer[layer_number].texture->virtual_texture.scroll.x = -x;
+        layer[layer_number].texture->virtual_texture.scroll.y = -y;
+    }
 
 }
 
