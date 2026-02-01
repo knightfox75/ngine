@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_GRAPHICS</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_GRAPHICS.H</h1>
+        </header>
+
+        <main>
+            <!-- METHODS INDEX -->
+            <h2>METHODS of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Init">Init</a></li>
+                    <li><a href="#SetMode">SetMode</a></li>
+                    <li><a href="#SetFiltering">SetFiltering</a></li>
+                    <li><a href="#SetVerticalSync">SetVerticalSync</a></li>
+                    <li><a href="#Update">Update</a></li>
+                    <li><a href="#SetViewportClip">SetViewportClip</a></li>
+                    <li><a href="#ShowMouse">ShowMouse</a></li>
+                    <li><a href="#OpenViewport">OpenViewport</a></li>
+                    <li><a href="#CloseViewport">CloseViewport</a></li>
+                    <li><a href="#SelectViewport">SelectViewport</a></li>
+                    <li><a href="#ViewportPosition">ViewportPosition</a></li>
+                    <li><a href="#ViewportLocalFilter">ViewportLocalFilter</a></li>
+                    <li><a href="#DefaultViewport">DefaultViewport</a></li>
+                    <li><a href="#CloneSprite">CloneSprite</a></li>
+                    <li><a href="#GetDesktopResolution">GetDesktopResolution</a></li>
+                    <li><a href="#GetFps">GetFps</a></li>
+                    <li><a href="#ScreenShot">ScreenShot</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHODS DOCUMENTATION BLOCKS -->
+            <section id="Init" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool Init(
+    std::string window_name,            // Name to display in the window caption
+    uint32_t native_width,              // Native game resolution
+    uint32_t native_height,
+    int8_t scr_mode = NGN_SCR_WINDOW,   // Screen mode
+    bool bilinear_filter = false,       // Bilinear filter enabled?
+    bool sync = true                    // Active VSYNC?
+);</code></pre>
+                <h3>Description</h3>
+                <p>Creates the window for the graphic context and initializes it with the specified parameters. Returns FALSE in case of an error. Available screen modes are:</p>
+                <pre><code>NGN_SCR_WINDOW      1       Window mode x1
+NGN_SCR_WINDOW_X2   2       Window mode x2
+NGN_SCR_WINDOW_X3   3       Window mode x3
+NGN_SCR_WINDOW_X4   4       Window mode x4
+NGN_SCR_WINDOW_FULL 0       Full-screen window mode
+NGN_SCR_FULLSCREEN  -1      Full-screen mode</code></pre>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->Init("Ngine Demo", 1280, 720);</code></pre>
+            </section>
+
+            <section id="SetMode" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetMode(int8_t mode);</code></pre>
+                <h3>Description</h3>
+                <p>Changes the graphic mode to the specified one. Graphic mode changes may require that text or canvas layers need to be completely redrawn. Use the "force_redraw" variable of the class to determine if such a redraw should be performed.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->SetMode(NGN_SCR_WINDOW_X2);</code></pre>
+            </section>
+
+            <section id="SetFiltering" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetFiltering(bool enabled);</code></pre>
+                <h3>Description</h3>
+                <p>Sets the state of window bilinear filtering.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->SetFiltering(true);</code></pre>
+            </section>
+
+            <section id="SetVerticalSync" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetVerticalSync(bool enabled);</code></pre>
+                <h3>Description</h3>
+                <p>Sets the state of window vertical synchronization.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->SetVerticalSync(true);</code></pre>
+            </section>
+
+            <section id="Update" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Update();</code></pre>
+                <h3>Description</h3>
+                <p>Attempts to update the window content at a constant speed of 60fps. This function should be called once per frame.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->Update();</code></pre>
+            </section>
+
+            <section id="SetViewportClip" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetViewportClip(
+    int32_t x,      // X position
+    int32_t y,      // Y position
+    int32_t w,      // Width
+    int32_t h       // Height
+);</code></pre>
+                <h3>Description</h3>
+                <p>Defines the visible area of the window.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->SetViewportClip(100, 100, 250, 250);</code></pre>
+            </section>
+
+            <section id="ShowMouse" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ShowMouse(bool visible);</code></pre>
+                <h3>Description</h3>
+                <p>Shows or hides the mouse cursor when hovering over the window.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->ShowMouse(false);</code></pre>
+            </section>
+
+            <section id="OpenViewport" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void OpenViewport(
+    uint8_t id,                             // VIEWPORT ID (0-7)
+    int32_t pos_x,                          // Viewport position
+    int32_t pos_y,
+    uint32_t width,                         // Viewport width
+    uint32_t height,                        // Viewport height
+    uint32_t h_res = NGN_DEFAULT_VALUE,     // Render resolution in the viewport
+    uint32_t v_res = NGN_DEFAULT_VALUE,
+    uint32_t local_filter = false           // Local bilinear filtering
+);</code></pre>
+                <h3>Description</h3>
+                <p>Opens one of the 8 available viewports with the provided parameters. The state of local filtering can be changed with the "local_filter" parameter. This does not affect the general filtering state of the window.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120);
+ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, true);</code></pre>
+            </section>
+
+            <section id="CloseViewport" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void CloseViewport(uint8_t id);</code></pre>
+                <h3>Description</h3>
+                <p>Closes the viewport with the provided ID.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->CloseViewport(3);</code></pre>
+            </section>
+
+            <section id="SelectViewport" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SelectViewport(uint8_t id);</code></pre>
+                <h3>Description</h3>
+                <p>Selects the viewport with the provided ID. From that moment, all commands from <code>ngn->render</code> will be sent to that viewport. All elements sent to the viewport will not be displayed on the screen until the <code>ngn->render->Viewports()</code> command is executed, which renders the content of the viewports at that moment.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->SelectViewport(3);</code></pre>
+            </section>
+
+            <section id="ViewportPosition" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ViewportPosition(uint8_t id, int32_t x, int32_t y);
+void ViewportPosition(uint8_t id, Vector2I32 position);</code></pre>
+                <h3>Description</h3>
+                <p>Positions the specified viewport at the provided coordinates. The reference point is located at the top-left coordinate.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->ViewportPosition(3, 100, 200);</code></pre>
+            </section>
+
+            <section id="ViewportLocalFilter" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ViewportLocalFilter(uint8_t id, bool status);</code></pre>
+                <h3>Description</h3>
+                <p>Changes the state of local filtering for the specified viewport.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->ViewportLocalFilter(3, true);</code></pre>
+            </section>
+
+            <section id="DefaultViewport" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void DefaultViewport();</code></pre>
+                <h3>Description</h3>
+                <p>Sets the main window as the render target.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->DefaultViewport();</code></pre>
+            </section>
+
+            <section id="CloneSprite" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_Sprite* CloneSprite(NGN_Sprite* sprite);</code></pre>
+                <h3>Description</h3>
+                <p>Clones a sprite with the current properties. The resulting sprite is a completely new instance.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_Sprite* spr_clone = ngn->graphics->CloneSprite(spr);</code></pre>
+            </section>
+
+            <section id="GetDesktopResolution" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Size2I32 GetDesktopResolution();</code></pre>
+                <h3>Description</h3>
+                <p>Returns the system desktop resolution at the time of program initiation.</p>
+                <h3>Example</h3>
+                <pre><code>Size2I32 desktop_res = ngn->graphics->GetDesktopResolution();</code></pre>
+            </section>
+
+            <section id="GetFps" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>uint32_t GetFps();</code></pre>
+                <h3>Description</h3>
+                <p>Returns the number of rendered frames in the last second.</p>
+                <h3>Example</h3>
+                <pre><code>uint32_t fps = ngn->graphics->GetFps();</code></pre>
+            </section>
+
+            <section id="ScreenShot" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ScreenShot(
+    std::string path,                   // Path to the destination PNG file
+    NGN_TextureData* overlay = NULL,    // Texture data for overlay
+    uint8_t alpha = 0xFF                // Opacity level of the overlay texture
+);</code></pre>
+                <h3>Description</h3>
+                <p>Saves a capture of the content of the current frame's renderer in PNG format at the specified file and path. Additionally, you can specify a texture to overlay on the capture and specify its opacity level.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->graphics->ScreenShot(“captures/myscreen1.png”);
+ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);</code></pre>
+            </section>
+
+            <!-- PROPERTIES INDEX -->
+            <hr>
+            <h2>PROPERTIES of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_vsync">vsync</a></li>
+                    <li><a href="#prop_filtering">filtering</a></li>
+                    <li><a href="#prop_native_res">native_w / native_h</a></li>
+                    <li><a href="#prop_window_caption">window_caption</a></li>
+                    <li><a href="#prop_cliparea">cliparea</a></li>
+                    <li><a href="#prop_force_redraw">force_redraw</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- PROPERTIES DOCUMENTATION BLOCKS -->
+            <section id="prop_vsync" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool vsync</code></pre>
+                <h3>Description</h3>
+                <p>Indicates if vertical synchronization is active.</p>
+            </section>
+
+            <section id="prop_filtering" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool filtering</code></pre>
+                <h3>Description</h3>
+                <p>Indicates if bilinear filtering is active.</p>
+            </section>
+
+            <section id="prop_native_res" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>int32_t native_w
+int32_t native_h</code></pre>
+                <h3>Description</h3>
+                <p>Stores the native resolution of the game.</p>
+            </section>
+
+            <section id="prop_window_caption" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>std::string window_caption</code></pre>
+                <h3>Description</h3>
+                <p>Stores the text of the window caption.</p>
+            </section>
+
+            <section id="prop_cliparea" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>SDL_Rect cliparea</code></pre>
+                <h3>Description</h3>
+                <p>Stores the values of the clipping area.</p>
+            </section>
+
+            <section id="prop_force_redraw" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool force_redraw</code></pre>
+                <h3>Description</h3>
+                <p>Indicates whether, due to a change in screen mode, the window content needs to be redrawn.</p>
+            </section>
+        </main>
+    </div>
+
+ 	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_graphics.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

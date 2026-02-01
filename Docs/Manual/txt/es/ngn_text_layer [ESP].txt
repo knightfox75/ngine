@@ -1,0 +1,386 @@
+NGN_TEXT_LAYER.H
+v1.20.0-10th-Anniversay
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase: Métodos de la capa de texto
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_TextLayer(
+	NGN_TextFont* default_font,			// Fuente por defecto
+	NGN_TextureData* bg = NULL,			// Datos de textura para el fondo
+	int32_t position_x = 0,				// Posición X (0 por defecto)
+	int32_t position_y = 0,				// Posición Y (0 por defecto)
+	uint32_t _width = DEFAULT_VALUE,	// Ancho de la capa (Toda la pantalla por defecto)                                                  
+	uint32_t _height = DEFAULT_VALUE,	// Alto de la capa (Toda la pantalla por defecto)
+	bool _filtering = false				// Filtrado del contenido?
+);
+
+- Descripción
+Crea una nueva capa de texto, usando la fuente y parámetros especificados. Si se especifican unos datos de textura para el fondo, esta se creará usando el tamaño de la imagen de dicha textura. De especificarse un tamaño de capa, este tendrá preferencia. Si se usa NULL como parámetro del fondo, este será transparente por defecto. De no especificarse ni fondo ni tamaño, la capa ocupará toda la ventana.
+
+- Ejemplo
+NGN_TextLayer* allscreen = new NGN_TextLayer(my_font);
+NGN_TextLayer* smalltext = new NGN_TextLayer(my_font, NULL, 100, 50, 200, 64);
+NGN_TextLayer* textbox = new NGN_TextLayer(my_font, boximg, 20, 500);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Descripción
+Posiciona la capa de texto en la coordenada dada.
+
+- Ejemplo
+textbox->Position(1200, 900);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Descripción
+Mueve la capa de texto en la dirección y velocidades dadas.
+
+- Ejemplo
+textbox->Translate(5.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Size(float w, float h);
+
+- Descripción
+Cambia el tamaño de la capa de texto.
+
+- Ejemplo
+textbox->Size(64, 48);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Descripción
+Escala la capa de texto, según el factor dado. Según la sobrecarga usada, escalara los ejes en conjunto o por separado. La escala por defecto es 1.0f.
+
+- Ejemplo
+textbox->Scale(1.5f);
+textbox->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Rotate(double degrees);
+
+- Descripción
+Rota la capa de texto el número de grados proporcionados.
+
+- Ejemplo
+textbox->Rotate(1.2f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetCenter(float x, float y);
+
+- Descripción
+Especifica, en coordenadas relativas y desde el centro real de la capa de texto, donde se ubicará el centro de rotación de la capa de texto.
+
+- Ejemplo
+textbox->SetCenter(-10, -5);
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2I32 GetSize();
+
+- Descripción
+Devuelve el tamaño original de la capa de texto.
+
+- Ejemplo
+Size2I32 s = textbox->GetSize();
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Descripción
+Establece un color de tinte que se aplicará a la capa de texto.
+Un tinte blanco (255, 255, 255), mostrará la capa de texto con sus colores
+originales, sin alteraciones.
+
+- Ejemplo
+textbox->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2 GetCurrentScale();
+
+- Descripción
+Devuelve una estructura Size2 con la escala actual de la capa de texto.
+
+- Ejemplo
+Size2 current_scale = textbox->GetCurrentScale();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase: Propiedades de la capa de texto
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2 position
+
+- Descripción
+Posición de la capa de texto en la pantalla.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+float width
+float height
+
+- Descripción
+Tamaño de la capa de texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool visible
+
+- Descripción
+Indica si la capa de texto es o no visible.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t alpha
+
+- Descripción
+Nivel de transparencia de la capa de texto, entre 0 y 255.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+SDL_BlendMode blend_mode
+
+- Descripción
+Modo de mezcla de color de la capa de texto. Los modos disponibles son:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE y NGN_BLENDMODE_MODULATE.
+El valor por defecto de esta propiedad es NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool filtering
+
+- Descripción
+Activa o desactiva el filtrado bilineal del contenido de la capa de texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+double rotation
+
+- Descripción
+Rotación de la capa de texto, en grados.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool flip_h
+bool flip_v
+
+- Descripción
+Volteado vertical y horizontal de la capa de texto.
+
+--------------------------------------------------------------------------------
+
+Nota:
+Los cambios de tamaño o escala no afectan al tamaño original del contenedor, solo se cambia el tamaño del contenido al representarse en la pantalla.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase: Métodos de escritura del texto
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+void Cls();
+
+- Descripción
+Borra el contenido de la capa de texto y restaura la posición del cabezal de escritura a la esquina superior-izquierda.
+Si no hay una textura de fondo específica, la capa se rellenará con el color de fondo especificado en el método CanvasColor();
+
+- Ejemplo
+textbox->Cls();
+
+--------------------------------------------------------------------------------
+
+- Método
+void Locate(int32_t x, int32_t y);
+
+- Descripción
+Posiciona el cabezal de escritura en las coordenadas locales de la capa especificadas.
+
+- Ejemplo
+textbox->Locate(100, 50);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Padding(uint32_t pd);
+
+- Descripción
+Define el margen interior que tendrá la capa de texto a partir de ese momento.
+
+- Ejemplo
+textbox->Padding(16);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Font(NGN_TextFont* fnt);
+
+- Descripción
+Selecciona que fuente se usará en la escritura del texto a partir de ese momento.
+
+- Ejemplo
+textbox->Font(my_font);
+
+--------------------------------------------------------------------------------
+
+- Método
+void InkColor(uint8_t r, uint8_t g, uint8_t b);  // [R, G, B]
+void InkColor(uint32_t rgb);                     // [0xRRGGBB]
+
+- Descripción
+Selecciona que color se usará para el texto a partir de ese momento.
+
+- Ejemplo
+textbox->InkColor(255, 200, 40);
+textbox->InkColor(0xFFAA33);
+
+--------------------------------------------------------------------------------
+
+- Método
+void CanvasColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a); 	// [R, G, B, A]
+void CanvasColor(uint32_t rgba);								// [0xRRGGBBAA];
+
+- Descripción
+Selecciona que color se usará para el fondo de la capa de texto a partir del próximo borrado con el método Cls(), en el caso de no estar definida una textura para el fondo.
+
+- Ejemplo
+textbox->CanvasColor(0, 0, 0, 128);
+textbox->CanvasColor(0xFF0000FF);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Print(std::string text);
+
+- Descripción
+Escribe el texto dado a partir de la posición actual del cabezal de escritura, usando el color definido. El caracter "\n" será reconocido como un salto de linea. 
+
+- Ejemplo
+textbox->Print(“Hello World!”);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase: Propiedades de la escritura del texto
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2I32 locate
+
+- Descripción
+Posición actual del cabezal de escritura en la capa de texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} ink;
+
+- Descripción
+Color actual para el texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} canvas;
+
+- Descripción
+Color actual del fondo de la capa de texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+struct {
+    int32_t top;
+    int32_t bottom;
+    int32_t left;
+    int32_t right;
+    int32_t width;
+    int32_t height;
+} text_boundaries;
+
+- Descripción
+Límites actuales del contenido de la capa de texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t padding
+
+- Descripción
+Margen interior actual de la capa de texto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool word_wrap
+
+- Descripción
+Salto automático de línea al alcanzar el límite de la capa (habilitado por defecto).
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool auto_home
+
+- Descripción
+Reinicio automático de la posición del cabezal de escritura al llegar al final de la capa de texto (deshabilitado por defecto).
+
+--------------------------------------------------------------------------------

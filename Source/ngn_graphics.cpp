@@ -1,18 +1,18 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x04 ***
+    *** Version 1.20.0+10th-anniversary ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2026 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -185,7 +185,10 @@ bool NGN_Graphics::Init(
 ) {
 
     // Fuerza el uso de "OpenGL" como driver de renderizado
-    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+    //SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
+
+    // Si es un sistema que usara OpenGL (Linux y variantes), fuerza el espacio sRGB
+    SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
 
     // Guarda el titulo de la ventana
     window_caption = window_name;
@@ -735,6 +738,7 @@ NGN_Sprite* NGN_Graphics::CloneSprite(NGN_Sprite* sprite) {
     _spr->radius_info.radius = sprite->radius_info.radius;
     _spr->radius_info.width = sprite->radius_info.width;
     _spr->radius_info.height = sprite->radius_info.height;
+    _spr->blend_mode = sprite->blend_mode;
 
     // Devuelve el clon creado
     return _spr;

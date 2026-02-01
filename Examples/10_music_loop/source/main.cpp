@@ -3,12 +3,12 @@
     Ejemplo del cambio del punto de loop en una musica
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-	Requiere N'gine 1.19.0-stable o superior
-	(c) 2016 - 2025 by Cesar Rincon "NightFox"
+	Requiere N'gine 1.20.0+10th-anniversary o superior
+	(c) 2016 - 2026 by Cesar Rincon "NightFox"
 	https://nightfoxandco.com
 
     Requiere GCC 14.2.0 MinGW64 (SEH) - 64-bits

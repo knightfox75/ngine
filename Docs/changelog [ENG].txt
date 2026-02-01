@@ -1,4 +1,21 @@
 --------------------------------------------------------------------------------
+2026-02-01 Ver.1.20.0+10th-anniversary
+--------------------------------------------------------------------------------
+- The NGN_Load::CollisionMap() and NGN_Collisions::GetPixel() methods now use bitwise operations (bitshift/bitmask) for coordinate calculation on collision maps with power-of-two tile sizes. This significantly improves performance in the GetPixel function. For non-optimized tile sizes, the traditional calculation using division and modulo is retained.
+- Optimized the NGN_Collisions::HitBox(), NGN_Collisions::PixelPerfect(), and NGN_Collisions::RaycastPoint() methods to minimize the use of computationally expensive mathematical functions (such as square roots).
+- Refined the scope of several properties and methods across various classes. These are shared between the library's internal modules but are now properly hidden from the end-user to strengthen encapsulation.
+- Added the GetCameraLayer() method to the NGN_Sprite, NGN_Texture, and NGN_TiledBg classes. It returns the assigned layer within the 2D virtual camera, or -1 if the object is not registered with the camera.
+- Added the GetCurrentScale() method to the NGN_Sprite, NGN_Texture, NGN_TiledBg, NGN_TextLayer, and NGN_Canvas classes. It returns a Size2 structure containing the object's current scale.
+- Rolled back the alpha channel application algorithm in certain methods of the NGN_Render class, as the previous modification caused incorrect color rendering in some cases.
+- Added the SetLayerAutoScroll() method to the NGN_Camera class, allowing modification of the auto-scroll values for a virtual background.
+- The NGN_System::GetVersion() method now provides additional information regarding the rendering driver currently in use.
+- Set OpenGL as the default rendering driver across all platforms to minimize color discrepancies between systems.
+- Restored blending modes for tiled backgrounds, canvases, and text layers.
+- Added the PauseAllSfx(), ResumeAllSfx(), StopAllSfx(), PauseAllMusics(), ResumeAllMusics(), and StopAllMusics() methods to the NGN_Sound class, enabling global playback control for sound effects and music streams.
+- Added a flag to force the linear sRGB color space when rendering with the OpenGL driver (Linux and non-Windows variants). This corrects color discrepancies between systems.
+
+
+--------------------------------------------------------------------------------
 2025-06-29 Ver.1.19.1-stable
 --------------------------------------------------------------------------------
 - Fixed a bug in the TiledBg() method of the NGN_Render class, where tiles rotated to the right or left were not being rendered correctly.

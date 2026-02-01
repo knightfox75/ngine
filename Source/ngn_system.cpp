@@ -1,18 +1,18 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x04 ***
+    *** Version 1.20.0+10th-anniversary ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2026 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -225,9 +225,9 @@ std::string NGN_System::GetVersion() {
 
     std::string version = "\n";
 
-    version += "----------------------------------------\n";
+    version += "--------------------------------------------------\n";
     version += " Core Libs\n";
-    version += "----------------------------------------\n";
+    version += "--------------------------------------------------\n";
 
     // N'gine
     version += "  N'gine version: ";
@@ -236,7 +236,7 @@ std::string NGN_System::GetVersion() {
     version += ngn->toolbox->Int2String(NGN_VERSION_MINOR, 1, "0");
     version += ".";
     version += ngn->toolbox->Int2String(NGN_VERSION_PATCH, 1, "0");
-    version += "-";
+    version += NGN_VERSION_MD_CHAR;
     version += NGN_VERSION_METADATA;
     version += "\n";
 
@@ -277,9 +277,9 @@ std::string NGN_System::GetVersion() {
     version += "\n";
 
     // Renderer info
-    version += "----------------------------------------\n";
+    version += "--------------------------------------------------\n";
     version += " Renderer Information\n";
-    version += "----------------------------------------\n";
+    version += "--------------------------------------------------\n";
     SDL_RendererInfo renderer_info;
     SDL_GetRendererInfo(ngn->graphics->renderer, &renderer_info);
     version += "  Driver: ";
@@ -289,7 +289,7 @@ std::string NGN_System::GetVersion() {
     version += std::to_string(renderer_info.max_texture_width) + "x" + std::to_string(renderer_info.max_texture_height);
     version += "\n";
 
-    version += "----------------------------------------\n";
+    version += "--------------------------------------------------\n";
 
     return version;
 

@@ -1,0 +1,342 @@
+NGN_CAMERA.H
+v1.17.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+void CreateLayers(uint32_t layers);
+
+- Descripción
+Define el número de capas de las que dispondrá la cámara.
+
+- Ejemplo
+ngn->camera->CreateLayers(4);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height);
+
+- Descripción
+Define el tamaño de la capa de sprites (por defecto, todas las capas tienen el tamaño del fondo de esa capa).
+
+- Ejemplo
+ngn->camera->SetSizeOfSpritesLayer(3, 4000.0f, 2000.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = NULL);
+
+- Descripción
+Inicializa la cámara. Debe especificarse el tamaño del mundo y opcionalmente, el sprite al que seguirá la cámara.
+
+- Ejemplo
+ngn->camera->Setup(4000, 1024, player->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t PushBackground(uint32_t layer_number, NGN_TiledBg* background);
+int32_t PushBackground(uint32_t layer_number, NGN_Texture* texture);
+
+- Descripción
+Añade un fondo a la capa y devuelve su índice en la lista. En caso de error, devuelve -1.
+
+- Ejemplo
+ngn->camera->PushBackground(2, bg_clouds);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t PushVirtualBg(
+	uint32_t layer_number,				// nº de capa
+	NGN_Texture* texture,				// Textura a usar como fondo
+	uint32_t bg_width,					// Ancho "virtual" del fondo
+	uint32_t bg_height,					// Altura "virtual" del fondo
+	uint32_t loop_x,					// nº de pixeles para el bucle en horizontal
+	uint32_t loop_y,					// nº de pixeles para el bucle en vertical
+	float auto_x = DEFAULT_VALUE,		// Velocidad del auto-scroll horizontal
+	float auto_y = DEFAULT_VALUE		// Velocidad del auto-scroll vertical
+);
+
+int32_t PushVirtualBg(
+	uint32_t layer_number,				// nº de capa
+	NGN_TiledBg* background,			// Fondo de tiles a usar
+	uint32_t bg_width,					// Ancho "virtual" del fondo
+	uint32_t bg_height,					// Altura "virtual" del fondo
+	uint32_t loop_x,					// nº de pixeles para el bucle en horizontal
+	uint32_t loop_y,					// nº de pixeles para el bucle en vertical
+	float auto_x = DEFAULT_VALUE,		// Velocidad del auto-scroll horizontal
+	float auto_y = DEFAULT_VALUE		// Velocidad del auto-scroll vertical
+);
+
+- Descripción
+Añade un fondo con un tamaño “virtual” a la capa y devuelve su índice en la lista. En caso de error, devuelve -1.
+Debe especificarse el tamaño virtual del fondo, los puntos de loop en “X” e “Y” y opcionalmente los valores de auto-scroll de este fondo.
+El uso de este método sobrescribe el valor del tamaño de capa para los sprites.
+
+- Ejemplo
+ngn->camera->PushVirtualBg(0, bg0, 100000, 720, 2560, 0, 1, 0);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t PushSprite(uint32_t layer_number, NGN_Sprite* sprite);
+int32_t PushSprite(uint32_t layer_number, NGN_Texture* texture);
+
+- Descripción
+Añade un sprite a la capa y devuelve su índice en la lista. En caso de error, devuelve -1.
+
+- Ejemplo
+ngn->camera->PushSprite(3, player->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+void LookAt(NGN_Sprite* target_sprite);
+void LookAt(uint32_t position_x, uint32_t position_y);
+void LookAt(Vector2I32 pos);
+
+- Descripción
+Indica a la cámara que debe seguir a un sprite concreto o que debe colocarse en una posición específica.
+
+- Ejemplo
+ngn->camera->LookAt(player->sprite);
+ngn->camera->LookAt(1000, 768);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Update();
+
+- Descripción
+Actualiza la vista de la cámara. Esta función debe llamarse una vez por frame y realiza el render de todos los elementos contenidos.
+
+- Ejemplo
+ngn->camera->Update();
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t RemoveBackground(NGN_TiledBg* background);
+int32_t RemoveBackground(NGN_Texture* texture);
+
+- Descripción
+Busca y elimina un fondo de la cámara. En caso de no encontrar ese fondo en la lista, devuelve -1.
+
+- Ejemplo
+ngn->camera->RemoveBackground(bg_clouds);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t RemoveSprite(NGN_Sprite* sprite);
+int32_t RemoveSprite(NGN_Texture* texture);
+
+- Descripción
+Busca y elimina un sprite de la cámara. En caso de no encontrar ese sprite en la lista, devuelve -1.
+
+- Ejemplo
+ngn->camera->RemoveSprite(player->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number);
+int32_t ChangeLayer(NGN_Texture* texture, uint32_t layer_number);
+
+- Descripción
+Cambia de capa a un sprite. En caso de no encontrar ese sprite en la lista, devuelve -1.
+
+- Ejemplo
+ngn->camera->ChangeLayer(player->sprite, 2);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t SendToFront(NGN_Sprite* sprite);
+int32_t SendToFront(NGN_Texture* texture);
+
+- Descripción
+Envía un sprite al frente de la capa asignada. En caso de no encontrar ese sprite en la lista, devuelve -1.
+
+- Ejemplo
+ngn->camera->SendToFront(player->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t SendToBack(NGN_Sprite* sprite);
+int32_t SendToBack(NGN_Texture* texture);
+
+- Descripción
+Envía un sprite al fondo de la capa asignada. En caso de no encontrar ese sprite en la lista, devuelve -1.
+
+- Ejemplo
+ngn->camera->SendToBack(player->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Reset();
+
+- Descripción
+Reinicia la cámara, eliminando todas las capas y las referencias contenidas.
+
+- Ejemplo
+ngn->camera->Reset();
+
+--------------------------------------------------------------------------------
+
+- Método
+bool CheckIfRegistered(NGN_Sprite* sprite);
+bool CheckIfRegistered(NGN_Texture* texture);
+
+- Descripción
+Determina si un sprite o una textura están actualmente registrados y gestionados por la cámara 2D.
+
+- Ejemplo
+bool i = ngn->camera->CheckIfRegistered(bullet->sprite);
+
+--------------------------------------------------------------------------------
+
+- Método
+Vector2 GetLookAt();
+
+- Descripción
+Devuelve un Vector2 con la posición a la que está mirando actualmente la cámara en el mundo.
+
+- Ejemplo
+Vector2 look = ngn->camera->GetLookAt();
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_Sprite* GetTargetSprite();
+
+- Descripción
+Devuelve el sprite que es el objetivo al que sigue la cámara. En caso de no seguir a ningún sprite, devuelve NULL.
+
+- Ejemplo
+NGN_Sprite* target = ngn->camera->GetTargetSprite();
+
+--------------------------------------------------------------------------------
+
+- Método
+Vector2 GetTargetPosition();
+
+- Descripción
+Devuelve la posición a la que se le ha ordenado a la cámara colocarse. Este método puede devolver un resultado que no coincida con el devuelto por el método "GetLookAt()", que indica la posición en el mundo de la cámara respetando los límites de la pantalla.
+
+- Ejemplo
+Vector2 camera_position = ngn->camera->GetTargetPosition();
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2I32 GetRendererSize();
+
+- Descripción
+Devuelve una variable Size2I32 con el tamaño actual del área de renderizado de la cámara.
+
+- Ejemplo
+Size2I32 renderer_area = ngn->camera->GetRendererSize();
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2I32 GetLayerSize(uint32_t layer_number);
+
+- Descripción
+Devuelve una variable Size2I32 con el tamaño de la capa especificada.
+
+- Ejemplo
+Size2I32 layer_size = ngn->camera->GetLayerSize(2);
+
+--------------------------------------------------------------------------------
+
+- Método
+Vector2 GetLayerPosition(uint32_t layer_number);
+
+- Descripción
+Devuelve una variable Vector2 con la posición del punto central de la capa especificada.
+
+- Ejemplo
+Vector2 layer_pos = ngn->camera->GetLayerPosition(2);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Shake(float intensity, float frequency, bool split = true);
+
+- Descripción
+Genera un efecto de temblor vertical en la escena de la cámara.
+El parámetro "intensity" especifica la magnitud del efecto en píxeles.
+El parámetro "frequency" especifica la velocidad del efecto (en radianes por segundo).
+El parámetro "split" determina si el efecto se aplica por separado a las diferentes capas de la escena.
+
+- Ejemplo
+ngn->camera->Shake(3.0f, 0.2f, false);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b);
+
+- Descripción
+Aplica un tinte de color a todos los elementos (texturas, fondos de tiles y sprites) de la capa especificada.
+Si la propiedad "ignore_camera_tint" de un elemento está establecida en "true", ese elemento ignorará esta configuración.
+
+- Ejemplo
+ngn->camera->SetLayerTintColor(4, 96, 255, 192);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetLayerAutoScroll(uint32_t layer_number, float x, float y);
+
+- Descripción
+Modifica los valores del auto-scroll de una capa, siempre y cuando esta esté registrada en la cámara y esté declarada como "virtual".
+
+- Ejemplo
+ngn->camera->SetLayerAutoScroll(4, 0.2f, 0.1f);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Size2I world
+
+- Descripción
+Almacena el tamaño actual del mundo.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2I position
+
+- Descripción
+Almacena la posición actual de la cámara en el mundo.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool animation_pause
+
+- Descripción
+Pausa la animación de todos los sprites si su valor es TRUE.
+
+--------------------------------------------------------------------------------

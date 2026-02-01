@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_IMAGE</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_IMAGE.H</h1>
+        </header>
+
+        <main>
+            <!-- METHODS INDEX -->
+            <h2>METHODS of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#ConvertRawToTextureData">ConvertRawToTextureData</a></li>
+                    <li><a href="#CutOutMask">CutOutMask</a></li>
+                    <li><a href="#HollowMask">HollowMask</a></li>
+                    <li><a href="#AdvancedMask">AdvancedMask</a></li>
+                    <li><a href="#RendererToSurface">RendererToSurface</a></li>
+                    <li><a href="#SurfaceToRaw">SurfaceToRaw</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHODS DOCUMENTATION BLOCKS -->
+            <section id="ConvertRawToTextureData" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_TextureData* ConvertRawToTextureData(NGN_RawImage* raw);</code></pre>
+                <h3>Description</h3>
+                <p>Converts an image in RAW format to texture data. Returns NULL in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_RawImage* pixels = ngn->load->SpriteAsRaw("data/coin.spr", 3);
+NGN_TextureData* coin_data = ngn->image->ConvertRawToTextureData(pixels);</code></pre>
+            </section>
+
+            <section id="CutOutMask" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool CutOutMask(
+    NGN_RawImage* source,       // Source RAW image
+    NGN_RawImage* mask,         // Mask RAW image
+    NGN_RawImage* destination   // Destination RAW image
+);</code></pre>
+                <h3>Description</h3>
+                <p>Applies the specified clipping mask to the source image and stores the result in the destination image. If the mask pixels contain transparency information (alpha channel), it is also applied. Returns TRUE on success and FALSE on error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_RawImage* stone = ngn->load->PngAsRaw("data/stone.png");
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+ngn->image->CutOutMask(stone, mask, pixels);</code></pre>
+            </section>
+
+            <section id="HollowMask" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool HollowMask(
+    NGN_RawImage* source,       // Source RAW image
+    NGN_RawImage* mask,         // Mask RAW image
+    NGN_RawImage* destination   // Destination RAW image
+);</code></pre>
+                <h3>Description</h3>
+                <p>Applies the specified hollowing mask to the source image and stores the result in the destination image. If the mask pixels contain transparency information (alpha channel), it is also applied. Returns TRUE on success and FALSE on error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_RawImage* stone = ngn->load->PngAsRaw("data/stone.png");
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+ngn->image->HollowMask(stone, mask, pixels);</code></pre>
+            </section>
+
+            <section id="AdvancedMask" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool AdvancedMask(
+    NGN_RawImage* source,                   // Source image
+    NGN_RawImage* mask,                     // Mask image
+    NGN_RawImage* destination,              // Destination image
+    Vector2I32 offset = {0, 0},             // Mask offset
+    uint8_t mode = NGN_MASKMODE_CUTOUT      // Mask mode
+);</code></pre>
+                <h3>Description</h3>
+                <p>Applies the specified mask to the source image and stores the result in the destination image. If the mask pixels contain transparency information (alpha channel), it is also applied. The mask application mode can be specified as <code>NGN_MASKMODE_CUTOUT</code> or <code>NGN_MASKMODE_HOLLOW</code> (cutout or hollow), as well as the mask offset. Returns TRUE on success and FALSE on error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_RawImage* stone = ngn->load->PngAsRaw("data/stone.png");
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+Vector2I32 offset = {15, 25};
+ngn->image->AdvancedMask(stone, mask, pixels, offset, NGN_MASKMODE_CUTOUT);</code></pre>
+            </section>
+
+            <section id="RendererToSurface" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool RendererToSurface(NGN_RendererSurface* destination);</code></pre>
+                <h3>Description</h3>
+                <p>Saves the current content of the renderer in the specified object of type NGN_RendererSurface. Returns TRUE on success or FALSE on error.</p>
+                <h3>Example</h3>
+                <pre><code>RendererSurface* renderer_surface = new NGN_RendererSurface();
+ngn->image->RendererToSurface(renderer_surface);</code></pre>
+            </section>
+
+            <section id="SurfaceToRaw" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool SurfaceToRaw(
+    NGN_RendererSurface* source,    // Source surface
+    NGN_RawImage* destination,      // Destination RAW image
+    NGN_RawImage* mask = NULL       // Cutout mask (optional)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Converts the specified Surface to an image in RAW format and, optionally, applies a cutout mask if specified. This method returns TRUE on success or FALSE on error.</p>
+                <h3>Example</h3>
+                <pre><code>RendererSurface* renderer_surface = new NGN_RendererSurface();
+ngn->image->RendererToSurface(renderer_surface);
+NGN_RawImage* mask = ngn->load->PngAsRaw("data/cutmask.png");
+NGN_RawImage* pixels = new NGN_RawImage();
+ngn->image->SurfaceToRaw(renderer_surface, pixels, mask);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_image.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

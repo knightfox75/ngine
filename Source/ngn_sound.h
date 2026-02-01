@@ -1,18 +1,18 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x04 ***
+    *** Version 1.20.0+10th-anniversary ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2026 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -153,6 +153,15 @@ class NGN_Sound {
         // Elimina todos los SFX en la cola
         void ClearSfx();
 
+        // Pausa todos los SFX actuales (no los posteriores a la ejecuccion de este comando)
+        void PauseAllSfx();
+
+        // Reanuda todos los SFX actuales pausados
+        void ResumeAllSfx();
+
+        // Deten todos los SFX
+        void StopAllSfx();
+
 
 
         /*** Musicas por streaming (BGM) [4 simultaneas maximo por defecto] ***/
@@ -221,6 +230,15 @@ class NGN_Sound {
 
         // Elimina todas las musicas en la cola
         void ClearMusic();
+
+        // Pausa todos los streams de musica
+        void PauseAllMusics();
+
+        // Reanuda todos los streams de musica pausados
+        void ResumeAllMusics();
+
+        // Deten la reproduccion de todos los streams de musica
+        void StopAllMusics();
 
 
 

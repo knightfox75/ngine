@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_RESOURCES</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_RESOURCES.H</h1>
+        </header>
+
+        <main>
+            <!-- CLASS DESCRIPTION -->
+            <h2>DESCRIPTION of the class</h2>
+            <div class="doc-block">
+                <p>The N'gine resource system allows quick and efficient management, utilizing repositories, for all the resources our program may need. Once a repository is created, all necessary resources can be loaded into it through a plain text listing. An example of such a file would be:</p>
+                <pre><code># Resources loading template file
+
+# Usage: Regular files
+# TYPE; INTERNAL_NAME; FILE_PATH
+# Example:
+# TEX; logo; data/logo_overlay.png
+# Usage: Font files
+# FNT; INTERNAL_NAME; FILE_PATH; FONT_HEIGHT; [ANTIALIAS]; [BASE_COLOR]; [BORDER_SIZE]; [BORDER_COLOR]
+# Example:
+# FNT; mono_16; data/monofonto.ttf; 16
+# FNT; mono_24; data/monofonto.ttf; 24; 1; 0xFFFFFF; 2; 0x202020
+# Admited filetypes
+# TEX   Textures (.png)
+# TBG   Tiled backgrounds (.tbg)
+# SPR   Sprites (.spr)
+# MAP   Collision maps (.map)
+# SFX   Sound Effects (.wav) (.ogg)
+# TXT   Plain text files (.txt)
+# FNT   Font files (.ttf) (.otf)
+
+
+# --- Resources loading ---
+
+# Textures
+TEX; logo; data/logo_overlay.png
+# Sprites
+SPR; aim; data/aim.spr
+SPR; bird; data/bird_small.spr
+# Tiled backgrounds
+TBG; bg0; data/bg0.tbg
+TBG; bg1; data/bg1.tbg
+TBG; bg2; data/bg2.tbg
+# Sound Effects
+SFX; shutter; data/shutter.wav
+# Fonts
+FNT; mono_16; data/monofonto.ttf; 16; 1; 0xFFFFFF; 1; 0x202020
+
+# End of the template</code></pre>
+                <p>You can use the character "#" to introduce comments in the file. The maximum number of simultaneous repositories is 127.</p>
+            </div>
+            <hr>
+
+            <!-- METHODS INDEX -->
+            <h2>METHODS of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#AddRepository">AddRepository</a></li>
+                    <li><a href="#RemoveRepository">RemoveRepository</a></li>
+                    <li><a href="#Clear">Clear</a></li>
+                    <li><a href="#Load">Load</a></li>
+                    <li><a href="#GetResource">GetTexture / GetTiledbg / ...</a></li>
+                    <li><a href="#RemoveResource">RemoveTexture / RemoveTiledbg / ...</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHODS DOCUMENTATION BLOCKS -->
+            <section id="AddRepository" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void AddRepository(std::string repo_name);</code></pre>
+                <h3>Description</h3>
+                <p>Creates a new repository with the specified name. If an attempt is made to create a repository with an already existing name, the command will be ignored.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->resources->AddRepository("local");</code></pre>
+            </section>
+
+            <section id="RemoveRepository" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void RemoveRepository(std::string repo_name);</code></pre>
+                <h3>Description</h3>
+                <p>Deletes the repository with the specified name, along with any associated data it may contain. If the repository does not exist, the command will be ignored.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->resources->RemoveRepository("local");</code></pre>
+            </section>
+
+            <section id="Clear" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Clear(std::string repo_name);</code></pre>
+                <h3>Description</h3>
+                <p>Deletes the data contained in the repository with the specified name. If the repository does not exist, the command will be ignored.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->resources->Clear("local");</code></pre>
+            </section>
+
+            <section id="Load" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool Load(std::string repo_name, std::string filelist);</code></pre>
+                <h3>Description</h3>
+                <p>Loads the resources specified in a plain text formatted list into the indicated repository. If the loading process fails, it returns FALSE.</p>
+                <h3>Example</h3>
+                <pre><code>if (!ngn->resources->Load("local", "data/resources.txt")) return false;</code></pre>
+            </section>
+            
+            <section id="GetResource" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
+NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
+NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
+NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
+std::vector&lt;std::string&gt; GetTxt(std::string repo_name, std::string resource_name, bool err = true);
+NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name, bool err = true);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the memory pointer to the resource with the requested name or a vector with the content in the case of text files. If the resource or repository is not found, it returns NULL or an empty vector. If the "err" parameter is TRUE (by default), it also prints the error in the debug console and in the log file if the resource is not found.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);
+NGN_SpriteData* bullet = ngn->resources->GetSprite(“local”, “arrow”);</code></pre>
+            </section>
+
+            <section id="RemoveResource" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool RemoveTexture(std::string repo_name, std::string resource_name);
+bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+bool RemoveSprite(std::string repo_name, std::string resource_name);
+bool RemoveCmap(std::string repo_name, std::string resource_name);
+bool RemoveSfx(std::string repo_name, std::string resource_name);
+bool RemoveTxt(std::string repo_name, std::string resource_name);
+bool RemoveTypeface(std::string repo_name, std::string resource_name);</code></pre>
+                <h3>Description</h3>
+                <p>Deletes the resource with the specified name and repository from memory. If the resource or the repository is not found, it returns FALSE.</p>
+                <h3>Example</h3>
+                <pre><code>bool erase_ok = ngn->resources->RemoveTexture("local", "main_background");</code></pre>
+            </section>
+            <hr>
+
+            <!-- ADDITIONAL METHODS -->
+            <h2>ADDITIONAL METHODS in other classes for resource support</h2>
+            <div class="doc-block">
+                 <p>The following overloads have been added to the NGN_Texture, NGN_TiledBg, NGN_Sprite, NGN_Sound, and NGN_TextLayer classes for the direct use of repositories in the creation of objects of these classes.</p>
+            </div>
+
+            <section id="NGN_Texture_overload" class="doc-block">
+                <h3>NGN_Texture</h3>
+                <pre><code>NGN_Texture(
+    std::string repo_name,              // Repository name
+    std::string resource_name,          // Resource name
+    int32_t position_x,                 // Initial X position
+    int32_t position_y,                 // Initial Y position
+    uint32_t texture_width,             // Texture width
+    uint32_t texture_height             // Texture height
+);</code></pre>
+            </section>
+            
+            <section id="NGN_TiledBg_overload" class="doc-block">
+                <h3>NGN_TiledBg</h3>
+                <pre><code>NGN_TiledBg(
+    std::string repo_name,              // Repository name
+    std::string resource_name,          // Resource name
+    int32_t position_x,                 // Background X position
+    int32_t position_y                  // Background Y position
+);</code></pre>
+            </section>
+            
+            <section id="NGN_Sprite_overload" class="doc-block">
+                <h3>NGN_Sprite</h3>
+                <pre><code>NGN_Sprite(
+    std::string repo_name,              // Repository name
+    std::string resource_name,          // Resource name
+    int32_t position_x,                 // Initial X position
+    int32_t position_y,                 // Initial Y position
+    uint32_t sprite_width,              // Sprite width
+    uint32_t sprite_height,             // Sprite height
+    uint32_t box_width,                 // Collision box width
+    uint32_t box_height,                // Collision box height
+    int32_t box_offset_x,               // Horizontal box offset
+    int32_t box_offset_y                // Vertical box offset
+);</code></pre>
+            </section>
+            
+            <section id="NGN_TextLayer_overload" class="doc-block">
+                <h3>NGN_TextLayer</h3>
+                <pre><code>NGN_TextLayer(
+    std::string repo_name,              // Repository name
+    std::string resource_name,          // Resource name
+    std::string bg_name,                // Background texture name
+    int32_t position_x,                 // X position
+    int32_t position_y,                 // Y position
+    uint32_t width,                     // Layer width
+    uint32_t height,                    // Layer height
+    bool filtering                      // Content filtering?
+);</code></pre>
+            </section>
+            
+            <section id="PlaySfx_overload" class="doc-block">
+                <h3>NGN_AudioClip* PlaySfx</h3>
+                <pre><code>NGN_AudioClip* PlaySfx(
+    std::string repo_name,              // Repository name
+    std::string resource_name,          // Resource name
+    int32_t volume,                     // Volume
+    int32_t panning,                    // Panning
+    bool loop,                          // Loop?
+    uint8_t mixer_channel               // Default mixer channel
+);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_resources.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

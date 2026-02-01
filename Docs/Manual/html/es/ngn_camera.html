@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_CAMERA</title>
+    <!-- RUTA AL CSS ACTUALIZADA -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+	
+        <header>
+            <h1>NGN_CAMERA.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>Métodos de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#CreateLayers">CreateLayers</a></li>
+                    <li><a href="#SetSizeOfSpritesLayer">SetSizeOfSpritesLayer</a></li>
+                    <li><a href="#Setup">Setup</a></li>
+                    <li><a href="#PushBackground">PushBackground</a></li>
+                    <li><a href="#PushVirtualBg">PushVirtualBg</a></li>
+                    <li><a href="#PushSprite">PushSprite</a></li>
+                    <li><a href="#LookAt">LookAt</a></li>
+                    <li><a href="#Update">Update</a></li>
+                    <li><a href="#RemoveBackground">RemoveBackground</a></li>
+                    <li><a href="#RemoveSprite">RemoveSprite</a></li>
+                    <li><a href="#ChangeLayer">ChangeLayer</a></li>
+                    <li><a href="#SendToFront">SendToFront</a></li>
+                    <li><a href="#SendToBack">SendToBack</a></li>
+                    <li><a href="#Reset">Reset</a></li>
+                    <li><a href="#CheckIfRegistered">CheckIfRegistered</a></li>
+                    <li><a href="#GetLookAt">GetLookAt</a></li>
+                    <li><a href="#GetTargetSprite">GetTargetSprite</a></li>
+                    <li><a href="#GetTargetPosition">GetTargetPosition</a></li>
+                    <li><a href="#GetRendererSize">GetRendererSize</a></li>
+                    <li><a href="#GetLayerSize">GetLayerSize</a></li>
+                    <li><a href="#GetLayerPosition">GetLayerPosition</a></li>
+                    <li><a href="#Shake">Shake</a></li>
+                    <li><a href="#SetLayerTintColor">SetLayerTintColor</a></li>
+                </ul>
+            </nav>
+
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="CreateLayers" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void CreateLayers(uint32_t layers);</code></pre>
+                <h3>Descripción</h3>
+                <p>Define el número de capas de las que dispondrá la cámara.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->CreateLayers(4);</code></pre>
+            </section>
+
+            <section id="SetSizeOfSpritesLayer" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height);</code></pre>
+                <h3>Descripción</h3>
+                <p>Define el tamaño la capa de sprites (por defecto, todas las capas tienen el tamaño del fondo de esa capa).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->SetSizeOfSpritesLayer(3, 4000.0f, 2000.0f);</code></pre>
+            </section>
+
+            <section id="Setup" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Setup(uint32_t world_width, uint32_t world_height, NGN_Sprite* target_sprite = NULL);</code></pre>
+                <h3>Descripción</h3>
+                <p>Inicializa la cámara. Debe especificarse el tamaño del mundo y opcionalmente, el sprite al que seguirá la cámara.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->Setup(4000, 1024, player->sprite);</code></pre>
+            </section>
+            
+            <section id="PushBackground" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t PushBackground(uint32_t layer_number, NGN_TiledBg* background);
+int32_t PushBackground(uint32_t layer_number, NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Añade un fondo a la capa y devuelve su índice en la lista. En caso de error, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->PushBackground(2, bg_clouds);</code></pre>
+            </section>
+            
+            <section id="PushVirtualBg" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t PushVirtualBg(
+    uint32_t layer_number,
+    NGN_Texture* texture,
+    uint32_t bg_width,
+    uint32_t bg_height,
+    uint32_t loop_x,
+    uint32_t loop_y,
+    float auto_x = DEFAULT_VALUE,
+    float auto_y = DEFAULT_VALUE
+);
+
+int32_t PushVirtualBg(
+    uint32_t layer_number,
+    NGN_TiledBg* background,
+    uint32_t bg_width,
+    uint32_t bg_height,
+    uint32_t loop_x,
+    uint32_t loop_y,
+    float auto_x = DEFAULT_VALUE,
+    float auto_y = DEFAULT_VALUE
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Añade un fondo con un tamaño “virtual” a la capa y devuelve su índice en la lista. En caso de error, devuelve -1. Debe especificarse el tamaño virtual del fondo, los puntos de loop en “X” e “Y” y opcionalmente los valores de auto-scroll de este fondo. El uso de este método sobrescribe el valor del tamaño de capa para los sprites.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->PushVirtualBg(0, bg0, 100000, 720, 2560, 0, 1, 0);</code></pre>
+            </section>
+            
+            <section id="PushSprite" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t PushSprite(uint32_t layer_number, NGN_Sprite* sprite);
+int32_t PushSprite(uint32_t layer_number, NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Añade un sprite a la capa y devuelve su índice en la lista. En caso de error, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->PushSprite(3, player->sprite);</code></pre>
+            </section>
+            
+            <section id="LookAt" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void LookAt(NGN_Sprite* target_sprite);
+void LookAt(uint32_t position_x, uint32_t position_y);
+void LookAt(Vector2I32 pos);</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica a la cámara que debe seguir a un sprite concreto o que debe colocarse en una posición específica.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->LookAt(player->sprite);
+ngn->camera->LookAt(1000, 768);</code></pre>
+            </section>
+            
+            <section id="Update" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Update();</code></pre>
+                <h3>Descripción</h3>
+                <p>Actualiza la vista de la cámara. Esta función debe llamarse una vez por frame y realiza el render de todos los elementos contenidos.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->Update();</code></pre>
+            </section>
+            
+            <section id="RemoveBackground" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t RemoveBackground(NGN_TiledBg* background);
+int32_t RemoveBackground(NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Busca y elimina un fondo de la cámara. En caso de no encontrar ese fondo en la lista, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->RemoveBackground(bg_clouds);</code></pre>
+            </section>
+            
+            <section id="RemoveSprite" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t RemoveSprite(NGN_Sprite* sprite);
+int32_t RemoveSprite(NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Busca y elimina un sprite de la cámara. En caso de no encontrar ese sprite en la lista, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->RemoveSprite(player->sprite);</code></pre>
+            </section>
+
+            <section id="ChangeLayer" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t ChangeLayer(NGN_Sprite* sprite, uint32_t layer_number);
+int32_t ChangeLayer(NGN_Texture* texture, uint32_t layer_number);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia de capa a un sprite. En caso de no encontrar ese sprite en la lista, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->ChangeLayer(player->sprite, 2);</code></pre>
+            </section>
+            
+            <section id="SendToFront" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t SendToFront(NGN_Sprite* sprite);
+int32_t SendToFront(NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Envía un sprite al frente de la capa asignada. En caso de no encontrar ese sprite en la lista, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->SendToFront(player->sprite);</code></pre>
+            </section>
+            
+            <section id="SendToBack" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t SendToBack(NGN_Sprite* sprite);
+int32_t SendToBack(NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Envía un sprite al fondo de la capa asignada. En caso de no encontrar ese sprite en la lista, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->SendToFront(player->sprite);</code></pre>
+            </section>
+
+            <section id="Reset" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Reset();</code></pre>
+                <h3>Descripción</h3>
+                <p>Reinicia la camara, eliminando todas las capas y las referencias contenidas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->Reset();</code></pre>
+            </section>
+            
+            <section id="CheckIfRegistered" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool CheckIfRegistered(NGN_Sprite* sprite);
+bool CheckIfRegistered(NGN_Texture* texture);</code></pre>
+                <h3>Descripción</h3>
+                <p>Determina si un sprite o una textura están actualmente registrados y gestionados por la cámara 2D.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool i = ngn->camera->CheckIfRegistered(bullet->sprite);</code></pre>
+            </section>
+            
+            <section id="GetLookAt" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Vector2 GetLookAt();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve un Vector2 con la posición a la que está mirando actualmente la cámara en el mundo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Vector2 look = ngn->camera->GetLookAt();</code></pre>
+            </section>
+            
+            <section id="GetTargetSprite" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_Sprite* GetTargetSprite();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el sprite que es el objetivo al que sigue la cámara. En caso de no seguir a ningún sprite, devuelve NULL.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_Sprite* target = ngn->camera->GetTargetSprite();</code></pre>
+            </section>
+
+            <section id="GetTargetPosition" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Vector2 GetTargetPosition();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve la posición a la que se le ha ordenado a la cámara colocarse. Este método puede devolver un resultado que no coincida con el devuelto por el método "GetLookAt()", que indica la posición en el mundo de la cámara respetando los límites de la pantalla.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Vector2 camera_position = ngn->camera->GetTargetPosition();</code></pre>
+            </section>
+
+            <section id="GetRendererSize" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2I32 GetRendererSize();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una variable Size2I32 con el tamaño actual del área de renderizado de la cámara.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2I32 renderer_area = ngn->camera->GetRendererSize();</code></pre>
+            </section>
+
+            <section id="GetLayerSize" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2I32 GetLayerSize(uint32_t layer_number);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una variable Size2I32 con el tamaño de la capa especificada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2I32 layer_size = ngn->camera->GetLayerSize(2);</code></pre>
+            </section>
+
+            <section id="GetLayerPosition" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Vector2 GetLayerPosition(uint32_t layer_number);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una variable Vector2 con la posición del punto central de la capa especificada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Vector2 layer_pos = ngn->camera->GetLayerPosition(2);</code></pre>
+            </section>
+
+            <section id="Shake" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Shake(float intensity, float frequency, bool split = true);</code></pre>
+                <h3>Descripción</h3>
+                <p>Genera un efecto de temblor vertical en la escena de la cámara. El parámetro "intensity" especifica la magnitud del efecto en píxeles. El parámetro "frequency" especifica la velocidad del efecto (en radianes por segundo). El parámetro "split" determina si el efecto se aplica por separado a las diferentes capas de la escena.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->Shake(3.0f, 0.2f, false);</code></pre>
+            </section>
+
+            <section id="SetLayerTintColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetLayerTintColor(uint32_t layer_number, uint8_t r, uint8_t g, uint8_t b);</code></pre>
+                <h3>Descripción</h3>
+                <p>Aplica un tinte de color a todos los elementos (texturas, fondos de tiles y sprites) de la capa especificada. Si la propiedad "ignore_camera_tint" de un elemento está establecida en "true", ese elemento ignorará esta configuración.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->SetLayerTintColor(4, 96, 255, 192);</code></pre>
+            </section>
+
+            <!-- ÍNDICE DE PROPIEDADES -->
+            <hr>
+            <h2>Propiedades de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#world">world</a></li>
+                    <li><a href="#position">position</a></li>
+                    <li><a href="#animation_pause">animation_pause</a></li>
+                </ul>
+            </nav>
+
+            <hr>
+            
+            <!-- BLOQUES DE DOCUMENTACIÓN DE PROPIEDADES -->
+            <section id="world" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Size2I world</code></pre>
+                <h3>Descripción</h3>
+                <p>Almacena el tamaño actual del mundo.</p>
+            </section>
+            
+            <section id="position" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2I position</code></pre>
+                <h3>Descripción</h3>
+                <p>Almacena la posición actual de la cámara en el mundo.</p>
+            </section>
+            
+            <section id="animation_pause" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool animation_pause</code></pre>
+                <h3>Descripción</h3>
+                <p>Pausa la animación de todos los sprites si su valor es TRUE.</p>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_camera.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

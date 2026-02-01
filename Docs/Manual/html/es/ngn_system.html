@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_SYSTEM</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_SYSTEM.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#EventUpdate">EventUpdate</a></li>
+                    <li><a href="#GetVersion">GetVersion</a></li>
+                    <li><a href="#GetApplicationFocus">GetApplicationFocus</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="EventUpdate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void EventUpdate();</code></pre>
+                <h3>Descripción</h3>
+                <p>Actualiza y gestiona los eventos de la librería SDL2. Además, actualiza algunos de los subsistemas de la librería, como la lectura de los dispositivos de entrada. Debe de ejecutarse una vez por ciclo al inicio del fotograma.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->system->EventUpdate();</code></pre>
+            </section>
+
+            <section id="GetVersion" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>std::string GetVersion();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve un string con la versión actual de N’gine.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::string version = ngn->system->GetVersion();</code></pre>
+            </section>
+
+            <section id="GetApplicationFocus" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool GetApplicationFocus();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve si el foco está o no en la aplicación.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool focused = ngn->system->GetApplicationFocus();</code></pre>
+            </section>
+            <hr>
+
+            <!-- ÍNDICE DE PROPIEDADES -->
+            <h2>PROPIEDADES de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_quit">quit</a></li>
+                    <li><a href="#prop_fps_counter">fps_counter</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE PROPIEDADES -->
+            <section id="prop_quit" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool quit</code></pre>
+                <h3>Descripción</h3>
+                <p>Propiedad de la clase. Adquiere el valor TRUE si algún evento de SDL solicita la salida del programa, de lo contrario su valor es FALSE.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->system->quit) exit_flag = true;</code></pre>
+            </section>
+
+            <section id="prop_fps_counter" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool fps_counter</code></pre>
+                <h3>Descripción</h3>
+                <p>Propiedad de la clase. Tiene el valor de FALSE por defecto. En caso de darle el valor de TRUE, muestra en la consola de depuración los frames por segundos que se están renderizando.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->system->fps_counter = true;</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_system.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

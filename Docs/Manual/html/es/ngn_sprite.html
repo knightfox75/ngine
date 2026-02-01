@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_SPRITE</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_SPRITE.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Constructor">NGN_Sprite (Constructor)</a></li>
+                    <li><a href="#Position">Position</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#Size">Size</a></li>
+                    <li><a href="#Scale">Scale</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#AddCollider">AddCollider</a></li>
+                    <li><a href="#GetColliderId">GetColliderId</a></li>
+                    <li><a href="#ColliderEnabled">ColliderEnabled</a></li>
+                    <li><a href="#RemoveCollider">RemoveCollider</a></li>
+                    <li><a href="#AddAnimation">AddAnimation</a></li>
+                    <li><a href="#SetAnimation">SetAnimation</a></li>
+                    <li><a href="#PlayAnimation">PlayAnimation</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetCameraLayer">GetCameraLayer</a></li>
+                    <li><a href="#GetCurrentScale">GetCurrentScale</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="Constructor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_Sprite(
+    NGN_SpriteData* sprite,                     // Datos del sprite
+    int32_t position_x = DEFAULT_VALUE,         // Posición X inicial (oculto por defecto)
+    int32_t position_y = DEFAULT_VALUE,         // Posición Y inicial (oculto por defecto)
+    uint32_t sprite_width = DEFAULT_VALUE,      // Ancho del sprite (por defecto, el del fotograma)
+    uint32_t sprite_height = DEFAULT_VALUE,     // Altura del sprite (por defecto, el del fotograma)
+    uint32_t box_width = DEFAULT_VALUE,         // Ancho de la caja de colisiones (por defecto, el del sprite)
+    uint32_t box_height = DEFAULT_VALUE,        // Alto de la caja de colisiones (por defecto, el del sprite)
+    int32_t box_offset_x = NGN_DEFAULT_VALUE,   // Offset horizontal de la caja de colisiones
+    int32_t box_offset_y = NGN_DEFAULT_VALUE    // Offset vertical de la caja de colisiones
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Crea un nuevo Sprite, usando los datos previamente cargados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 100, 200);
+NGN_Sprite* player2 = new NGN_Sprite(wizard_sprite, 300, 300, 256, 256, 160, 256);</code></pre>
+            </section>
+
+            <section id="Position" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Position(float position_x, float position_y);
+void Position(Vector2 pos);</code></pre>
+                <h3>Descripción</h3>
+                <p>Posiciona el sprite en la coordenada dada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->Position(1200, 900);</code></pre>
+            </section>
+            
+            <section id="Translate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);</code></pre>
+                <h3>Descripción</h3>
+                <p>Mueve el sprite en la dirección y velocidades dadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->Translate(5.0f, 1.0f);</code></pre>
+            </section>
+            
+            <section id="Size" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Size(float w, float h);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el tamaño del sprite.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->Size(64.0f, 48.0f);</code></pre>
+            </section>
+            
+            <section id="Scale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Scale(float w, float h);
+void Scale(float scale);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escala el sprite, según el factor dado. Según la sobrecarga usada, escalará los ejes en conjunto o por separado. La escala por defecto es 1.0f.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->Scale(1.5f);
+player->Scale(2.0f, 0.75f);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Rotate(double degrees);</code></pre>
+                <h3>Descripción</h3>
+                <p>Rota el sprite el número de grados proporcionados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->Rotate(1.2f);</code></pre>
+            </section>
+
+            <section id="SetCenter" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetCenter(float x, float y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Especifica, en coordenadas relativas y desde el centro real del sprite, donde se ubicará el centro de rotación del sprite.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->SetCenter(-10, -5);</code></pre>
+            </section>
+            
+            <section id="AddCollider" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t AddCollider(
+    std::string name,   // Nombre del colisionador (ha de ser único)
+    float offset_x,     // Offset X respecto al centro real del sprite
+    float offset_y,     // Offset Y respecto al centro real del sprite
+    float width,        // Ancho del colisionador
+    float height        // Altura del colisionador
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Añade un colisionador (collider) adicional al sprite, con el nombre, tamaño y posición indicados. Pueden añadirse tantos colisionadores adicionales como sea necesario. Estos colisionadores serán detectados por la instrucción “HitBox” de la clase “NGN_Collisions” de manera automática. La rotación o escalado del sprite no afecta a estos colisionadores. Esta función devuelve 0 si el colisionador se añade con éxito.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->AddCollider("bottom", -16.0f, 80.0f, 32.0f, 96.0f);
+player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
+            </section>
+            
+            <section id="GetColliderId" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t GetColliderId(std::string name);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve la ID (posición) en el vector de colisionadores del colisionador con el nombre dado. Si no se encuentra, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Int32_t id = player->GetColliderId(“left”);</code></pre>
+            </section>
+            
+            <section id="ColliderEnabled" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t ColliderEnabled(std::string name, bool status);</code></pre>
+                <h3>Descripción</h3>
+                <p>Habilita o deshabilita el colisionador con el nombre dado. Esta función devuelve 0 si tiene éxito el cambio de estado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->ColliderEnabled(“left”, false);</code></pre>
+            </section>
+            
+            <section id="RemoveCollider" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t RemoveCollider(std::string name);</code></pre>
+                <h3>Descripción</h3>
+                <p>Elimina el colisionador con el nombre especificado. En caso de éxito, esta función devuelve 0.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->RemoveCollider(“left”);</code></pre>
+            </section>
+            
+            <section id="AddAnimation" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t AddAnimation(
+    std::string name,           // Nombre de la animación
+    uint32_t first_frame,       // Primer fotograma de la animación
+    uint32_t last_frame,        // Ultimo fotograma de la animación
+    uint32_t loop,              // Fotograma "punto de loop”
+    uint32_t frame_duration     // Duracion en ciclos de cada fotograma
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Añade una nueva animación al Sprite creado. Es posible crear animaciones con cinemática inversa. Devuelve 1 en caso de error.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->AddAnimation(“walk”, 1, 7, 1, 5);
+player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
+player->AddAnimation(“run”, 0, 20, 8, 3);</code></pre>
+            </section>
+            
+            <section id="SetAnimation" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t SetAnimation(std::string name = "");</code></pre>
+                <h3>Descripción</h3>
+                <p>Selecciona una animación con el nombre dado para su reproducción. Si se solicita la animación actualmente seleccionada, se ignora la orden y devuelve 2. En caso de error, devuelve 1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->SetAnimation(“walk”);</code></pre>
+            </section>
+
+            <section id="PlayAnimation" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PlayAnimation();</code></pre>
+                <h3>Descripción</h3>
+                <p>Reproduce la animación seleccionada actualmente. Debe de ejecutarse 1 vez por ciclo para actualizar la animación. En caso de usar la Camara 2D de la librería, no es necesario llamar a este método para la reproducción de las animaciones si el sprite se registra en la cámara.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->PlayAnimation();</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece un color de tinte que se aplicará al sprite. Un tinte blanco (255, 255, 255), mostrará el sprite con sus colores originales, sin alteraciones.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>player->SetTintColor(96, 255, 192);</code></pre>
+            </section>
+			
+            <section id="GetCameraLayer" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t GetCameraLayer();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve la capa a la que está asignado el sprite en la cámara 2D. En caso de no estar asignado a ninguna capa, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>int32_t current_layer = player->GetCameraLayer();</code></pre>
+            </section>
+			
+            <section id="GetCurrentScale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2 GetCurrentScale();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una estructura Size2 con la escala actual del sprite.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2 current_scale = player->GetCurrentScale();</code></pre>
+            </section>
+			
+            <hr>
+
+            <!-- ÍNDICE DE PROPIEDADES -->
+            <h2>PROPIEDADES de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_position">position / screen</a></li>
+                    <li><a href="#prop_size">width / height</a></li>
+                    <li><a href="#prop_box">box</a></li>
+                    <li><a href="#prop_frame">frame</a></li>
+                    <li><a href="#prop_total_frames">total_frames</a></li>
+                    <li><a href="#prop_current_animation">current_animation</a></li>
+                    <li><a href="#prop_animation_pause">animation_pause</a></li>
+                    <li><a href="#prop_visible">visible</a></li>
+                    <li><a href="#prop_alpha">alpha</a></li>
+                    <li><a href="#prop_blend_mode">blend_mode</a></li>
+                    <li><a href="#prop_on_screen">on_screen</a></li>
+                    <li><a href="#prop_rotation">rotation</a></li>
+                    <li><a href="#prop_flip">flip_h / flip_v</a></li>
+                    <li><a href="#prop_ignore_camera_tint">ignore_camera_tint</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE PROPIEDADES -->
+            <section id="prop_position" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2 position
+Vector2 screen</code></pre>
+                <h3>Descripción</h3>
+                <p>Posición del Sprite (global o en pantalla).</p>
+            </section>
+
+            <section id="prop_size" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>float width
+float height</code></pre>
+                <h3>Descripción</h3>
+                <p>Tamaño del Sprite.</p>
+            </section>
+            
+            <section id="prop_box" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>float box.width
+float box.height
+float box.offset.x
+float box.offset.y
+bool box_enabled</code></pre>
+                <h3>Descripción</h3>
+                <p>Propiedades de la caja principal de colisión del sprite. Puede habilitarse o deshabilitarse mediante el flag “box_enabled”.</p>
+            </section>
+            
+            <section id="prop_frame" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t frame</code></pre>
+                <h3>Descripción</h3>
+                <p>Fotograma del sprite que debe mostrarse (El primer frame es el 0).</p>
+            </section>
+            
+            <section id="prop_total_frames" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t total_frames</code></pre>
+                <h3>Descripción</h3>
+                <p>Su valor indica el número total de fotogramas que contiene el sprite. Esta propiedad no debe modificarse bajo ningún concepto.</p>
+            </section>
+
+            <section id="prop_current_animation" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>string current_animation.id
+uint32_t current_animation.first_frame
+uint32_t current_animation.last_frame
+uint32_t current_animation.loop
+uint32_t current_animation.frame_duration</code></pre>
+                <h3>Descripción</h3>
+                <p>Parámetros de la animación en curso. Estas propiedades no deben de modificarse bajo ningún concepto.</p>
+            </section>
+
+            <section id="prop_animation_pause" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool animation_pause</code></pre>
+                <h3>Descripción</h3>
+                <p>Si el valor de esta propiedad es TRUE, la animación actual se pausa.</p>
+            </section>
+
+            <section id="prop_visible" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool visible</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece la visibilidad del sprite.</p>
+            </section>
+            
+            <section id="prop_alpha" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t alpha</code></pre>
+                <h3>Descripción</h3>
+                <p>Nivel de transparencia del Sprite, entre 0 y 255.</p>
+            </section>
+            
+            <section id="prop_blend_mode" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>SDL_BlendMode blend_mode</code></pre>
+                <h3>Descripción</h3>
+                <p>Modo de mezcla de color del sprite. Los modos disponibles son: <code>NGN_BLENDMODE_NONE</code>, <code>NGN_BLENDMODE_ALPHA</code>, <code>NGN_BLENDMODE_ADDITIVE</code> y <code>NGN_BLENDMODE_MODULATE</code>. El valor por defecto de esta propiedad es <code>NGN_BLENDMODE_ALPHA</code>.</p>
+            </section>
+
+            <section id="prop_on_screen" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool on_screen</code></pre>
+                <h3>Descripción</h3>
+                <p>Flag que indica si el sprite está o no en pantalla. Si el sprite se encuentra registrado en la Cámara 2D, este flag se actualizara automáticamente. En caso contrario, deberá de actualizarse manualmente.</p>
+            </section>
+
+            <section id="prop_rotation" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>double rotation</code></pre>
+                <h3>Descripción</h3>
+                <p>Rotación del sprite, en grados.</p>
+            </section>
+
+            <section id="prop_flip" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool flip_h
+bool flip_v</code></pre>
+                <h3>Descripción</h3>
+                <p>Volteado vertical y horizontal del Sprite.</p>
+            </section>
+            
+            <section id="prop_ignore_camera_tint" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool ignore_camera_tint</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica si el sprite debe ignorar el color de tinte asignado a la capa de la cámara.</p>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_sprite.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

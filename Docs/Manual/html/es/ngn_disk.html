@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_DISK</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_DISK.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#ReadBinaryFile">ReadBinaryFile</a></li>
+                    <li><a href="#WriteBinaryFile">WriteBinaryFile</a></li>
+                    <li><a href="#ReadTextFile">ReadTextFile</a></li>
+                    <li><a href="#WriteTextFile">WriteTextFile</a></li>
+                    <li><a href="#CheckFile">CheckFile</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="ReadBinaryFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t ReadBinaryFile(
+    std::string filepath,           // Ruta al archivo
+    std::vector&lt;uint8_t&gt; &buffer    // Vector de almacenamiento
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Abre y lee en modo binario el archivo especificado en la ruta del sistema de archivos del sistema y lo almacena en el buffer dado. Este método, además, devuelve el tamaño del archivo leído (en bytes) o -1 en caso de error.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::vector&lt;uint8_t&gt; data;
+int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);</code></pre>
+            </section>
+
+            <section id="WriteBinaryFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t WriteBinaryFile(
+    std::string filepath,           // Ruta al archivo
+    std::vector&lt;uint8_t&gt; &buffer    // Vector con los datos a escribir
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Abre y escribe, en modo binario, en el archivo especificado en la ruta del sistema de archivos del sistema, los datos almacenados en el buffer dado. Este método, además, crea la ruta si esta no existe y devuelve el número de bytes escritos en el archivo o -1 en caso de error.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::vector&lt;uint8_t&gt; save_data;
+int32_t length = ngn->disk->WriteBinaryFile(“save/card01.sav”, save_data);</code></pre>
+            </section>
+
+            <section id="ReadTextFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>// Primera sobrecarga
+std::string ReadTextFile(std::string filepath);
+
+// Segunda sobrecarga
+bool ReadTextFile(
+    std::string filepath,               // Ruta al archivo
+    std::vector&lt;std::string&gt; &lines     // Vector de almacenamiento de las lineas de texto
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Abre y lee, en modo texto, el archivo especificado en la ruta del sistema de archivos del sistema y devuelve su contenido en un string o una cadena vacia si no se puede leer el archivo (primera sobrecarga). La segunda sobrecarga almacena por separado en el vector de strings dado las líneas de texto, además de devolver TRUE o FALSE según si se ha podido o no leer el archivo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>// Primera sobrecarga
+std::string text = ngn->disk-> ReadTextFile(“data/info/eula.txt”);
+
+// Segunda sobrecarga
+std::vector&lt;std::string&gt; text_lines;
+bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);</code></pre>
+            </section>
+
+            <section id="WriteTextFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t WriteTextFile(
+    std::string filepath,       // Ruta al archivo
+    std::string text,           // String con los datos a escribir
+    bool append = false         // Añadir los datos al final del archivo existente?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Abre y escribe, en modo texto, en el archivo especificado en la ruta del sistema de archivos del sistema, los datos almacenados en el string dado. Este método, además, crea la ruta si esta no existe y devuelve el número de caracteres escritos (saltos de línea incluidos) en el archivo o -1 en caso de error. Opcionalmente, se puede especificar si los datos han de ser adjuntados al final del archivo, conservando los existentes (<code>append = true</code>) o se ha de sobrescribir el contenido del archivo (<code>append = false</code>, por defecto).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::string txt = “This is a simple text”;
+int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);</code></pre>
+            </section>
+
+            <section id="CheckFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t CheckFile(std::string path);</code></pre>
+                <h3>Descripción</h3>
+                <p>Verifica si el archivo especificado en la ruta existe y es accesible. En caso afirmativo, devuelve el tamaño de dicho archivo en bytes. De no serlo, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>int32_t length = ngn->disk->CheckFile(“logs/debug.log”);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_disk.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

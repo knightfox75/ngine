@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_LOG</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_LOG.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#OpenLogFile">OpenLogFile</a></li>
+                    <li><a href="#CloseLogFile">CloseLogFile</a></li>
+                    <li><a href="#Message">Message</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="OpenLogFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool OpenLogFile(std::string log_file, bool overwrite = true);</code></pre>
+                <h3>Descripción</h3>
+                <p>Abre y habilita el archivo de registro de eventos del sistema en la ruta y con el nombre especificados. Todos los mensajes de alerta o error generados por la librería, así como los creados a través del método Message() serán almacenados en este archivo de texto plano. Opcionalmente, puede especificarse que el archivo se sobrescriba (opción por defecto) o se añada la información a continuación. Este método devolverá FALSE en caso de no poder crear o habilitar el archivo de registro.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->log->OpenLogFile("debug_log.txt");</code></pre>
+            </section>
+
+            <section id="CloseLogFile" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void CloseLogFile();</code></pre>
+                <h3>Descripción</h3>
+                <p>Cierra y deshabilita el archivo de registro activo. Aunque no se llame a este método, el archivo se cerrará automáticamente al finalizar el programa.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->log->CloseLogFile();</code></pre>
+            </section>
+
+            <section id="Message" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Message(std::string msg);</code></pre>
+                <h3>Descripción</h3>
+                <p>Imprime en la consola de depuración el contenido de la cadena de texto en formato STRING del parámetro dado, añadiendo además la marca de tiempo actual de manera automática. Si el archivo de registro está habilitado, esta información también se guardará en dicho archivo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->log->Message(“Hello World!”);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_log.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

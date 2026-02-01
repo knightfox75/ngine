@@ -1,0 +1,197 @@
+NGN_TILEDBG.H
+v1.20.0-10th-Anniversay
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_TiledBg(
+	NGN_TiledBgData* bg,		// Datos del fondo previamente cargados
+	int32_t position_x = 0,		// Posición X del fondo [0 por defecto]
+	int32_t position_y = 0		// Posición Y del fondo [0 por defecto]
+);
+
+- Descripción
+Crea un nuevo fondo de tiles, usando los datos previamente cargados.
+Ver las herramientas adjuntas a la librería para realizar la conversión de una imagen PNG a datos de tiles.
+
+- Ejemplo
+NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Descripción
+Posiciona el fondo en la coordenada indicada.
+
+- Ejemplo
+bg_front->Position(1200.0f, 500.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Descripción
+Mueve el fondo en la dirección y velocidad indicados.
+
+- Ejemplo
+bg_front->Translate(5.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Descripción
+Escala el fondo según el factor dado. 1.0f es la escala original.
+Según la sobrecarga usada, se escalaran los ejes por igual o por separado.
+Debido a la implementación interna de los fondos de tiles, el escalado está limitado a valores iguales o superiores a 1.0f.
+
+- Ejemplo
+bg_front->Scale(1.5f);
+bg_front->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void Rotate(double degrees);
+
+- Descripción
+Rota el fondo el número de grados dado.
+
+- Ejemplo
+bg_front->Rotate(0.5f);
+
+--------------------------------------------------------------------------------
+
+-Método
+void SetCenter(float x, float y);
+
+- Descripción
+Indica, en coordenadas relativas y desde el centro real del fondo, donde posicional el centro para las rotación del mismo.
+
+- Ejemplo
+bg_front->SetCenter(-10.0f, 20.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Descripción
+Establece un color de tinte que se aplicará al fondo. Un tinte blanco (255, 255, 255),
+mostrará fondo con sus colores originales, sin alteraciones.
+
+- Ejemplo
+bg_front->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t GetCameraLayer();
+
+- Descripción
+Devuelve la capa a la que está asignado el fondo en la cámara 2D. En caso de no estar asignado a ninguna capa, devuelve -1.
+
+- Ejemplo
+int32_t current_layer = bg_front->GetCameraLayer();
+
+--------------------------------------------------------------------------------
+
+- Método
+Size2 GetCurrentScale();
+
+- Descripción
+Devuelve una estructura Size2 con la escala actual del fondo.
+
+- Ejemplo
+Size2 current_scale = bg_front->GetCurrentScale();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPIEDADES de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+Vector2 position
+
+- Descripción
+Posición del fondo en píxeles.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+float width
+float height
+
+- Descripción
+Tamaño del fondo en píxeles.
+Usar estas propiedades solo para su lectura. No deben modificarse bajo ningún concepto.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool visible
+
+- Descripción
+Visibilidad del fondo.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+int32_t alpha
+
+- Descripción
+Nivel de transparencia del fondo (0 – 255).
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+SDL_BlendMode blend_mode
+
+- Descripción
+Modo de mezcla de color del fondo. Los modos disponibles son:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE y NGN_BLENDMODE_MODULATE.
+El valor por defecto de esta propiedad es NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+double rotation
+
+- Descripción
+Angulo de rotación del fondo, en grados.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool flip_h
+bool flip_v
+
+- Descripción
+Volteado vertical y horizontal del fondo.
+
+--------------------------------------------------------------------------------
+
+- Propiedad
+bool ignore_camera_tint
+
+- Descripción
+Indica si el fondo debe ignorar el color de tinte asignado a la capa de la cámara.
+
+--------------------------------------------------------------------------------

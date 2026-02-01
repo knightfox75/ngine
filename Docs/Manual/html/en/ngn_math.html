@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_MATH</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_MATH.H</h1>
+        </header>
+
+        <main>
+            <!-- VECTOR2 METHODS -->
+            <h2>METHODS of the Vector2 class</h2>
+            <div class="doc-block">
+                <p>This class includes all the necessary methods and properties for basic usage of 2-dimensional vectors. There are three variations of the class: <code>Vector2</code>, <code>Vector2I32</code>, and <code>Vector2I64</code>, each with their respective overloads. All classes support addition and subtraction operations between vectors of the same type, as well as multiplication and division operations between a vector and a scalar. Additionally, they support logical operations for equality and inequality.</p>
+            </div>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Magnitude">Magnitude</a></li>
+                    <li><a href="#Normalize">Normalize</a></li>
+                    <li><a href="#Normal">Normal</a></li>
+                    <li><a href="#Zero">Zero</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="Magnitude" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>float Vector2.Magnitude() const;
+int32_t Vector2I32.Magnitude() const;
+int64_t Vector2I64.Magnitude() const;</code></pre>
+                <h3>Description</h3>
+                <p>Returns the magnitude of the vector. In the case of integer vectors, it returns the closest possible result.</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 my_vector = {10.0f, 25.0f};
+float d = my_vector.Magnitude();</code></pre>
+            </section>
+
+            <section id="Normalize" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Vector2.Normalize();</code></pre>
+                <h3>Description</h3>
+                <p>This method is only available for floating-point vectors. It normalizes and updates the content of the vector, converting the content of coordinates X and Y to values between -1.0f and 1.0f.</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 my_vector = {10.0f, 25.0f};
+my_vector.Normalize();</code></pre>
+            </section>
+
+            <section id="Normal" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Vector2 Normal() const;</code></pre>
+                <h3>Description</h3>
+                <p>This method is only available in floating-point vectors. It returns the normalized value of the vector's contents without modifying the vector's contents.</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 my_vector = {10.0f, 25.0f};
+Vector2 normal = my_vector.Normal();</code></pre>
+            </section>
+            
+            <section id="Zero" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>static Vector2 Zero();
+static Vector2I32 Zero();
+static Vector2I64 Zero();</code></pre>
+                <h3>Description</h3>
+                <p>Returns a vector where all its components have a value of zero.</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 my_vector = Vector2::Zero();</code></pre>
+            </section>
+            <hr>
+
+            <!-- VECTOR2 PROPERTIES -->
+            <h2>PROPERTIES of the Vector2 class</h2>
+            <section id="prop_xy" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>Vector2.x;
+Vector2.y;</code></pre>
+                <h3>Description</h3>
+                <p>Main properties of the vector. They store the X and Y coordinates. These properties are of the type declared for the vector (float, int32_t or int64_t).</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 my_vector;
+my_vector.x = 13.5f;
+my_vector.y = 27.34f;</code></pre>
+            </section>
+            <hr>
+            
+            <!-- NGN_MATH METHODS -->
+            <h2>METHODS of the NGN_Math class</h2>
+            <div class="doc-block">
+                <p>This class includes basic mathematical functions to assist in the development of any video game, such as angle or distance calculations.</p>
+            </div>
+            <nav class="index">
+                <ul>
+                    <li><a href="#GetDistance">GetDistance</a></li>
+                    <li><a href="#GetAngle">GetAngle</a></li>
+                    <li><a href="#GetManhattan">GetManhattan</a></li>
+                    <li><a href="#Random">RandomInt / RandomFloat / RandomDouble</a></li>
+                    <li><a href="#Adler32Checksum">Adler32Checksum</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="GetDistance" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>float GetDistance(float x1, float y1, float x2, float y2);
+float GetDistance(Vector2 a, Vector2 b);
+uint32_t GetDistance(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+uint32_t GetDistance(Vector2I32 a, Vector2I32 b);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the distance between 2 points (4 overloads). In the case of using integers, the closest rounded value is returned.</p>
+                <h3>Example</h3>
+                <pre><code>float d = ngn->math->GetDistance(100.0f, 100.0f, 200.0f, 300.0f);</code></pre>
+            </section>
+            
+            <section id="GetAngle" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>float GetAngle(float x1, float y1, float x2, float y2);
+float GetAngle(Vector2 a, Vector2 b);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the angle formed by 2 points (2 overloads) with respect to the horizontal. The first parameter determines the vertex of the angle, and the second parameter determines the opening of that angle. The result is returned in RADIANS.</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 origin = {10.0f, 10.0f};
+Vector2 destination = {100.0f, 15.0f};
+float a = ngn->math->GetAngle(origin, destination);</code></pre>
+            </section>
+            
+            <section id="GetManhattan" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>float GetManhattan(float x1, float y1, float x2, float y2);
+float GetManhattan(Vector2 a, Vector2 b);
+uint32_t GetManhattan(int32_t x1, int32_t y1, int32_t x2, int32_t y2);
+uint32_t GetManhattan(Vector2I32 a, Vector2I32 b);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the Manhattan distance between 2 points (4 overloads). This distance is the sum of the absolute differences of the individual coordinates (<code>abs(x1 - x2) + abs(y1 - y2)</code>).</p>
+                <h3>Example</h3>
+                <pre><code>float d = ngn->math->GetGetManhattan(100.0f, 100.0f, 200.0f, 300.0f);</code></pre>
+            </section>
+            
+            <section id="Random" class="doc-block">
+                <h3>Method(s)</h3>
+                <pre><code>int32_t RandomInt(int32_t min_value, int32_t max_value);
+int32_t RandomInt();
+float RandomFloat(float min_value, float max_value);
+float RandomFloat();
+double RandomDouble(double min_value, double max_value);
+double RandomDouble();</code></pre>
+                <h3>Description</h3>
+                <p>Returns a random number based on the method type, within the specified range. If no range is provided, the number will be generated between 0 and the maximum value for the given type.</p>
+                <h3>Example(s)</h3>
+                <pre><code>int32_t a = ngn->math->RandomInt(-3, 120);
+int32_t b = ngn->math->RandomInt();
+float c = ngn->math->RandomFloat(100.0f, 999.9f);
+float d = ngn->math->RandomFloat();
+double e = ngn->math->RandomDouble(-99.99, 99.99);
+double f = ngn->math->RandomDouble();</code></pre>
+            </section>
+            
+            <section id="Adler32Checksum" class="doc-block">
+                <h3>Method(s)</h3>
+                <pre><code>uint32_t Adler32Checksum(const std::vector&lt;uint8_t&gt;& buffer, uint32_t start_index = 0);</code></pre>
+                <h3>Description</h3>
+                <p>Calculates and returns a 32-bit Adler-32 checksum for the provided data buffer. Optionally, the starting index for the calculation can be specified. By default, the entire buffer is processed. The maximum size of the data to be processed is limited by the 32-bit index to 4 GiB (2^32 bytes).</p>
+                <h3>Example(s)</h3>
+                <pre><code>uint32_t chk_save = ngn->math->Adler32Checksum(save_data);
+uint32_t chk_config = ngn->math->Adler32Checksum(config_data, 64);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_math.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

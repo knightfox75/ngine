@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_TEXTURE</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_TEXTURE.H</h1>
+        </header>
+
+        <main>
+            <!-- METHODS INDEX -->
+            <h2>METHODS of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#ConstructorData">NGN_Texture (Constructor with data)</a></li>
+                    <li><a href="#ConstructorBlank">NGN_Texture (Blank constructor)</a></li>
+                    <li><a href="#Position">Position</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#Size">Size</a></li>
+                    <li><a href="#Scale">Scale</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#ClearContent">ClearContent</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetCameraLayer">GetCameraLayer</a></li>
+                    <li><a href="#GetCurrentScale">GetCurrentScale</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHODS DOCUMENTATION BLOCKS -->
+            <section id="ConstructorData" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_Texture(
+    NGN_TextureData* texture,                   // Object of the TextureData class
+    int32_t position_x = DEFAULT_VALUE,         // Initial X position (hidden by default)
+    int32_t position_y = DEFAULT_VALUE,         // Initial Y position (hidden by default)
+    uint32_t texture_width = DEFAULT_VALUE,     // Texture width (default: width of the texture)
+    uint32_t texture_height = DEFAULT_VALUE,    // Texture height (default: height of the texture)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Creates a new texture using the previously loaded data.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_Texture* clouds = new NGN_Texture(clouds_gfx, 0, 0);</code></pre>
+            </section>
+
+            <section id="ConstructorBlank" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_Texture(
+    uint32_t texture_width,                     // Texture width
+    uint32_t texture_height,                    // Texture height
+    int32_t position_x = NGN_DEFAULT_VALUE,     // Initial X position (hidden by default)
+    int32_t position_y = NGN_DEFAULT_VALUE      // Initial Y position (hidden by default)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Creates a new blank texture with the specified size.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_Texture* surface = new NGN_Texture(1280, 720, 0, 0);</code></pre>
+            </section>
+
+            <section id="Position" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Position(float position_x, float position_y);
+void Position(Vector2 pos);</code></pre>
+                <h3>Description</h3>
+                <p>Positions the texture at the given coordinates.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->Position(1200, 900);</code></pre>
+            </section>
+            
+            <section id="Translate" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);</code></pre>
+                <h3>Description</h3>
+                <p>Moves the texture in the direction and at the speeds provided.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->Translate(5.0f, 0.0f);</code></pre>
+            </section>
+            
+            <section id="Size" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Size(float w, float h);</code></pre>
+                <h3>Description</h3>
+                <p>Resizes the texture.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->Size(64, 48);</code></pre>
+            </section>
+
+            <section id="Scale" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Scale(float w, float h);
+void Scale(float scale);</code></pre>
+                <h3>Description</h3>
+                <p>Scales the texture by the given factor. Depending on the overload used, it will scale the axes together or separately. The default scale is 1.0f.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->Scale(1.5f);
+clouds->Scale(2.0f, 0.75f);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Rotate(double degrees);</code></pre>
+                <h3>Description</h3>
+                <p>The texture rotates the provided number of degrees.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->Rotate(1.2f);</code></pre>
+            </section>
+            
+            <section id="SetCenter" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetCenter(float x, float y);</code></pre>
+                <h3>Description</h3>
+                <p>Specifies, in relative coordinates and from the actual center of the texture, where the rotation center of the texture will be located.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->SetCenter(-10, -5);</code></pre>
+            </section>
+            
+            <section id="ClearContent" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ClearContent (uint32_t rgba = 0x00000000);</code></pre>
+                <h3>Description</h3>
+                <p>Clears the content of a texture if it has been created as blank. If a fill color in RGBA format is not specified, the texture is cleared using the transparent color.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->ClearContent();</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Description</h3>
+                <p>Sets a tint color that will be applied to the texture. A white tint (255, 255, 255) will display the texture with its original unaltered colors.</p>
+                <h3>Example</h3>
+                <pre><code>clouds->SetTintColor(96, 255, 192);</code></pre>
+            </section>
+			
+            <section id="GetCameraLayer" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>int32_t GetCameraLayer();</code></pre>
+                <h3>Description</h3>
+                <p>Returns the layer to which the texture is assigned in the 2D camera. Returns -1 if not assigned to any layer.</p>
+                <h3>Example</h3>
+                <pre><code>int32_t current_layer = clouds->GetCameraLayer();</code></pre>
+            </section>
+			
+            <section id="GetCurrentScale" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Size2 GetCurrentScale();</code></pre>
+                <h3>Description</h3>
+                <p>Returns a Size2 structure containing the current scale of the texture.</p>
+                <h3>Example</h3>
+                <pre><code>Size2 current_scale = clouds->GetCurrentScale();</code></pre>
+            </section>
+			
+            <hr>
+
+            <!-- PROPERTIES INDEX -->
+            <h2>PROPERTIES of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_position">position / screen</a></li>
+                    <li><a href="#prop_size">width / height</a></li>
+                    <li><a href="#prop_visible">visible</a></li>
+                    <li><a href="#prop_alpha">alpha</a></li>
+                    <li><a href="#prop_blend_mode">blend_mode</a></li>
+                    <li><a href="#prop_rotation">rotation</a></li>
+                    <li><a href="#prop_flip">flip_h / flip_v</a></li>
+                    <li><a href="#prop_ignore_camera_tint">ignore_camera_tint</a></li>
+                </ul>
+            </nav>
+            <hr>
+            
+            <!-- PROPERTIES DOCUMENTATION BLOCKS -->
+            <section id="prop_position" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>Vector2 position
+Vector2 screen</code></pre>
+                <h3>Description</h3>
+                <p>Texture position (global or on the screen).</p>
+            </section>
+
+            <section id="prop_size" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>float width
+float height</code></pre>
+                <h3>Description</h3>
+                <p>Texture size.</p>
+            </section>
+
+            <section id="prop_visible" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool visible</code></pre>
+                <h3>Description</h3>
+                <p>Indicates whether the texture is visible or not.</p>
+            </section>
+            
+            <section id="prop_alpha" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>int32_t alpha</code></pre>
+                <h3>Description</h3>
+                <p>Transparency level of the texture, ranging from 0 to 255.</p>
+            </section>
+            
+            <section id="prop_blend_mode" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>SDL_BlendMode blend_mode</code></pre>
+                <h3>Description</h3>
+                <p>Color blending mode of the texture. Available modes are: <code>NGN_BLENDMODE_NONE</code>, <code>NGN_BLENDMODE_ALPHA</code>, <code>NGN_BLENDMODE_ADDITIVE</code>, and <code>NGN_BLENDMODE_MODULATE</code>. The default value for this property is <code>NGN_BLENDMODE_ALPHA</code>.</p>
+            </section>
+
+            <section id="prop_rotation" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>double rotation</code></pre>
+                <h3>Description</h3>
+                <p>Rotation of the texture, in degrees.</p>
+            </section>
+            
+            <section id="prop_flip" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool flip_h
+bool flip_v</code></pre>
+                <h3>Description</h3>
+                <p>Vertical and horizontal flipping of the texture.</p>
+            </section>
+            
+            <section id="prop_ignore_camera_tint" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool ignore_camera_tint</code></pre>
+                <h3>Description</h3>
+                <p>Indicates whether the texture should ignore the tint color assigned to the camera layer.</p>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_texture.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

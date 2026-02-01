@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_INPUT</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_INPUT.H</h1>
+        </header>
+
+        <main>
+            <!-- LISTADO DE TECLAS -->
+            <h2>Lectura del teclado: Listado de teclas disponibles</h2>
+            <div class="doc-block">
+                <pre><code>key_1 key_2 key_3 key_4 key_5 key_6 key_7 key_8 key_9 key_0
+key_Q key_W key_E key_R key_T key_Y key_U key_I key_O key_P
+key_A key_S key_D key_F key_G key_H key_J key_K key_L
+key_Z key_X key_C key_V key_B key_N key_M
+key_SPACE key_ESC key_RETURN key_TAB key_BACK_SPACE
+key_ARROW_UP key_ARROW_DOWN key_ARROW_LEFT key_ARROW_RIGHT
+key_LEFT_CONTROL key_RIGHT_CONTROL
+key_LEFT_SHIFT key_RIGHT_SHIFT
+key_LEFT_ALT key_RIGHT_ALT
+key_F1 key_F2 key_F3 key_F4 key_F5 key_F6
+key_F7 key_F8 key_F9 key_F10 key_F11 key_F12
+key_INSERT key_DELETE key_HOME key_END key_PAGE_UP key_PAGE_DOWN
+key_GRAVE key_MINUS key_EQUAL
+key_LEFT_BRACKET key_RIGHT_BRACKET
+key_SEMICLON key_APOSTROPHE key_BACK_SLASH
+key_COMMA key_PERIOD key_SLASH
+key_PRINT_SCREEN key_SCROLL_LOCK key_PAUSE
+nkp_SLASH nkp_ASTERISK nkp_MINUS
+nkp_7 nkp_8 nkp_9
+nkp_4 nkp_5 nkp_6
+nkp_1 nkp_2 nkp_3
+nkp_0 nkp_PERIOD nkp_RETURN nkp_PLUS
+NGN_Key key_ANY_KEY</code></pre>
+            </div>
+            <hr>
+
+            <!-- PROPIEDADES DEL TECLADO -->
+            <h2>Lectura del teclado: Listado de propiedades disponibles</h2>
+            <section class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool down       // Nueva pulsación en la tecla
+bool held       // La tecla se mantiene presionada
+bool up         // Se ha dejado de presionar la tecla</code></pre>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->input->key_ESC->down) exit_flag = true;</code></pre>
+            </section>
+            <hr>
+
+            <!-- ESTADO DEL RATÓN -->
+            <h2>Lectura del estado del ratón: Listado de propiedades disponibles</h2>
+            <section class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t x                       // Posición X del ratón en la ventana
+int32_t y                       // Posición Y del ratón en la ventana
+bool LB [.down, .held, .up]     // Estado del botón izquierdo
+bool MB [.down, .held, .up]     // Estado del botón central
+bool RB [.down, .held, .up]     // Estado del botón derecho
+int32_t wheel_x                 // Scroll de la rueda en X [-1, 0, 1]
+int32_t wheel_y                 // Scroll de la rueda en Y [-1, 0, 1]
+int32_t raw_x                   // Valor relativo del desplazamiento en X
+int32_t raw_y                   // Valor relativo del desplazamiento en Y</code></pre>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->input->mouse.RB.held) {
+    my_sprite.x = ngn->input->mouse.x;
+    my_sprite.y = ngn->input->mouse.y;
+}</code></pre>
+            </section>
+            <hr>
+
+            <!-- ACCESO AL CONTROLADOR -->
+            <h2>Acceso al controlador (pad o joystick)</h2>
+            <section id="controllers" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t controllers</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica el número de controladores conectados. Por defecto, se pueden gestionar hasta un máximo de 8 controladores diferentes que cumplan la norma X-INPUT. La asignación de los axis o botones puede variar en función del controlador conectado. En caso de conexión o desconexión de un controlador en caliente, la librería intentara asignar el mismo SLOT de conexión a dicho controlador.</p>
+            </section>
+
+            <section id="controller_n" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>controller[n]</code></pre>
+                <h3>Descripción</h3>
+                <p>La clase “input” dispone de acceso a los controladores a partir de la propiedad “controller[n]”, donde "n" indica el SLOT de conexión a leer [0 - 7]. Si se accede a un SLOT sin conexión, se devuelven los valores por defecto. Las propiedades disponibles para cada controlador son:</p>
+                <pre><code>bool available                      // ¿Está disponible el controlador?
+int32_t device_id                   // ID de la instancia del controlador
+std::string name                    // Nombre del controlador
+float axis[n]                       // Valor del eje "n", varía entre -1.0f y 1.0f
+bool button[n] [.down, .held, .up]  // Estado del botón "n"
+bool dpad.up [.down, .held, .up]    // Estado del DIGITAL PAD (cruzeta) Arriba
+bool dpad.down [.down, .held, .up]  // Estado del DIGITAL PAD (cruzeta) Abajo
+bool dpad.left [.down, .held, .up]  // Estado del DIGITAL PAD (cruzeta) Izquierda
+bool dpad.right [.down, .held, .up] // Estado del DIGITAL PAD (cruzeta) Derecha
+uint8_t pov                         // Valor del POV [máscara de bits de 4 bits] (Obsoleto)
+bool pov_up [.down, .held, .up]     // POV como tecla cursor (Arriba) (Obsoleto)
+bool pov_down [.down, .held, .up]   // POV como tecla cursor (Abajo) (Obsoleto)
+bool pov_left [.down, .held, .up]   // POV como tecla cursor (Izquierda) (Obsoleto)
+bool pov_right [.down, .held, .up]  // POV como tecla cursor (Derecha) (Obsoleto)
+bool any_button [.down, .held, .up] // Se ha pulsado alguno de los botones
+bool any_axis [.down, .held, .up]   // Se ha movido alguno de los ejes o el DPAD
+bool activity [.down, .held, .up]   // Se ha registrado alguna actividad
+bool rumble_available               // ¿Está disponible el efecto "rumble"?</code></pre>
+                <p>Se puede acceder de una manera mas fácil a los diferentes axis y botones del controlador mediante las siguientes contantes:</p>
+                <pre><code>uint32_t XBOX_BUTTON_A = 0;
+uint32_t XBOX_BUTTON_B = 1;
+uint32_t XBOX_BUTTON_X = 2;
+uint32_t XBOX_BUTTON_Y = 3;
+uint32_t XBOX_BUTTON_L = 4;
+uint32_t XBOX_BUTTON_R = 5;
+uint32_t XBOX_BUTTON_BACK = 6;
+uint32_t XBOX_BUTTON_START = 7;
+uint32_t XBOX_BUTTON_STICK_L = 8;
+uint32_t XBOX_BUTTON_STICK_R = 9;
+uint32_t XBOX_BUTTON_XBOX = 10;
+uint32_t XBOX_STICK_L_AXIS_X = 0;
+uint32_t XBOX_STICK_L_AXIS_Y = 1;
+uint32_t XBOX_STICK_R_AXIS_X = 2;
+uint32_t XBOX_STICK_R_AXIS_Y = 3;
+uint32_t XBOX_TRIGGER_AXIS = 4;
+float XBOX_AXIS_DEADZONE = 0.35f;</code></pre>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->input->controller[0].button[XBOX_BUTTON_A].down) ...
+if (ngn->input->controller[0].dpad.left.held) ...
+position.x += (ngn->input->controller[0].axis[XBOX_STICK_L_AXIS_X] * speed);
+if (ngn->input->controller[1].axis[XBOX_STICK_R_AXIS_Y] > XBOX_AXIS_DEADZONE) ...</code></pre>
+            </section>
+            
+            <section id="ControllerRumble" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t ControllerRumble(
+    uint32_t controller_id,     // ID del controlador (0 – 7)
+    float intensity,            // Intensidad (0.0f – 1.0f)
+    uint32_t duration           // Duración en ms (> 0)
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Ejecuta el efecto de vibración del controlador indicado (si dicho controlador tiene soporte para el efecto), con la intensidad y duración indicados en los parámetros. Este método devuelve -1 en caso de error.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->input->ControllerRumble(0, 0.75f, 500);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_input.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

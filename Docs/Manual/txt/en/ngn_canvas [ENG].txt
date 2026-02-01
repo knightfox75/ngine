@@ -1,0 +1,324 @@
+NGN_CANVAS.H
+v1.16.0-stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class (Canvas Functions)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_Canvas(
+    int32_t position_x = 0,              // X position (default: 0)
+    int32_t position_y = 0,              // Y position (default: 0)
+    uint32_t _width = DEFAULT_VALUE,     // Layer width (whole screen by default)
+    uint32_t _height = DEFAULT_VALUE,    // Layer height (whole screen by default)
+    bool _filtering = false              // Bilinear filtering of content?
+);
+
+- Description
+Create a new canvas using the specified parameters.
+
+- Example
+NGN_Canvas* canvas = new NGN_Canvas(100, 50, 200, 64);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Description
+Position the canvas at the given coordinate.
+
+- Example
+canvas->Position(10, 20);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Description
+Move the canvas in the given direction and speeds.
+
+- Example
+canvas->Translate(0.0f, -2.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Size(float w, float h);
+
+- Description
+Change the size of the canvas.
+
+- Example
+canvas->Size(640, 480);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Description
+Scale the canvas by the given factor. Depending on the used overload, it will scale the axes together or separately. The default scale is 1.0f.
+
+-Example
+canvas->Scale(1.5f);
+canvas->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Rotate(double degrees);
+
+- Description
+Rotates the canvas by the provided number of degrees.
+
+- Example
+canvas->Rotate(1.2f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetCenter(float x, float y);
+
+- Description
+Specify, in relative coordinates and from the actual center of the canvas, where its rotation center will be located.
+
+- Example
+canvas->SetCenter(-10, -5);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets a tint color that will be applied to the canvas. A white tint (255, 255, 255)
+will display the canvas with its original unaltered colors.
+
+- Example
+canvas->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2 GetCurrentScale();
+
+- Description
+Returns a Size2 structure containing the current scale of the canvas.
+
+- Example
+Size2 current_scale = canvas->GetCurrentScale();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class (Canvas Properties)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Property
+Vector2 position
+
+- Description
+Canvas position on the screen.
+
+--------------------------------------------------------------------------------
+
+- Property
+float width
+float height
+
+- Description
+Canvas size.
+
+--------------------------------------------------------------------------------
+
+- Property	
+bool visible
+
+- Description
+Indicates whether the canvas is visible or not.
+
+--------------------------------------------------------------------------------
+
+- Property
+int32_t alpha
+
+- Description
+Canvas transparency level, ranging from 0 to 255.
+
+--------------------------------------------------------------------------------
+
+- Property
+SDL_BlendMode blend_mode
+
+- Description
+Color blending mode of the canvas. Available modes are:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE, and NGN_BLENDMODE_MODULATE.
+The default value for this property is NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool filtering
+
+- Description
+Enable or disable bilinear filtering of the canvas content.
+
+--------------------------------------------------------------------------------
+
+- Property
+double rotation
+
+- Description
+Canvas rotation in degrees.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool flip_h
+bool flip_v
+
+- Description
+Vertical and horizontal flipping of the canvas.
+
+--------------------------------------------------------------------------------
+
+Note: Changes in size or scale do not affect the original size of the container; only the size of the content is altered when displayed on the screen.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	METHODS of the class (Drawing Functions)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+void Cls(uint32_t color = 0x00000000);
+
+- Description
+Clears the content of the canvas, and if specified, fills it with the given color.
+The color must be specified in RGBA format.
+
+- Example
+textbox->Cls(0x0080FFFF);	// RRGGBBAA
+
+--------------------------------------------------------------------------------
+
+- Method
+void Point(int32_t x, int32_t y, uint32_t color);
+
+- Description
+Draws a 1x1 pixel point of the specified color at the given canvas coordinates.
+
+- Example
+canvas->Point(100, 50, 0x00FF00FF);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Line(
+    int32_t x1, int32_t y1,     // Point A
+    int32_t x2, int32_t y2,     // Point B
+    uint32_t color           	// Color (RGBA)
+);
+
+
+- Description
+Draws a line between two points with the specified color.
+
+- Example
+canvas->Line(10, 10, 200, 200, 0xFF0000FF);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Box(
+    int32_t x1, int32_t y1,      // Top-left vertex
+    int32_t x2, int32_t y2,      // Bottom-right vertex
+    uint32_t color,              // Color (RGBA)
+    bool paint = false           // Fill?
+);
+
+- Description
+Draws a box between the specified vertices with the given color. It can be drawn with or without fill.
+
+- Example
+canvas->Box(10, 10, 200, 200, 0xFF00FFFF, true);
+canvas->Box(10, 10, 200, 200, 0xFFFFFFFF);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Circle(
+    int32_t cx, int32_t cy,         // Center coordinates
+    int32_t r,                      // Horizontal radius
+    uint32_t color,                 // Color (RGBA)
+    int32_t ry = DEFAULT_VALUE,     // Vertical radius
+    bool paint = false              // Fill?
+);
+
+- Description
+Draws a circle with the specified parameters. If the vertical radius is not specified, the horizontal radius will be used instead. The "paint" parameter determines whether the circle is filled or not.
+
+- Example
+canvas->Circle(320, 240, 32, 0xFFFFFFFF);
+canvas->Circle(320, 240, 32, 0x804080FF, 64, true);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Arc(
+    int32_t cx, int32_t cy,         // Center coordinates
+    int32_t r,                      // Horizontal radius
+    double start_angle,             // Starting angle (Radians)
+    double end_angle,               // Ending angle (Radians)
+    uint32_t color,                 // Color (RGBA)
+    int32_t ry = DEFAULT_VALUE,     // Vertical radius
+    uint8_t close = 0               // Close the arc?
+);
+
+- Description
+Draws an arc with the specified parameters. If the vertical radius is not specified, the horizontal radius will be used instead. Angles must be specified in RADIANS. The "close" parameter allows closing the arc at its ends (0 = does not close, 1 = closes both ends, 2 = closes ends with the center).
+
+- Example
+canvas->Arc(250, 360, 200, 0.0f, (PI * 2.0f), 0xFFFFFFFF, 200);
+canvas->Arc(640, 360, 100, 0.3f, 4.0f, 0xFFFFFFFF, 100, 1);
+canvas->Arc(640, 580, 100, 0.8f, 5.0f, 0xFFFFFFFF, 100, 2);
+
+--------------------------------------------------------------------------------
+
+- Method
+uint32_t GetPixelColor(int32_t x, int32_t y);
+
+- Description
+Returns the color in RGBA8888 format (RRGGBBAA) of the pixel at the provided coordinates. If the coordinates are outside the canvas boundaries, it returns 0x00000000.
+
+- Example
+uint32_t color = canvas->GetPixelColor(345, 123);
+
+--------------------------------------------------------------------------------
+
+- Method
+Rgba GetPixelRgba(int32_t x, int32_t y);
+
+-Description
+Returns the color in RGBA format (color.r, color.g, color.b, color.a) of the pixel at the provided coordinates. If the coordinates are outside the canvas boundaries, it returns 0 for all 4 components.
+
+- Example
+Rgba color = canvas->GetPixelRgba(345, 123);
+
+--------------------------------------------------------------------------------

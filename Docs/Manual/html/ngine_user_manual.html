@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N'gine Reference Manual - Select Language</title>
+    <!-- Referencia al CSS existente (en la carpeta css/) -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Estilos específicos para la portada (Landing Page) */
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            /* Aseguramos que el fondo y color hereden del CSS principal, 
+               aunque el body del CSS principal ya lo define */
+        }
+
+        .landing-container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Título principal más grande para la portada */
+        .landing-title {
+            font-size: 3em;
+            margin-bottom: 0.2em;
+            border-bottom: none; /* Quitamos el borde por defecto del h1 del CSS base */
+            text-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        .landing-subtitle {
+            font-size: 1.2em;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        /* Reutilizamos el estilo de .doc-block pero lo centramos */
+        .language-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Botones de idioma personalizados */
+        .lang-btn {
+            display: block;
+            background-color: var(--block-bg-color); /* Variable del style.css */
+            border: 2px solid var(--border-color);   /* Variable del style.css */
+            color: var(--primary-color);             /* Variable del style.css */
+            padding: 20px;
+            font-size: 1.5em;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .lang-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            border-color: var(--highlight-bg-color);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.4);
+        }
+
+        .lang-btn span {
+            display: block;
+            font-size: 0.6em;
+            color: inherit;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="landing-container">
+        <header>
+            <h1 class="landing-title">N'gine</h1>
+            <div class="landing-subtitle">Reference Manual / Manual de Referencia</div>
+        </header>
+
+        <main class="doc-block language-selector">
+            <p style="margin-bottom: 20px; color: var(--text-color);">
+                Please select your language / Por favor seleccione su idioma:
+            </p>
+
+            <!-- Enlace a la versión en Inglés -->
+            <a href="en/index.html" class="lang-btn">
+                English
+                <span>Read the documentation in English</span>
+            </a>
+
+            <!-- Enlace a la versión en Español -->
+            <a href="es/index.html" class="lang-btn">
+                Español
+                <span>Leer la documentación en Español</span>
+            </a>
+        </main>
+        
+        <footer style="margin-top: 30px; font-size: 0.8em; color: #555;">
+            &copy; 2026 Cesar Rincon - NightFox & Co.
+        </footer>
+    </div>
+
+</body>
+</html>

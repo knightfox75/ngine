@@ -1,18 +1,18 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x04 ***
+    *** Version 1.20.0+10th-anniversary ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2026 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -334,7 +334,7 @@ void NGN_Render::TextLayer(NGN_TextLayer* layer, float position_x, float positio
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(layer->backbuffer, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(layer->backbuffer, layer->blend_mode);
         SDL_SetTextureAlphaMod(layer->backbuffer, (uint8_t)_alpha);
     }
 
@@ -420,7 +420,7 @@ void NGN_Render::Canvas(NGN_Canvas* canvas, float position_x, float position_y) 
         } else if (_alpha > 0xFF) {
             _alpha = 0xFF;
         }
-        SDL_SetTextureBlendMode(canvas->backbuffer, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(canvas->backbuffer, canvas->blend_mode);
         SDL_SetTextureAlphaMod(canvas->backbuffer, (uint8_t)_alpha);
     }
 
@@ -779,7 +779,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     } else if (_alpha > 0xFF) {
         _alpha = 0xFF;
     }
-    SDL_SetTextureBlendMode(target_texture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(target_texture, bg->blend_mode);
     SDL_SetTextureAlphaMod(target_texture, (uint8_t)_alpha);
 
     // Color mod

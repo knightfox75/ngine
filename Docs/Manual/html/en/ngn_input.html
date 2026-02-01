@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_INPUT</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_INPUT.H</h1>
+        </header>
+
+        <main>
+            <!-- LIST OF KEYS -->
+            <h2>Keyboard Input: List of Available Keys</h2>
+            <div class="doc-block">
+                <pre><code>key_1 key_2 key_3 key_4 key_5 key_6 key_7 key_8 key_9 key_0
+key_Q key_W key_E key_R key_T key_Y key_U key_I key_O key_P
+key_A key_S key_D key_F key_G key_H key_J key_K key_L
+key_Z key_X key_C key_V key_B key_N key_M
+key_SPACE key_ESC key_RETURN key_TAB key_BACK_SPACE
+key_ARROW_UP key_ARROW_DOWN key_ARROW_LEFT key_ARROW_RIGHT
+key_LEFT_CONTROL key_RIGHT_CONTROL
+key_LEFT_SHIFT key_RIGHT_SHIFT
+key_LEFT_ALT key_RIGHT_ALT
+key_F1 key_F2 key_F3 key_F4 key_F5 key_F6
+key_F7 key_F8 key_F9 key_F10 key_F11 key_F12
+key_INSERT key_DELETE key_HOME key_END key_PAGE_UP key_PAGE_DOWN
+key_GRAVE key_MINUS key_EQUAL
+key_LEFT_BRACKET key_RIGHT_BRACKET
+key_SEMICLON key_APOSTROPHE key_BACK_SLASH
+key_COMMA key_PERIOD key_SLASH
+key_PRINT_SCREEN key_SCROLL_LOCK key_PAUSE
+nkp_SLASH nkp_ASTERISK nkp_MINUS
+nkp_7 nkp_8 nkp_9
+nkp_4 nkp_5 nkp_6
+nkp_1 nkp_2 nkp_3
+nkp_0 nkp_PERIOD nkp_RETURN nkp_PLUS
+NGN_Key key_ANY_KEY</code></pre>
+            </div>
+            <hr>
+
+            <!-- KEYBOARD PROPERTIES -->
+            <h2>Keyboard Input: List of Available Properties</h2>
+            <section class="doc-block">
+                <h3>Property</h3>
+                <pre><code>bool down       // New key press
+bool held       // The key is being held down
+bool up         // The key has been released</code></pre>
+                <h3>Example</h3>
+                <pre><code>if (ngn->input->key_ESC->down) exit_flag = true;</code></pre>
+            </section>
+            <hr>
+
+            <!-- MOUSE STATE -->
+            <h2>Mouse State Reading: List of Available Properties</h2>
+            <section class="doc-block">
+                <h3>Property</h3>
+                <pre><code>int32_t x                       // Mouse X position in the window
+int32_t y                       // Mouse Y position in the window
+bool LB [.down, .held, .up]     // Left button state
+bool MB [.down, .held, .up]     // Middle button state
+bool RB [.down, .held, .up]     // Right button state
+int32_t wheel_x                 // Wheel scroll in X [-1, 0, 1]
+int32_t wheel_y                 // Wheel scroll in Y [-1, 0, 1]
+int32_t raw_x                   // Relative displacement value in X
+int32_t raw_y                   // Relative displacement value in Y</code></pre>
+                <h3>Example</h3>
+                <pre><code>if (ngn->input->mouse.RB.held) {
+    my_sprite.x = ngn->input->mouse.x;
+    my_sprite.y = ngn->input->mouse.y;
+}</code></pre>
+            </section>
+            <hr>
+
+            <!-- CONTROLLER ACCESS -->
+            <h2>Controller (Gamepad or Joystick) Access</h2>
+            <section id="controllers" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>int32_t controllers</code></pre>
+                <h3>Description</h3>
+                <p>Indicates the number of connected controllers. By default, up to a maximum of 8 different controllers complying with the X-INPUT standard can be managed. The assignment of axes or buttons may vary depending on the connected controller. In the event of a hot-plug connection or disconnection of a controller, the library will attempt to assign the same connection SLOT to the respective controller.</p>
+            </section>
+
+            <section id="controller_n" class="doc-block">
+                <h3>Property</h3>
+                <pre><code>controller[n]</code></pre>
+                <h3>Description</h3>
+                <p>The "input" class provides access to controllers through the "controller[n]" property, where "n" indicates the connection SLOT to be read [0 - 7]. If an unconnected SLOT is accessed, default values are returned. The available properties for each controller are:</p>
+                <pre><code>bool available                      // Is the controller available?
+int32_t device_id                   // Controller instance ID
+std::string name                    // Controller name
+float axis[n]                       // Value of axis "n," ranging between -1.0f and 1.0f
+bool button[n] [.down, .held, .up]  // State of button "n"
+bool dpad.up [.down, .held, .up]    // State of the DIGITAL PAD (D-pad) Up
+bool dpad.down [.down, .held, .up]  // State of the DIGITAL PAD (D-pad) Down
+bool dpad.left [.down, .held, .up]  // State of the DIGITAL PAD (D-pad) Left
+bool dpad.right [.down, .held, .up] // State of the DIGITAL PAD (D-pad) Right
+uint8_t pov                         // POV value [4-bit bitmask] (Obsolete)
+bool pov_up [.down, .held, .up]     // POV as cursor keys (Up) (Obsolete)
+bool pov_down [.down, .held, .up]   // POV as cursor keys (Down) (Obsolete)
+bool pov_left [.down, .held, .up]   // POV as cursor keys (Left) (Obsolete)
+bool pov_right [.down, .held, .up]  // POV as cursor keys (Right) (Obsolete)
+bool any_button [.down, .held, .up] // Any of the controller buttons has been pressed
+bool any_axis [.down, .held, .up]   // Any of the axes has been moved or the D-pad
+bool activity [.down, .held, .up]   // Some activity has been registered
+bool rumble_available               // Is the "rumble" effect available?</code></pre>
+                <p>Access to the different axes and buttons of the controller can be simplified using the following constants:</p>
+                <pre><code>uint32_t XBOX_BUTTON_A = 0;
+uint32_t XBOX_BUTTON_B = 1;
+uint32_t XBOX_BUTTON_X = 2;
+uint32_t XBOX_BUTTON_Y = 3;
+uint32_t XBOX_BUTTON_L = 4;
+uint32_t XBOX_BUTTON_R = 5;
+uint32_t XBOX_BUTTON_BACK = 6;
+uint32_t XBOX_BUTTON_START = 7;
+uint32_t XBOX_BUTTON_STICK_L = 8;
+uint32_t XBOX_BUTTON_STICK_R = 9;
+uint32_t XBOX_BUTTON_XBOX = 10;
+uint32_t XBOX_STICK_L_AXIS_X = 0;
+uint32_t XBOX_STICK_L_AXIS_Y = 1;
+uint32_t XBOX_STICK_R_AXIS_X = 2;
+uint32_t XBOX_STICK_R_AXIS_Y = 3;
+uint32_t XBOX_TRIGGER_AXIS = 4;
+float XBOX_AXIS_DEADZONE = 0.35f;</code></pre>
+                <h3>Example</h3>
+                <pre><code>if (ngn->input->controller[0].button[XBOX_BUTTON_A].down) ...
+if (ngn->input->controller[0].dpad.left.held) ...
+position.x += (ngn->input->controller[0].axis[XBOX_STICK_L_AXIS_X] * speed);
+if (ngn->input->controller[1].axis[XBOX_STICK_R_AXIS_Y] > XBOX_AXIS_DEADZONE) ...</code></pre>
+            </section>
+            
+            <section id="ControllerRumble" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>int32_t ControllerRumble(
+    uint32_t controller_id,     // Controller ID (0 – 7)
+    float intensity,            // Intensity (0.0f – 1.0f)
+    uint32_t duration           // Duration in ms (> 0)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Executes the vibration effect on the specified controller (if the controller supports the effect) with the intensity and duration provided in the parameters. This method returns -1 in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->input->ControllerRumble(0, 0.75f, 500);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_input.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

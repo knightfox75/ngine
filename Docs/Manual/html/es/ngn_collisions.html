@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_COLLISIONS</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_COLLISIONS.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#GetPixel">GetPixel</a></li>
+                    <li><a href="#GetMapSize">GetMapSize</a></li>
+                    <li><a href="#HitBox">HitBox</a></li>
+                    <li><a href="#PixelPerfect">PixelPerfect</a></li>
+                    <li><a href="#RaycastPoint">RaycastPoint</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="GetPixel" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>uint32_t GetPixel(
+    NGN_CollisionMapData* cmap,     // Datos del mapa de colisiones
+    int32_t position_x,             // Coordenada X en el mapa
+    int32_t position_y              // Coordenada Y en el mapa
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el color del pixel del mapa dado en las coordenadas dadas. En caso que las coordenadas estén fuera del mapa, devolverá 0x00000000. El formato del color devuelto es 0xRRGGBBAA (RGBA).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>uint32_t color = ngn->collisions->GetPixel(
+    collision_map,
+    wizard.sprite->position.x,
+    wizard.sprite->position.y
+);</code></pre>
+            </section>
+
+            <section id="GetMapSize" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2 GetMapSize(NGN_CollisionMapData* cmap);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el tamaño del mapa dado en formato Size2 (ancho y alto).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2 world_size = ngn->collisions->GetMapSize(collision_map);</code></pre>
+            </section>
+
+            <section id="HitBox" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2);</code></pre>
+                <h3>Descripción</h3>
+                <p>Realiza una verificación de colisión por cajas entre 2 sprites. Devuelve TRUE en caso de colisión.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->collisions->HitBox(player, coin)) {
+    hit = true;
+} else {
+    hit = false;
+}</code></pre>
+            </section>
+
+            <section id="PixelPerfect" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2);</code></pre>
+                <h3>Descripción</h3>
+                <p>Realiza una verificación de colisión a nivel de pixel entre 2 sprites. Devuelve TRUE en caso de colisión.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->collisions->PixelPerfect(player, coin)) {
+    hit = true;
+} else {
+    hit = false;
+}</code></pre>
+                <p><strong>Nota:</strong> La detección de colisiones a nivel de pixel consume una gran cantidad de recursos de la CPU. Usar solo en casos donde sea absolutamente imprescindible.</p>
+            </section>
+
+            <section id="RaycastPoint" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool RaycastPoint(
+    NGN_Sprite* spr,        // Sprite
+    float position_x,       // Coordenada X a verificar
+    float position_y        // Coordenada Y a verificar
+);
+
+bool RaycastPoint(NGN_Sprite* spr, Vector2 position);</code></pre>
+                <h3>Descripción</h3>
+                <p>Comprueba si hay un pixel visible del sprite proporcionado en las coordenadas dadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->collisions->RaycastPoint(coin, 128, 96)) {
+    hit = true;
+} else {
+    hit = false;
+}</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_collisions.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

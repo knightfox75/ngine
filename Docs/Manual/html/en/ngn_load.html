@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_LOAD</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_LOAD.H</h1>
+        </header>
+
+        <main>
+            <!-- METHODS INDEX -->
+            <h2>METHODS of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Texture">Texture</a></li>
+                    <li><a href="#TiledBg">TiledBg</a></li>
+                    <li><a href="#Sprite">Sprite</a></li>
+                    <li><a href="#CollisionMap">CollisionMap</a></li>
+                    <li><a href="#AudioClip">AudioClip</a></li>
+                    <li><a href="#TrueTypeFont">TrueTypeFont</a></li>
+                    <li><a href="#PngAsRaw">PngAsRaw</a></li>
+                    <li><a href="#SpriteAsRaw">SpriteAsRaw</a></li>
+                    <li><a href="#SpriteAsRawVector">SpriteAsRawVector</a></li>
+                    <li><a href="#TextFile">TextFile</a></li>
+                    <li><a href="#LoadFile">LoadFile</a></li>
+                    <li><a href="#SetDisk">SetDisk</a></li>
+                    <li><a href="#SetPackage">SetPackage</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHODS DOCUMENTATION BLOCKS -->
+            <section id="Texture" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_TextureData* Texture(std::string filepath);</code></pre>
+                <h3>Description</h3>
+                <p>Loads a PNG image and converts it to texture data. The maximum supported image size is 8192x8192 pixels. Returns NULL in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_TextureData* bg_grid = ngn->load->Texture("data/png/grid.png");</code></pre>
+            </section>
+
+            <section id="TiledBg" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_TiledBgData* TiledBg(std::string filepath);</code></pre>
+                <h3>Description</h3>
+                <p>Loads tileset data from a .tbg file (Refer to the accompanying utilities of the library). The maximum size of the tileset is 8192x8192 pixels. Returns NULL in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_TiledBgData* tiles_bg_front = ngn->load->TiledBg("data/bg/bg_front.tbg");</code></pre>
+            </section>
+
+            <section id="Sprite" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_SpriteData* Sprite(std::string filepath);</code></pre>
+                <h3>Description</h3>
+                <p>Loads sprite data from a .spr file (Refer to the accompanying utilities of the library). The maximum size of each frame of the sprite is 8192x8192 pixels. Returns NULL in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_SpriteData*  wizard_sprite = ngn->load->Sprite("data/spr/wizard.spr");</code></pre>
+            </section>
+
+            <section id="CollisionMap" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_CollisionMapData* CollisionMap(std::string filepath);</code></pre>
+                <h3>Description</h3>
+                <p>Loads collision map data from a .map file (Refer to the accompanying utilities of the library). Returns NULL in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_CollisionMapData* collision_map = ngn->load->CollisionMap("data/collision/mainmap.map");</code></pre>
+            </section>
+
+            <section id="AudioClip" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_AudioClipData* AudioClip(std::string filepath);</code></pre>
+                <h3>Description</h3>
+                <p>Loads an audio file in WAV, FLAC, or OGG format and converts it to AudioClipData for use as a sound effect. Returns NULL in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_AudioClipData* coin_sfx = ngn->load->AudioClip("data/wav/coin.wav");</code></pre>
+            </section>
+
+            <section id="TrueTypeFont" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_TextFont* TrueTypeFont(
+    std::string filepath,             // File to load
+    uint32_t height,                   // Font height (in pixels)
+    bool antialias = true,             // Antialias?
+    uint32_t font_color = 0xFFFFFF,    // Base color (RGB)
+    uint32_t outline = 0,              // Outline? (in pixels)
+    uint32_t outline_color = 0x000000  // Outline color (RGB)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Loads a TRUE TYPE font file and generates textures for each character with the specified font size and properties. Returns NULL if unable to load or convert the font.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_TextFont* font = ngn->load->TrueTypeFont("data/consolas.ttf", 24);</code></pre>
+            </section>
+
+            <section id="PngAsRaw" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_RawImage* PngAsRaw(std::string filepath);</code></pre>
+                <h3>Description</h3>
+                <p>Loads an image in PNG format and returns its pixels in RAW format. Returns NULL in case of error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_RawImage* pixels = ngn->load->PngAsRaw("data/clouds.png");</code></pre>
+            </section>
+
+            <section id="SpriteAsRaw" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_RawImage* SpriteAsRaw(
+    std::string filepath,  // File to load
+    uint32_t frame = 0     // Frame to convert (default is the first frame)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Loads sprite data and returns the pixels of the specified frame (default is the first frame) in RAW format. Returns NULL in case of error.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_RawImage* pixels = ngn->load->SpriteAsRaw("data/coin.spr", 3);</code></pre>
+            </section>
+
+            <section id="SpriteAsRawVector" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool SpriteAsRawVector(
+    std::string filepath,                       // File to load
+    std::vector&lt;NGN_RawImage*&gt;& raw_frames,    // Destination vector for frames
+    uint32_t first_frame = 0,                   // Initial frame (0 by default)
+    uint32_t last_frame = NGN_DEFAULT_VALUE     // Final frame (last frame by default)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Loads sprite data and stores the pixels of the specified frames (all frames by default) in RAW format within a vector. Returns TRUE on success and FALSE in case of error.</p>
+                <h3>Example</h3>
+                <pre><code>std::vector&lt;NGN_RawImage*&gt; frames;
+ngn->load->SpriteAsRawVector("data/coin.spr", frames, 2, 5);</code></pre>
+            </section>
+
+            <section id="TextFile" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>// First Overload
+std::string TextFile(std::string filepath);
+
+// Second Overload
+std::string TextFile(
+    std::string filepath,                   // Filepath
+    std::vector&lt;std::string&gt;& text_lines    // Destination buffer
+);</code></pre>
+                <h3>Description</h3>
+                <p>Reads the text file from the specified path and returns it as a string (first overload), or stores the text lines from the file into the given buffer and returns true or false based on success (second overload).</p>
+                <h3>Example</h3>
+                <pre><code>// First Overload
+std::string text = ngn->load->TextFile("data/script.txt");
+
+// Second Overload
+std::vector&lt;std::string&gt; buffer;
+buffer.clear();
+ngn->load->TextFile("data/script.txt", buffer);</code></pre>
+            </section>
+
+            <section id="LoadFile" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>int32_t LoadFile(
+    std::string filepath,           // Filepath
+    std::vector&lt;uint8_t&gt;& data      // Data vector
+);</code></pre>
+                <h3>Description</h3>
+                <p>Reads the file from the specified path in the device's file system or from a file package (see SetDisk() and SetPackage()), and places the data into the given vector. If the file is read from a package and it is encrypted, the content will be decrypted. The method returns the number of bytes read or -1 in case of an error.</p>
+                <h3>Example</h3>
+                <pre><code>std::vector&lt;uint8_t&gt; buffer;
+int32_t file_length = ngn->load->LoadFile("data/stage.bin", buffer);</code></pre>
+            </section>
+
+            <section id="SetDisk" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetDisk();</code></pre>
+                <h3>Description</h3>
+                <p>From that moment on, set the device's file system as the data source for loading methods.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->load->SetDisk();</code></pre>
+            </section>
+
+            <section id="SetPackage" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool SetPackage(std::string pkg_file, std::string key = "");</code></pre>
+                <h3>Description</h3>
+                <p>From that moment on, set a file package created with the NGN_FileSystem tool as the data source for loading methods. If the files in the package are encrypted, the encryption key must be provided as the second parameter.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->load->SetPackage("gamedata.pkg", "myawesomekey");</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_load.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

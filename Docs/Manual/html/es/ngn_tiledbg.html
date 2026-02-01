@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_TILEDBG</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_TILEDBG.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Constructor">NGN_TiledBg (Constructor)</a></li>
+                    <li><a href="#Position">Position</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#Scale">Scale</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetCameraLayer">GetCameraLayer</a></li>
+                    <li><a href="#GetCurrentScale">GetCurrentScale</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="Constructor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_TiledBg(
+    NGN_TiledBgData* bg,        // Datos del fondo previamente cargados
+    int32_t position_x = 0,     // Posición X del fondo [0 por defecto]
+    int32_t position_y = 0      // Posición Y del fondo [0 por defecto]
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Crea un nuevo fondo de tiles, usando los datos previamente cargados. Ver las herramientas adjuntas a la librería para realizar la conversión de una imagen PNG a datos de tiles.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);</code></pre>
+            </section>
+
+            <section id="Position" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Position(float position_x, float position_y);
+void Position(Vector2 pos);</code></pre>
+                <h3>Descripción</h3>
+                <p>Posiciona el fondo en la coordenada indicada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bg_front->Position(1200.0f, 500.0f);</code></pre>
+            </section>
+
+            <section id="Translate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);</code></pre>
+                <h3>Descripción</h3>
+                <p>Mueve el fondo en la dirección y velocidad indicados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bg_front->Translate(5.0f, 0.0f);</code></pre>
+            </section>
+
+            <section id="Scale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Scale(float w, float h);
+void Scale(float scale);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escala el fondo según el factor dado. 1.0f es la escala original. Según la sobrecarga usada, se escalaran los ejes por igual o por separado. Debido a la implementación interna de los fondos de tiles, el escalado está limitado a valores iguales o superiores a 1.0f.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bg_front->Scale(1.5f);
+bg_front->Scale(2.0f, 0.75f);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Rotate(double degrees);</code></pre>
+                <h3>Descripción</h3>
+                <p>Rota el fondo el número de grados dado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bg_front->Rotate(0.5f);</code></pre>
+            </section>
+            
+            <section id="SetCenter" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetCenter(float x, float y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica, en coordenadas relativas y desde el centro real del fondo, donde posicional el centro para las rotación del mismo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bg_front->SetCenter(-10.0f, 20.0f);</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece un color de tinte que se aplicará al fondo. Un tinte blanco (255, 255, 255), mostrará fondo con sus colores originales, sin alteraciones.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bg_front->SetTintColor(96, 255, 192);</code></pre>
+            </section>
+			
+            <section id="GetCameraLayer" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t GetCameraLayer();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve la capa a la que está asignado el fondo en la cámara 2D. En caso de no estar asignado a ninguna capa, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>int32_t current_layer = bg_front->GetCameraLayer();</code></pre>
+            </section>
+			
+            <section id="GetCurrentScale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2 GetCurrentScale();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una estructura Size2 con la escala actual del fondo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2 current_scale = bg_front->GetCurrentScale();</code></pre>
+            </section>
+			
+            <hr>
+
+            <!-- ÍNDICE DE PROPIEDADES -->
+            <h2>PROPIEDADES de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_position">position</a></li>
+                    <li><a href="#prop_size">width / height</a></li>
+                    <li><a href="#prop_visible">visible</a></li>
+                    <li><a href="#prop_alpha">alpha</a></li>
+                    <li><a href="#prop_blend_mode">blend_mode</a></li>
+                    <li><a href="#prop_rotation">rotation</a></li>
+                    <li><a href="#prop_flip">flip_h / flip_v</a></li>
+                    <li><a href="#prop_ignore_camera_tint">ignore_camera_tint</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE PROPIEDADES -->
+            <section id="prop_position" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2 position</code></pre>
+                <h3>Descripción</h3>
+                <p>Posición del fondo en píxeles.</p>
+            </section>
+
+            <section id="prop_size" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>float width
+float height</code></pre>
+                <h3>Descripción</h3>
+                <p>Tamaño del fondo en píxeles. Usar estas propiedades solo para su lectura. No deben modificarse bajo ningún concepto.</p>
+            </section>
+
+            <section id="prop_visible" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool visible</code></pre>
+                <h3>Descripción</h3>
+                <p>Visibilidad del fondo.</p>
+            </section>
+
+            <section id="prop_alpha" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t alpha</code></pre>
+                <h3>Descripción</h3>
+                <p>Nivel de transparencia del fondo (0 – 255).</p>
+            </section>
+            
+            <section id="prop_blend_mode" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>SDL_BlendMode blend_mode</code></pre>
+                <h3>Descripción</h3>
+                <p>Modo de mezcla de color del fondo. Los modos disponibles son: <code>NGN_BLENDMODE_NONE</code>, <code>NGN_BLENDMODE_ALPHA</code>, <code>NGN_BLENDMODE_ADDITIVE</code> y <code>NGN_BLENDMODE_MODULATE</code>. El valor por defecto de esta propiedad es <code>NGN_BLENDMODE_ALPHA</code>.</p>
+            </section>
+
+            <section id="prop_rotation" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>double rotation</code></pre>
+                <h3>Descripción</h3>
+                <p>Angulo de rotación del fondo, en grados.</p>
+            </section>
+            
+            <section id="prop_flip" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool flip_h
+bool flip_v</code></pre>
+                <h3>Descripción</h3>
+                <p>Volteado vertical y horizontal del fondo.</p>
+            </section>
+            
+            <section id="prop_ignore_camera_tint" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool ignore_camera_tint</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica si el fondo debe ignorar el color de tinte asignado a la capa de la cámara.</p>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_tiledbg.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

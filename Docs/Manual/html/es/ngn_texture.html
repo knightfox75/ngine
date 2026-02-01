@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_TEXTURE</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_TEXTURE.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#ConstructorData">NGN_Texture (Constructor con datos)</a></li>
+                    <li><a href="#ConstructorBlank">NGN_Texture (Constructor en blanco)</a></li>
+                    <li><a href="#Position">Position</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#Size">Size</a></li>
+                    <li><a href="#Scale">Scale</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#ClearContent">ClearContent</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetCameraLayer">GetCameraLayer</a></li>
+                    <li><a href="#GetCurrentScale">GetCurrentScale</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="ConstructorData" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_Texture(
+    NGN_TextureData* texture,                   // Objeto de la clase TextureData
+    int32_t position_x = DEFAULT_VALUE,         // Posición X inicial (oculto por defecto)
+    int32_t position_y = DEFAULT_VALUE,         // Posición Y inicial (oculto por defecto)
+    uint32_t textura_width = DEFAULT_VALUE,     // Ancho de la Textura (por defecto, el de la textura)
+    uint32_t textura_height = DEFAULT_VALUE,    // Altura de la Textura (por defecto, la de la textura)
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Crea una nueva textura, usando los datos previamente cargados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_Texture* clouds = new NGN_Texture(clouds_gfx, 0, 0);</code></pre>
+            </section>
+
+            <section id="ConstructorBlank" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_Texture(
+    uint32_t texture_width,                     // Ancho de la textura
+    uint32_t texture_height,                    // Altura de la textura
+    int32_t position_x = NGN_DEFAULT_VALUE,     // Posicion X inicial (oculto por defecto)
+    int32_t position_y = NGN_DEFAULT_VALUE      // Posicion Y inicial (oculto por defecto)
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Crea una nueva textura en blanco con el tamaño especificado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_Texture* surface = new NGN_Texture(1280, 720, 0, 0);</code></pre>
+            </section>
+
+            <section id="Position" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Position(float position_x, float position_y);
+void Position(Vector2 pos);</code></pre>
+                <h3>Descripción</h3>
+                <p>Posiciona la textura en la coordenada dada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->Position(1200, 900);</code></pre>
+            </section>
+            
+            <section id="Translate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);</code></pre>
+                <h3>Descripción</h3>
+                <p>Mueve la textura en la dirección y velocidades dadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->Translate(5.0f, 0.0f);</code></pre>
+            </section>
+            
+            <section id="Size" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Size(float w, float h);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el tamaño de la textura.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->Size(64, 48);</code></pre>
+            </section>
+
+            <section id="Scale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Scale(float w, float h);
+void Scale(float scale);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escala la textura, según el factor dado. Según la sobrecarga usada, escalará los ejes en conjunto o por separado. La escala por defecto es 1.0f.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->Scale(1.5f);
+clouds->Scale(2.0f, 0.75f);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Rotate(double degrees);</code></pre>
+                <h3>Descripción</h3>
+                <p>Rota la textura el número de grados proporcionados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->Rotate(1.2f);</code></pre>
+            </section>
+            
+            <section id="SetCenter" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetCenter(float x, float y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Especifica, en coordenadas relativas y desde el centro real de la textura, donde se ubicará el centro de rotación de la textura.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->SetCenter(-10, -5);</code></pre>
+            </section>
+            
+            <section id="ClearContent" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ClearContent (uint32_t rgba = 0x00000000);</code></pre>
+                <h3>Descripción</h3>
+                <p>Borra el contenido de una textura, si esta se ha creado en blanco. Si no es especifica un color de relleno en formato RGBA, esta se borra aplicando el color transparente.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->ClearContent();</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece un color de tinte que se aplicará a la textura. Un tinte blanco (255, 255, 255), mostrará la textura con sus colores originales, sin alteraciones.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>clouds->SetTintColor(96, 255, 192);</code></pre>
+            </section>
+			
+            <section id="GetCameraLayer" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t GetCameraLayer();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve la capa a la que está asignada la textura en la cámara 2D. En caso de no estar asignada a ninguna capa, devuelve -1.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>int32_t current_layer = clouds->GetCameraLayer();</code></pre>
+            </section>
+			
+            <section id="GetCurrentScale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2 GetCurrentScale();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una estructura Size2 con la escala actual de la textura.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2 current_scale = clouds->GetCurrentScale();</code></pre>
+            </section>
+			
+            <hr>
+
+            <!-- ÍNDICE DE PROPIEDADES -->
+            <h2>PROPIEDADES de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_position">position / screen</a></li>
+                    <li><a href="#prop_size">width / height</a></li>
+                    <li><a href="#prop_visible">visible</a></li>
+                    <li><a href="#prop_alpha">alpha</a></li>
+                    <li><a href="#prop_blend_mode">blend_mode</a></li>
+                    <li><a href="#prop_rotation">rotation</a></li>
+                    <li><a href="#prop_flip">flip_h / flip_v</a></li>
+                    <li><a href="#prop_ignore_camera_tint">ignore_camera_tint</a></li>
+                </ul>
+            </nav>
+            <hr>
+            
+            <!-- BLOQUES DE DOCUMENTACIÓN DE PROPIEDADES -->
+            <section id="prop_position" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2 position
+Vector2 screen</code></pre>
+                <h3>Descripción</h3>
+                <p>Posición de la textura (global o en pantalla).</p>
+            </section>
+
+            <section id="prop_size" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>float width
+float height</code></pre>
+                <h3>Descripción</h3>
+                <p>Tamaño de la textura.</p>
+            </section>
+
+            <section id="prop_visible" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool visible</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece la visibilidad de la textura.</p>
+            </section>
+            
+            <section id="prop_alpha" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t alpha</code></pre>
+                <h3>Descripción</h3>
+                <p>Nivel de transparencia de la textura, entre 0 y 255.</p>
+            </section>
+            
+            <section id="prop_blend_mode" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>SDL_BlendMode blend_mode</code></pre>
+                <h3>Descripción</h3>
+                <p>Modo de mezcla de color de la textura. Los modos disponibles son: <code>NGN_BLENDMODE_NONE</code>, <code>NGN_BLENDMODE_ALPHA</code>, <code>NGN_BLENDMODE_ADDITIVE</code> y <code>NGN_BLENDMODE_MODULATE</code>. El valor por defecto de esta propiedad es <code>NGN_BLENDMODE_ALPHA</code>.</p>
+            </section>
+
+            <section id="prop_rotation" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>double rotation</code></pre>
+                <h3>Descripción</h3>
+                <p>Rotación de la textura, en grados.</p>
+            </section>
+            
+            <section id="prop_flip" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool flip_h
+bool flip_v</code></pre>
+                <h3>Descripción</h3>
+                <p>Volteado vertical y horizontal de la textura.</p>
+            </section>
+            
+            <section id="prop_ignore_camera_tint" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool ignore_camera_tint</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica si la textura debe ignorar el color de tinte asignado a la capa de la cámara.</p>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_texture.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

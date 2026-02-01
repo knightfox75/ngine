@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_RENDER</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_RENDER.H</h1>
+        </header>
+
+        <main>
+            <!-- METHODS INDEX -->
+            <h2>METHODS of the class</h2>
+            <div class="doc-block">
+                <p>The methods of this class render the specified graphical elements to the established target, which by default is the main viewport. It is possible to specify another target (another viewport or a texture) using the <code>SelectViewport()</code> method of the NGN_Graphics class or the <code>RenderToTexture()</code> and <code>RenderToScreen()</code> methods of this class.</p>
+            </div>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Texture">Texture</a></li>
+                    <li><a href="#Sprite">Sprite</a></li>
+                    <li><a href="#TiledBg">TiledBg</a></li>
+                    <li><a href="#TextLayer">TextLayer</a></li>
+                    <li><a href="#Canvas">Canvas</a></li>
+                    <li><a href="#Viewports">Viewports</a></li>
+                    <li><a href="#RenderToTexture">RenderToTexture</a></li>
+                    <li><a href="#RenderToScreen">RenderToScreen</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHODS DOCUMENTATION BLOCKS -->
+            <section id="Texture" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Texture(
+    NGN_Texture* texture,               // Texture
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);</code></pre>
+                <h3>Description</h3>
+                <p>Draws a texture with the NGN_Texture format to the specified target and at the position stored in the texture's properties. Optionally, you can specify the position for this rendering.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->Texture(bg);
+ngn->render->Texture(bg, 100, 200);</code></pre>
+            </section>
+
+            <section id="Sprite" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Sprite(
+    NGN_Sprite* sprite,                 // Sprite
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);</code></pre>
+                <h3>Description</h3>
+                <p>Draws a sprite with the NGN_Sprite format to the specified target and at the position stored in the sprite's properties. Optionally, you can specify the position for this rendering.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->Sprite(ball);
+ngn->render->Sprite(ball, 127, 96);</code></pre>
+            </section>
+
+            <section id="TiledBg" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void TiledBg(NGN_TiledBg* bg);</code></pre>
+                <h3>Description</h3>
+                <p>Draws a background composed of tiles with the NGN_TiledBg format to the specified target.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->TiledBg(clouds);</code></pre>
+            </section>
+
+            <section id="TextLayer" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void TextLayer(
+    NGN_TextLayer* layer,               // Text Layer
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);</code></pre>
+                <h3>Description</h3>
+                <p>Draws a text layer with the NGN_TextLayer format to the specified target and at the position stored in the layer's properties. Optionally, you can specify the position for this rendering.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->TextLayer(textbox);
+ngn->render->TextLayer(textbox, 200, 100);</code></pre>
+            </section>
+
+            <section id="Canvas" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Canvas(
+    NGN_Canvas* canvas,                 // Canvas
+    float position_x = DEFAULT_VALUE,   // X Position
+    float position_y = DEFAULT_VALUE    // Y Position
+);</code></pre>
+                <h3>Description</h3>
+                <p>Draws a canvas with the NGN_Canvas format to the specified target and at the position stored in the canvas's properties. Optionally, you can specify the position for this rendering.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->Canvas(mydraw);
+ngn->render->Canvas(mydraw, 10, 10);</code></pre>
+            </section>
+
+            <section id="Viewports" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Viewports();</code></pre>
+                <h3>Description</h3>
+                <p>Renders the content of all enabled viewports.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->Viewports();</code></pre>
+            </section>
+
+            <section id="RenderToTexture" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void RenderToTexture(NGN_Texture* texture);</code></pre>
+                <h3>Description</h3>
+                <p>Selects and sets a texture as the render target.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->RenderToTexture(surface);</code></pre>
+            </section>
+
+            <section id="RenderToScreen" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void RenderToScreen();</code></pre>
+                <h3>Description</h3>
+                <p>Sets the screen (or VIEWPORT) as the render target.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->RenderToScreen();</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="index.html">Back to Index</a>
+			<!-- Link to the equivalent Spanish page -->
+			<a href="../es/ngn_render.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

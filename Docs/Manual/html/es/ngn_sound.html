@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_SOUND</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_SOUND.H</h1>
+        </header>
+
+        <main>
+            <!-- EFECTOS DE SONIDO (SFX) -->
+            <h2>MÉTODOS de la clase: Efectos de sonido (SFX)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#PlaySfx">PlaySfx</a></li>
+                    <li><a href="#ResumeSfx">ResumeSfx</a></li>
+                    <li><a href="#PauseSfx">PauseSfx</a></li>
+                    <li><a href="#StopSfx">StopSfx</a></li>
+                    <li><a href="#SfxVolume">SfxVolume</a></li>
+                    <li><a href="#SfxGetVolume">SfxGetVolume</a></li>
+                    <li><a href="#SfxPitch">SfxPitch</a></li>
+                    <li><a href="#SfxGetPitch">SfxGetPitch</a></li>
+                    <li><a href="#SfxLoop">SfxLoop</a></li>
+                    <li><a href="#SfxGetLoop">SfxGetLoop</a></li>
+                    <li><a href="#SfxPanning">SfxPanning</a></li>
+                    <li><a href="#SfxGetPanning">SfxGetPanning</a></li>
+                    <li><a href="#SfxIsPlaying">SfxIsPlaying</a></li>
+                    <li><a href="#SfxIsAlive">SfxIsAlive</a></li>
+                    <li><a href="#ClearSfx">ClearSfx</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="PlaySfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_AudioClip* PlaySfx(
+    NGN_AudioClipData* sound,                   // Clip de audio
+    int32_t volume = 100,                       // Volumen
+    int32_t panning = 0,                        // Panning (-100 a 100)
+    bool loop = false,                          // Loop ?
+    uint8_t mixer_channel = MIXER_EFFECTS_CH    // Canal por defecto en el mixer
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Reproduce un clip de audio cargado previamente en RAM con el comando <code>ngn->load->AudioClip()</code>. Devuelve la referencia de la instancia creada y lo añade a la cola de reproducción.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_AudioClipData* coin_sfx = ngn->load->AudioClip("data/wav/coin.wav");
+// Reproducción simple
+ngn->sound->PlaySfx(coin_sfx);
+// Reproducción avanzada
+NGN_AudioClip* my_sound = ngn->sound->PlaySfx(coin_sfx, 100, false);
+ngn->sound->SfxVolume(my_sound, 50);</code></pre>
+            </section>
+
+            <section id="ResumeSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ResumeSfx(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Continúa la reproducción de un efecto de sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ResumeSfx(my_sound);</code></pre>
+            </section>
+
+            <section id="PauseSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PauseSfx(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Pausa un efecto de sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PauseSfx(my_sound);</code></pre>
+            </section>
+
+            <section id="StopSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void StopSfx(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Detén la reproducción de un efecto de sonido. Esto lo eliminara de manera automática de la cola de reproducción.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->StopSfx(my_sound);</code></pre>
+            </section>
+
+            <section id="SfxVolume" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SfxVolume(NGN_AudioClip* sound, int32_t volume = 100);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el nivel de volumen de un sonido (0 – 100).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->SfxVolume(my_sound, 50);</code></pre>
+            </section>
+
+            <section id="SfxGetVolume" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t SfxGetVolume(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el nivel actual de volumen de un sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>uint32_t vol = ngn->sound->SfxGetVolume(my_sound);</code></pre>
+            </section>
+
+            <section id="SfxPitch" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SfxPitch(NGN_AudioClip* sound, float pitch = 1.0f);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia la velocidad de reproducción y frecuencia de un sonido. (Usar 1.0f como valor nominal).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->SfxPitch(my_sound, 1.2f);</code></pre>
+            </section>
+
+            <section id="SfxGetPitch" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>float SfxGetPitch(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el valor actual del PITCH de un sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>float my_pitch = ngn->sound->SfxGetPitch(my_sound);</code></pre>
+            </section>
+
+            <section id="SfxLoop" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SfxLoop(NGN_AudioClip* sound, bool loop = true);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece si un sonido debe repetirse al finalizar.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->SfxLoop(my_sound, true);</code></pre>
+            </section>
+
+            <section id="SfxGetLoop" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SfxGetLoop(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el estado de repetición de un sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool repeat = ngn->sound->SfxGetLoop(my_sound);</code></pre>
+            </section>
+
+            <section id="SfxPanning" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SfxPanning(NGN_AudioClip* sound, int32_t panning = 0);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece el efecto “panning” de un sonido (-100 izquierda, 0 centro, 100 derecha).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->SfxPanning(my_sound, -66);</code></pre>
+            </section>
+
+            <section id="SfxGetPanning" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t SfxGetPanning(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve nivel de “panning” de un sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>int32_t pan = ngn->sound->SfxGetPanning(my_sound);</code></pre>
+            </section>
+
+            <section id="SfxIsPlaying" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SfxIsPlaying(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el estado de reproducción de un sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool play = ngn->sound->SfxIsPlaying(my_sound);</code></pre>
+            </section>
+
+            <section id="SfxIsAlive" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SfxIsAlive(NGN_AudioClip* sound);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve si aún existe un sonido.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool alive = ngn->sound->SfxIsAlive(my_sound);</code></pre>
+            </section>
+
+            <section id="ClearSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ClearSfx();</code></pre>
+                <h3>Descripción</h3>
+                <p>Detén y elimina todos los efectos de sonido almacenados en la cola.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ClearSfx();</code></pre>
+            </section>
+            <hr>
+
+            <!-- MÚSICA Y DIÁLOGOS (BGM) -->
+            <h2>MÉTODOS de la clase: Música y diálogos (BGM)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#OpenMusic">OpenMusic</a></li>
+                    <li><a href="#CloseMusic">CloseMusic</a></li>
+                    <li><a href="#PlayMusic">PlayMusic</a></li>
+                    <li><a href="#ResumeMusic">ResumeMusic</a></li>
+                    <li><a href="#PauseMusic">PauseMusic</a></li>
+                    <li><a href="#StopMusic">StopMusic</a></li>
+                    <li><a href="#MusicVolume">MusicVolume</a></li>
+                    <li><a href="#MusicGetVolume">MusicGetVolume</a></li>
+                    <li><a href="#MusicPitch">MusicPitch</a></li>
+                    <li><a href="#MusicGetPitch">MusicGetPitch</a></li>
+                    <li><a href="#MusicLoop">MusicLoop</a></li>
+                    <li><a href="#MusicGetLoop">MusicGetLoop</a></li>
+                    <li><a href="#MusicIsPlaying">MusicIsPlaying</a></li>
+                    <li><a href="#MusicIsAlive">MusicIsAlive</a></li>
+                    <li><a href="#ClearMusic">ClearMusic</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="OpenMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_MusicClip* OpenMusic(
+    std::string filepath,                       // Archivo de audio
+    bool auto_start = true,                     // Reproducción automática
+    int32_t volume = 100,                       // Volumen
+    bool loop = true,                           // Loop ?
+    uint8_t mixer_channel = MIXER_MUSIC_CH      // Canal por defecto en el mixer
+);
+
+NGN_MusicClip* OpenMusic(
+    std::string filepath,                       // Archivo de audio
+    int32_t loop_start,                         // Inicio del loop (milisegundos)
+    int32_t loop_end = NGN_DEFAULT_VALUE,       // Fin del loop (milisegundos)
+    bool auto_start = true,                     // Reproducción automática
+    int32_t volume = 100,                       // Volumen
+    uint8_t mixer_channel = MIXER_MUSIC_CH      // Canal por defecto en el mixer
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Abre y opcionalmente, reproduce un archivo de audio por streaming en formato WAV, OGG o FLAC. Es posible establecer los puntos de “loop” de inicio y final (en milisegundos) si es necesario. Devuelve la referencia de la instancia creada y lo añade a la cola de reproducción. Opcionalmente, se puede asignar el canal del mezclador de audio.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_MusicClip* bgm = ngn->sound->OpenMusic("data/ogg/stage01.ogg");
+NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);</code></pre>
+            </section>
+
+            <section id="CloseMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void CloseMusic(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cierra un stream de audio y lo elimina de la cola de reproducción.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->CloseMusic(bgm);</code></pre>
+            </section>
+            
+            <section id="PlayMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PlayMusic(
+    NGN_MusicClip* music,       // Clip de música
+    int32_t volume = 100,       // Volumen
+    bool loop = true            // Loop ?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Inicia o reinicía la reproducción de un archivo de audio abierto previamente, pudiendo especificar nuevos valores de volumen y repetición.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PlayMusic(bgm, 50, false);</code></pre>
+            </section>
+
+            <section id="ResumeMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ResumeMusic(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Continua con la reproducción de una música pausada previamente. Si no estaba en pausa, se inicia la reproducción desde el principio.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ResumeMusic(bgm);</code></pre>
+            </section>
+            
+            <section id="PauseMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PauseMusic(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Pone en pausa una música indicada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PauseMusic(bgm);</code></pre>
+            </section>
+            
+            <section id="StopMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void StopMusic(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Detiene la reproducción de la música indicada. Esta no será eliminada de cola de reproducción.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->StopMusic(bgm);</code></pre>
+            </section>
+
+            <section id="MusicVolume" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void MusicVolume(NGN_MusicClip* music, int32_t volume = 100);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el nivel de volumen (0 – 100) de la música indicada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->MusicVolume(bgm, 75);</code></pre>
+            </section>
+
+            <section id="MusicGetVolume" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t MusicGetVolume(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el nivel actual de la música indicada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>uint32_t vol = ngn->sound->MusicGetVolume(bgm);</code></pre>
+            </section>
+
+            <section id="MusicPitch" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void MusicPitch(NGN_MusicClip* music, float pitch = 1.0f);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia la velocidad de reproducción y frecuencia de una música. (Usar 1.0f como valor nominal).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->MusicPitch(bgm, 0.75f);</code></pre>
+            </section>
+            
+            <section id="MusicGetPitch" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>float MusicGetPitch(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el valor actual del PITCH de una música.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>float pitch = ngn->sound->MusicGetPitch(bgm);</code></pre>
+            </section>
+            
+            <section id="MusicLoop" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void MusicLoop(NGN_MusicClip* music, bool loop = true);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el estado del LOOP (repetición) de una música.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->MusicLoop(bgm, false);</code></pre>
+            </section>
+
+            <section id="MusicGetLoop" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool MusicGetLoop(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el estado del LOOP de una música.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool loop = ngn->sound->MusicGetLoop(bgm);</code></pre>
+            </section>
+
+            <section id="MusicIsPlaying" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool MusicIsPlaying(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el estado de reproducción de una música.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool play = ngn->sound->MusicIsPlaying(bgm);</code></pre>
+            </section>
+
+            <section id="MusicIsAlive" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool MusicIsAlive(NGN_MusicClip* music);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve si aún existe una música.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool alive = ngn->sound->MusicIsAlive(bgm);</code></pre>
+            </section>
+            
+            <section id="ClearMusic" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ClearMusic();</code></pre>
+                <h3>Descripción</h3>
+                <p>Detén y elimina todos los streams de música almacenados en la cola.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ClearMusic();</code></pre>
+            </section>
+            <hr>
+
+            <!-- MEZCLADOR -->
+            <h2>MÉTODOS de la clase: Mezclador</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#SetMixerLevel">SetMixerLevel</a></li>
+                    <li><a href="#GetMixerLevel">GetMixerLevel</a></li>
+                    <li><a href="#PushPopMixer">PushMixer / PopMixer</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="SetMixerLevel" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetMixerLevel(uint8_t channel, int32_t level);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el nivel de volumen de unos de los canales del mezclador de sonido. Los canales disponibles son <code>MIXER_MASTER_CH</code> (canal maestro), <code>MIXER_MUSIC_CH</code> (música), <code>MIXER_EFFECTS_CH</code> (efectos de sonido), <code>MIXER_AUX1_CH</code> (canal auxiliar 1) y <code>MIXER_AUX2_CH</code> (canal auxiliar 2). El valor del volumen es un número entero entre 0 y 100.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->SetMixerLevel(MIXER_MASTER_CH, 75);</code></pre>
+            </section>
+
+            <section id="GetMixerLevel" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>int32_t GetMixerLevel(uint8_t channel);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el valor actual del volumen del canal especificado del mezclador de sonido. El valor devuelto es un número entero entre 0 y 100. En el caso de especificar un canal inexistente, devolverá 0.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>int32_t vol = ngn->sound->GetMixerLevel(MIXER_MASTER_CH);</code></pre>
+            </section>
+
+            <section id="PushPopMixer" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>PushMixer();
+PopMixer();</code></pre>
+                <h3>Descripción</h3>
+                <p>Guarda los valores actuales del mixer (PushMixer()) o restaura los almacenados (PopMixer()).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PushMixer();
+ngn->sound->PopMixer();</code></pre>
+            </section>
+            <hr>
+
+            <!-- MÉTODOS COMUNES -->
+            <h2>MÉTODOS de la clase: Métodos comunes</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#PauseAll">PauseAll</a></li>
+                    <li><a href="#ResumeAll">ResumeAll</a></li>
+                    <li><a href="#StopAll">StopAll</a></li>
+                    <li><a href="#UpdateSound">Update</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="PauseAll" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PauseAll();</code></pre>
+                <h3>Descripción</h3>
+                <p>Pausa todos los SFX (efectos de sonido) y músicas que estén en reproducción en ese momento. Los sonidos y músicas reproducidos después de la ejecución de esta orden no se verán afectados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PauseAll();</code></pre>
+            </section>
+
+            <section id="ResumeAll" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ResumeAll();</code></pre>
+                <h3>Descripción</h3>
+                <p>Continua la reproducción de todos los SFX y músicas puestas en pausa por la instrucción PauseAll().</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ResumeAll();</code></pre>
+            </section>
+
+            <section id="StopAll" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void StopAll();</code></pre>
+                <h3>Descripción</h3>
+                <p>Detiene la reproducción de todos los SFX activos y cierra todos los streams de música abiertos.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->StopAll();</code></pre>
+            </section>
+
+            <section id="UpdateSound" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Update();</code></pre>
+                <h3>Descripción</h3>
+                <p>Actualiza el estado de todos los SFX y músicas existentes en la cola de audio, eliminando los que ya no son necesarios automáticamente. Esta instrucción debe ejecutarse una vez por frame con el fin de mantener la cola de sonidos actualizada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->Update();</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_sound.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

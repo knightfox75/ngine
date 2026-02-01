@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_CANVAS</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_CANVAS.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE: FUNCIONES DEL LIENZO -->
+            <h2>MÉTODOS de la clase (Funciones del lienzo)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Constructor">NGN_Canvas (Constructor)</a></li>
+                    <li><a href="#Position">Position</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#Size">Size</a></li>
+                    <li><a href="#Scale">Scale</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetCurrentScale">GetCurrentScale</a></li>
+                </ul>
+            </nav>
+            <hr>
+			
+            <div class="doc-block">
+                 <p><strong>Nota:</strong> Los cambios de tamaño o escala no afectan al tamaño original del contenedor, solo se cambia el tamaño del contenido al representarse en la pantalla.</p>
+            </div>
+			
+			<hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN: FUNCIONES DEL LIENZO -->
+            <section id="Constructor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_Canvas(
+    int32_t position_x = 0,             // Posición X (0 por defecto)
+    int32_t position_y = 0,             // Posición Y (0 por defecto)
+    uint32_t _width = DEFAULT_VALUE,    // Ancho de la capa (Toda la pantalla por defecto)
+    uint32_t _height = DEFAULT_VALUE,   // Alto de la capa (Toda la pantalla por defecto)
+    bool _filtering = false             // Filtrado bilinear del contenido?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Crea un nuevo canvas, usando los parámetros especificados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_Canvas* canvas = new NGN_Canvas(100, 50, 200, 64);</code></pre>
+            </section>
+
+            <section id="Position" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Position(float position_x, float position_y);
+void Position(Vector2 pos);</code></pre>
+                <h3>Descripción</h3>
+                <p>Posiciona el canvas en la coordenada dada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Position(10, 20);</code></pre>
+            </section>
+
+            <section id="Translate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);</code></pre>
+                <h3>Descripción</h3>
+                <p>Mueve el canvas en la dirección y velocidades dadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Translate(0.0f, -2.0f);</code></pre>
+            </section>
+
+            <section id="Size" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Size(float w, float h);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el tamaño del canvas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Size(640, 480);</code></pre>
+            </section>
+
+            <section id="Scale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Scale(float w, float h);
+void Scale(float scale);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escala el canvas según el factor dado. Según la sobrecarga usada, escalará los ejes en conjunto o por separado. La escala por defecto es 1.0f.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Scale(1.5f);
+canvas->Scale(2.0f, 0.75f);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Rotate(double degrees);</code></pre>
+                <h3>Descripción</h3>
+                <p>Rota el canvas el número de grados proporcionados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Rotate(1.2f);</code></pre>
+            </section>
+
+            <section id="SetCenter" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetCenter(float x, float y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Específica, en coordenadas relativas y desde el centro real del canvas, donde se ubicará el centro de rotación del mismo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->SetCenter(-10, -5);</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece un color de tinte que se aplicará al canvas. Un tinte blanco (255, 255, 255), mostrará el canvas con sus colores originales, sin alteraciones.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->SetTintColor(96, 255, 192);</code></pre>
+            </section>
+			
+            <section id="GetCurrentScale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2 GetCurrentScale();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una estructura Size2 con la escala actual del lienzo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2 current_scale = canvas->GetCurrentScale();</code></pre>
+            </section>
+
+            <!-- ÍNDICE: PROPIEDADES DEL LIENZO -->
+            <hr>
+            <h2>PROPIEDADES de la clase (Propiedades del lienzo)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_position">position</a></li>
+                    <li><a href="#prop_size">width / height</a></li>
+                    <li><a href="#prop_visible">visible</a></li>
+                    <li><a href="#prop_alpha">alpha</a></li>
+                    <li><a href="#prop_blend_mode">blend_mode</a></li>
+                    <li><a href="#prop_filtering">filtering</a></li>
+                    <li><a href="#prop_rotation">rotation</a></li>
+                    <li><a href="#prop_flip">flip_h / flip_v</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN: PROPIEDADES DEL LIENZO -->
+            <section id="prop_position" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2 position</code></pre>
+                <h3>Descripción</h3>
+                <p>Posición del canvas en pantalla.</p>
+            </section>
+
+            <section id="prop_size" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>float width
+float height</code></pre>
+                <h3>Descripción</h3>
+                <p>Tamaño del canvas.</p>
+            </section>
+
+            <section id="prop_visible" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool visible</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica si el canvas es o no visible.</p>
+            </section>
+
+            <section id="prop_alpha" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t alpha</code></pre>
+                <h3>Descripción</h3>
+                <p>Nivel de transparencia del canvas, entre 0 y 255.</p>
+            </section>
+
+            <section id="prop_blend_mode" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>SDL_BlendMode blend_mode</code></pre>
+                <h3>Descripción</h3>
+                <p>Modo de mezcla de color del canvas. Los modos disponibles son: <code>NGN_BLENDMODE_NONE</code>, <code>NGN_BLENDMODE_ALPHA</code>, <code>NGN_BLENDMODE_ADDITIVE</code> y <code>NGN_BLENDMODE_MODULATE</code>. El valor por defecto de esta propiedad es <code>NGN_BLENDMODE_ALPHA</code>.</p>
+            </section>
+
+            <section id="prop_filtering" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool filtering</code></pre>
+                <h3>Descripción</h3>
+                <p>Activa o desactiva el filtrado bilineal del contenido del canvas.</p>
+            </section>
+            
+            <section id="prop_rotation" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>double rotation</code></pre>
+                <h3>Descripción</h3>
+                <p>Rotación del canvas, en grados.</p>
+            </section>
+
+            <section id="prop_flip" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool flip_h
+bool flip_v</code></pre>
+                <h3>Descripción</h3>
+                <p>Volteado vertical y horizontal del canvas.</p>
+            </section>
+            
+            <div class="doc-block">
+                 <p><strong>Nota:</strong> Los cambios de tamaño o escala no afectan al tamaño original del contenedor, solo se cambia el tamaño del contenido al representarse en la pantalla.</p>
+            </div>
+
+            <!-- ÍNDICE: FUNCIONES DE DIBUJO -->
+            <hr>
+            <h2>MÉTODOS de la clase (Funciones de dibujo)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Cls">Cls</a></li>
+                    <li><a href="#Point">Point</a></li>
+                    <li><a href="#Line">Line</a></li>
+                    <li><a href="#Box">Box</a></li>
+                    <li><a href="#Circle">Circle</a></li>
+                    <li><a href="#Arc">Arc</a></li>
+                    <li><a href="#GetPixelColor">GetPixelColor</a></li>
+                    <li><a href="#GetPixelRgba">GetPixelRgba</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN: FUNCIONES DE DIBUJO -->
+            <section id="Cls" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Cls(uint32_t color = 0x00000000);</code></pre>
+                <h3>Descripción</h3>
+                <p>Borra el contenido del canvas y si se especifica, lo rellena con el color dado. El color ha de especificarse en formato RGBA.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Cls(0x0080FFFF);	// RRGGBBAA</code></pre>
+            </section>
+
+            <section id="Point" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Point(int32_t x, int32_t y, uint32_t color);</code></pre>
+                <h3>Descripción</h3>
+                <p>Dibuja un punto de 1x1 pixels del color especificado en las coordenadas del canvas dadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Point(100, 50, 0x00FF00FF);</code></pre>
+            </section>
+
+            <section id="Line" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Line(
+    int32_t x1, int32_t y1,     // Punto A
+    int32_t x2, int32_t y2,     // Punto B
+    uint32_t color              // Color (RGBA)
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Dibuja una línea entre dos puntos con el color especificado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Line(10, 10, 200, 200, 0xFF0000FF);</code></pre>
+            </section>
+
+            <section id="Box" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Box(
+    int32_t x1, int32_t y1,      // Vértice superior izquierdo
+    int32_t x2, int32_t y2,      // Vértice inferior derecho
+    uint32_t color,              // Color (RGBA)
+    bool paint = false           // Relleno?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Dibuja una caja entre los vértices especificados con el color dado. Puede dibujarse con o sin relleno.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Box(10, 10, 200, 200, 0xFF00FFFF, true);
+canvas->Box(10, 10, 200, 200, 0xFFFFFFFF);</code></pre>
+            </section>
+
+            <section id="Circle" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Circle(
+    int32_t cx, int32_t cy,         // Coordenadas del centro
+    int32_t r,                      // Radio horizontal
+    uint32_t color,                 // Color (RGBA)
+    int32_t ry = DEFAULT_VALUE,     // Radio vertical
+    bool paint = false              // Relleno?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Dibuja un círculo con los parámetros especificados. Si no se especifica el radio vertical, se usará el horizontal en su lugar. El parámetro paint establece si el círculo es o no con relleno.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Circle(320, 240, 32, 0xFFFFFFFF);
+canvas->Circle(320, 240, 32, 0x804080FF, 64, true);</code></pre>
+            </section>
+
+            <section id="Arc" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Arc(
+    int32_t cx, int32_t cy,         // Coordenadas del centro
+    int32_t r,                      // Radio horizontal
+    double start_angle,             // Ángulo inicial (Radianes)
+    double end_angle,               // Ángulo final (Radianes)
+    uint32_t color,                 // Color (RGBA)
+    int32_t ry = DEFAULT_VALUE,     // Radio vertical
+    uint8_t close = 0               // Cerrar el arco?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Dibuja un arco con los parámetros especificados. Si no se especifica el radio vertical, se usará el horizontal en su lugar. Los ángulos deben de especificarse en RADIANES. El parámetro close permite cerrar el arco por sus extremos (0 = no lo cierra, 1 = cierra los dos extremos, 2 = cierra los extremos con el centro).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>canvas->Arc(250, 360, 200, 0.0f, (PI * 2.0f), 0xFFFFFFFF, 200);
+canvas->Arc(640, 360, 100, 0.3f, 4.0f, 0xFFFFFFFF, 100, 1);
+canvas->Arc(640, 580, 100, 0.8f, 5.0f, 0xFFFFFFFF, 100, 2);</code></pre>
+            </section>
+
+            <section id="GetPixelColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>uint32_t GetPixelColor(int32_t x, int32_t y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el color en formato RGBA8888 (RRGGBBAA) del pixel en las coordenadas proporcionadas. Si las coordenadas se encuentran fuera de los límites del canvas, se devuelve 0x00000000.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>uint32_t color = canvas->GetPixelColor(345, 123);</code></pre>
+            </section>
+
+            <section id="GetPixelRgba" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Rgba GetPixelRgba(int32_t x, int32_t y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el color en formato RGBA (color.r, color.g, color.b, color.a) del pixel en las coordenadas proporcionadas. Si las coordenadas se encuentran fuera de los límites del canvas, se devuelve 0 en los 4 componentes.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Rgba color = canvas->GetPixelRgba(345, 123);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_canvas.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

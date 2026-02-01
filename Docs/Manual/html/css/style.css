@@ -1,0 +1,236 @@
+/* style.css - Hoja de Estilos para la Documentación de n'gine (Manual) */
+
+/* --- Variables de Color (Paleta Tema Oscuro - Tonos Naranja/MSX) --- */
+:root {
+    --bg-color: #1e1e1e;
+    --text-color: #cccccc;
+    --primary-color: #E89F4C;
+    --highlight-bg-color: #F0C070;
+    --block-bg-color: #2a2a2a;
+    --border-color: #444444;
+}
+
+/* --- Estilos Generales y Tipografía --- */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Títulos y Encabezados --- */
+h1, h2 {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+h3 {
+    color: var(--primary-color);
+    font-size: 1.1em;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+/* --- Enlaces --- */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 2px 4px;
+    margin: -2px -4px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+a:hover {
+    background-color: var(--highlight-bg-color);
+    color: var(--bg-color);
+}
+
+/* --- Índice de Contenidos --- */
+.index ul {
+    list-style-type: none;
+    padding: 0;
+    column-count: 2;
+}
+
+.index li {
+    margin-bottom: 8px;
+}
+
+/* --- Bloques de Documentación --- */
+.doc-block {
+    background-color: var(--block-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px 25px;
+    margin-bottom: 30px;
+    scroll-margin-top: 20px;
+}
+
+/* --- Bloques de Código --- */
+pre {
+    background-color: var(--bg-color);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+}
+
+code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.95em;
+}
+
+/* --- Otros Elementos --- */
+hr {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 40px 0;
+}
+
+/* --- Botones Flotantes de Navegación (Base Escritorio) --- */
+.floating-buttons {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: auto;
+}
+
+#button-tray {
+    display: flex;
+    flex-direction: row;
+    gap: inherit; /* Hereda el 'gap' del contenedor padre */
+}
+
+.floating-buttons a {
+    background-color: var(--block-bg-color);
+    border: 1px solid var(--border-color);
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 1em;
+    white-space: nowrap;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease-out, background-color 0.2s ease-out, color 0.2s;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.floating-buttons a:hover {
+    background-color: var(--primary-color);
+    border-color: var(--highlight-bg-color);
+    color: var(--bg-color);
+    transform: translateY(-3px);
+}
+
+#back-to-top {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+#back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* El botón de menú está oculto por defecto en escritorio */
+#menu-toggle {
+    display: none;
+}
+
+/* --- Espaciador final para botones flotantes (Base Escritorio) --- */
+main::after {
+    content: '';
+    display: block;
+    height: 120px; /* Altura generosa para la barra de botones horizontal */
+}
+
+
+/* --- Media Queries para Móviles (Menú Desplegable) --- */
+@media (max-width: 768px) {
+    /* El índice pasa a una sola columna */
+    .index ul {
+        column-count: 1;
+    }
+
+    /* Espaciador final para el botón de menú */
+    main::after {
+        content: '';
+        display: block;
+        height: 80px;
+    }
+	    
+    /* Contenedor flotante en móviles */
+    .floating-buttons {
+        left: auto;
+        transform: none;
+        right: 10px;
+        bottom: 10px;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    /* Mostramos y estilizamos el botón de menú en móviles */
+    #menu-toggle {
+        display: block;
+        font-size: 0.9em;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 8px;
+        background-color: var(--primary-color);
+        color: var(--bg-color);
+        border: 1px solid var(--highlight-bg-color);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+	    
+    /* Bandeja de botones en móviles */
+    #button-tray {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 16px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s;
+    }
+    
+    .floating-buttons.is-active #button-tray {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    
+    #button-tray a {
+        font-size: 0.8em;
+        padding: 8px 12px;
+    }
+    
+    #back-to-top {
+        display: none;
+    }
+    
+    #back-to-top.visible {
+        display: block;
+    }
+    
+    body {
+        padding-bottom: 20px;
+    }
+}

@@ -1,4 +1,21 @@
 --------------------------------------------------------------------------------
+2026-02-01 Ver.1.20.0+10th-anniversary
+--------------------------------------------------------------------------------
+- Los métodos NGN_Load::CollisionMap() y NGN_Collisions::GetPixel() ahora utilizan operaciones a nivel de bit (bitwise/bitmask) para el cálculo de coordenadas en mapas de colisiones con tiles de tamaño potencia de 2. Esto mejora significativamente el rendimiento en la función GetPixel. Para tamaños de tile no optimizados, se conserva el cálculo tradicional mediante división y módulo.
+- Optimizados los métodos NGN_Collisions::HitBox(), NGN_Collisions::PixelPerfect() y NGN_Collisions::RaycastPoint() para reducir el uso de funciones matemáticas de alto coste computacional (como raíces cuadradas).
+- Se ha refinado el ámbito (scope) de ciertas propiedades y métodos de diversas clases. Estos elementos se comparten entre módulos internos de la librería, pero ahora permanecen ocultos al usuario final para reforzar la encapsulación.
+- Añadido el método GetCameraLayer() a las clases NGN_Sprite, NGN_Texture y NGN_TiledBg; devuelve la capa asignada en la cámara virtual 2D. Devuelve -1 si el objeto no está registrado en la cámara.
+- Añadido el método GetCurrentScale() a las clases NGN_Sprite, NGN_Texture, NGN_TiledBg, NGN_TextLayer y NGN_Canvas; devuelve una estructura tipo Size2 con la escala actual del objeto.
+- Revertido el algoritmo de aplicación del canal alfa en ciertos métodos de la clase NGN_Render, dado que la modificación anterior causaba una renderización de color incorrecta en determinados casos.
+- Añadido el método SetLayerAutoScroll() a la clase NGN_Camera, permitiendo modificar los valores de auto-scroll de un fondo virtual.
+- El método GetVersion() de la clase NGN_System ahora proporciona información adicional sobre el driver de renderizado en uso.
+- Establecido OpenGL como driver de renderizado por defecto en todas las plataformas para minimizar discrepancias de color entre sistemas.
+- Restaurados los modos de blending para fondos de tiles, canvas y capas de texto.
+- Añadidos los métodos PauseAllSfx(), ResumeAllSfx(), StopAllSfx(), PauseAllMusics(), ResumeAllMusics() y StopAllMusics() a la clase NGN_Sound, para el control global de la reproducción de efectos de sonido y streams de música.
+- Añadido un flag para forzar el espacio de color sRGB linear al renderizar con el driver OpenGL (Linux y variantes no Windows). Esto corrige las diferencias de color entre sistemas.
+
+
+--------------------------------------------------------------------------------
 2025-06-29 Ver.1.19.1-stable
 --------------------------------------------------------------------------------
 - Corregido un error en el método TiledBg() de la clase NGN_Render, por el cual los tiles rotados a la derecha o a la izquierda no se representaban correctamente.

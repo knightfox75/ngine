@@ -1,0 +1,197 @@
+NGN_TILEDBG.H
+v1.20.0-10th-Anniversay
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_TiledBg(
+	NGN_TiledBgData* bg,		// Previously loaded background data
+	int32_t position_x = 0,		// Background X position [0 by default]
+	int32_t position_y = 0		// Background Y position [0 by default]
+);
+
+- Description
+Creates a new tiled background using the previously loaded data.
+Refer to the tools provided with the library for converting a PNG image to tiles data.
+
+- Example
+NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Position(float position_x, float position_y);
+void Position(Vector2 pos);
+
+- Description
+Positions the background at the specified coordinate.
+
+- Example
+bg_front->Position(1200.0f, 500.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);
+
+- Description
+Moves the background in the specified direction and speed.
+
+- Example
+bg_front->Translate(5.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Scale(float w, float h);
+void Scale(float scale);
+
+- Description
+Scales the background by the given factor. 1.0f is the original scale.
+Depending on the overload used, the axes will be scaled equally or separately.
+Due to their internal implementation, tilemaps can only be scaled to 1.0f or higher.
+
+- Example
+bg_front->Scale(1.5f);
+bg_front->Scale(2.0f, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Rotate(double degrees);
+
+- Description
+Rotates the background by the given number of degrees.
+
+- Example
+bg_front->Rotate(0.5f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetCenter(float x, float y);
+
+- Description
+Specifies, in relative coordinates from the actual center of the background, where to position the center for its rotations.
+
+- Example
+bg_front->SetCenter(-10.0f, 20.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets a tint color that will be applied to the background. A white tint (255, 255, 255)
+will display the background with its original unaltered colors.
+
+- Example
+bg_front->SetTintColor(96, 255, 192);
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t GetCameraLayer();
+
+- Description
+Returns the layer to which the background is assigned in the 2D camera. Returns -1 if not assigned to any layer.
+
+- Example
+int32_t current_layer = bg_front->GetCameraLayer();
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2 GetCurrentScale();
+
+- Description
+Returns a Size2 structure containing the current scale of the background.
+
+- Example
+Size2 current_scale = bg_front->GetCurrentScale();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	PROPERTIES of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Property
+Vector2 position
+
+- Description
+Position of the background in pixels.
+
+--------------------------------------------------------------------------------
+
+- Property
+float width
+float height
+
+- Description
+Size of the background in pixels.
+Use these properties for reading only. They should not be modified under any circumstances.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool visible
+
+- Description
+Visibility of the background.
+
+--------------------------------------------------------------------------------
+
+- Property
+int32_t alpha
+
+- Description
+Transparency level of the background (0 – 255).
+
+--------------------------------------------------------------------------------
+
+- Property
+SDL_BlendMode blend_mode
+
+- Description
+Color blend mode of the background. Available modes are:
+NGN_BLENDMODE_NONE, NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE, and NGN_BLENDMODE_MODULATE.
+The default value for this property is NGN_BLENDMODE_ALPHA.
+
+--------------------------------------------------------------------------------
+
+// Property
+double rotation
+
+// Description
+Rotation angle of the background, in degrees.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool flip_h
+bool flip_v
+
+- Description
+Vertical and horizontal flipping of the background.
+
+--------------------------------------------------------------------------------
+
+- Property
+bool ignore_camera_tint
+
+- Description
+Indicates whether the background should ignore the tint color assigned to the camera layer.
+
+--------------------------------------------------------------------------------

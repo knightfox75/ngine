@@ -1,18 +1,18 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.20.0-wip_0x04 ***
+    *** Version 1.20.0+10th-anniversary ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
 
 	N'gine Lib is under MIT License
 
-	Copyright (c) 2016-2025 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2026 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -52,10 +52,11 @@
 
 
 /*** Version de N'gine ***/
-static const int32_t NGN_VERSION_MAJOR = 1;                     // Version mayor
-static const int32_t NGN_VERSION_MINOR = 20;                    // Version menor
-static const int32_t NGN_VERSION_PATCH = 0;                     // Version parche
-static const std::string NGN_VERSION_METADATA = "wip_0x04";     // Version metadatos
+static const int32_t NGN_VERSION_MAJOR = 1;                             // Version mayor
+static const int32_t NGN_VERSION_MINOR = 20;                            // Version menor
+static const int32_t NGN_VERSION_PATCH = 0;                             // Version parche
+static const std::string NGN_VERSION_MD_CHAR = "+";                     // Caracter de metadatos "-" = prerelease, "+" = stable
+static const std::string NGN_VERSION_METADATA = "10th-anniversary";     // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;            // Valor de "defecto"

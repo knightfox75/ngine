@@ -5,8 +5,8 @@
     Proyecto iniciado el xx de xx del xxxx
     (c) xxxx by xxxx
 
-	Requiere N'gine 1.19.0-stable o superior
-	(c) 2016 - 2025 by Cesar Rincon "NightFox"
+	Requiere N'gine 1.20.0+10th-anniversary o superior
+	(c) 2016 - 2026 by Cesar Rincon "NightFox"
 	https://nightfoxandco.com
 	contact@nightfoxandco.com
 

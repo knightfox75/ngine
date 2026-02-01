@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_TEXT_LAYER</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_TEXT_LAYER.H</h1>
+        </header>
+
+        <main>
+            <!-- MÉTODOS DE LA CAPA -->
+            <h2>MÉTODOS de la clase: Métodos de la capa de texto</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Constructor">NGN_TextLayer (Constructor)</a></li>
+                    <li><a href="#Position">Position</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#Size">Size</a></li>
+                    <li><a href="#Scale">Scale</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#GetSize">GetSize</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetCurrentScale">GetCurrentScale</a></li>
+                </ul>
+            </nav>
+            <hr>
+			
+            <div class="doc-block">
+                 <p><strong>Nota:</strong> Los cambios de tamaño o escala no afectan al tamaño original del contenedor, solo se cambia el tamaño del contenido al representarse en la pantalla.</p>
+            </div>
+			
+			<hr>
+
+            <section id="Constructor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_TextLayer(
+    NGN_TextFont* default_font,         // Fuente por defecto
+    NGN_TextureData* bg = NULL,         // Datos de textura para el fondo
+    int32_t position_x = 0,             // Posición X (0 por defecto)
+    int32_t position_y = 0,             // Posición Y (0 por defecto)
+    uint32_t _width = DEFAULT_VALUE,    // Ancho de la capa (Toda la pantalla por defecto)
+    uint32_t _height = DEFAULT_VALUE,   // Alto de la capa (Toda la pantalla por defecto)
+    bool _filtering = false             // Filtrado del contenido?
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Crea una nueva capa de texto, usando la fuente y parámetros especificados. Si se especifican unos datos de textura para el fondo, esta se creará usando el tamaño de la imagen de dicha textura. De especificarse un tamaño de capa, este tendrá preferencia. Si se usa NULL como parámetro del fondo, este será transparente por defecto. De no especificarse ni fondo ni tamaño, la capa ocupará toda la ventana.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_TextLayer* allscreen = new NGN_TextLayer(my_font);
+NGN_TextLayer* smalltext = new NGN_TextLayer(my_font, NULL, 100, 50, 200, 64);
+NGN_TextLayer* textbox = new NGN_TextLayer(my_font, boximg, 20, 500);</code></pre>
+            </section>
+
+            <section id="Position" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Position(float position_x, float position_y);
+void Position(Vector2 pos);</code></pre>
+                <h3>Descripción</h3>
+                <p>Posiciona la capa de texto en la coordenada dada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Position(1200, 900);</code></pre>
+            </section>
+
+            <section id="Translate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Translate(float speed_x, float speed_y);
+void Translate(Vector2 spd);</code></pre>
+                <h3>Descripción</h3>
+                <p>Mueve la capa de texto en la dirección y velocidades dadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Translate(5.0f, 0.0f);</code></pre>
+            </section>
+
+            <section id="Size" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Size(float w, float h);</code></pre>
+                <h3>Descripción</h3>
+                <p>Cambia el tamaño de la capa de texto.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Size(64, 48);</code></pre>
+            </section>
+
+            <section id="Scale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Scale(float w, float h);
+void Scale(float scale);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escala la capa de texto, según el factor dado. Según la sobrecarga usada, escalara los ejes en conjunto o por separado. La escala por defecto es 1.0f.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Scale(1.5f);
+textbox->Scale(2.0f, 0.75f);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Rotate(double degrees);</code></pre>
+                <h3>Descripción</h3>
+                <p>Rota la capa de texto el número de grados proporcionados.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Rotate(1.2f);</code></pre>
+            </section>
+            
+            <section id="SetCenter" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetCenter(float x, float y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Especifica, en coordenadas relativas y desde el centro real de la capa de texto, donde se ubicará el centro de rotación de la capa de texto.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->SetCenter(-10, -5);</code></pre>
+            </section>
+            
+            <section id="GetSize" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2I32 GetSize();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el tamaño original de la capa de texto.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2I32 s = textbox->GetSize();</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece un color de tinte que se aplicará a la capa de texto. Un tinte blanco (255, 255, 255), mostrará la capa de texto con sus colores originales, sin alteraciones.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->SetTintColor(96, 255, 192);</code></pre>
+            </section>
+			
+            <section id="GetCurrentScale" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>Size2 GetCurrentScale();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve una estructura Size2 con la escala actual de la capa de texto.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>Size2 current_scale = textbox->GetCurrentScale();</code></pre>
+            </section>
+			
+            <hr>
+			
+            <!-- PROPIEDADES DE LA CAPA -->
+            <h2>PROPIEDADES de la clase: Propiedades de la capa de texto</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_position">position / screen</a></li>
+                    <li><a href="#prop_size">width / height</a></li>
+                    <li><a href="#prop_visible">visible</a></li>
+                    <li><a href="#prop_alpha">alpha</a></li>
+                    <li><a href="#prop_blend_mode">blend_mode</a></li>
+                    <li><a href="#prop_filtering">filtering</a></li>
+                    <li><a href="#prop_rotation">rotation</a></li>
+                    <li><a href="#prop_flip">flip_h / flip_v</a></li>
+                </ul>
+            </nav>
+			<hr>
+			            
+            <section id="prop_position" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2 position</code></pre>
+                <h3>Descripción</h3>
+                <p>Posición de la capa de texto en la pantalla.</p>
+            </section>
+
+            <section id="prop_size" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>float width
+float height</code></pre>
+                <h3>Descripción</h3>
+                <p>Tamaño de la capa de texto.</p>
+            </section>
+
+            <section id="prop_visible" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool visible</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica si la capa de texto es o no visible.</p>
+            </section>
+
+            <section id="prop_alpha" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t alpha</code></pre>
+                <h3>Descripción</h3>
+                <p>Nivel de transparencia de la capa de texto, entre 0 y 255.</p>
+            </section>
+
+            <section id="prop_blend_mode" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>SDL_BlendMode blend_mode</code></pre>
+                <h3>Descripción</h3>
+                <p>Modo de mezcla de color de la capa de texto. Los modos disponibles son: <code>NGN_BLENDMODE_NONE</code>, <code>NGN_BLENDMODE_ALPHA</code>, <code>NGN_BLENDMODE_ADDITIVE</code> y <code>NGN_BLENDMODE_MODULATE</code>. El valor por defecto de esta propiedad es <code>NGN_BLENDMODE_ALPHA</code>.</p>
+            </section>
+
+            <section id="prop_filtering" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool filtering</code></pre>
+                <h3>Descripción</h3>
+                <p>Activa o desactiva el filtrado bilineal del contenido de la capa de texto.</p>
+            </section>
+            
+            <section id="prop_rotation" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>double rotation</code></pre>
+                <h3>Descripción</h3>
+                <p>Rotación de la capa de texto, en grados.</p>
+            </section>
+
+            <section id="prop_flip" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool flip_h
+bool flip_v</code></pre>
+                <h3>Descripción</h3>
+                <p>Volteado vertical y horizontal de la capa de texto.</p>
+            </section>
+            <hr>
+
+            <!-- MÉTODOS DE ESCRITURA -->
+            <h2>MÉTODOS de la clase: Métodos de escritura del texto</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Cls">Cls</a></li>
+                    <li><a href="#Locate">Locate</a></li>
+                    <li><a href="#Padding">Padding</a></li>
+                    <li><a href="#Font">Font</a></li>
+                    <li><a href="#InkColor">InkColor</a></li>
+                    <li><a href="#CanvasColor">CanvasColor</a></li>
+                    <li><a href="#Print">Print</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="Cls" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Cls();</code></pre>
+                <h3>Descripción</h3>
+                <p>Borra el contenido de la capa de texto y restaura la posición del cabezal de escritura a la esquina superior-izquierda. Si no hay una textura de fondo específica, la capa se rellenará con el color de fondo especificado en el método <code>CanvasColor()</code>.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Cls();</code></pre>
+            </section>
+
+            <section id="Locate" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Locate(int32_t x, int32_t y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Posiciona el cabezal de escritura en las coordenadas locales de la capa especificadas.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Locate(100, 50);</code></pre>
+            </section>
+            
+            <section id="Padding" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Padding(uint32_t pd);</code></pre>
+                <h3>Descripción</h3>
+                <p>Define el margen interior que tendrá la capa de texto a partir de ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Padding(16);</code></pre>
+            </section>
+
+            <section id="Font" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Font(NGN_TextFont* fnt);</code></pre>
+                <h3>Descripción</h3>
+                <p>Selecciona que fuente se usará en la escritura del texto a partir de ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Font(my_font);</code></pre>
+            </section>
+
+            <section id="InkColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void InkColor(uint8_t r, uint8_t g, uint8_t b);  // [R, G, B]
+void InkColor(uint32_t rgb);                     // [0xRRGGBB]</code></pre>
+                <h3>Descripción</h3>
+                <p>Selecciona que color se usará para el texto a partir de ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->InkColor(255, 200, 40);
+textbox->InkColor(0xFFAA33);</code></pre>
+            </section>
+            
+            <section id="CanvasColor" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void CanvasColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a);  // [R, G, B, A]
+void CanvasColor(uint32_t rgba);                                // [0xRRGGBBAA];</code></pre>
+                <h3>Descripción</h3>
+                <p>Selecciona que color se usará para el fondo de la capa de texto a partir del próximo borrado con el método <code>Cls()</code>, en el caso de no estar definida una textura para el fondo.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->CanvasColor(0, 0, 0, 128);
+textbox->CanvasColor(0xFF0000FF);</code></pre>
+            </section>
+            
+            <section id="Print" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Print(std::string text);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escribe el texto dado a partir de la posición actual del cabezal de escritura, usando el color definido. El caracter "\n" será reconocido como un salto de linea.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>textbox->Print(“Hello World!”);</code></pre>
+            </section>
+            <hr>
+
+            <!-- PROPIEDADES DE ESCRITURA -->
+            <h2>PROPIEDADES de la clase: Propiedades de la escritura del texto</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#prop_locate">locate</a></li>
+                    <li><a href="#prop_ink">ink</a></li>
+                    <li><a href="#prop_canvas">canvas</a></li>
+                    <li><a href="#prop_text_boundaries">text_boundaries</a></li>
+                    <li><a href="#prop_padding">padding</a></li>
+                    <li><a href="#prop_word_wrap">word_wrap</a></li>
+                    <li><a href="#prop_auto_home">auto_home</a></li>
+                </ul>
+            </nav>
+			<hr>
+			
+            <section id="prop_locate" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>Vector2I32 locate</code></pre>
+                <h3>Descripción</h3>
+                <p>Posición actual del cabezal de escritura en la capa de texto.</p>
+            </section>
+            
+            <section id="prop_ink" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+} ink;</code></pre>
+                <h3>Descripción</h3>
+                <p>Color actual para el texto.</p>
+            </section>
+
+            <section id="prop_canvas" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>struct {
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} canvas;</code></pre>
+                <h3>Descripción</h3>
+                <p>Color actual del fondo de la capa de texto.</p>
+            </section>
+            
+            <section id="prop_text_boundaries" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>struct {
+    int32_t top;
+    int32_t bottom;
+    int32_t left;
+    int32_t right;
+    int32_t width;
+    int32_t height;
+} text_boundaries;</code></pre>
+                <h3>Descripción</h3>
+                <p>Límites actuales del contenido de la capa de texto.</p>
+            </section>
+
+            <section id="prop_padding" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>int32_t padding</code></pre>
+                <h3>Descripción</h3>
+                <p>Margen interior actual de la capa de texto.</p>
+            </section>
+
+            <section id="prop_word_wrap" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool word_wrap</code></pre>
+                <h3>Descripción</h3>
+                <p>Salto automático de línea al alcanzar el límite de la capa (habilitado por defecto).</p>
+            </section>
+            
+            <section id="prop_auto_home" class="doc-block">
+                <h3>Propiedad</h3>
+                <pre><code>bool auto_home</code></pre>
+                <h3>Descripción</h3>
+                <p>Reinicio automático de la posición del cabezal de escritura al llegar al final de la capa de texto (deshabilitado por defecto).</p>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_text_layer.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

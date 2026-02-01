@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Reference Manual</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>N'gine Reference Manual</h1>
+        </header>
+
+        <main>
+            <!-- NGN.H -->
+            <section id="ngn" class="doc-block">
+                <h2><a href="ngn.html">NGN.H</a></h2>
+                <p>Main class that encapsulates the entire library. It is the entry point for initializing and accessing all of the engine's subsystems.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn.html#Init">Init</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_SYSTEM.H -->
+            <section id="ngn_system" class="doc-block">
+                <h2><a href="ngn_system.html">NGN_SYSTEM.H</a></h2>
+                <p>Manages the main application events, the window lifecycle, and global properties like the FPS counter or the quit request.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_system.html#EventUpdate">EventUpdate</a></li>
+                        <li><a href="ngn_system.html#GetVersion">GetVersion</a></li>
+                        <li><a href="ngn_system.html#GetApplicationFocus">GetApplicationFocus</a></li>
+                    </ul>
+                </nav>
+                <h3>Properties</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_system.html#prop_quit">quit</a></li>
+                        <li><a href="ngn_system.html#prop_fps_counter">fps_counter</a></li>
+                    </ul>
+                </nav>
+            </section>
+            
+            <!-- NGN_GRAPHICS.H -->
+            <section id="ngn_graphics" class="doc-block">
+                <h2><a href="ngn_graphics.html">NGN_GRAPHICS.H</a></h2>
+                <p>Controls the graphics context, window creation, screen modes, vertical synchronization, and viewport management.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_graphics.html#Init">Init</a></li>
+                        <li><a href="ngn_graphics.html#SetMode">SetMode</a></li>
+                        <li><a href="ngn_graphics.html#SetVerticalSync">SetVerticalSync</a></li>
+                        <li><a href="ngn_graphics.html#Update">Update</a></li>
+                        <li><a href="ngn_graphics.html#OpenViewport">OpenViewport</a></li>
+                        <li><a href="ngn_graphics.html#CloneSprite">CloneSprite</a></li>
+                        <li><a href="ngn_graphics.html#GetFps">GetFps</a></li>
+                        <li><a href="ngn_graphics.html#ScreenShot">ScreenShot</a></li>
+                    </ul>
+                </nav>
+                 <h3>Properties</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_graphics.html#prop_vsync">vsync</a></li>
+                        <li><a href="ngn_graphics.html#prop_filtering">filtering</a></li>
+                        <li><a href="ngn_graphics.html#prop_native_res">native_w / native_h</a></li>
+                        <li><a href="ngn_graphics.html#prop_window_caption">window_caption</a></li>
+                        <li><a href="ngn_graphics.html#prop_cliparea">cliparea</a></li>
+                        <li><a href="ngn_graphics.html#prop_force_redraw">force_redraw</a></li>
+                    </ul>
+                </nav>
+            </section>
+            
+            <!-- NGN_LOAD.H -->
+            <section id="ngn_load" class="doc-block">
+                <h2><a href="ngn_load.html">NGN_LOAD.H</a></h2>
+                <p>Handles the loading of all game resources, such as textures, sprites, tile backgrounds, fonts, collision maps, and audio, from disk or file packages.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_load.html#Texture">Texture</a></li>
+                        <li><a href="ngn_load.html#TiledBg">TiledBg</a></li>
+                        <li><a href="ngn_load.html#Sprite">Sprite</a></li>
+                        <li><a href="ngn_load.html#CollisionMap">CollisionMap</a></li>
+                        <li><a href="ngn_load.html#AudioClip">AudioClip</a></li>
+                        <li><a href="ngn_load.html#TrueTypeFont">TrueTypeFont</a></li>
+                        <li><a href="ngn_load.html#LoadFile">LoadFile</a></li>
+                        <li><a href="ngn_load.html#SetDisk">SetDisk</a></li>
+                        <li><a href="ngn_load.html#SetPackage">SetPackage</a></li>
+                    </ul>
+                </nav>
+            </section>
+            
+            <!-- NGN_RESOURCES.H -->
+            <section id="ngn_resources" class="doc-block">
+                <h2><a href="ngn_resources.html">NGN_RESOURCES.H</a></h2>
+                <p>Allows for efficient resource management through a repository system, facilitating the loading and access of assets during runtime.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_resources.html#AddRepository">AddRepository</a></li>
+                        <li><a href="ngn_resources.html#RemoveRepository">RemoveRepository</a></li>
+                        <li><a href="ngn_resources.html#Clear">Clear</a></li>
+                        <li><a href="ngn_resources.html#Load">Load</a></li>
+                        <li><a href="ngn_resources.html#GetResource">GetTexture / ...</a></li>
+                        <li><a href="ngn_resources.html#RemoveResource">RemoveTexture / ...</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_RENDER.H -->
+            <section id="ngn_render" class="doc-block">
+                <h2><a href="ngn_render.html">NGN_RENDER.H</a></h2>
+                <p>Central class for drawing all graphical elements (textures, sprites, backgrounds, etc.) to the current rendering target (screen, viewport, or texture).</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_render.html#Texture">Texture</a></li>
+                        <li><a href="ngn_render.html#Sprite">Sprite</a></li>
+                        <li><a href="ngn_render.html#TiledBg">TiledBg</a></li>
+                        <li><a href="ngn_render.html#TextLayer">TextLayer</a></li>
+                        <li><a href="ngn_render.html#Canvas">Canvas</a></li>
+                        <li><a href="ngn_render.html#Viewports">Viewports</a></li>
+                        <li><a href="ngn_render.html#RenderToTexture">RenderToTexture</a></li>
+                        <li><a href="ngn_render.html#RenderToScreen">RenderToScreen</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_CAMERA.H -->
+            <section id="ngn_camera" class="doc-block">
+                <h2><a href="ngn_camera.html">NGN_CAMERA.H</a></h2>
+                <p>Implements a 2D camera with support for multiple layers (parallax), sprite tracking, and management of all graphical elements in the scene.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_camera.html#CreateLayers">CreateLayers</a></li>
+                        <li><a href="ngn_camera.html#Setup">Setup</a></li>
+                        <li><a href="ngn_camera.html#PushBackground">PushBackground</a></li>
+                        <li><a href="ngn_camera.html#PushSprite">PushSprite</a></li>
+                        <li><a href="ngn_camera.html#LookAt">LookAt</a></li>
+                        <li><a href="ngn_camera.html#Update">Update</a></li>
+                        <li><a href="ngn_camera.html#Shake">Shake</a></li>
+                        <li><a href="ngn_camera.html#SetLayerTintColor">SetLayerTintColor</a></li>
+                    </ul>
+                </nav>
+                 <h3>Properties</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_camera.html#world">world</a></li>
+                        <li><a href="ngn_camera.html#position">position</a></li>
+                        <li><a href="ngn_camera.html#animation_pause">animation_pause</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_SPRITE.H -->
+            <section id="ngn_sprite" class="doc-block">
+                <h2><a href="ngn_sprite.html">NGN_SPRITE.H</a></h2>
+                <p>Defines the "Sprite" object, which manages the position, size, rotation, animation, and collisions of a graphical entity.</p>
+                 <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_sprite.html#Constructor">Constructor</a></li>
+                        <li><a href="ngn_sprite.html#Position">Position</a></li>
+                        <li><a href="ngn_sprite.html#AddCollider">AddCollider</a></li>
+                        <li><a href="ngn_sprite.html#AddAnimation">AddAnimation</a></li>
+                        <li><a href="ngn_sprite.html#SetAnimation">SetAnimation</a></li>
+                        <li><a href="ngn_sprite.html#PlayAnimation">PlayAnimation</a></li>
+                        <li><a href="ngn_sprite.html#SetTintColor">SetTintColor</a></li>
+                        <li><a href="ngn_sprite.html#GetCameraLayer">GetCameraLayer</a></li>
+                        <li><a href="ngn_sprite.html#GetCurrentScale">GetCurrentScale</a></li>
+                    </ul>
+                </nav>
+                 <h3>Properties</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_sprite.html#prop_position">position / screen</a></li>
+                        <li><a href="ngn_sprite.html#prop_size">width / height</a></li>
+                        <li><a href="ngn_sprite.html#prop_box">box</a></li>
+                        <li><a href="ngn_sprite.html#prop_frame">frame</a></li>
+                        <li><a href="ngn_sprite.html#prop_visible">visible</a></li>
+                        <li><a href="ngn_sprite.html#prop_alpha">alpha</a></li>
+                        <li><a href="ngn_sprite.html#prop_rotation">rotation</a></li>
+                        <li><a href="ngn_sprite.html#prop_flip">flip_h / flip_v</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_TEXTURE.H -->
+            <section id="ngn_texture" class="doc-block">
+                <h2><a href="ngn_texture.html">NGN_TEXTURE.H</a></h2>
+                <p>Represents a simple graphic texture. It manages its position, size, rotation, and color, and can be used as a rendering target.</p>
+                 <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_texture.html#ConstructorData">Constructor (with data)</a></li>
+                        <li><a href="ngn_texture.html#Position">Position</a></li>
+                        <li><a href="ngn_texture.html#ClearContent">ClearContent</a></li>
+                        <li><a href="ngn_texture.html#SetTintColor">SetTintColor</a></li>
+                        <li><a href="ngn_texture.html#GetCameraLayer">GetCameraLayer</a></li>
+                        <li><a href="ngn_texture.html#GetCurrentScale">GetCurrentScale</a></li>
+                    </ul>
+                </nav>
+                 <h3>Properties</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_texture.html#prop_position">position / screen</a></li>
+                        <li><a href="ngn_texture.html#prop_size">width / height</a></li>
+                        <li><a href="ngn_texture.html#prop_visible">visible</a></li>
+                        <li><a href="ngn_texture.html#prop_alpha">alpha</a></li>
+                        <li><a href="ngn_texture.html#prop_rotation">rotation</a></li>
+                        <li><a href="ngn_texture.html#prop_flip">flip_h / flip_v</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_TILEDBG.H -->
+            <section id="ngn_tiledbg" class="doc-block">
+                <h2><a href="ngn_tiledbg.html">NGN_TILEDBG.H</a></h2>
+                <p>Defines a graphic background composed of tiles, optimized for large scenes with repetitive patterns.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                     <ul>
+                        <li><a href="ngn_tiledbg.html#Constructor">Constructor</a></li>
+                        <li><a href="ngn_tiledbg.html#Position">Position</a></li>
+                        <li><a href="ngn_tiledbg.html#SetTintColor">SetTintColor</a></li>
+                        <li><a href="ngn_tiledbg.html#GetCameraLayer">GetCameraLayer</a></li>
+                        <li><a href="ngn_tiledbg.html#GetCurrentScale">GetCurrentScale</a></li>
+                    </ul>
+                </nav>
+                 <h3>Properties</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_tiledbg.html#prop_position">position</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_visible">visible</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_alpha">alpha</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_rotation">rotation</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_flip">flip_h / flip_v</a></li>
+                    </ul>
+                </nav>
+            </section>
+            
+            <!-- NGN_CANVAS.H -->
+            <section id="ngn_canvas" class="doc-block">
+                <h2><a href="ngn_canvas.html">NGN_CANVAS.H</a></h2>
+                <p>Provides a dynamic drawing surface (canvas) that allows rendering of graphic primitives such as points, lines, boxes, and circles.</p>
+                <h3>Canvas methods</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_canvas.html#Constructor">NGN_Canvas (Constructor)</a></li>
+						<li><a href="ngn_canvas.html#Position">Position</a></li>
+						<li><a href="ngn_canvas.html#Translate">Translate</a></li>
+						<li><a href="ngn_canvas.html#Size">Size</a></li>
+						<li><a href="ngn_canvas.html#Scale">Scale</a></li>
+						<li><a href="ngn_canvas.html#Rotate">Rotate</a></li>
+						<li><a href="ngn_canvas.html#SetCenter">SetCenter</a></li>
+						<li><a href="ngn_canvas.html#SetTintColor">SetTintColor</a></li>
+						<li><a href="ngn_canvas.html#GetCurrentScale">GetCurrentScale</a></li>
+                    </ul>
+                </nav>
+                <h3>Canvas properties</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_canvas.html#prop_position">position</a></li>
+						<li><a href="ngn_canvas.html#prop_size">width / height</a></li>
+						<li><a href="ngn_canvas.html#prop_visible">visible</a></li>
+						<li><a href="ngn_canvas.html#prop_alpha">alpha</a></li>
+						<li><a href="ngn_canvas.html#prop_blend_mode">blend_mode</a></li>
+						<li><a href="ngn_canvas.html#prop_filtering">filtering</a></li>
+						<li><a href="ngn_canvas.html#prop_rotation">rotation</a></li>
+						<li><a href="ngn_canvas.html#prop_flip">flip_h / flip_v</a></li>
+                    </ul>
+                </nav>
+                <h3>Drawing methods</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_canvas.html#Cls">Cls</a></li>
+						<li><a href="ngn_canvas.html#Point">Point</a></li>
+						<li><a href="ngn_canvas.html#Line">Line</a></li>
+						<li><a href="ngn_canvas.html#Box">Box</a></li>
+						<li><a href="ngn_canvas.html#Circle">Circle</a></li>
+						<li><a href="ngn_canvas.html#Arc">Arc</a></li>
+						<li><a href="ngn_canvas.html#GetPixelColor">GetPixelColor</a></li>
+						<li><a href="ngn_canvas.html#GetPixelRgba">GetPixelRgba</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_TEXT_LAYER.H -->
+            <section id="ngn_text_layer" class="doc-block">
+                <h2><a href="ngn_text_layer.html">NGN_TEXT_LAYER.H</a></h2>
+                <p>Allows for the creation and management of complex text layers, with support for different fonts, colors, formatting, and backgrounds.</p>
+                <h3>Text layer methods</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_text_layer.html#Constructor">Constructor</a></li>
+						<li><a href="ngn_text_layer.html#Position">Position</a></li>
+						<li><a href="ngn_text_layer.html#Translate">Translate</a></li>
+						<li><a href="ngn_text_layer.html#Size">Size</a></li>
+						<li><a href="ngn_text_layer.html#Scale">Scale</a></li>
+						<li><a href="ngn_text_layer.html#Rotate">Rotate</a></li>
+						<li><a href="ngn_text_layer.html#SetCenter">SetCenter</a></li>
+						<li><a href="ngn_text_layer.html#GetSize">GetSize</a></li>
+						<li><a href="ngn_text_layer.html#SetTintColor">SetTintColor</a></li>
+						<li><a href="ngn_text_layer.html#GetCurrentScale">GetCurrentScale</a></li>
+                    </ul>
+                </nav>
+                <h3>Text layer properties</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_text_layer.html#prop_position">position</a></li>
+						<li><a href="ngn_text_layer.html#prop_size">width / height</a></li>
+						<li><a href="ngn_text_layer.html#prop_visible">visible</a></li>
+						<li><a href="ngn_text_layer.html#prop_alpha">alpha</a></li>
+						<li><a href="ngn_text_layer.html#prop_blend_mode">blend_mode</a></li>
+						<li><a href="ngn_text_layer.html#prop_filtering">filtering</a></li>
+						<li><a href="ngn_text_layer.html#prop_rotation">rotation</a></li>
+						<li><a href="ngn_text_layer.html#prop_flip">flip_h / flip_v</a></li>
+                    </ul>
+                </nav>
+                <h3>Text writing methods</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_text_layer.html#Cls">Cls</a></li>
+						<li><a href="ngn_text_layer.html#Locate">Locate</a></li>
+						<li><a href="ngn_text_layer.html#Padding">Padding</a></li>
+						<li><a href="ngn_text_layer.html#Font">Font</a></li>
+						<li><a href="ngn_text_layer.html#InkColor">InkColor</a></li>
+						<li><a href="ngn_text_layer.html#CanvasColor">CanvasColor</a></li>
+						<li><a href="ngn_text_layer.html#Print">Print</a></li>
+                    </ul>
+                </nav>
+                <h3>Text writing properties</h3>
+                <nav class="index">
+                    <ul>
+						<li><a href="ngn_text_layer.html#prop_locate">locate</a></li>
+						<li><a href="ngn_text_layer.html#prop_ink">ink</a></li>
+						<li><a href="ngn_text_layer.html#prop_canvas">canvas</a></li>
+						<li><a href="ngn_text_layer.html#prop_text_boundaries">text_boundaries</a></li>
+						<li><a href="ngn_text_layer.html#prop_padding">padding</a></li>
+						<li><a href="ngn_text_layer.html#prop_word_wrap">word_wrap</a></li>
+						<li><a href="ngn_text_layer.html#prop_auto_home">auto_home</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_SOUND.H -->
+            <section id="ngn_sound" class="doc-block">
+                <h2><a href="ngn_sound.html">NGN_SOUND.H</a></h2>
+                <p>Manages all audio playback, including sound effects (SFX) and streaming music (BGM), with control over volume, pitch, panning, and mixer channels.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_sound.html#PlaySfx">PlaySfx</a></li>
+                        <li><a href="ngn_sound.html#OpenMusic">OpenMusic</a></li>
+                        <li><a href="ngn_sound.html#SetMixerLevel">SetMixerLevel</a></li>
+                        <li><a href="ngn_sound.html#PauseAll">PauseAll</a></li>
+                        <li><a href="ngn_sound.html#ResumeAll">ResumeAll</a></li>
+                        <li><a href="ngn_sound.html#StopAll">StopAll</a></li>
+                        <li><a href="ngn_sound.html#UpdateSound">Update</a></li>
+                    </ul>
+                </nav>
+            </section>
+            
+            <!-- NGN_INPUT.H -->
+            <section id="ngn_input" class="doc-block">
+                <h2><a href="ngn_input.html">NGN_INPUT.H</a></h2>
+                <p>Provides a unified interface for reading the state of the keyboard, mouse, and up to 8 X-Input type game controllers (joysticks/gamepads).</p>
+                 <h3>Sections</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_input.html">Keyboard</a></li>
+                        <li><a href="ngn_input.html">Mouse</a></li>
+                        <li><a href="ngn_input.html#controllers">Controllers</a></li>
+                        <li><a href="ngn_input.html#ControllerRumble">Vibration (Rumble)</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_COLLISIONS.H -->
+            <section id="ngn_collisions" class="doc-block">
+                <h2><a href="ngn_collisions.html">NGN_COLLISIONS.H</a></h2>
+                <p>Contains functions for collision detection, including bounding box checks (HitBox), pixel-perfect checks, and collision map queries.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_collisions.html#GetPixel">GetPixel</a></li>
+                        <li><a href="ngn_collisions.html#GetMapSize">GetMapSize</a></li>
+                        <li><a href="ngn_collisions.html#HitBox">HitBox</a></li>
+                        <li><a href="ngn_collisions.html#PixelPerfect">PixelPerfect</a></li>
+                        <li><a href="ngn_collisions.html#RaycastPoint">RaycastPoint</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_MATH.H -->
+            <section id="ngn_math" class="doc-block">
+                <h2><a href="ngn_math.html">NGN_MATH.H</a></h2>
+                <p>Offers a collection of mathematical utilities, including a comprehensive class for 2D vectors and functions for calculating distances, angles, and random numbers.</p>
+                <h3>Sections</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_math.html">Vector2 Class</a></li>
+                        <li><a href="ngn_math.html#GetDistance">Mathematical Functions</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_IMAGE.H -->
+            <section id="ngn_image" class="doc-block">
+                <h2><a href="ngn_image.html">NGN_IMAGE.H</a></h2>
+                <p>Provides tools for advanced image manipulation, such as converting between RAW and texture formats, and applying masks.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_image.html#ConvertRawToTextureData">ConvertRawToTextureData</a></li>
+                        <li><a href="ngn_image.html#CutOutMask">CutOutMask</a></li>
+                        <li><a href="ngn_image.html#HollowMask">HollowMask</a></li>
+                        <li><a href="ngn_image.html#AdvancedMask">AdvancedMask</a></li>
+                        <li><a href="ngn_image.html#RendererToSurface">RendererToSurface</a></li>
+                        <li><a href="ngn_image.html#SurfaceToRaw">SurfaceToRaw</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_DISK.H -->
+            <section id="ngn_disk" class="doc-block">
+                <h2><a href="ngn_disk.html">NGN_DISK.H</a></h2>
+                <p>Utility class for file input/output operations, allowing reading and writing of files in both binary and text formats.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_disk.html#ReadBinaryFile">ReadBinaryFile</a></li>
+                        <li><a href="ngn_disk.html#WriteBinaryFile">WriteBinaryFile</a></li>
+                        <li><a href="ngn_disk.html#ReadTextFile">ReadTextFile</a></li>
+                        <li><a href="ngn_disk.html#WriteTextFile">WriteTextFile</a></li>
+                        <li><a href="ngn_disk.html#CheckFile">CheckFile</a></li>
+                    </ul>
+                </nav>
+            </section>
+            
+            <!-- NGN_LOG.H -->
+            <section id="ngn_log" class="doc-block">
+                <h2><a href="ngn_log.html">NGN_LOG.H</a></h2>
+                <p>Provides an event logging system for writing debug messages to the console and to a text file.</p>
+                <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_log.html#OpenLogFile">OpenLogFile</a></li>
+                        <li><a href="ngn_log.html#CloseLogFile">CloseLogFile</a></li>
+                        <li><a href="ngn_log.html#Message">Message</a></li>
+                    </ul>
+                </nav>
+            </section>
+
+            <!-- NGN_TOOLBOX.H -->
+            <section id="ngn_toolbox" class="doc-block">
+                <h2><a href="ngn_toolbox.html">NGN_TOOLBOX.H</a></h2>
+                <p>A collection of various utility functions, primarily for converting data types like numbers to strings and handling text encodings.</p>
+                 <h3>Methods</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_toolbox.html#Int2String">Int2String</a></li>
+                        <li><a href="ngn_toolbox.html#Float2String">Float2String</a></li>
+                        <li><a href="ngn_toolbox.html#Utf8ToAnsi">Utf8ToAnsi</a></li>
+                        <li><a href="ngn_toolbox.html#AnsiToUtf8">AnsiToUtf8</a></li>
+                    </ul>
+                </nav>
+            </section>
+        </main>
+    </div>
+
+	<!-- FLOATING BUTTONS AND SCRIPT (for the Manual Index) -->
+	<div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+		<div id="button-tray">
+			<a href="../es/index.html">Versión en Español</a>
+			<a href="#" id="back-to-top">Back to Top</a>
+		</div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+	</div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); }
+             else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+	
+</html>

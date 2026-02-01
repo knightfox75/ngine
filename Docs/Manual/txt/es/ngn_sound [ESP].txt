@@ -1,0 +1,553 @@
+NGN_SOUND.H
+v1.16.0-stable
+Español
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase: Efectos de sonido (SFX)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_AudioClip* PlaySfx(
+	NGN_AudioClipData* sound,					// Clip de audio
+	int32_t volume = 100,						// Volumen
+	int32_t panning = 0,						// Panning (-100 a 100)
+	bool loop = false,							// Loop ?
+	uint8_t mixer_channel = MIXER_EFFECTS_CH	// Canal por defecto en el mixer
+);
+
+- Descripción
+Reproduce un clip de audio cargado previamente en RAM con el comando ngn->load->AudioClip();
+Devuelve la referencia de la instancia creada y lo añade a la cola de reproducción.
+
+- Ejemplo
+NGN_AudioClipData* coin_sfx = ngn->load->AudioClip("data/wav/coin.wav");
+// Reproducción simple
+ngn->sound->PlaySfx(coin_sfx);
+// Reproducción avanzada
+NGN_AudioClip* my_sound = ngn->sound->PlaySfx(coin_sfx, 100, false);
+ngn->sound->SfxVolume(my_sound, 50);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ResumeSfx(NGN_AudioClip* sound);
+
+- Descripción
+Continúa la reproducción de un efecto de sonido.
+
+- Ejemplo
+ngn->sound->ResumeSfx(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void PauseSfx(NGN_AudioClip* sound);
+
+- Descripción
+Pausa un efecto de sonido.
+
+- Ejemplo
+ngn->sound->PauseSfx(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void StopSfx(NGN_AudioClip* sound);
+
+- Descripción
+Detén la reproducción de un efecto de sonido. Esto lo eliminara de manera automática de la cola de reproducción.
+
+- Ejemplo
+ngn->sound->StopSfx(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SfxVolume(NGN_AudioClip* sound, int32_t volume = 100);
+
+- Descripción
+Cambia el nivel de volumen de un sonido (0 – 100).
+
+- Ejemplo
+ngn->sound->SfxVolume(my_sound, 50);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t SfxGetVolume(NGN_AudioClip* sound);
+
+- Descripción
+Devuelve el nivel actual de volumen de un sonido.
+
+- Ejemplo
+int32_t vol = ngn->sound->SfxGetVolume(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SfxPitch(NGN_AudioClip* sound, float pitch = 1.0f);
+
+- Descripción
+Cambia la velocidad de reproducción y frecuencia de un sonido. (Usar 1.0f como valor nominal).
+
+- Ejemplo
+ngn->sound->SfxPitch(my_sound, 1.2f);
+
+--------------------------------------------------------------------------------
+
+- Método
+float SfxGetPitch(NGN_AudioClip* sound);
+
+- Descripción
+Devuelve el valor actual del PITCH de un sonido.
+
+- Ejemplo
+float my_pitch = ngn->sound->SfxGetPitch(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SfxLoop(NGN_AudioClip* sound, bool loop = true);
+
+- Descripción
+Establece si un sonido debe repetirse al finalizar.
+
+- Ejemplo
+ngn->sound->SfxLoop(my_sound, true);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SfxGetLoop(NGN_AudioClip* sound);
+
+- Descripción
+Devuelve el estado de repetición de un sonido.
+
+- Ejemplo
+bool repeat = ngn->sound->SfxGetLoop(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void SfxPanning(NGN_AudioClip* sound, int32_t panning = 0);
+
+- Descripción
+Establece el efecto “panning” de un sonido (-100 izquierda, 0 centro, 100 derecha).
+
+- Ejemplo
+ngn->sound->SfxPanning(my_sound, -66);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t SfxGetPanning(NGN_AudioClip* sound);
+
+- Descripción
+Devuelve nivel de “panning” de un sonido.
+
+- Ejemplo
+int32_t pan = ngn->sound->SfxGetPanning(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SfxIsPlaying(NGN_AudioClip* sound);
+
+- Descripción
+Devuelve el estado de reproducción de un sonido.
+
+- Ejemplo
+bool play = ngn->sound->SfxIsPlaying(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SfxIsAlive(NGN_AudioClip* sound);
+
+- Descripción
+Devuelve si aún existe un sonido.
+
+- Ejemplo
+bool alive = ngn->sound->SfxIsAlive(my_sound);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ClearSfx();
+
+- Descripción
+Detén y elimina todos los efectos de sonido almacenados en la cola.
+
+- Ejemplo
+ngn->sound->ClearSfx();
+
+--------------------------------------------------------------------------------
+
+- Método
+void PauseAllSfx();
+
+- Descripción
+Pausa todos los efectos de sonido que se estén reproduciendo en ese momento. Este comando no afecta a los que se reproduzcan posteriormente.
+
+- Ejemplo
+ngn->sound->PauseAllSfx();
+
+--------------------------------------------------------------------------------
+
+- Método
+void ResumeAllSfx();
+
+- Descripción
+Reanuda la reproducción de todos los efectos de sonido que estén pausados en ese momento.
+
+- Ejemplo
+ngn->sound->ResumeAllSfx();
+
+--------------------------------------------------------------------------------
+
+- Método
+void StopAllSfx();
+
+- Descripción
+Detiene la reproducción de todos los efectos de sonido que estén en curso en ese momento.
+
+- Ejemplo
+ngn->sound->StopAllSfx();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase: Música y diálogos (BGM)
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_MusicClip* OpenMusic(
+	std::string filepath,						// Archivo de audio
+	bool auto_start = true,						// Reproducción automática
+	int32_t volume = 100,						// Volumen
+	bool loop = true,							// Loop ?
+	uint8_t mixer_channel = MIXER_MUSIC_CH		// Canal por defecto en el mixer
+);
+
+- Descripción
+Abre y opcionalmente, reproduce un archivo de audio por streaming en formato WAV, OGG o FLAC. Devuelve la referencia de la instancia creada y lo añade a la cola de reproducción. Opcionalmente, se puede asignar el canal del mezclador de audio.
+
+- Ejemplo
+NGN_MusicClip* bgm = ngn->sound->OpenMusic("data/ogg/stage01.ogg");
+
+--------------------------------------------------------------------------------
+
+- Método
+NGN_MusicClip* OpenMusic(
+	std::string filepath,						// Archivo de audio
+	int32_t loop_start,							// Inicio del loop (milisegundos)
+	int32_t loop_end = NGN_DEFAULT_VALUE,		// Fin del loop (milisegundos)
+	bool auto_start = true,						// Reproducción automática
+	int32_t volume = 100,						// Volumen
+	uint8_t mixer_channel = MIXER_MUSIC_CH		// Canal por defecto en el mixer
+);
+
+- Descripción
+Abre y opcionalmente, reproduce un archivo de audio por streaming en formato WAV, OGG o FLAC. Es posible establecer los puntos de “loop” de inicio y final (en milisegundos) si es necesario. Devuelve la referencia de la instancia creada y lo añade a la cola de reproducción. Opcionalmente, se puede asignar el canal del mezclador de audio.
+
+- Ejemplo
+NGN_MusicClip* bgm = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);
+
+--------------------------------------------------------------------------------
+
+- Método
+void CloseMusic(NGN_MusicClip* music);
+
+- Descripción
+Cierra un stream de audio y lo elimina de la cola de reproducción.
+
+- Ejemplo
+ngn->sound->CloseMusic(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void PlayMusic(
+	NGN_MusicClip* music,		// Clip de música
+	int32_t volume = 100,		// Volumen
+	bool loop = true			// Loop ?
+);
+	
+- Descripción
+Inicia o reinicía la reproducción de un archivo de audio abierto previamente, pudiendo especificar nuevos valores de volumen y repetición.
+
+- Ejemplo
+ngn->sound->PlayMusic(bgm, 50, false);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ResumeMusic(NGN_MusicClip* music);
+
+- Descripción
+Continua con la reproducción de una música pausada previamente. Si no estaba en pausa, se inicia la reproducción desde el principio.
+
+- Ejemplo
+ngn->sound->ResumeMusic(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void PauseMusic(NGN_MusicClip* music);
+
+- Descripción
+Pone en pausa una música indicada.
+
+- Ejemplo
+ngn->sound->PauseMusic(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void StopMusic(NGN_MusicClip* music);
+
+- Descripción
+Detiene la reproducción de la música indicada. Esta no será eliminada de cola de reproducción.
+
+- Ejemplo
+ngn->sound->StopMusic(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void MusicVolume(NGN_MusicClip* music, int32_t volume = 100);
+
+- Descripción
+Cambia el nivel de volumen (0 – 100) de la música indicada.
+
+- Ejemplo
+ngn->sound->MusicVolume(bgm, 75);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t MusicGetVolume(NGN_MusicClip* music);
+
+- Descripción
+Devuelve el nivel actual de la música indicada.
+
+- Ejemplo
+uint32_t vol = ngn->sound->MusicGetVolume(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void MusicPitch(NGN_MusicClip* music, float pitch = 1.0f);
+
+- Descripción
+Cambia la velocidad de reproducción y frecuencia de una música. (Usar 1.0f como valor nominal).
+
+- Ejemplo
+ngn->sound->MusicPitch(bgm, 0.75f);
+
+--------------------------------------------------------------------------------
+
+- Método
+float MusicGetPitch(NGN_MusicClip* music);
+
+- Descripción
+Devuelve el valor actual del PITCH de una música.
+
+- Ejemplo
+float pitch = ngn->sound->MusicGetPitch(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void MusicLoop(NGN_MusicClip* music, bool loop = true);
+
+- Descripción
+Cambia el estado del LOOP (repetición) de una música.
+
+- Ejemplo
+ngn->sound->MusicLoop(bgm, false);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool MusicGetLoop(NGN_MusicClip* music);
+
+- Descripción
+Devuelve el estado del LOOP de una música.
+
+- Ejemplo
+bool loop = ngn->sound->MusicGetLoop(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool MusicIsPlaying(NGN_MusicClip* music);
+
+- Descripción
+Devuelve el estado de reproducción de una música.
+
+- Ejemplo
+bool play = ngn->sound->MusicIsPlaying(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool MusicIsAlive(NGN_MusicClip* music);
+
+- Descripción
+Devuelve si aún existe una música.
+
+- Ejemplo
+bool alive = ngn->sound->MusicIsAlive(bgm);
+
+--------------------------------------------------------------------------------
+
+- Método
+void ClearMusic();
+
+- Descripción
+Detén y elimina todos los streams de música almacenados en la cola.
+
+- Ejemplo
+ngn->sound->ClearMusic();
+
+--------------------------------------------------------------------------------
+
+- Método
+void PauseAllMusics();
+
+- Descripción
+Pausa todos los streams de música que se estén reproduciendo en ese momento. Este comando no afecta a los que se reproduzcan posteriormente.
+
+- Ejemplo
+ngn->sound->PauseAllMusics();
+
+--------------------------------------------------------------------------------
+
+- Método
+void ResumeAllMusics();
+
+- Descripción
+Reanuda la reproducción de todos los streams de música que estén pausados en ese momento.
+
+- Ejemplo
+ngn->sound->ResumeAllMusics();
+
+--------------------------------------------------------------------------------
+
+- Método
+void StopAllMusics();
+
+- Descripción
+Detiene la reproducción de todos los streams que estén en curso en ese momento.
+
+- Ejemplo
+ngn->sound->StopAllMusics();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase: Mezclador
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+void SetMixerLevel(uint8_t channel, int32_t level);
+
+- Descripción
+Cambia el nivel de volumen de unos de los canales del mezclador de sonido.
+Los canales disponibles son MIXER_MASTER_CH (canal maestro), MIXER_MUSIC_CH (música), MIXER_EFFECTS_CH (efectos de sonido), MIXER_AUX1_CH (canal auxiliar 1) y MIXER_AUX2_CH (canal auxiliar 2).
+El valor del volumen es un número entero entre 0 y 100.
+
+- Ejemplo
+ngn->sound->SetMixerLevel(MIXER_MASTER_CH, 75);
+
+--------------------------------------------------------------------------------
+
+- Método
+int32_t GetMixerLevel(uint8_t channel);
+
+- Descripción
+Devuelve el valor actual del volumen del canal especificado del mezclador de sonido.
+El valor devuelto es un número entero entre 0 y 100.
+En el caso de especificar un canal inexistente, devolverá 0.
+
+- Ejemplo
+int32_t vol = ngn->sound->GetMixerLevel(MIXER_MASTER_CH);
+
+--------------------------------------------------------------------------------
+
+- Método
+PushMixer();
+PopMixer();
+
+- Descripción
+Guarda los valores actuales del mixer (PushMixer()) o restaura los almacenados (PopMixer()).
+
+- Ejemplo
+ngn->sound->PushMixer();
+ngn->sound->PopMixer();
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	MÉTODOS de la clase: Métodos comunes
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Método
+void PauseAll();
+
+- Descripción
+Pausa todos los SFX (efectos de sonido) y músicas que estén en reproducción en ese momento. Los sonidos y músicas reproducidos después de la ejecución de esta orden no se verán afectados.
+
+- Ejemplo
+ngn->sound->PauseAll();
+
+--------------------------------------------------------------------------------
+
+- Método
+void ResumeAll();
+
+- Descripción
+Continua la reproducción de todos los SFX y músicas puestas en pausa por la instrucción PauseAll().
+
+- Ejemplo
+ngn->sound->ResumeAll();
+
+--------------------------------------------------------------------------------
+
+- Método
+void StopAll();
+
+- Descripción
+Detiene la reproducción de todos los SFX activos y cierra todos los streams de música abiertos.
+
+- Ejemplo
+ngn->sound->StopAll();
+
+--------------------------------------------------------------------------------
+
+- Método
+void Update();
+
+- Descripción
+Actualiza el estado de todos los SFX y músicas existentes en la cola de audio, eliminando los que ya no son necesarios automáticamente.
+Esta instrucción debe ejecutarse una vez por frame con el fin de mantener la cola de sonidos actualizada.
+
+- Ejemplo
+ngn->sound->Update();
+
+--------------------------------------------------------------------------------

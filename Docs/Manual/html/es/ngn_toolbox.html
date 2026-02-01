@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_TOOLBOX</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_TOOLBOX.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Int2String">Int2String</a></li>
+                    <li><a href="#Float2String">Float2String</a></li>
+                    <li><a href="#Utf8ToAnsi">Utf8ToAnsi</a></li>
+                    <li><a href="#AnsiToUtf8">AnsiToUtf8</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="Int2String" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>std::string Int2String(
+    int32_t number,         // Número a convertir
+    uint8_t min_width,      // Ancho mínimo
+    const char* chr         // Símbolo para el relleno
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Convierte un número entero a un string con el formato especificado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::string text = ngn->toolbox->Int2String(ngn->input->mouse.y, 4, "0");</code></pre>
+            </section>
+
+            <section id="Float2String" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>std::string Float2String(
+    float number,           // Número a convertir
+    uint8_t min_width,      // Ancho mínimo
+    uint8_t precision,      // Número de decimales a mostrar
+    const char* chr         // Símbolo para el relleno
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Convierte un número de coma flotante a un string con el formato especificado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::string text = ngn->toolbox->Float2String(spr->position.x, 7, 2, "0");</code></pre>
+            </section>
+
+            <section id="Utf8ToAnsi" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>std::string Utf8ToAnsi(std::string text);</code></pre>
+                <h3>Descripción</h3>
+                <p>Convierte una cadena de texto en formato UTF-8 (2 bytes) a ANSI.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::string ansi_t = ngn->toolbox->Utf8ToAnsi(utf8_t);</code></pre>
+            </section>
+
+            <section id="AnsiToUtf8" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>std::string AnsiToUtf8(std::string text);</code></pre>
+                <h3>Descripción</h3>
+                <p>Convierte una cadena de texto en formato ANSI a UTF-8 (2 bytes).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>std::string utf8_t = ngn->toolbox->AnsiToUtf8(ansi_t);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_toolbox.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>
