@@ -9,7 +9,6 @@
 - Revertido el algoritmo de aplicación del canal alfa en ciertos métodos de la clase NGN_Render, dado que la modificación anterior causaba una renderización de color incorrecta en determinados casos.
 - Añadido el método SetLayerAutoScroll() a la clase NGN_Camera, permitiendo modificar los valores de auto-scroll de un fondo virtual.
 - El método GetVersion() de la clase NGN_System ahora proporciona información adicional sobre el driver de renderizado en uso.
-- Establecido OpenGL como driver de renderizado por defecto en todas las plataformas para minimizar discrepancias de color entre sistemas.
 - Restaurados los modos de blending para fondos de tiles, canvas y capas de texto.
 - Añadidos los métodos PauseAllSfx(), ResumeAllSfx(), StopAllSfx(), PauseAllMusics(), ResumeAllMusics() y StopAllMusics() a la clase NGN_Sound, para el control global de la reproducción de efectos de sonido y streams de música.
 - Añadido un flag para forzar el espacio de color sRGB linear al renderizar con el driver OpenGL (Linux y variantes no Windows). Esto corrige las diferencias de color entre sistemas.

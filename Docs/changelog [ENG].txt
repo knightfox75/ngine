@@ -9,7 +9,6 @@
 - Rolled back the alpha channel application algorithm in certain methods of the NGN_Render class, as the previous modification caused incorrect color rendering in some cases.
 - Added the SetLayerAutoScroll() method to the NGN_Camera class, allowing modification of the auto-scroll values for a virtual background.
 - The NGN_System::GetVersion() method now provides additional information regarding the rendering driver currently in use.
-- Set OpenGL as the default rendering driver across all platforms to minimize color discrepancies between systems.
 - Restored blending modes for tiled backgrounds, canvases, and text layers.
 - Added the PauseAllSfx(), ResumeAllSfx(), StopAllSfx(), PauseAllMusics(), ResumeAllMusics(), and StopAllMusics() methods to the NGN_Sound class, enabling global playback control for sound effects and music streams.
 - Added a flag to force the linear sRGB color space when rendering with the OpenGL driver (Linux and non-Windows variants). This corrects color discrepancies between systems.
