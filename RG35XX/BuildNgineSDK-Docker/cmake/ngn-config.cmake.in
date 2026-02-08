@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/ngn-config-version.cmake")
+
+set_and_check(NGN_INCLUDE_DIRS "@CMAKE_BASE_PATH@/include/NGN")
+set_and_check(NGN_LIBRARIES "@CMAKE_BASE_PATH@/lib/libngn.so")
+
+# Export the targets
+include("${CMAKE_CURRENT_LIST_DIR}/NGNTargets.cmake")
