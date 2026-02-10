@@ -2,7 +2,7 @@
     <img src="https://github.com/knightfox75/ngine/blob/master/Media/ngn_logo.png" alt="Logo de N'gine" width="400"/>
 </div>
 
-</br>
+<br/>
 
 <div align="center">
 
@@ -27,7 +27,7 @@ Con más de 6 años de desarrollo, se encuentra en una fase estable, con el foco
 <ul>
     <li>Teclado</li>
     <li>Ratón</li>
-    <li>Gamepads (estándar x-input)</li>
+    <li>Gamepads (estándar X-Input)</li>
 </ul>
 </details>
 
@@ -66,22 +66,23 @@ Con más de 6 años de desarrollo, se encuentra en una fase estable, con el foco
 <details>
 <summary><strong>📁 Sistema de Archivos</strong></summary>
 <ul>
-    <li>Carga de recursos desde el sistema de archivos</li>
-    <li>Creación de archivos de empaquetado de recursos con opción de encriptación</li>
+    <li>Carga de recursos desde el sistema de archivos local</li>
+    <li>Creación de archivos de empaquetado de recursos con opción de cifrado</li>
     <li>Gestión de hasta 127 repositorios de recursos definidos en un fichero de texto</li>
 </ul>
 </details>
 
 ## 🚀 ¿Para Quién es N'gine?
 
-N'gine está destinado a cualquier persona con nociones de programación orientada a objetos que quiera desarrollar su propio videojuego 2D. Nació como una herramienta a medida para proyectos personales y como base para los proyectos de los estudiantes de primer curso en el centro donde imparto clases.
+N'gine está destinado a cualquier persona con nociones de programación orientada a objetos que quiera desarrollar su propio videojuego 2D. Nació como una herramienta a medida para proyectos personales y como base para los proyectos de los estudiantes de primer curso en el centro donde imparto docencia.
 
 ## 💻 Plataformas Soportadas
 
 Actualmente, el motor funciona y se compila en:
 *   **Windows**
 *   **Linux** (probado en Linux Mint)
-*   **Raspberry Pi OS** (anteriormente Raspbian)
+*   **Raspberry Pi OS**
+*   **Anbernic RG35XX** (usando una imagen de Docker)
 
 ## 📸 Capturas de Pantalla
 
@@ -92,7 +93,7 @@ Actualmente, el motor funciona y se compila en:
 
 ## 📥 Descargar
 
-El paquete de distribución contiene el **código fuente**, **librerías compiladas**, **documentación**, **ejemplos comentados** y **demos funcionales**.
+El paquete de distribución contiene el **código fuente**, **bibliotecas compiladas**, **documentación**, **ejemplos comentados** y **demos funcionales**.
 
 Puedes descargar la última versión desde la **[página de Releases de GitHub](https://github.com/knightfox75/ngine/releases/latest)**.
 
