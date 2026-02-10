@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x01 ***
+    *** Version 1.21.0-wip0x02 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -186,15 +186,12 @@ bool NGN_Graphics::Init(
 
     #if defined (TARGET_RG35XX)
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles2");
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-        // Forzamos el modo "Fullscreen"
-        window_flags |= SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN;
     #endif
 
-    // Si es un sistema que usara OpenGL (Linux y variantes), fuerza el espacio sRGB
-    SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
+    // Si es un sistema que usara OpenGL (Linux y variantes), fuerza el espacio sRGB (Excepto para RG35XX, provoca colores sobreexpuestos)
+    #if !defined (TARGET_RG35XX)
+        SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
+    #endif
 
     // Guarda el titulo de la ventana
     window_caption = window_name;
@@ -215,10 +212,10 @@ bool NGN_Graphics::Init(
         err_text += std::string(SDL_GetError());
         ngn->log->Message(err_text);
         #if defined(TARGET_RG35XX)
-            // Fallback para la pantalla de la RG35XX si falla el driver
-            desktop_w = 640;
-            desktop_h = 480;
-            desktop_refresh_rate = 60;
+            // Fallback para la pantalla de la RG35XX si falla la deteccion del driver
+            desktop_w = RG35XX_SCREEN_WIDTH;
+            desktop_h = RG35XX_SCREEN_HEIGHT;
+            desktop_refresh_rate = RG35XX_REFRESH_RATE;
         #else
             // Si ni puedes determinar la resolucion, sal
             return false;

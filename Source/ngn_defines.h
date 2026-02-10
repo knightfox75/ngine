@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x01 ***
+    *** Version 1.21.0-wip0x02 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -56,7 +56,7 @@ static const int32_t NGN_VERSION_MAJOR = 1;                             // Versi
 static const int32_t NGN_VERSION_MINOR = 21;                            // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                             // Version parche
 static const std::string NGN_VERSION_MD_CHAR = "-";                     // Caracter de metadatos "-" = prerelease, "+" = stable
-static const std::string NGN_VERSION_METADATA = "wip_0x01";             // Version metadatos
+static const std::string NGN_VERSION_METADATA = "wip_0x02";             // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;            // Valor de "defecto"
@@ -80,6 +80,11 @@ static const SDL_BlendMode NGN_BLENDMODE_MODULATE = SDL_BLENDMODE_MOD;       // 
 /*** Definiciones de los modos de mascara ***/
 static const uint8_t NGN_MASKMODE_CUTOUT = 0;       // Recorta el origen con la forma de la mascara
 static const uint8_t NGN_MASKMODE_HOLLOW = 1;       // Extrae la mascara del origien
+
+/*** Definiciones exclusivas para Anbernic RG35XX ***/
+static const uint32_t RG35XX_SCREEN_WIDTH = 640;
+static const uint32_t RG35XX_SCREEN_HEIGHT = 480;
+static const uint32_t RG35XX_REFRESH_RATE = 60;
 
 
 

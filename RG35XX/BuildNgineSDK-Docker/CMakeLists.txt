@@ -23,7 +23,7 @@ set(ARCH_FLAGS
 # Global definition to activate code #ifdefs (Platform specific)
 set(TARGET_DEF "TARGET_RG35XX")
 
-project(ngn_library LANGUAGES CXX C VERSION 1.21.0.1)
+project(ngn_library LANGUAGES CXX C VERSION 1.21.0.2)
 message(STATUS "${BoldBlue}Forging N'GINE SDK for Anbernic RG35XX (ARM64 - Static)${ColorReset}")
 
 # Search paths within Docker Sysroot

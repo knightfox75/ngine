@@ -5,6 +5,6 @@ includedir=${prefix}/include
 
 Name: NightFox's Game Engine
 Description: Lightweight 2D game engine for pixel art games
-Version: 1.21.0.1
+Version: 1.21.0.2
 Libs: -L${libdir} -lngn
 Cflags: -I${includedir}/NGN

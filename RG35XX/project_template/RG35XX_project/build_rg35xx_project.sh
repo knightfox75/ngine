@@ -43,3 +43,6 @@ echo "✅ Compilation Finished."
 echo "The binary '$PROJECT_NAME' is waiting in the 'export/RG35XX' folder."
 echo "Copy it to your console alongside the 'libs' folder."
 echo ""
+
+# Optional pause for interactive terminals
+read -p "Press [Enter] to continue..."

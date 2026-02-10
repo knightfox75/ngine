@@ -1,10 +1,10 @@
 @echo off
-rem NightFox - Clean Script v2 (Lean & Modern)
+rem Clean Script
 set BASE_DIR=%~dp0
 echo Cleaning active build artifacts in: %BASE_DIR%
 echo ---------------------------------------
 
-rem 1. Eliminar carpetas activas (build y temp)
+rem Eliminar carpetas activas (build y temp)
 for %%d in (build temp build_rg35xx_docker export) do (
     if exist "%BASE_DIR%%%d" (
         echo    [REMOVING] %%d...
@@ -12,12 +12,7 @@ for %%d in (build temp build_rg35xx_docker export) do (
     )
 )
 
-rem 2. Eliminar binarios de la raíz
-echo    [REMOVING] Root binaries...
-if exist "%BASE_DIR%Idunns_Grace.exe" del /f /q "%BASE_DIR%Idunns_Grace.exe"
-if exist "%BASE_DIR%Idunns_Grace" del /f /q "%BASE_DIR%Idunns_Grace"
-
-rem 3. Recrear zona de staging
+rem 3. Recrear el directorio temporal
 if not exist "%BASE_DIR%temp" mkdir "%BASE_DIR%temp"
 
 echo ---------------------------------------
