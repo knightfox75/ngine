@@ -1,0 +1,114 @@
+# syntax=docker/dockerfile:1
+
+# ==============================================================================
+# NIGHTFOX BUILD SYSTEM - RASPBERRY PI 400 REPLICA
+# ==============================================================================
+
+# Simplemente declaramos la imagen base. 
+# La plataforma se hereda del comando "docker build --platform..." de tu .bat
+FROM debian:trixie-slim AS builder
+
+# Metadata
+LABEL maintainer="NightFox"
+LABEL description="Build environment for NGN Engine (SDL2, SDL_ttf, SFML)"
+
+# Evitamos interacciones
+ENV DEBIAN_FRONTEND=noninteractive
+
+# ------------------------------------------------------------------------------
+# BLOQUE 1: DEPENDENCIAS DEL SISTEMA (System Layer)
+# ------------------------------------------------------------------------------
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    wget \
+    curl \
+    ca-certificates \
+    pkg-config \
+    libopenal-dev \
+    libvorbis-dev \
+    libogg-dev \
+    libflac-dev \
+    libfreetype6-dev \
+    libharfbuzz-dev \
+    libx11-dev \
+    libxrandr-dev \
+    libxinerama-dev \
+    libxcursor-dev \
+    libxi-dev \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    libudev-dev \
+    libsamplerate0-dev \
+    libdbus-1-dev \
+    libibus-1.0-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# ------------------------------------------------------------------------------
+# BLOQUE 2: LIBRERIAS CORE (SDL2, SDL_ttf, SFML)
+# ------------------------------------------------------------------------------
+WORKDIR /tmp/build_libs
+
+# --- SDL2 v2.30.11 ---
+RUN wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.11/SDL2-2.30.11.tar.gz \
+    && tar -xzf SDL2-2.30.11.tar.gz \
+    && cd SDL2-2.30.11 \
+    && ./configure \
+    && make -j$(nproc) \
+    && make install \
+    && cd .. && rm -rf SDL2-2.30.11*
+
+# --- SDL2_ttf v2.24.0 ---
+# Nota: Ajustamos CPPFLAGS para apuntar a /usr/local/include/SDL2 donde acabamos de instalar SDL2
+RUN wget https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz \
+    && tar -xzf SDL2_ttf-2.24.0.tar.gz \
+    && cd SDL2_ttf-2.24.0 \
+    && ./configure \
+       --disable-freetype-builtin \
+       --disable-harfbuzz-builtin \
+       CPPFLAGS="-I/usr/local/include/SDL2 -I/usr/include/freetype2 -I/usr/include/harfbuzz" \
+    && make -j$(nproc) \
+    && make install \
+    && cd .. && rm -rf SDL2_ttf-2.24.0*
+
+# --- SFML v2.6.2 ---
+RUN wget https://github.com/SFML/SFML/archive/refs/tags/2.6.2.tar.gz -O SFML-2.6.2.tar.gz \
+    && tar -xzf SFML-2.6.2.tar.gz \
+    && cd SFML-2.6.2 \
+    && mkdir build && cd build \
+    && cmake .. \
+    && make -j$(nproc) \
+    && make install \
+    && cd ../.. && rm -rf SFML-2.6.2*
+
+# Actualizamos el cache del linker para que encuentre las libs en /usr/local/lib
+RUN ldconfig
+
+# ------------------------------------------------------------------------------
+# BLOQUE 3: NGN SDK (Tu Motor)
+# ------------------------------------------------------------------------------
+WORKDIR /tmp/build_ngn
+
+# Copiamos el SDK desde el contexto local al Docker
+COPY ngn_sdk/ .
+
+# Replicamos la lógica de tu script de instalación pero "Hardcoded" para Raspberry
+# ARCH="raspberry" activa flags -march=armv8-a -mcpu=cortex-a72 en tu CMakeLists
+RUN mkdir build && cd build \
+    && cmake .. -DARCH=raspberry \
+    && cmake --build . -j$(nproc) \
+    && cmake --install . \
+    && cd ../.. && rm -rf build_ngn
+
+# Verificación final (opcional, para log)
+RUN pkg-config --modversion ngn
+
+# ------------------------------------------------------------------------------
+# PUNTO DE ENTRADA (Para compilar Juegos)
+# ------------------------------------------------------------------------------
+WORKDIR /workspace
+
+# Por defecto, al arrancar el contenedor, esperamos recibir comandos.
+# Si se ejecuta sin argumentos, mostramos las versiones.
+CMD ["/bin/bash", "-c", "echo 'NightFox Build Environment Ready'; echo 'NGN Version:'; pkg-config --modversion ngn"]

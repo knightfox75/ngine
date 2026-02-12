@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+include("${CMAKE_CURRENT_LIST_DIR}/NGNTargets.cmake")
+check_required_components(NGN)
+message(STATUS "Found NGN Library (RG35XX Static): ${CMAKE_CURRENT_LIST_DIR}")

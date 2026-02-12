@@ -4,11 +4,13 @@
 # ==============================================================================
 cmake_minimum_required(VERSION 3.10)
 
+if(DEFINED CMAKE_ARCH_TYPE)
+    message(STATUS "Architecture Type passed by builder: ${CMAKE_ARCH_TYPE}")
+endif()
+
 # [TEMPLATE CONFIGURATION]
-# If BINARY_NAME is not passed via command line (-DBINARY_NAME=...), 
-# use "Game" as the default fallback.
 if(NOT DEFINED BINARY_NAME)
-    set(BINARY_NAME "Ngine_Project")
+    set(BINARY_NAME "RG35XX_ngine_demo")
 endif()
 
 project(${BINARY_NAME} LANGUAGES CXX C VERSION 0.1.0)
@@ -25,9 +27,6 @@ set(OPT_FLAGS "-O3" "-flto=auto" "-ffast-math" "-fomit-frame-pointer" "-s")
 add_compile_options(${CPU_FLAGS} ${OPT_FLAGS} -Wno-stringop-overflow)
 
 # [CRITICAL] RPATH CONFIGURATION
-# This tells the binary to look for libraries in the "./libs" folder relative to its execution path ($ORIGIN).
-# This allows the game to load the "rescued" SDL2 library on the console at runtime,
-# even if it was compiled against a different version in Docker.
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,'$ORIGIN/libs'")
 add_link_options(${OPT_FLAGS})
 
@@ -48,13 +47,12 @@ include_directories(
 # 1. STATIC LIBRARY SEARCH (.a)
 # ==============================================================================
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
-
-find_library(LIB_NGN      NAMES ngn_s         REQUIRED PATHS ${SDK_ROOT}/lib)
+find_library(LIB_NGN      NAMES ngn			  REQUIRED PATHS ${SDK_ROOT}/lib)
 find_library(LIB_SDL2_TTF NAMES SDL2_ttf      REQUIRED PATHS ${SDK_ROOT}/lib)
 find_library(LIB_SFML_SYS NAMES sfml-system-s REQUIRED PATHS ${SDK_ROOT}/lib)
 find_library(LIB_SFML_AUD NAMES sfml-audio-s  REQUIRED PATHS ${SDK_ROOT}/lib)
 
-# Static dependencies via PkgConfig (Vorbis, FLAC, Freetype...)
+# Static dependencies via PkgConfig
 find_package(PkgConfig REQUIRED)
 set(ENV{PKG_CONFIG_PATH} "/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/share/pkgconfig")
 pkg_check_modules(STAT_VORBIS REQUIRED vorbis vorbisfile vorbisenc)
@@ -69,10 +67,6 @@ pkg_check_modules(STAT_FREETYPE REQUIRED freetype2)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".so" ".so.1" ".so.2" ".so.0")
 
 # [GLIBC ERROR SOLUTION]
-# We link against the SDL2 v2.30 compiled inside Docker.
-# This version is compatible with the Docker's GLIBC 2.28 (Debian Buster),
-# allowing the Linker to complete successfully without version mismatch errors.
-# The RPATH set above will swap this for the console's library at runtime.
 find_library(LIB_SDL2_BUILDTIME     
     NAMES SDL2 SDL2-2.0
     REQUIRED 
@@ -103,7 +97,7 @@ target_link_libraries(${BINARY_NAME} PRIVATE
     ${LIB_SFML_AUD}
     ${LIB_SFML_SYS}
     ${LIB_SDL2_TTF}
-    ${LIB_SDL2_BUILDTIME}  # Successful build-time linking (Docker)
+    ${LIB_SDL2_BUILDTIME}
     ${STAT_FREETYPE_LIBRARIES}
     ${STAT_OPENAL_LIBRARIES}
     ${STAT_VORBIS_LIBRARIES}
