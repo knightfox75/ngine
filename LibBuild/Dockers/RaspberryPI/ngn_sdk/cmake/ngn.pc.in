@@ -1,0 +1,17 @@
+# Pkg-Config Template for NGN Library
+prefix=@PKG_PREFIX@
+exec_prefix=${prefix}
+libdir=@PKG_LIBDIR@
+includedir=@PKG_INCDIR@/NGN
+
+Name: NightFox's Game Engine
+Description: Lightweight 2D game engine for pixel art games
+Version: @PROJECT_VERSION@
+ 
+# Enlazamos por defecto la versión Release Shared (-lngn).
+# Si el usuario quisiera la estática, debería añadir -static manualmente, 
+# pero Pkg-config básico asume shared libs mayormente.
+Libs: -L${libdir} -lngn
+
+# Flags de compilación para encontrar los headers
+Cflags: -I${includedir}

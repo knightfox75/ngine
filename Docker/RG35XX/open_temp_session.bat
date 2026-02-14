@@ -1,1 +1,0 @@
-docker run -it --rm ngn-arm64-builder bash
