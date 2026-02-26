@@ -1,5 +1,5 @@
 NGN_INPUT.H
-v1.16.0-stable
+v1.21.0-stable
 Español
 
 --------------------------------------------------------------------------------
@@ -164,5 +164,17 @@ Ejecuta el efecto de vibración del controlador indicado (si dicho controlador t
 
 - Ejemplo
 ngn->input->ControllerRumble(0, 0.75f, 500);
+
+--------------------------------------------------------------------------------
+
+- Método
+void LogControllersInfo();
+
+- Descripción
+Obtiene y vuelca la información completa de los controladores conectados al archivo de registro.
+Dado que este método escribe en el registro de texto del disco (si está habilitado) y bloquea el controlador durante unos instantes para obtener la información, solo debe usarse al inicio del programa con fines de depuración y nunca dentro de un bucle de actualización.
+
+- Ejemplo
+ngn->input->LogControllersInfo();
 
 --------------------------------------------------------------------------------

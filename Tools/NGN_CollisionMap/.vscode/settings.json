@@ -1,0 +1,27 @@
+{
+  "files.exclude": {
+    "**/*.code-workspace": true,
+    "**/*.exe": true,
+    "**/*.dll": true,
+    "**/*.bat": true,
+    "**/*.sh": true,
+    "**/*.txt": true,
+    "**/*.dat": true,
+    "**/*.pkg": true,
+    "**/*.json": true,
+    "**/*NGN*": true,
+    "**/*build*": true,
+    "**/data": true,
+    "**/libs": true,
+    "**/licences": true,
+    "**/temp": true,
+    "**/scripts": true,
+    "**/exports": true,
+    "**/.vscode": true
+  },
+  "editor.autoClosingBrackets": "never",
+  "editor.autoClosingComments": "never",
+  "editor.autoClosingDelete": "never",
+  "editor.autoClosingOvertype": "never",
+  "editor.autoClosingQuotes": "never"
+}

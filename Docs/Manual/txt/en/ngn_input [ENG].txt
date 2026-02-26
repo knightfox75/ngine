@@ -1,5 +1,5 @@
 NGN_INPUT.H
-v1.16.0-stable
+v1.21.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -165,5 +165,17 @@ Executes the vibration effect on the specified controller (if the controller sup
 
 - Example
 ngn->input->ControllerRumble(0, 0.75f, 500);
+
+--------------------------------------------------------------------------------
+
+- Method
+void LogControllersInfo();
+
+- Description
+Retrieves and dumps complete information about the connected controllers to the log file.
+Since this method writes to the text log on disk (if enabled) and momentarily blocks the controller to retrieve the information, it should only be used at program startup for debugging purposes and never within an update loop.
+
+- Example
+ngn->input->LogControllersInfo();
 
 --------------------------------------------------------------------------------

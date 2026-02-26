@@ -1,50 +1,45 @@
 #!/bin/bash
 
 # ==============================================================================
-# N'GINE - RPi4 Full Bundler (Linux Version)
-# Target: Raspberry Pi 4/400 (ARM64)
+# N'GINE SDK - RPi4 Production Builder (Linux Launcher)
+# ==============================================================================
+# Description: Cross-compiles project for Raspberry Pi 4 (ARM64).
+# Target:      Raspberry Pi 4 (Cortex-A72 / ARM64)
 # ==============================================================================
 
-# Colores para la terminal
-BLUE='\033[0;34m'
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+PROJECT_NAME="Sample_Project"
+PROJECT_VERSION="1.0.0"
+DOCKER_IMAGE="ngn-rpi4-builder_production"
 
-# Configuración
-PROJECT_NAME="Ngine_Project"
-DOCKER_IMAGE="ngn-rpi4-builder"
-INTERNAL_SCRIPT="scripts/build_internal.sh"
+pause_exit() {
+    local exit_code=$1
+    echo ""
+    echo "--------------------------------------------------------"
+    read -n 1 -s -r -p "Process complete. Press any key to exit..." < /dev/tty
+    echo ""
+    exit "$exit_code"
+}
 
-# Limpiar pantalla
 clear
+echo "========================================================"
+echo " N'GINE SDK - RPi4 Production Build Launcher"
+echo "========================================================"
+echo ""
 
-echo -e "${BLUE}====================================================${NC}"
-echo -e "${BLUE}      ${PROJECT_NAME} - RPi4 Full Bundler${NC}"
-echo -e "${BLUE}====================================================${NC}"
-echo
-
-echo -e "🚀 ${BLUE}Launching Build & Recursive Bundling...${NC}"
-echo -e "   Project directory: $(pwd)"
-echo
-
-# Ejecutar el contenedor Docker
-# -v $(pwd):/workspace mapea el directorio actual
-docker run --rm \
-  --platform linux/arm64 \
-  -v "$(pwd):/workspace" \
-  "$DOCKER_IMAGE" \
-  bash -c "chmod +x $INTERNAL_SCRIPT && ./$INTERNAL_SCRIPT $PROJECT_NAME"
-
-# Capturar el estado de salida de Docker
-if [ $? -ne 0 ]; then
-    echo -e "\n${RED}❌ [ERROR] Process failed.${NC}"
-    echo -e "Check the logs above for more information."
-    echo
-    read -p "Press Enter to exit..."
-    exit 1
+if [[ ! -f "scripts/build_internal.sh" ]]; then
+    echo "CRITICAL ERROR: 'scripts/build_internal.sh' not found."
+    pause_exit 1
 fi
 
-echo -e "\n${GREEN}✅ Done! Check 'game_export/' folder.${NC}"
-echo
-read -p "Press Enter to exit..."
+echo "[1/2] Initializing Cross-Compilation Environment..."
+# Note: Removed --platform linux/amd64 as the container runs natively on PC
+if ! docker run --rm -v "$(pwd):/workspace" "$DOCKER_IMAGE" bash scripts/build_internal.sh "$PROJECT_NAME" "$PROJECT_VERSION"; then
+    echo ""
+    echo "CRITICAL ERROR: Build process failed."
+    pause_exit 1
+fi
+
+echo ""
+echo "[2/2] Build Successful!"
+echo "RPi4 binaries are in 'export/'."
+pause_exit 0

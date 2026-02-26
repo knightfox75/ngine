@@ -1,0 +1,105 @@
+================================================================================
+                                    N'GINE
+                            NIGHTFOX'S GAME ENGINE
+                          SDK - Manual de Instalación
+================================================================================
+
+BIENVENIDO AL SDK DE N'GINE
+--------------------------------------------------------------------------------
+N'gine ha evolucionado. El SDK ha migrado a un flujo de trabajo moderno usando 
+*Visual Studio Code* y *CMake*. Este manual cubre la configuración para Windows, 
+Linux y Raspberry Pi.
+
+[!] NOTA: La carpeta raíz de tu distribución suele llamarse 
+    "ngn.X.X.X-stable".
+
+
+ESTRUCTURA DEL PAQUETE DE DISTRIBUCIÓN
+--------------------------------------------------------------------------------
+ngn.x.x.x-stable
+ ├── Demo                  		- Demos compiladas de todos los ejemplos (Win/Linux/RPi)
+ ├── Docs                  		- Documentación y manuales
+ ├── Examples              		- Código fuente y assets cubriendo todas las funciones
+ ├── LibBuild              		- Scripts y código para compilar/instalar el SDK
+ │    ├── BuildNgineSDK    		- Windows Build Scripts (.bat)
+ │    ├── Dockers          		- Imágenes Docker para Cross-Compile (RG35XX, RPi4)
+ │    └── InstallNgineSDK  		- Scripts de instalación Linux/RPi (.sh)
+ ├── LibRelease            		- Binarios de la librería N'gine listos para usar
+ ├── Ngine_SDK             		- El SDK N'gine para Windows listo para usar
+ ├── Source                		- Código fuente del núcleo de N'gine
+ ├── Templates             		- Plantillas de Proyectos
+ │    ├── cmake               	- Empieza Aquí: Plantillas para VS Code + CMake
+ │    ├── docker_Raspberry_Pi 	- Plantillas para compilación con Docker (RPi)
+ │    └── docker_RG35XX       	- Plantillas para compilación con Docker (Anbernic)
+ └── Tools                 		- Fuentes de las herramientas de conversión
+      ├── NGN_CollisionMap 		- PNG to Collision Map
+      ├── NGN_FileSystem   		- Asset Packer
+      ├── NGN_Sprite       		- PNG to Sprite
+      ├── NGN_TileMap      		- PNG to Tilemap
+      └── ToolSet          		- Herramientas compiladas listas para usar
+
+
+PRERREQUISITOS GLOBALES (TODOS LOS SO)
+--------------------------------------------------------------------------------
+Antes de las configuraciones específicas, asegúrate de tener el editor instalado:
+
+ 1. Visual Studio Code: Descargar aquí (https://code.visualstudio.com/)
+ 2. Extensiones: Abre VS Code e instala estas extensiones oficiales de Microsoft:
+    - C/C++       (IntelliSense, depuración)
+    - CMake Tools (Configuración de proyectos)
+
+
+--- CONFIGURACIÓN PARA WINDOWS -------------------------------------------------
+
+ 1. Configuración de Herramientas
+    Paso A: Descarga e instala CMake (https://cmake.org/download/). 
+            (Selecciona "Add CMake to system PATH" durante la instalación).
+    Paso B: Descarga e instala MSYS2 (https://www.msys2.org/).
+
+    Abre la terminal de MSYS2 (MINGW64) y ejecuta:
+      > pacman -Syu
+      > pacman -S mingw-w64-x86_64-toolchain
+
+ 2. Variables de Entorno
+    Windows necesita saber dónde están el compilador y el SDK.
+
+    * Añadir Compilador al Path:
+      Edita las Variables de Entorno del Sistema. Dentro de la variable 'Path', 
+      añade la ruta a tu carpeta 'bin' de MinGW64. Si usaste la ruta de 
+      instalación por defecto, será:
+        C:\msys64\mingw64\bin
+      (Si instalaste MSYS2 en otro directorio, por ejemplo en 
+      C:\Code\msys64, ajusta la ruta en consecuencia).
+
+    * Definir Ruta del SDK:
+      1. Copia la carpeta 'Ngine_SDK' (que contiene las librerías) a un lugar 
+         seguro (ej. C:\Code\Ngine_SDK).
+      2. Crea una NUEVA variable del sistema llamada 'NGINE_SDK_PATH' que 
+         apunte a esa carpeta.
+
+
+--- CONFIGURACIÓN PARA LINUX / RASPBERRY PI ------------------------------------
+
+ Instalación Automatizada
+ El SDK incluye scripts para gestionar las dependencias y la compilación de 
+ librerías automáticamente. Navega a la carpeta 'LibBuild/InstallNgineSDK/' 
+ dentro de la distribución y ejecuta:
+
+   > chmod +x install_ngine_sdk.sh
+   > ./install_ngine_sdk.sh
+ Esto instalará SDL2, SFML y N'gine en '/usr/local/'.
+
+
+TU PRIMER PROYECTO
+--------------------------------------------------------------------------------
+ 1. Navega a la carpeta 'Templates/cmake' en el SDK.
+ 2. Copia la carpeta 'basic_template' a tu zona de trabajo 
+    (ej. C:\Proyectos\MiJuego).
+ 3. Abre esa carpeta en *VS Code*.
+ 4. Espera a que *CMake Tools* configure el proyecto. Si te pide un Kit, 
+    selecciona GCC x86_64.
+ 5. Pulsa *F7* o haz clic en "Build" en la barra de estado inferior.
+
+
+================================================================================
+(c) 2016-2026 Cesar Rincon. - NightFox's Game Engine.

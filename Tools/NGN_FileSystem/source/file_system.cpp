@@ -4,7 +4,7 @@
     - Sistema de archivos -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (c) 2021 - 2025 by Cesar Rincon "NightFox"
+    (c) 2021 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -783,8 +783,10 @@ int32_t FileSystem::ReadFileHeader() {
 std::vector<uint8_t> FileSystem::Checksum(std::vector<uint8_t> &data) {
 
     // Prepara el vector para los calculos
-    std::vector<uint8_t> checksum;
-    checksum.resize(CHK_SIZE, 0);
+    std::vector<uint8_t> checksum(CHK_SIZE, 0);
+
+    // Si no hay datos en el vector sal
+    if (data.size() == 0) return checksum;
 
     // Calcula el checksum
     uint32_t offset = 0;

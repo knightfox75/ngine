@@ -4,7 +4,7 @@
     - Definiciones -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (c) 2021 - 2025 by Cesar Rincon "NightFox"
+    (c) 2021 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -65,10 +65,10 @@ const std::string NGN_VERSION_METADATA = "stable";                      // Versi
 
 /*** Version del programa ***/
 const std::string PROGRAM_NAME = "N'gine file system manager";          // Nombre del programa
-const std::string CPR_YEARS = "2021-2025";                              // Años en el texto de CopyRight
+const std::string CPR_YEARS = "2021-2026";                              // Años en el texto de CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 1;                                // Version mayor
-const int32_t PROGRAM_VERSION_MINOR = 3;                                // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 5;                                // Version parche
+const int32_t PROGRAM_VERSION_MINOR = 4;                                // Version menor
+const int32_t PROGRAM_VERSION_PATCH = 0;                                // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                  // Version metadatos
 const std::string MAGIC_STRING = "NGN FILE SYSTEM";    	                // Magic string
 const uint8_t MS_LENGTH = 15;                                           // Logitud del magic string

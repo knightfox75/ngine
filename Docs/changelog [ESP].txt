@@ -1,4 +1,17 @@
 --------------------------------------------------------------------------------
+2026-02-26 Ver.1.21.0+stable
+--------------------------------------------------------------------------------
+- Migración de todos los ejemplos y plantillas de Code::Blocks a CMake y Visual Studio Code.
+- Añadido soporte para la videoconsola portátil Anbernic RG35XX (compilación vía Docker).
+- Añadidos los scripts para la creación de imágenes Docker para la compilación cruzada para Raspberry Pi y Anbernic RG35XX.
+- Añadido soporte (experimental) a la librería para la compilación en Evercade*.
+	* Se requiere un contrato y el SDK oficial para el desarrollo en Evercade.
+- Añadido el método LogControllersInfo a la clase NGN_Input, el cual vuelca la información de hardware de todos los controladores conectados a la pantalla y al archivo de registro (si este está habilitado). Dado que fuerza la actualización de eventos de N'gine y bloquea momentáneamente el controlador para la consulta de datos, no se debe usar nunca en el bucle principal del juego. Llamar una única vez al inicio del programa.
+- Mejorada la precisión del sonido posicional en los efectos de sonido, optimizando el volumen general de los mismos.
+- En los sistemas Raspberry Pi, Anbernic RG35XX y Evercade, se omite la aplicación del flag "sRGB color" para evitar el efecto de "colores lavados" en el renderizado de la escena.
+
+
+--------------------------------------------------------------------------------
 2026-02-01 Ver.1.20.0+10th-anniversary
 --------------------------------------------------------------------------------
 - Los métodos NGN_Load::CollisionMap() y NGN_Collisions::GetPixel() ahora utilizan operaciones a nivel de bit (bitwise/bitmask) para el cálculo de coordenadas en mapas de colisiones con tiles de tamaño potencia de 2. Esto mejora significativamente el rendimiento en la función GetPixel. Para tamaños de tile no optimizados, se conserva el cálculo tradicional mediante división y módulo.

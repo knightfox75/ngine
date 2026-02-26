@@ -4,7 +4,7 @@
     - Sistema de archivos -
 
     Proyecto iniciado el 14 de Febrero del 2021
-    (c) 2021 - 2025 by Cesar Rincon "NightFox"
+    (c) 2021 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 

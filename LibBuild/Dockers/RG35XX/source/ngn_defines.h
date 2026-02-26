@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -55,8 +55,8 @@
 static const int32_t NGN_VERSION_MAJOR = 1;                             // Version mayor
 static const int32_t NGN_VERSION_MINOR = 21;                            // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                             // Version parche
-static const std::string NGN_VERSION_MD_CHAR = "-";                     // Caracter de metadatos "-" = prerelease, "+" = stable
-static const std::string NGN_VERSION_METADATA = "wip_0x03";             // Version metadatos
+static const std::string NGN_VERSION_MD_CHAR = "+";                     // Caracter de metadatos "-" = prerelease, "+" = stable
+static const std::string NGN_VERSION_METADATA = "stable";               // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;            // Valor de "defecto"
@@ -82,10 +82,31 @@ static const uint8_t NGN_MASKMODE_CUTOUT = 0;       // Recorta el origen con la 
 static const uint8_t NGN_MASKMODE_HOLLOW = 1;       // Extrae la mascara del origien
 
 /*** Definiciones exclusivas para Anbernic RG35XX ***/
-static const uint32_t RG35XX_SCREEN_WIDTH = 640;
-static const uint32_t RG35XX_SCREEN_HEIGHT = 480;
-static const uint32_t RG35XX_REFRESH_RATE = 60;
+#if defined (TARGET_RG35XX)
+    static const uint32_t RG35XX_SCREEN_WIDTH = 640;
+    static const uint32_t RG35XX_SCREEN_HEIGHT = 480;
+    static const uint32_t RG35XX_REFRESH_RATE = 60;
+#endif
 
+/*** Definiciones exclusivas para Evercade ***/
+#if defined (TARGET_EVERCADE)
+    static const uint32_t EVERCADE_SCREEN_WIDTH = 480;
+    static const uint32_t EVERCADE_SCREEN_HEIGHT = 272;
+    static const uint32_t EVERCADE_REFRESH_RATE = 60;
+    static const std::string EVERCADE_IGNORE_JOYSTICK_NAME = "adc-pot";     // Habilita el control en el Indice 0
+    static const int32_t EVERCADE_BUTTON_A = 4;
+    static const int32_t EVERCADE_BUTTON_B = 7;
+    static const int32_t EVERCADE_BUTTON_X = 6;
+    static const int32_t EVERCADE_BUTTON_Y = 2;
+    static const int32_t EVERCADE_BUTTON_L = 5;
+    static const int32_t EVERCADE_BUTTON_R = 1;
+    static const int32_t EVERCADE_BUTTON_SELECT = 8;
+    static const int32_t EVERCADE_BUTTON_START = 3;
+    static const int32_t EVERCADE_BUTTON_UP = 9;
+    static const int32_t EVERCADE_BUTTON_DOWN = 12;
+    static const int32_t EVERCADE_BUTTON_LEFT = 10;
+    static const int32_t EVERCADE_BUTTON_RIGHT = 11;
+#endif
 
 
 /*** Prototipos de datos ***/

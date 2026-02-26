@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -110,8 +110,11 @@ class NGN_System {
         // Lectura del evento del GamePad [SDL_CONTROLLERAXISMOTION]
         void GamePadAxisMotion();
 
-        // Lectura del evento del GamePad [SDL_CONTROLLERBUTTONDOWN]
+        // Lectura del evento del GamePad [SDL_CONTROLLERBUTTONDOWN & SDL_CONTROLLERBUTTONUP]
         void GamePadButtons();
+
+        // Lectura del evento del GamePad [SDL_JOYBUTTONDOWN & SDL_JOYBUTTONUP]
+        void JoystickButtons();
 
         // Tiempo delta
         uint32_t _delta_time;

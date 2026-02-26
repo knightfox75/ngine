@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -57,6 +57,43 @@
 
 // Libreria
 #include "ngn.h"
+
+
+
+/*** Define los perfiles de hardware ***/
+
+#if defined (OS_LINUX)
+
+    // Perfil especifico: Anbernic RG35XX
+    #if defined (TARGET_RG35XX)
+        #define FORCE_OPENGLES2
+        #define SET_GL_CONTEXT
+        #define DISABLE_SRGB_COLOR
+        #define VIDEO_CONSOLE
+    #endif
+
+    // Perfil especifico: Evercade
+    #if defined (TARGET_EVERCADE)
+        #define FORCE_OPENGLES2
+        #define SET_GL_CONTEXT
+        #define DISABLE_SRGB_COLOR
+        #define VIDEO_CONSOLE
+    #endif
+
+    // Perfil especifico: Raspberry PI
+    #if defined (TARGET_RASPBERRY)
+        #define FORCE_OPENGLES2
+        #define SET_GL_CONTEXT
+        #define DISABLE_SRGB_COLOR
+    #endif
+
+#endif
+
+
+// Habilitar el espacio de color sRGB globalmente si no ha sido desactivado
+#if !defined (DISABLE_SRGB_COLOR)
+    #define ENABLE_SRGB_COLOR
+#endif
 
 
 
@@ -184,12 +221,38 @@ bool NGN_Graphics::Init(
     bool sync                         // VSYNC activo?
 ) {
 
-    #if defined (TARGET_RG35XX)
+    // Aplicar flags para seleccionar el controlador de renderizado (Flags ortogonales, desacoplados entre si)
+    #if defined (FORCE_OPENGLES2)
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles2");
     #endif
 
-    // Si es un sistema que usara OpenGL (Linux y variantes), fuerza el espacio sRGB (Excepto para RG35XX, provoca colores sobreexpuestos)
-    #if !defined (TARGET_RG35XX)
+    // Aplicar flags de contexto para GL
+    #if defined (SET_GL_CONTEXT)
+
+        // Contexto especifico para opengles2
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+        // Profundidad de color de 24 bits
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+
+        // Sin canal alfa para la textura final (crucial para Direct Scanout en Wayland/KMS)
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 0);
+
+        // Uso puro de 2D, desactivar explicitamente Z-BUFFER y STENCIL-BUFFER para ahorrar ancho de banda de VRAM
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0);
+
+        // Habilitar doble bufer
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    #endif
+
+    // Aplicar espacio de color sRGB
+    #if defined (ENABLE_SRGB_COLOR)
         SDL_GL_SetAttribute(SDL_GL_FRAMEBUFFER_SRGB_CAPABLE, 1);
     #endif
 
@@ -211,11 +274,16 @@ bool NGN_Graphics::Init(
         std::string err_text = "[NGN_Graphics error] Can't get current desktop resolution: ";
         err_text += std::string(SDL_GetError());
         ngn->log->Message(err_text);
-        #if defined(TARGET_RG35XX)
+        #if defined (TARGET_RG35XX)
             // Fallback para la pantalla de la RG35XX si falla la deteccion del driver
             desktop_w = RG35XX_SCREEN_WIDTH;
             desktop_h = RG35XX_SCREEN_HEIGHT;
             desktop_refresh_rate = RG35XX_REFRESH_RATE;
+		#elif defined (TARGET_EVERCADE)
+            // Fallback por si KMSDRM aun no reporta resolucion en Evercade (Modelo original)
+            desktop_w = EVERCADE_SCREEN_WIDTH;
+            desktop_h = EVERCADE_SCREEN_HEIGHT;
+            desktop_refresh_rate = EVERCADE_REFRESH_RATE;
         #else
             // Si ni puedes determinar la resolucion, sal
             return false;
@@ -227,25 +295,53 @@ bool NGN_Graphics::Init(
         desktop_refresh_rate = display.refresh_rate;
     }
 
-    // Crea la ventana para el renderer, con las opciones por defecto
-    window = SDL_CreateWindow((const char*)window_caption.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, native_w, native_h, SDL_WINDOW_SHOWN);
-    // Verifica si ha ocurrido un error en la creacion de la ventana
-    if (window == nullptr) {
-        ngn->log->Message("[NGN_Graphics error] SDL is unable to create the main Window.");
+    // Flags base
+    uint32_t win_creation_flags = SDL_WINDOW_SHOWN;
+
+    // Flags obligatorios para KMSDRM + GLES en Evercade
+    #if defined (TARGET_EVERCADE)
+        // KMSDRM requiere pantalla completa. OPENGL es necesario para inicializar EGL.
+        win_creation_flags |= SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS;
+    #endif
+
+	// Intenta crear la ventana
+	#if defined (TARGET_EVERCADE)
+		window = SDL_CreateWindow(
+			(const char*)window_caption.c_str(),
+			0, 0,
+			native_w, native_h,
+			win_creation_flags
+		);
+	#else
+		window = SDL_CreateWindow(
+			(const char*)window_caption.c_str(),
+			SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			native_w, native_h,
+			win_creation_flags
+		);
+	#endif
+	// Si no se crea, indica el error y sal
+    if (!window) {
+        std::string msg = "[NGN_Graphics error] SDL is unable to create the main Window: ";
+        msg += SDL_GetError();
+        ngn->log->Message(msg);
         return false;
     }
+
+	// Registra los flags de la ventana creada.
     window_flags = SDL_GetWindowFlags(window);
 
     // Si la ventana se ha creado, intenta crear la superficie de renderizado, con el dibujado sincronizado al frame
     renderer = SDL_CreateRenderer(window, -1, (SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE));
     // Si no se puede crear, destruye la venta e informa del error
-    if (renderer == nullptr) {
+    if (!renderer) {
         SDL_DestroyWindow(window);
         window = nullptr;
-        ngn->log->Message("[NGN_Graphics error] SDL is unable to create the rendering surface.");
+        std::string msg = "[NGN_Graphics error] SDL is unable to create the rendering surface: ";
+        msg += SDL_GetError();
+        ngn->log->Message(msg);
         return false;
     }
-
 
     // Selecciona el color por defecto del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
@@ -309,7 +405,7 @@ bool NGN_Graphics::Init(
 /*** Cambia el modo de pantalla ***/
 void NGN_Graphics::SetMode(int8_t mode) {
 
-    #if defined (TARGET_RG35XX)
+    #if defined (VIDEO_CONSOLE)
 
         switch (mode) {
             case NGN_SCR_WINDOW:
@@ -1107,7 +1203,7 @@ void NGN_Graphics::SetupViewports() {
     viewport_list.reserve(VIEWPORT_NUMBER);
 
     for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
-        viewport_list[i] = v;
+        viewport_list.push_back(v);
     }
 
     current_viewport = -1;

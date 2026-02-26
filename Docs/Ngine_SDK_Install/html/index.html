@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N'gine SDK - Installation Manual</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Language Switcher -->
+        <div class="lang-switch">
+            <button class="btn-lang active" onclick="setLang('en')" id="btn-en">EN</button>
+            <button class="btn-lang" onclick="setLang('es')" id="btn-es">ES</button>
+        </div>
+
+        <header>
+            <h1>N'GINE</h1>
+            <div id="subtitle-en" class="subtitle">NIGHTFOX'S GAME ENGINE</div>
+            <div id="subtitle-es" class="subtitle hidden">NIGHTFOX'S GAME ENGINE</div>
+        </header>
+
+        <!-- INTRO -->
+        <section id="intro">
+            <div class="box">
+                <div class="lang-content en">
+                    <h2>Welcome to N'gine SDK</h2>
+                    <p>N'gine has evolved. The SDK has migrated to a modern workflow using <strong>Visual Studio Code</strong> and <strong>CMake</strong>. This manual covers the setup for Windows, Linux, and Raspberry Pi.</p>
+                    <div class="note" style="padding:10px;">
+                        <strong>Note:</strong> The root folder of your distribution is usually named <code>ngn.X.X.X-stable</code>.
+                    </div>
+                </div>
+                <div class="lang-content es hidden">
+                    <h2>Bienvenido al SDK de N'gine</h2>
+                    <p>N'gine ha evolucionado. El SDK ha migrado a un flujo de trabajo moderno usando <strong>Visual Studio Code</strong> y <strong>CMake</strong>. Este manual cubre la configuración para Windows, Linux y Raspberry Pi.</p>
+                    <div class="note" style="padding:10px;">
+                        <strong>Nota:</strong> La carpeta raíz de tu distribución suele llamarse <code>ngn.X.X.X-stable</code>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILE STRUCTURE TREE -->
+        <section id="structure">
+            <div class="box">
+                <div class="lang-content en"><h3>Distribution Package Structure</h3></div>
+                <div class="lang-content es hidden"><h3>Estructura del paquete de distribución</h3></div>
+
+                <div class="tree-view">
+                    <!-- ROOT -->
+                    <span class="folder">ngn.x.x.x-stable</span>
+                    <ul>
+                        <!-- DEMO -->
+                        <li>
+                            <span class="folder">Demo</span>
+                            <span class="lang-content en desc">Compiled demos for all examples (Win/Linux/RPi)</span>
+                            <span class="lang-content es hidden desc">Demos compiladas de todos los ejemplos (Win/Linux/RPi)</span>
+                        </li>
+
+                        <!-- DOCS -->
+                        <li>
+                            <span class="folder">Docs</span>
+                            <span class="lang-content en desc">Documentation & Manuals</span>
+                            <span class="lang-content es hidden desc">Documentación y manuales</span>
+                        </li>
+
+                        <!-- EXAMPLES -->
+                        <li>
+                            <span class="folder">Examples</span>
+                            <span class="lang-content en desc">Source code & assets covering all engine features</span>
+                            <span class="lang-content es hidden desc">Código fuente y assets cubriendo todas las funciones</span>
+                        </li>
+
+                        <!-- LIBBUILD -->
+                        <li>
+                            <span class="folder important-folder">LibBuild</span>
+                            <span class="lang-content en desc">Scripts for compiling/installing the SDK</span>
+                            <span class="lang-content es hidden desc">Scripts y código para compilar/instalar el SDK</span>
+                            <ul>
+                                <li><span class="folder">BuildNgineSDK</span> <span class="desc">Windows Build Scripts (.bat)</span></li>
+                                <li>
+                                    <span class="folder">Dockers</span> 
+                                    <span class="lang-content en desc">Docker images for Cross-Compile (RG35XX, RPi4)</span>
+                                    <span class="lang-content es hidden desc">Imágenes Docker para Cross-Compile (RG35XX, RPi4)</span>
+                                </li>
+                                <li>
+                                    <span class="folder">InstallNgineSDK</span>
+                                    <span class="lang-content en desc">Linux/RPi Installation Scripts (.sh)</span>
+                                    <span class="lang-content es hidden desc">Scripts de instalación Linux/RPi (.sh)</span>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- LIBRELEASE -->
+                        <li>
+                            <span class="folder">LibRelease</span>
+                            <span class="lang-content en desc">The N'gine library binaries ready to use</span>
+                            <span class="lang-content es hidden desc">Binarios de la librería N'gine listos para usar</span>
+                        </li>
+						
+                        <!-- NGINE_SDK -->
+                        <li>
+                            <span class="folder important-folder">Ngine_SDK</span>
+                            <span class="lang-content en desc">The N'gine SDK for Windows ready to use</span>
+                            <span class="lang-content es hidden desc">El SDK N'gine para Windows listo para usar</span>
+                        </li>
+
+                        <!-- SOURCE -->
+                        <li>
+                            <span class="folder">Source</span>
+                            <span class="lang-content en desc">N'gine Core Source Code</span>
+                            <span class="lang-content es hidden desc">Código fuente del núcleo de N'gine</span>
+                        </li>
+
+                        <!-- TEMPLATES -->
+                        <li>
+                            <span class="folder important-folder">Templates</span>
+                            <span class="lang-content en desc">Project Templates</span>
+                            <span class="lang-content es hidden desc">Plantillas de Proyectos</span>
+                            <ul>
+                                <li>
+                                    <span class="folder">cmake</span>
+                                    <span class="lang-content en desc">Start Here: Templates for VS Code + CMake</span>
+                                    <span class="lang-content es hidden desc">Empieza Aquí: Plantillas para VS Code + CMake</span>
+                                </li>
+                                <li>
+                                    <span class="folder">docker_Raspberry_Pi</span> 
+                                    <span class="lang-content en desc">Templates for Docker compilation (RPi)</span>
+                                    <span class="lang-content es hidden desc">Plantillas para compilación con Docker (RPi)</span>
+                                </li>
+                                <li>
+                                    <span class="folder">docker_RG35XX</span> 
+                                    <span class="lang-content en desc">Templates for Docker compilation (Anbernic)</span>
+                                    <span class="lang-content es hidden desc">Plantillas para compilación con Docker (Anbernic)</span>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- TOOLS -->
+                        <li>
+                            <span class="folder">Tools</span>
+                            <span class="lang-content en desc">Asset conversion tools sources</span>
+                            <span class="lang-content es hidden desc">Fuentes de las herramientas de conversión</span>
+                            <ul>
+                                <li><span class="folder">NGN_CollisionMap</span> <span class="desc">PNG to Collision Map</span></li>
+                                <li><span class="folder">NGN_FileSystem</span> <span class="desc">Asset Packer</span></li>
+                                <li><span class="folder">NGN_Sprite</span> <span class="desc">PNG to Sprite</span></li>
+                                <li><span class="folder">NGN_TileMap</span> <span class="desc">PNG to Tilemap</span></li>
+                                <li>
+                                    <span class="folder important-folder">ToolSet</span> 
+                                    <span class="lang-content en desc">Compiled tools ready to use</span>
+                                    <span class="lang-content es hidden desc">Herramientas compiladas listas para usar</span>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMON PREREQUISITES -->
+        <section id="common-prereq">
+            <div class="box">
+                <div class="lang-content en">
+                    <h3>Global Prerequisites (All OS)</h3>
+                    <p>Before specific configurations, ensure you have the editor installed:</p>
+                    <ol>
+                        <li><strong>Visual Studio Code:</strong> <a href="https://code.visualstudio.com/" target="_blank">Download here</a>.</li>
+                        <li>
+                            <strong>Extensions:</strong> Open VS Code and install these official Microsoft extensions:
+                            <ul>
+                                <li><code>C/C++</code> (IntelliSense, debugging)</li>
+                                <li><code>CMake Tools</code> (Project configuration)</li>
+                            </ul>
+                        </li>
+                    </ol>
+					<img src="images/marketplace_de_extensiones_vs_code.png" alt="VS Code Extensions Marketplace">
+                </div>
+                <div class="lang-content es hidden">
+                    <h3>Prerrequisitos Globales (Todos los SO)</h3>
+                    <p>Antes de las configuraciones específicas, asegúrate de tener el editor instalado:</p>
+                    <ol>
+                        <li><strong>Visual Studio Code:</strong> <a href="https://code.visualstudio.com/" target="_blank">Descargar aquí</a>.</li>
+                        <li>
+                            <strong>Extensiones:</strong> Abre VS Code e instala estas extensiones oficiales de Microsoft:
+                            <ul>
+                                <li><code>C/C++</code> (IntelliSense, depuración)</li>
+                                <li><code>CMake Tools</code> (Configuración de proyectos)</li>
+                            </ul>
+                        </li>
+                    </ol>
+					<img src="images/marketplace_de_extensiones_vs_code.png" alt="VS Code Extensions Marketplace">
+                </div>
+            </div>
+        </section>
+
+        <!-- OS TABS -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="setTab('windows')">Windows</button>
+            <button class="tab-btn" onclick="setTab('linux')">Linux / Raspberry Pi</button>
+        </div>
+
+        <!-- WINDOWS CONTENT -->
+        <div id="tab-windows" class="tab-content">
+            <div class="lang-content en">
+                <h3>1. Toolchain Setup</h3>
+                <p><strong>Step A:</strong> Download and install <a href="https://cmake.org/download/" target="_blank">CMake</a>. (Select "Add CMake to system PATH" during install).</p>
+                <p><strong>Step B:</strong> Download and install <a href="https://www.msys2.org/" target="_blank">MSYS2</a>.</p>
+                <p>Open the MSYS2 terminal (MINGW64) and run:</p>
+                <pre>pacman -Syu
+pacman -S mingw-w64-x86_64-toolchain</pre>
+                
+                <h3>2. Environment Variables</h3>
+                <p>Windows needs to know where the compiler and the SDK are.</p>
+                
+                <h4>Add Compiler to Path</h4>
+                <p>Edit the System Environment Variables. Inside the <strong>Path</strong> variable, add the path to your MinGW64 <code>bin</code> folder. If you used the default MSYS2 installation path, it will be:</p>
+                <pre>C:\msys64\mingw64\bin</pre>
+                <p><em>(If you installed MSYS2 in a custom location, for example <code>C:\Code\msys64</code>, adjust the path accordingly).</em></p>
+                <img src="images/windows_path_variable_edit.png" alt="Windows Path Variable Edit">
+
+                <h4>Define SDK Path</h4>
+                <p>1. Copy the <code>Ngine_SDK</code> folder (containing libs) to a safe place (e.g., <code>C:\Code\Ngine_SDK</code>).</p>
+                <p>2. Create a NEW system variable named <code>NGINE_SDK_PATH</code> pointing to that folder.</p>
+                <img src="images/new_system_variable_ngine_sdk_path.png" alt="New System Variable NGINE_SDK_PATH">
+            </div>
+
+            <div class="lang-content es hidden">
+                <h3>1. Configuración de Herramientas</h3>
+                <p><strong>Paso A:</strong> Descarga e instala <a href="https://cmake.org/download/" target="_blank">CMake</a>. (Selecciona "Add CMake to system PATH" durante la instalación).</p>
+                <p><strong>Paso B:</strong> Descarga e instala <a href="https://www.msys2.org/" target="_blank">MSYS2</a>.</p>
+                <p>Abre la terminal de MSYS2 (MINGW64) y ejecuta:</p>
+                <pre>pacman -Syu
+pacman -S mingw-w64-x86_64-toolchain</pre>
+                
+                <h3>2. Variables de Entorno</h3>
+                <p>Windows necesita saber dónde están el compilador y el SDK.</p>
+                
+                <h4>Añadir Compilador al Path</h4>
+                <p>Edita las Variables de Entorno del Sistema. Dentro de la variable <strong>Path</strong>, añade la ruta a tu carpeta <code>bin</code> de MinGW64. Si usaste la ruta de instalación por defecto, será:</p>
+                <pre>C:\msys64\mingw64\bin</pre>
+                <p><em>(Si instalaste MSYS2 en otro directorio, por ejemplo en <code>C:\Code\msys64</code>, ajusta la ruta en consecuencia).</em></p>
+                <img src="images/windows_path_variable_edit.png" alt="Windows Path Variable Edit">
+
+                <h4>Definir Ruta del SDK</h4>
+                <p>1. Copia la carpeta <code>Ngine_SDK</code> (que contiene las librerías) a un lugar seguro (ej. <code>C:\Code\Ngine_SDK</code>).</p>
+                <p>2. Crea una NUEVA variable del sistema llamada <code>NGINE_SDK_PATH</code> que apunte a esa carpeta.</p>
+                <img src="images/new_system_variable_ngine_sdk_path.png" alt="Nueva Variable de Sistema NGINE_SDK_PATH">
+            </div>
+        </div>
+
+        <!-- LINUX CONTENT -->
+        <div id="tab-linux" class="tab-content hidden">
+            <div class="lang-content en">
+                <h3>Automated Installation</h3>
+                <p>The SDK includes scripts to handle dependencies and library compilation automatically.</p>
+                <p>Navigate to <code>LibBuild/InstallNgineSDK/</code> inside the release folder and run:</p>
+                <pre><code class="cmd">chmod +x install_ngine_sdk.sh
+./install_ngine_sdk.sh</code></pre>
+                <img src="images/terminal_running_install_script.png" alt="Terminal running install script">
+                <p>This will install SDL2, SFML, and N'gine into <code>/usr/local/</code>.</p>
+            </div>
+
+            <div class="lang-content es hidden">
+                <h3>Instalación Automatizada</h3>
+                <p>El SDK incluye scripts para gestionar las dependencias y la compilación de librerías automáticamente.</p>
+                <p>Navega a la carpeta <code>LibBuild/InstallNgineSDK/</code> dentro de la distribución y ejecuta:</p>
+                <pre><code class="cmd">chmod +x install_ngine_sdk.sh
+./install_ngine_sdk.sh</code></pre>
+                <img src="images/terminal_running_install_script.png" alt="Terminal ejecutando script de instalación">
+                <p>Esto instalará SDL2, SFML y N'gine en <code>/usr/local/</code>.</p>
+            </div>
+        </div>
+
+        <!-- FIRST PROJECT -->
+        <section style="margin-top: 40px;">
+            <div class="box">
+                <div class="lang-content en">
+                    <h2>Your First Project</h2>
+                    <ol>
+                        <li>Navigate to the <code>Templates/cmake</code> folder in the SDK.</li>
+                        <li>Copy the <code>basic_template</code> folder to your workspace (e.g. <code>C:\Projects\MyGame</code>).</li>
+                        <li>Open that folder in <strong>VS Code</strong>.</li>
+                        <li>Wait for <strong>CMake Tools</strong> to configure the project. If prompted, select the Kit (GCC x86_64).</li>
+                        <li>Press <strong>F7</strong> or click "Build" in the status bar.</li>
+                    </ol>
+                    <img src="images/vscode_project_running.png" alt="VS Code: Project Running">
+                </div>
+
+                <div class="lang-content es hidden">
+                    <h2>Tu Primer Proyecto</h2>
+                    <ol>
+                        <li>Navega a la carpeta <code>Templates/cmake</code> en el SDK.</li>
+                        <li>Copia la carpeta <code>basic_template</code> a tu zona de trabajo (ej. <code>C:\Proyectos\MiJuego</code>).</li>
+                        <li>Abre esa carpeta en <strong>VS Code</strong>.</li>
+                        <li>Espera a que <strong>CMake Tools</strong> configure el proyecto. Si te pide un Kit, selecciona GCC x86_64.</li>
+                        <li>Pulsa <strong>F7</strong> o haz clic en "Build" en la barra de estado inferior.</li>
+                    </ol>
+                    <img src="images/vscode_project_running.png" alt="VS Code: Ejecutando un proyecto">
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        &copy; 2016-2026 Cesar Rincon. - NightFox's Game Engine.
+    </footer>
+
+    <script>
+        function setLang(lang) {
+            document.querySelectorAll('.btn-lang').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + lang).classList.add('active');
+
+            document.querySelectorAll('.lang-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('subtitle-en').classList.add('hidden');
+            document.getElementById('subtitle-es').classList.add('hidden');
+
+            if (lang === 'en') {
+                document.querySelectorAll('.lang-content.en').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('subtitle-en').classList.remove('hidden');
+            } else {
+                document.querySelectorAll('.lang-content.es').forEach(el => el.classList.remove('hidden'));
+                document.getElementById('subtitle-es').classList.remove('hidden');
+            }
+        }
+
+        function setTab(os) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('tab-windows').classList.add('hidden');
+            document.getElementById('tab-linux').classList.add('hidden');
+
+            document.getElementById('tab-' + os).classList.remove('hidden');
+        }
+
+        // Initialize Defaults
+        setLang('en');
+        document.getElementById('tab-linux').classList.add('hidden');
+    </script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -47,6 +47,9 @@
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 #include <vector>
 #include <string>
+
+// SDL
+#include <SDL.h>
 
 
 
@@ -160,6 +163,8 @@ class NGN_Input {
         struct ControllerData {
             bool available;                                 // El controlador esta disponible?
             SDL_GameController* gamepad;                    // Puntero a la informacion del game pad
+            SDL_Joystick* joystick;                         // Para mandos genéricos (Evercade, etc)
+            bool is_standard;                               // True si es GameController, False si es Joystick puro
             int32_t device_id;                              // ID de instancia
             std::string name;                               // Nombre del game pad
             std::string guid;                               // GUID del gamepad

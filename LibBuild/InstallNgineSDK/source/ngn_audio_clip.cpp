@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -202,26 +202,40 @@ bool NGN_AudioClip::GetLoop() {
 /*** Cambia el panning de un sonido ***/
 void NGN_AudioClip::Panning(int32_t pan) {
 
-    // Guarda el nivel de panning
+    // Guarda y limita el nivel de panning
     _panning = pan;
     if (_panning < -100) _panning = -100;
     if (_panning > 100) _panning = 100;
 
-    // Calculos de angulo
-    sf::Vector3 pos(0.0f, 0.0f, 0.0f);
+    // Calcula el angulo para un arco frontal (0 a PI)
+    // -100 pan (Izquierda) -> PI rad
+    //    0 pan (Centro)    -> PI/2 rad
+    //  100 pan (Derecha)   -> 0 rad
     float angle = ((PI * ((float)(-_panning + 100))) / 200.0f);
-    pos.x = std::cos(angle);
-    pos.y = 0.0f;
-    pos.z = std::sin(angle);
-    sound.setPosition(pos);
 
-    // Calculos de la compensacion de la atenuacion panoramica
-    _panning_attenuation = (1.0f - (std::abs(pos.x) / 2.0f));
+    // Calcula coordenadas exactas en el semicirculo
+    // Usamos el eje Z negativo para situar el sonido frente al oyente
+    float pos_x = std::cos(angle);
+    float pos_y = 0.0f;
+    float pos_z = -std::sin(angle);
 
-    // Reajusta el nivel de volumen
-    float mixer = ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) * ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);
-    int32_t v = (int32_t)((float)_volume * _panning_attenuation * mixer);
-    sound.setVolume(v);
+    // Configura la espacializacion nativa de SFML/OpenAL
+    // setRelativeToListener(true): El sonido sigue siempre al oyente (Modo 2D)
+    // setAttenuation(0.0f): Desactiva perdida de volumen por distancia
+    sound.setRelativeToListener(true);
+    sound.setAttenuation(0.0f);
+    sound.setPosition(pos_x, pos_y, pos_z);
+
+    // Calcula la mezcla de volumen (Mezclador Maestro * Mezclador de Canal)
+    float mixer = ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) *
+                  ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);
+
+    // Calculo del volumen final sin atenuacion manual extra
+    // La posicion en el arco ya gestiona el balance entre altavoces
+    int32_t final_volume = (int32_t)((float)_volume * mixer);
+
+    // Aplica el nivel de volumen corregido al objeto de sonido
+    sound.setVolume((float)final_volume);
 
 }
 

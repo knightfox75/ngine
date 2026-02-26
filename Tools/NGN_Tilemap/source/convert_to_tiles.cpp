@@ -4,7 +4,7 @@
     - Convierte un archivo PNG en tiles -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (c) 2016-2025 by Cesar Rincon "NightFox"
+    (c) 2016-2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 

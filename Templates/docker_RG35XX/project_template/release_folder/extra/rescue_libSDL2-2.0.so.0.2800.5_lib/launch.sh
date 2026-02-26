@@ -7,7 +7,7 @@
 
 # [CONFIGURATION]
 # 1. Define your binary name here
-BINARY_NAME="Ngine_Project"
+BINARY_NAME="Sample_Project"
 
 # 2. VENDORING MODE (Auto-Rescue)
 # Set to "true" to copy the optimized SDL2 from the console firmware to your SD card.

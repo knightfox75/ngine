@@ -1,0 +1,57 @@
+# Escape from Elara
+# Lista de archivos de los recursos para el menu de opciones
+
+# Usage: Regular files
+# TYPE; INTERNAL_NAME; FILE_PATH
+# Example:
+# TEX; logo; data/logo_overlay.png
+
+# Usage: Font files
+# FNT; INTERNAL_NAME; FILE_PATH; FONT_HEIGHT; [ANTIALIAS]; [BASE_COLOR]; [BORDER_SIZE]; [BORDER_COLOR]
+# Example:
+# FNT; mono_16; data/monofonto.ttf; 16
+# FNT; mono_24; data/monofonto.ttf; 24; 1; 0xFFFFFF; 2; 0x202020
+
+# Admited filetypes
+# TEX	Textures (.png)
+# TBG	Tiled backgrounds (.tbg)
+# SPR	Sprites (.spr)
+# MAP	Collision maps (.map)
+# SFX	Sound Effects (.wav) (.ogg)
+# TXT	Plain text files (.txt)
+# FNT	Font files (.ttf) (.otf)
+
+
+
+# --- Resources loading ---
+
+# Textures
+TEX; background; data/options/textures/options_background.png
+
+
+# Tiled backgrounds
+
+
+# Sprites
+SPR; cursor; data/options/sprites/options_cursor.spr
+SPR; yes; data/options/sprites/yes_button.spr
+SPR; no; data/options/sprites/no_button.spr
+SPR; x1; data/options/sprites/x1_button.spr
+SPR; x2; data/options/sprites/x2_button.spr
+SPR; full; data/options/sprites/full_button.spr
+SPR; square; data/options/sprites/square_button.spr
+
+
+# Collision maps
+
+
+# Sound Effects
+SFX; move; data/options/sfx/cursor_move.wav
+SFX; ok; data/options/sfx/menu_ok.wav
+
+
+# Text files
+
+
+# Fonts
+

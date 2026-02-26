@@ -17,15 +17,15 @@ endif()
 set(ARCH "x86" CACHE STRING "Target architecture (x86, raspberry)")
 
 if(ARCH STREQUAL "raspberry")
-    set(ARCH_FLAGS "-march=armv8-a;-mcpu=cortex-a72")
+    set(ARCH_FLAGS "-mcpu=cortex-a72")
     set(TARGET_DEF "TARGET_RASPBERRY")
 else()
-    set(ARCH_FLAGS "-m64;-mtune=generic")
+    set(ARCH_FLAGS "-m64;-march=x86-64-v2;-mtune=generic")
     set(TARGET_DEF "TARGET_X86")
 endif()
 
 # 3. PROYECTO
-project(ngn_library LANGUAGES CXX C VERSION 1.21.0.3)
+project(ngn_library LANGUAGES CXX C VERSION 1.21.0.6)
 include(GNUInstallDirs)
 
 message(STATUS "${BoldBlue}Configuring NGN Library v${PROJECT_VERSION} for ${ARCH}${ColorReset}")
@@ -37,10 +37,17 @@ set(TARGET_INCLUDES
     /usr/local/include/SDL2 
 )
 
-find_library(SDL2_LIB SDL2 REQUIRED)
-find_library(SDL2_TTF_LIB SDL2_ttf REQUIRED)
-find_library(SFML_SYSTEM_LIB sfml-system REQUIRED)
-find_library(SFML_AUDIO_LIB sfml-audio REQUIRED)
+# find_library does not support REQUIRED in CMake 3.14. Using manual checks.
+find_library(SDL2_LIB SDL2)
+find_library(SDL2_TTF_LIB SDL2_ttf)
+find_library(SFML_SYSTEM_LIB sfml-system)
+find_library(SFML_AUDIO_LIB sfml-audio)
+
+foreach(LIB_VAR SDL2_LIB SDL2_TTF_LIB SFML_SYSTEM_LIB SFML_AUDIO_LIB)
+    if(NOT ${LIB_VAR})
+        message(FATAL_ERROR "${BoldRed}CRITICAL: Dependency ${LIB_VAR} NOT FOUND. Environment setup is incomplete.${ColorReset}")
+    endif()
+endforeach()
 
 set(ALL_LIBS ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB})
 
@@ -63,7 +70,6 @@ function(build_ngn_variant target_name output_name is_shared is_debug)
 
     target_compile_features(${target_name} PRIVATE cxx_std_20)
     
-    # AQUI ESTÁ LA CORRECCIÓN: Añadimos ${TARGET_INCLUDES}
     target_include_directories(${target_name} PUBLIC 
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/source>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/NGN>
@@ -78,7 +84,7 @@ function(build_ngn_variant target_name output_name is_shared is_debug)
         target_compile_options(${target_name} PRIVATE -g -Og -Wall -Wextra)
     else()
         target_compile_definitions(${target_name} PRIVATE MODE_RELEASE)
-        target_compile_options(${target_name} PRIVATE -O3 -flto=auto -ffast-math -fomit-frame-pointer -s -Wno-stringop-overflow)
+        target_compile_options(${target_name} PRIVATE -O3 -flto=auto -ffat-lto-objects -fno-math-errno -fno-trapping-math -fomit-frame-pointer -s -Wno-stringop-overflow)
         target_link_options(${target_name} PRIVATE -flto=auto -s -Wno-stringop-overflow)
     endif()
 

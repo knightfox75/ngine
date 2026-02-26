@@ -4,7 +4,7 @@
     - Definiciones -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (c) 2016 - 2025 by Cesar Rincon "NightFox"
+    (c) 2016 - 2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -15,7 +15,7 @@
 
 	Conversor de PNG a Mapa de Colisiones is under MIT License
 
-	Copyright (c) 2016 - 2025 by Cesar Rincon "NightFox"
+	Copyright (c) 2016 - 2026 by Cesar Rincon "NightFox"
 
 	Permission is hereby granted, free of charge, to any person
 	obtaining a copy of this software and associated documentation
@@ -66,9 +66,9 @@ const std::string NGN_VERSION_METADATA = "stable";                          // V
 
 /*** Version del programa ***/
 const std::string PROGRAM_NAME = "N'gine PNG to Collision Map converter";   // Nombre del programa
-const std::string CPR_YEARS = "2016-2025";                                  // Años en el texto del CopyRight
+const std::string CPR_YEARS = "2016-2026";                                  // Años en el texto del CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 2;                                    // Version mayor
-const int32_t PROGRAM_VERSION_MINOR = 1;                                    // Version menor
+const int32_t PROGRAM_VERSION_MINOR = 2;                                    // Version menor
 const int32_t PROGRAM_VERSION_PATCH = 0;                                    // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                      // Version metadatos
 const std::string MAGIC_STRING = "NGN COLLISION MAP";    	                // Magic string

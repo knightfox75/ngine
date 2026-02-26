@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Meotodos de entrada
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -588,6 +588,9 @@ void NGN_Input::GameControllerClose() {
 void NGN_Input::GameControllerReset(uint8_t idx) {
 
     controller[idx].available = false;
+    controller[idx].gamepad = nullptr;
+    controller[idx].joystick = nullptr;
+    controller[idx].is_standard = false;
     controller[idx].device_id = -1;
     controller[idx].name = "";
     controller[idx].guid = "";
@@ -686,69 +689,99 @@ void NGN_Input::UpdateGameController() {
 void NGN_Input::AddControllers(int32_t gc) {
 
     // Variables
-    SDL_GameController* gamepad = nullptr;     // Puntero a la instancia
-    bool found = false;                         // Control de busqueda
+    SDL_GameController* gamepad = nullptr;
+    SDL_Joystick* joystick = nullptr;
+    bool found = false;
 
     // Recorre la lista de controladores conectados actualmente
     for (int32_t idx = 0; idx < gc; idx ++) {
 
-        // Variables temporales
-        ControllerListData gamepad_data;            // Temporal para añadirlo a la lista
-        std::string name = "";                      // Nombre del gamepad
-        std::string serial_id = "";                 // Numero de serie
-        std::string guid;                           // GUID
-        int32_t device_id = -1;                     // ID de instancia del dispositivo
+        #if defined (TARGET_EVERCADE)
+            // Filtro para Joysticks "fantasma"
+            const char* name_ptr = SDL_JoystickNameForIndex(idx);
+            if (name_ptr && (EVERCADE_IGNORE_JOYSTICK_NAME == name_ptr)) continue;
+        #endif
 
-        // Intenta obtener la GUI
+        // Variables temporales
+        ControllerListData gamepad_data;
+        gamepad = nullptr;
+        joystick = nullptr;
+        std::string name = "";
+        std::string guid;
+        int32_t device_id = -1;
+        bool is_standard = true;
+
+        // Intenta obtener la GUID
         SDL_JoystickGUID _guid = SDL_JoystickGetDeviceGUID(idx);
         char guid_str[33];
         SDL_JoystickGetGUIDString(_guid, guid_str, 33);
-
-        // Intenta abrir el controlador
-        gamepad = SDL_GameControllerOpen(idx);
-
-        // Si falla la apertura, intentalo con el siguiente
-        if (!gamepad) continue;
-
-        // Nombre e ID del Gamepad
-        device_id = SDL_GameControllerGetPlayerIndex(gamepad);
-        name = std::string(SDL_GameControllerName(gamepad));
         guid = std::string(guid_str);
 
-        // Busca si ese GAMEPAD ya esta en la lista
+        // Intenta abrirlo como un Gamepad
+        gamepad = SDL_GameControllerOpen(idx);
+
+        if (gamepad) {
+            // Es un mando estandar (Norma XBOX o similares)
+            device_id = SDL_GameControllerGetPlayerIndex(gamepad);
+            name = std::string(SDL_GameControllerName(gamepad));
+            is_standard = true;
+        } else {
+            // Es un Joystick generico (Evercade, ETC)
+            joystick = SDL_JoystickOpen(idx);
+            if (!joystick) continue;
+            device_id = idx;
+            name = std::string(SDL_JoystickNameForIndex(idx));
+            is_standard = false;
+        }
+
+        // Busca si ese controlador ya esta en la lista
         found = false;
         for (uint32_t i = 0; i < controller_list.size(); i ++) {
-            // Si lo encuentras, indicalo y sal
             if ((controller_list[i].device_id == device_id) && (controller_list[i].name == name)) {
                 found = true;
                 break;
             }
         }
-        // Si esta en la lista, analiza el siguiente ID conectado
-        if (found) continue;
+        // Si el controlador ya estaba en la lista, cierra el puntero temporal
+        if (found) {
+            if (gamepad) {
+                SDL_GameControllerClose(gamepad);
+                gamepad = nullptr;
+            } else if (joystick) {
+                SDL_JoystickClose(joystick);
+                joystick = nullptr;
+            }
+            continue;
+        }
 
         // Si no se encuentra, añadelo a la lista en el primer slot disponible
         for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
 
-            // Si el slot en uso (controlador disponible, busca en el siguiente)
             if (controller[i].available) continue;
 
-            // Guarda los parametros de este joystick
+            // Guarda los parametros (Tu lógica original adaptada)
             controller[i].available = true;
             controller[i].gamepad = gamepad;
+            controller[i].joystick = joystick;
+            controller[i].is_standard = is_standard;
             controller[i].device_id = device_id;
             controller[i].name = name;
             controller[i].guid = guid;
-            controller[i].rumble_available = SDL_GameControllerHasRumble(gamepad);
+
+            // Rumble: Solo si es estándar
+            if (is_standard) {
+                controller[i].rumble_available = SDL_GameControllerHasRumble(gamepad);
+            } else {
+                controller[i].rumble_available = false;
+            }
 
             #if defined (MODE_DEBUG)
-                // Imprime la info del controlador añadido
                 std::string txt = "[NGN_Input info]\nThe <";
                 txt += name;
                 txt += "> with ID <";
-                txt += ngn->toolbox->Int2String(device_id, 1, "0");
+                txt += std::to_string(device_id);
                 txt += "> has been connected to slot [";
-                txt += ngn->toolbox->Int2String(i, 1, "0");
+                txt += std::to_string(i);
                 txt += "].\nThis device ";
                 if (!controller[i].rumble_available) txt += "doesn't ";
                 txt += "supports rumble.\n";
@@ -757,19 +790,15 @@ void NGN_Input::AddControllers(int32_t gc) {
                 ngn->log->Message(txt);
             #endif
 
-            // Guarda este game pad en la lista de controladores disponibles
             gamepad_data.name = name;
             gamepad_data.device_id = device_id;
             gamepad_data.slot = i;
             controller_list.push_back(gamepad_data);
 
-            // Sal del proceso despues de buscar un slot libre y asignarlo de ser posible
             break;
 
         }
-
     }
-
 }
 
 
@@ -783,37 +812,64 @@ void NGN_Input::RemoveControllers() {
 
     // Elimina los gamepads no conectados
     do {
+
+        // Por defecto, no repitas
         repeat = false;
+
+        // Busca en todas las ID's registradas actualmente
         for (uint32_t i = 0; i < controller_list.size(); i ++) {
+
+            // ID
             slot = controller_list[i].slot;
-            // Si el Gamepad no esta disponible...
-            if (!SDL_GameControllerGetAttached(controller[slot].gamepad)) {
-                // Si soporta rumble, cancela cualquier efecto en curso
-                if (controller[slot].rumble_available) SDL_GameControllerRumble(controller[slot].gamepad, 0, 0, 0);
-                // Cierra el controlador
-                SDL_GameControllerClose(controller[slot].gamepad);
-                // Reinicialo
-                GameControllerReset(slot);
-                // Informa de la eliminacion
-                #if defined (MODE_DEBUG)
-                    // Imprime la info del controlador eliminado
-                    std::string txt = "[NGN_Input info]\nThe <";
-                    txt += controller_list[i].name;
-                    txt += "> with ID <";
-                    txt += ngn->toolbox->Int2String(controller_list[i].device_id, 1, "0");
-                    txt += "> has been disconnected from slot [";
-                    txt += ngn->toolbox->Int2String(slot, 1, "0");
-                    txt += "].";
-                    ngn->log->Message(txt);
-                #endif
-                // Y eliminalo de la lista de controladores conectados
-                controller_list.erase(controller_list.begin() + i);
-                // Marca para repetir
-                repeat = true;
-                // Aborta
-                break;
+
+            // Usa la funcion correcta para detectar si el dispositivo sigue conectado, segun el tipo
+            bool attached = false;
+            if (controller[slot].is_standard) {
+                attached = SDL_GameControllerGetAttached(controller[slot].gamepad);
+            } else {
+                attached = SDL_JoystickGetAttached(controller[slot].joystick);
             }
+
+            // Si el dispositivo sigue conectado, explora el siguiente
+            if (attached) continue;
+
+            // Si soporta rumble, cancela cualquier efecto en curso
+            if (controller[slot].is_standard && controller[slot].rumble_available) SDL_GameControllerRumble(controller[slot].gamepad, 0, 0, 0);
+
+            // Cierra el controlador
+            if (controller[slot].is_standard) {
+                SDL_GameControllerClose(controller[slot].gamepad);
+            } else {
+                SDL_JoystickClose(controller[slot].joystick);
+            }
+
+            // Reinicialo
+            GameControllerReset(slot);
+
+            // Informa de la eliminacion
+            #if defined (MODE_DEBUG)
+                // Imprime la info del controlador eliminado
+                std::string txt = "[NGN_Input info]\nThe <";
+                txt += controller_list[i].name;
+                txt += "> with ID <";
+                txt += ngn->toolbox->Int2String(controller_list[i].device_id, 1, "0");
+                txt += "> has been disconnected from slot [";
+                txt += ngn->toolbox->Int2String(slot, 1, "0");
+                txt += "].";
+                ngn->log->Message(txt);
+            #endif
+
+            // Y eliminalo de la lista de controladores conectados
+            controller_list.erase(controller_list.begin() + i);
+
+            // Marca para repetir
+            repeat = true;
+
+            // Sal del bucle inmediatamente
+            break;
+
         }
+
     } while (repeat);
 
 }

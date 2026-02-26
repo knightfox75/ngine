@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -125,7 +125,7 @@ void NGN_System::BootUp() {
 bool NGN_System::Init() {
 
     // Flags segun el target
-    #if defined (TARGET_RG35XX)
+    #if defined (TARGET_RG35XX) || defined (TARGET_EVERCADE)
         uint32_t sdl_flags = (SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER);
     #else
         uint32_t sdl_flags = (SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_HAPTIC | SDL_INIT_GAMECONTROLLER);
@@ -189,6 +189,12 @@ void NGN_System::EventUpdate() {
             case SDL_CONTROLLERBUTTONDOWN:
             case SDL_CONTROLLERBUTTONUP:
                 GamePadButtons();
+                break;
+
+            // Evento de los Joysticks genericos (Evercade, etc)
+            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP:
+                JoystickButtons();
                 break;
 
             // Evento
@@ -445,4 +451,51 @@ void NGN_System::GamePadButtons() {
 
     }
 
+}
+
+
+
+/*** Lectura del evento del GamePad [SDL_JOYBUTTONDOWN & SDL_JOYBUTTONUP] ***/
+void NGN_System::JoystickButtons() {
+
+    if (ngn->input->controllers <= 0) return;
+
+    for (int32_t i = 0; i < GAME_CONTROLLERS; i ++) {
+
+        // Solo procesamos si esta disponible y NO es un GameController estandar
+        if (!ngn->input->controller[i].available || ngn->input->controller[i].is_standard) continue;
+
+        #if defined (TARGET_EVERCADE)
+
+            // Mapping de controles para el modelo clasico (portatil blanca)
+
+            // Puntero al controlador
+            SDL_Joystick* j = ngn->input->controller[i].joystick;
+
+            // Botones A, B, X e Y
+            ngn->input->controller[i].button[XBOX_BUTTON_A].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_A) > 0);
+            ngn->input->controller[i].button[XBOX_BUTTON_B].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_B) > 0);
+            ngn->input->controller[i].button[XBOX_BUTTON_X].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_X) > 0);
+            ngn->input->controller[i].button[XBOX_BUTTON_Y].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_Y) > 0);
+            // Gatillos L y R
+            ngn->input->controller[i].button[XBOX_BUTTON_L].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_L) > 0);
+            ngn->input->controller[i].button[XBOX_BUTTON_R].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_R) > 0);
+            // Botones SELECT y START
+            ngn->input->controller[i].button[XBOX_BUTTON_BACK].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_SELECT) > 0);
+            ngn->input->controller[i].button[XBOX_BUTTON_START].held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_START) > 0);
+            // D-PAD (Cruceta)
+            ngn->input->controller[i].dpad.up.held    = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_UP) > 0);
+            ngn->input->controller[i].dpad.down.held  = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_DOWN) > 0);
+            ngn->input->controller[i].dpad.left.held  = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_LEFT) > 0);
+            ngn->input->controller[i].dpad.right.held = (SDL_JoystickGetButton(j, EVERCADE_BUTTON_RIGHT) > 0);
+
+        #else
+
+            // Si no es un Gamepad (norma Xbox) ni de un dispositivo conocido, lectura generica.
+            for (int32_t b = 0; b < GAME_CONTROLLER_BUTTONS; b++) {
+                ngn->input->controller[i].button[b].held = (SDL_JoystickGetButton(ngn->input->controller[i].joystick, b) > 0);
+            }
+
+        #endif
+    }
 }

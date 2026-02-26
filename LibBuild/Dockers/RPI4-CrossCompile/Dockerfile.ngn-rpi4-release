@@ -1,0 +1,126 @@
+# syntax=docker/dockerfile:1
+# ==============================================================================
+# NGN SDK - RASPBERRY PI 4 MASTER FORGE (CROSS-COMPILER)
+# Architecture: x86_64 Host -> ARM64 Target (Cortex-A72)
+# OS: Debian Bookworm (Stable base for RPi OS)
+# ==============================================================================
+
+FROM debian:bookworm
+
+LABEL maintainer="NightFox"
+LABEL description="High-Performance Cross-Compiler for Raspberry Pi 4 (Static & Shared Support)"
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# --- [1] CROSS-COMPILATION TOOLCHAIN SETUP ---
+RUN dpkg --add-architecture arm64 && \
+    apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    crossbuild-essential-arm64 \
+    cmake \
+    git \
+    wget \
+    curl \
+    pkg-config \
+    ca-certificates \
+    # Target System Dependencies (ARM64)
+    libasound2-dev:arm64 \
+    libpulse-dev:arm64 \
+    libudev-dev:arm64 \
+    libgl1-mesa-dev:arm64 \
+    libegl1-mesa-dev:arm64 \
+    libdrm-dev:arm64 \
+    libgbm-dev:arm64 \
+    libfreetype6-dev:arm64 \
+    libharfbuzz-dev:arm64 \
+    libdbus-1-dev:arm64 \
+    libibus-1.0-dev:arm64 \
+    libvorbis-dev:arm64 \
+    libflac-dev:arm64 \
+    libogg-dev:arm64 \
+    libopenal-dev:arm64 \
+    libwayland-dev:arm64 \
+    libxkbcommon-dev:arm64 \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- [2] GLOBAL OPTIMIZATION FLAGS (RPi4 / Cortex-A72) ---
+ENV PKG_CONFIG_PATH="/usr/lib/aarch64-linux-gnu/pkgconfig:/usr/aarch64-linux-gnu/lib/pkgconfig" \
+    CC=aarch64-linux-gnu-gcc \
+    CXX=aarch64-linux-gnu-g++ \
+    AR=aarch64-linux-gnu-gcc-ar \
+    NM=aarch64-linux-gnu-gcc-nm \
+    RANLIB=aarch64-linux-gnu-gcc-ranlib \
+    STRIP=aarch64-linux-gnu-strip \
+    CFLAGS="-O3 -mcpu=cortex-a72 -mtune=cortex-a72 -DNDEBUG -flto -fomit-frame-pointer -fPIC" \
+    CXXFLAGS="-O3 -mcpu=cortex-a72 -mtune=cortex-a72 -DNDEBUG -flto -fomit-frame-pointer -fPIC" \
+    LDFLAGS="-s -Wl,--gc-sections"
+
+WORKDIR /tmp/build
+
+# --- [3] COMPILE SDL2 (Static & Shared) ---
+RUN wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.11/SDL2-2.30.11.tar.gz && \
+    tar -xzf SDL2-2.30.11.tar.gz && cd SDL2-2.30.11 && \
+    mkdir build && cd build && \
+    ../configure --host=aarch64-linux-gnu --prefix=/usr/aarch64-linux-gnu \
+    --enable-shared --enable-static \
+    --disable-video-x11 --enable-video-kmsdrm --enable-video-wayland \
+    --enable-libudev --enable-alsa --disable-oss \
+    --disable-debug --enable-pthreads \
+    --disable-video-opengl --enable-video-opengles \
+    && make -j$(nproc) && make install && \
+    cd /tmp/build && rm -rf SDL2*
+
+# --- [4] COMPILE SDL2_ttf (Static & Shared) ---
+RUN wget https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz && \
+    tar -xzf SDL2_ttf-2.24.0.tar.gz && cd SDL2_ttf-2.24.0 && \
+    mkdir build && cd build && \
+    ../configure --host=aarch64-linux-gnu --prefix=/usr/aarch64-linux-gnu \
+    --enable-shared --enable-static \
+    --with-sdl-prefix=/usr/aarch64-linux-gnu \
+    --disable-freetype-builtin --disable-harfbuzz-builtin && \
+    make -j$(nproc) && make install && \
+    cd /tmp/build && rm -rf SDL2_ttf*
+
+# --- [5] COMPILE SFML (Static & Shared - Audio/System only) ---
+RUN wget https://github.com/SFML/SFML/archive/refs/tags/2.6.2.tar.gz && \
+    tar -xzf 2.6.2.tar.gz && cd SFML-2.6.2 && \
+    # 5.1 Build Static Libraries (.a)
+    mkdir build_static && cd build_static && \
+    cmake .. -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+    -DCMAKE_INSTALL_PREFIX=/usr/aarch64-linux-gnu \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DSFML_BUILD_WINDOW=OFF -DSFML_BUILD_GRAPHICS=OFF -DSFML_BUILD_NETWORK=OFF \
+    -DSFML_USE_SYSTEM_DEPS=ON && \
+    make -j$(nproc) && make install && \
+    cd .. && \
+    # 5.2 Build Shared Libraries (.so)
+    mkdir build_shared && cd build_shared && \
+    cmake .. -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+    -DCMAKE_INSTALL_PREFIX=/usr/aarch64-linux-gnu \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_SHARED_LIBS=ON \
+    -DSFML_BUILD_WINDOW=OFF -DSFML_BUILD_GRAPHICS=OFF -DSFML_BUILD_NETWORK=OFF \
+    -DSFML_USE_SYSTEM_DEPS=ON && \
+    make -j$(nproc) && make install && \
+    # Cleanup SFML source and build directories
+    cd /tmp/build && rm -rf SFML* 2.6.2.tar.gz
+
+# --- [6] COMPILE NGN SDK (Dual Build) ---
+# Builds libngn.a and libngn.so using the updated CMakeLists.txt
+COPY ngn_sdk /tmp/ngn_sdk
+RUN cd /tmp/ngn_sdk && mkdir build && cd build && \
+    cmake .. -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_SYSTEM_PROCESSOR=aarch64 \
+    -DCMAKE_INSTALL_PREFIX=/usr/aarch64-linux-gnu \
+    -DCMAKE_BUILD_TYPE=Release && \
+    make -j$(nproc) && make install && \
+    cd /tmp && rm -rf ngn_sdk
+
+# --- [7] FINAL CLEANUP ---
+# Optimized cleanup: Strip unneeded symbols from shared libraries only
+RUN find /usr/aarch64-linux-gnu/lib -name "*.so*" -exec aarch64-linux-gnu-strip --strip-unneeded {} \;
+
+WORKDIR /workspace
+
+# Informative output on container startup
+CMD ["/bin/bash", "-c", "echo 'RPi4 Cross-Compiler Forge Ready (Release Mode: Static & Shared)' && aarch64-linux-gnu-g++ --version"]

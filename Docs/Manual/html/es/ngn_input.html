@@ -144,6 +144,17 @@ if (ngn->input->controller[1].axis[XBOX_STICK_R_AXIS_Y] > XBOX_AXIS_DEADZONE) ..
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->input->ControllerRumble(0, 0.75f, 500);</code></pre>
             </section>
+			
+            <section id="LogControllersInfo" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void LogControllersInfo();</code></pre>
+                <h3>Descripción</h3>
+                <p>Obtiene y vuelca la información completa de los controladores conectados al archivo de registro.</br>
+Dado que este método escribe en el registro de texto del disco (si está habilitado) y bloquea el controlador durante unos instantes para obtener la información, solo debe usarse al inicio del programa con fines de depuración y nunca dentro de un bucle de actualización.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->input->LogControllersInfo();</code></pre>
+            </section>
+			
         </main>
     </div>
 

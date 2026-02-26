@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0-wip0x03 ***
+    *** Version 1.21.0+stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -164,10 +164,10 @@ NGN_AudioClipData::~NGN_AudioClipData() {
 // Constructor
 NGN_TextFont::NGN_TextFont() {
 
+    character.clear();
     character.reserve(256);
-    for (uint32_t i = 0; i < character.capacity(); i ++) {
-        character[i] = nullptr;
-        character[i] = new NGN_TextureData();
+    for (uint32_t i = 0; i < 256; i ++) {
+        character.push_back(new NGN_TextureData());
     }
 
     height = 0;

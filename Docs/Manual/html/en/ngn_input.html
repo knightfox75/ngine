@@ -144,6 +144,17 @@ if (ngn->input->controller[1].axis[XBOX_STICK_R_AXIS_Y] > XBOX_AXIS_DEADZONE) ..
                 <h3>Example</h3>
                 <pre><code>ngn->input->ControllerRumble(0, 0.75f, 500);</code></pre>
             </section>
+			
+            <section id="LogControllersInfo" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void LogControllersInfo();</code></pre>
+                <h3>Description</h3>
+                <p>Retrieves and dumps complete information about the connected controllers to the log file.</br>
+Since this method writes to the text log on disk (if enabled) and momentarily blocks the controller to retrieve the information, it should only be used at program startup for debugging purposes and never within an update loop.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->input->LogControllersInfo();</code></pre>
+            </section>
+			
         </main>
     </div>
 

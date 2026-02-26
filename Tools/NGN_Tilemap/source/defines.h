@@ -4,7 +4,7 @@
     - Definiciones -
 
     Proyecto iniciado el 11 de Febrero del 2016
-    (c) 2016-2025 by Cesar Rincon "NightFox"
+    (c) 2016-2026 by Cesar Rincon "NightFox"
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
@@ -66,10 +66,10 @@ const std::string NGN_VERSION_METADATA = "stable";                          // V
 
 /*** Version del programa ***/
 const std::string PROGRAM_NAME = "N'gine PNG to Tile Map converter";        // Nombre del programa
-const std::string CPR_YEARS = "2016-2025";                                  // Años en el texto de CopyRight
+const std::string CPR_YEARS = "2016-2026";                                  // Años en el texto de CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 2;                                    // Version mayor
-const int32_t PROGRAM_VERSION_MINOR = 0;                                    // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 3;                                    // Version parche
+const int32_t PROGRAM_VERSION_MINOR = 1;                                    // Version menor
+const int32_t PROGRAM_VERSION_PATCH = 0;                                    // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                      // Version metadatos
 const std::string MAGIC_STRING = "NGN TILEDBG";    	                        // Magic string
 const uint8_t MS_LENGTH = 11;                                               // Logitud del magic string

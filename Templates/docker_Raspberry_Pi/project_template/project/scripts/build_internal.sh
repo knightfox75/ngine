@@ -1,41 +1,70 @@
 #!/bin/bash
+# ==============================================================================
+# N'GINE SDK - Internal RPi4 Build Pipeline
+# ==============================================================================
+# Execution Environment: Docker (ngn-rpi4-builder_production)
+# ==============================================================================
+
 set -e
 
-PROJECT_NAME=${1:-"Idunns_Grace"}
-echo "🔧 [Docker] Starting Master Build for: ${PROJECT_NAME}"
+PROJECT_NAME=${1:-"Default_Game"}
+PROJECT_VERSION=${2:-"1.0.0"}
 
-# Usamos rutas absolutas dentro del contenedor para evitar errores de directorio
 ROOT_DIR="/workspace"
-BUILD_DIR="$ROOT_DIR/build_rpi4_docker"
-EXPORT_DIR="$ROOT_DIR/game_export"
-LIBS_TARGET="$EXPORT_DIR/libs/aarch64-linux-gnu"
+BUILD_DIR="$ROOT_DIR/build"
+EXPORT_DIR="$ROOT_DIR/export"
+# Simplified lib path for RPi
+LIBS_TARGET="$EXPORT_DIR/libs"
 
-# 1. Preparar directorios (Limpieza total)
-rm -rf "$BUILD_DIR"
-mkdir -p "$BUILD_DIR"
-mkdir -p "$LIBS_TARGET"
+# TOOLCHAIN DEFINITIONS (From Docker Env)
+STRIP_BIN="${STRIP:-aarch64-linux-gnu-strip}"
 
-# 2. Compilar
+echo "--------------------------------------------------------"
+echo " INITIALIZING RPI4 RELEASE BUILD"
+echo " Project: ${PROJECT_NAME}"
+echo "--------------------------------------------------------"
+
+# 1. CLEANUP
+echo "[1/5] Preparing workspace..."
+rm -rf "$BUILD_DIR" "$EXPORT_DIR"
+mkdir -p "$BUILD_DIR" "$LIBS_TARGET"
+
+# 2. COMPILATION
+echo "[2/5] Configuring CMake (Cross-Compile)..."
 cd "$BUILD_DIR"
-cmake .. -DCMAKE_BUILD_TYPE=Release -DBINARY_NAME="${PROJECT_NAME}"
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBINARY_NAME="${PROJECT_NAME}" \
+    -DPROJECT_VERSION="${PROJECT_VERSION}"
+
+echo "Compiling..."
 make -j$(nproc)
 
-# 3. Exportar binario a la carpeta de exportación
+# 3. EXPORT & STRIP
+echo "[3/5] Deploying and Stripping binary..."
 cp "${PROJECT_NAME}" "$EXPORT_DIR/"
 
-echo "🧪 Checking RPATH integrity..."
+echo "      Using: $STRIP_BIN"
+$STRIP_BIN --strip-all "$EXPORT_DIR/${PROJECT_NAME}"
+
+# 4. RPATH VERIFICATION
+echo "[4/5] Verifying RPATH integrity..."
+# We use the cross-compiler readelf, or standard if compatible (readelf usually handles ELF regardless)
 RPATH_CHECK=$(readelf -d "$EXPORT_DIR/${PROJECT_NAME}" | grep -E "RPATH|RUNPATH" || echo "MISSING")
-echo "   Result: $RPATH_CHECK"
 
 if [[ "$RPATH_CHECK" == *"\$ORIGIN"* ]]; then
-    echo "   ✅ RPATH looks correct (contains \$ORIGIN)."
+    echo "      STATUS: RPATH Check Passed ($RPATH_CHECK)."
 else
-    echo "   ❌ ERROR: RPATH is broken or missing \$ORIGIN!"
+    echo "CRITICAL ERROR: RPATH broken. Binary will not find libs on RPi."
+    exit 1
 fi
 
-# 4. Ejecutar el Bundler Recursivo
-# Le pasamos la ruta del binario y la ruta de destino de librerías
-chmod +x "$ROOT_DIR/scripts/bundler.sh"
-"$ROOT_DIR/scripts/bundler.sh" "$EXPORT_DIR/${PROJECT_NAME}" "$LIBS_TARGET"
+# 5. DEPENDENCY BUNDLING
+echo "[5/5] Executing Dependency Bundler..."
+# We pass the CROSS_LIB_PATH to the bundler
+CROSS_LIB_PATH="/usr/aarch64-linux-gnu/lib"
+bash "$ROOT_DIR/scripts/bundler.sh" "$EXPORT_DIR/${PROJECT_NAME}" "$LIBS_TARGET" "$CROSS_LIB_PATH"
 
-echo "✅ [Docker] Deployment package ready in /game_export"
+echo "--------------------------------------------------------"
+echo " SUCCESS: RPi4 Build Pipeline Completed."
+echo "--------------------------------------------------------"

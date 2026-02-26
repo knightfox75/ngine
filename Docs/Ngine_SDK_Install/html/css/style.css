@@ -1,0 +1,326 @@
+/* N'gine SDK Manual Stylesheet */
+:root {
+    --bg-color: #1a1a1a;        /* Dark Grey Background */
+    --panel-color: #252525;     /* Lighter Panels */
+    --text-color: #e0e0e0;      /* Off-white text */
+    --accent-color: #f0a500;    /* Industrial Orange */
+    --accent-hover: #ffb700;    /* Lighter Orange */
+    --code-bg: #111;            /* Code block background */
+    --border-radius: 4px;
+    --placeholder-bg: #000000;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
+
+/* Layout */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 40px 0;
+    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 40px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+    margin-top: 10px;
+    color: #888;
+}
+
+h2 {
+    color: var(--accent-color);
+    border-left: 4px solid var(--accent-color);
+    padding-left: 10px;
+    margin-top: 40px;
+}
+
+h3 {
+    color: #fff;
+    margin-top: 25px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+}
+
+h4 {
+    color: #ccc;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+p, li {
+    margin-bottom: 10px;
+}
+
+ul, ol {
+    margin-bottom: 20px;
+}
+
+/* Language Switcher */
+.lang-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+	z-index: 10;
+}
+
+.btn-lang {
+    background: var(--panel-color);
+    color: var(--text-color);
+    border: 1px solid var(--accent-color);
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-lang:hover {
+    background: #333;
+}
+
+.btn-lang.active {
+    background: var(--accent-color);
+    color: #000;
+}
+
+/* Utility Classes */
+.hidden { display: none !important; }
+
+.box {
+    background: var(--panel-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    border: 1px solid #333;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.warning {
+    border-left: 4px solid #ff4444;
+    background: #2a1a1a;
+}
+
+.note {
+    border-left: 4px solid #44aaff;
+    background: #1a2a3a;
+}
+
+/* Imágenes responsive */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: var(--border-radius);
+    border: 1px solid #333;
+}
+
+/* Code Blocks */
+pre {
+    background: var(--code-bg);
+    padding: 15px;
+    overflow-x: auto;
+    border-radius: var(--border-radius);
+    border: 1px solid #333;
+    font-size: 0.95rem;
+}
+
+code {
+    font-family: 'Consolas', 'Monaco', monospace;
+    color: #ffda79;
+}
+
+.cmd { color: #50fa7b; } /* Green for linux commands */
+
+/* Image Placeholders */
+.img-placeholder {
+    width: 100%;
+    height: 150px;
+    background-color: var(--placeholder-bg);
+    border: 2px dashed #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    margin: 15px 0;
+    border-radius: var(--border-radius);
+    font-style: italic;
+}
+.img-placeholder::before {
+    content: "[ SCREENSHOT: " attr(data-label) " ]";
+}
+
+/* Tabs for OS */
+.tabs {
+    display: flex;
+    margin-bottom: 0;
+    border-bottom: 1px solid #444;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 15px 30px;
+    color: #888;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s;
+}
+
+.tab-btn:hover { color: #fff; }
+
+.tab-btn.active {
+    color: var(--accent-color);
+    border-bottom: 3px solid var(--accent-color);
+    background: rgba(240, 165, 0, 0.05);
+}
+
+.tab-content {
+    background: var(--panel-color);
+    padding: 20px;
+    border: 1px solid #333;
+    border-top: none;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    margin-top: 60px;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    border-top: 1px solid #333;
+}
+
+a { color: var(--accent-color); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    .container { padding: 10px; }
+    .lang-switch { position: relative; top: 0; right: 0; text-align: right; margin-bottom: 10px;}
+}
+
+
+/* --- FILE TREE STYLES --- */
+.tree-view {
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    color: #bbb;
+    background: #151515;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid #333;
+    overflow-x: auto; /* Scroll horizontal si es muy estrecho */
+    min-width: 850px; /* Forzamos ancho mínimo para asegurar espacio a la columna */
+}
+
+.tree-view ul {
+    list-style-type: none;
+    padding-left: 25px; /* Indentación de carpetas */
+    margin: 0;
+    border-left: 1px solid #333;
+}
+
+.tree-view li {
+    margin: 5px 0;
+    position: relative; /* Necesario para anclar la descripción absoluta */
+    line-height: 1.8;
+}
+
+/* Líneas conectoras del árbol */
+.tree-view li::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: -25px;
+    width: 20px;
+    height: 1px;
+    background: #333;
+}
+
+.folder {
+    color: var(--accent-color);
+    font-weight: bold;
+    display: inline-block;
+    padding-right: 10px;
+}
+
+.folder::before {
+    content: "📁 ";
+    filter: grayscale(0.2);
+}
+
+.file::before {
+    content: "📄 ";
+    opacity: 0.7;
+}
+
+/* COLUMNA DE DESCRIPCIÓN ALINEADA */
+.desc {
+    position: absolute;   /* Sacamos el texto del flujo normal */
+    right: 10px;          /* Lo pegamos a la derecha del contenedor */
+    top: 0;
+    width: 500px;         /* Ancho fijo para la columna de texto */
+    color: #666;
+    font-style: italic;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.85rem;
+    
+    /* Evitamos que una descripción larga rompa la línea */
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    /* Opcional: Borde izquierdo sutil para separar la columna visualmente */
+    border-left: 1px dotted #333; 
+    padding-left: 15px;
+}
+
+/* Highlight critical folders */
+.important-folder {
+    color: #fff;
+    background: rgba(240, 165, 0, 0.1);
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+/* Responsive: En móviles deshacemos la columna para que se lea abajo */
+@media (max-width: 900px) {
+    .tree-view {
+        min-width: auto;
+    }
+    .desc {
+        position: static; /* Vuelve a su sitio natural */
+        display: block;
+        width: auto;
+        padding-left: 20px;
+        border: none;
+        margin-bottom: 10px;
+    }
+    .tree-view li {
+        margin-bottom: 15px;
+    }
+}

@@ -8,7 +8,7 @@
     https://nightfoxandco.com
     contact@nightfoxandco.com
 
-	Requiere N'gine 1.20.0+10th-anniversary o superior
+	Requiere N'gine 1.20.0+stable o superior
 	(c) 2016 - 2026 by Cesar Rincon "NightFox"
 	https://nightfoxandco.com
 
