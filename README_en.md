@@ -16,11 +16,11 @@
 
 ---
 
-**N’gine** is an open-source 2D game development engine, written in **C++** and inspired by classic console techniques. It is specifically designed for creating games with *pixel art* aesthetics, utilizing tiled backgrounds, *sprite-sheets*, and efficient resource management.
+**N’gine** is an open-source engine for 2D game development, programmed in **C++** and inspired by classic console techniques. It is specially designed to create games with a *pixel art* aesthetic, utilizing tile-based backgrounds, *sprite-sheets*, and efficient resource management.
 
-With over 6 years of development, it is currently in a stable phase, with a focus on performance optimization and the addition of new features.
+With over 10 years of development, it is currently in a stable phase, heavily focused on performance improvements and the addition of new features.
 
-## ✨ Key Features
+## ✨ Main Features
 
 <details>
 <summary><strong>🖱️ Input Methods</strong></summary>
@@ -36,16 +36,16 @@ With over 6 years of development, it is currently in a stable phase, with a focu
 <ul>
     <li>Textures up to 8192×8192 pixels</li>
     <li>Large tile-based backgrounds</li>
-    <li>Sprites with or without animation</li>
-    <li>2D Virtual Camera</li>
-    <li>Text layers and primitives canvas</li>
+    <li>Sprites with and without animation</li>
+    <li>2D virtual camera</li>
+    <li>Text layers and canvas for primitives</li>
     <li>Blend modes, masks, and up to 8 simultaneous <i>viewports</i></li>
-    <li>Ability to move, rotate, and scale all graphic elements</li>
+    <li>Full capacity to move, rotate, and scale all graphical elements</li>
 </ul>
 </details>
 
 <details>
-<summary><strong>🔊 Audio</strong></summary>
+<summary><strong>🔊 Sound</strong></summary>
 <ul>
     <li>Up to 4 simultaneous music/dialogue streams (OGG format)</li>
     <li>Up to 64 simultaneous sound effects (WAV format recommended)</li>
@@ -66,23 +66,23 @@ With over 6 years of development, it is currently in a stable phase, with a focu
 <details>
 <summary><strong>📁 File System</strong></summary>
 <ul>
-    <li>Resource loading from the local file system</li>
-    <li>Creation of resource packages with encryption support</li>
-    <li>Management of up to 127 resource repositories defined in a text file</li>
+    <li>Asset loading from the local file system</li>
+    <li>Creation of asset packaging files with optional encryption</li>
+    <li>Management of up to 127 resource repositories defined via a text file</li>
 </ul>
 </details>
 
 ## 🚀 Who is N'gine for?
 
-N'gine is intended for anyone with Object-Oriented Programming (OOP) knowledge who wants to develop their own 2D video game. It was born as a bespoke tool for personal projects and as a foundation for first-year student projects at the institution where I teach.
+N'gine is intended for anyone with object-oriented programming knowledge who wants to develop their own 2D video game. It was originally born as a custom-made tool for personal projects and serves as the foundational framework for first-year students' projects at the educational center where I teach.
 
 ## 💻 Supported Platforms
 
-Currently, the engine runs and compiles on:
+Currently, the engine works and compiles natively on:
 *   **Windows**
-*   **Linux** (Tested on Linux Mint)
+*   **Linux** (tested on Linux Mint)
 *   **Raspberry Pi OS**
-*   **Anbernic RG35XX** (via Docker image)
+*   **Anbernic RG35XX** (using a Docker image)
 
 ## 📸 Screenshots
 
@@ -90,10 +90,114 @@ Currently, the engine runs and compiles on:
 |:---:|:---:|:---:|
 | ![Screenshot 1](https://github.com/knightfox75/ngine/blob/master/Media/scr01.png) | ![Screenshot 2](https://github.com/knightfox75/ngine/blob/master/Media/scr02.png) | ![Screenshot 3](https://github.com/knightfox75/ngine/blob/master/Media/scr03.png) |
 
+---
+
+## 🛠️ SDK Installation Manual
+
+N'gine has evolved. The SDK has migrated to a modern workflow using **Visual Studio Code** and **CMake**. This manual covers the setup for Windows, Linux, and Raspberry Pi.
+
+> **Note:** The root folder of your distribution is usually named `ngn.X.X.X-stable`.
+
+### 📂 Distribution Package Structure
+
+~~~text
+ngn.x.x.x-stable
+ ├── Demo                  - Compiled demos for all examples (Win/Linux/RPi)
+ ├── Docs                  - Documentation & Manuals
+ ├── Examples              - Source code & assets covering all engine features
+ ├── LibBuild              - Scripts for compiling/installing the SDK
+ │    ├── BuildNgineSDK    - Windows Build Scripts (.bat)
+ │    ├── Dockers          - Docker images for Cross-Compile (RG35XX, RPi4)
+ │    └── InstallNgineSDK  - Linux/RPi Installation Scripts (.sh)
+ ├── LibRelease            - The N'gine library binaries ready to use
+ ├── Ngine_SDK             - The N'gine SDK for Windows ready to use
+ ├── Source                - N'gine Core Source Code
+ ├── Templates             - Project Templates
+ │    ├── cmake               - Start Here: Templates for VS Code + CMake
+ │    ├── docker_Raspberry_Pi - Templates for Docker compilation (RPi)
+ │    └── docker_RG35XX       - Templates for Docker compilation (Anbernic)
+ └── Tools                 - Asset conversion tools sources
+      ├── NGN_CollisionMap - PNG to Collision Map
+      ├── NGN_FileSystem   - Asset Packer
+      ├── NGN_Sprite       - PNG to Sprite
+      ├── NGN_TileMap      - PNG to Tilemap
+      └── ToolSet          - Compiled tools ready to use
+~~~
+
+### 🌍 Global Prerequisites (All OS)
+
+Before specific configurations, ensure you have the editor installed:
+
+1. **Visual Studio Code:** [Download here](https://code.visualstudio.com/).
+2. **Extensions:** Open VS Code and install these official Microsoft extensions:
+   * `C/C++` (IntelliSense, debugging)
+   * `CMake Tools` (Project configuration)
+
+![VS Code Extensions Marketplace](https://github.com/knightfox75/ngine/blob/master/Media/marketplace_de_extensiones_vs_code.png)
+
+---
+
+### 🪟 Windows Setup
+
+#### 1. Toolchain Setup
+* **Step A:** Download and install [CMake](https://cmake.org/download/). (Make sure to select *"Add CMake to system PATH"* during install).
+* **Step B:** Download and install [MSYS2](https://www.msys2.org/).
+
+Open the MSYS2 terminal (MINGW64) and run the following commands to install the compiler:
+
+~~~bash
+pacman -Syu
+pacman -S mingw-w64-x86_64-toolchain
+~~~
+
+#### 2. Environment Variables
+Windows needs to know where the compiler and the SDK are located.
+
+* **Add Compiler to Path:**
+  Edit the System Environment Variables. Inside the **Path** variable, add the path to your MinGW64 `bin` folder. If you used the default MSYS2 installation path, it will be:
+  `C:\msys64\mingw64\bin`
+  *(If you installed MSYS2 in a custom location, for example `C:\Code\msys64`, adjust the path accordingly).*
+
+  ![Windows Path Variable Edit](https://github.com/knightfox75/ngine/blob/master/Media/windows_path_variable_edit.png)
+
+* **Define SDK Path:**
+  1. Copy the `Ngine_SDK` folder (containing the libs) to a safe place (e.g., `C:\Code\Ngine_SDK`).
+  2. Create a **NEW system variable** named `NGINE_SDK_PATH` pointing to that folder.
+
+  ![New System Variable NGINE_SDK_PATH](https://github.com/knightfox75/ngine/blob/master/Media/new_system_variable_ngine_sdk_path.png)
+
+---
+
+### 🐧 Linux / Raspberry Pi Setup
+
+The SDK includes scripts to handle dependencies and library compilation automatically. Navigate to the `LibBuild/InstallNgineSDK/` folder inside the release and run:
+
+~~~bash
+chmod +x install_ngine_sdk.sh
+./install_ngine_sdk.sh
+~~~
+
+![Terminal running install script](https://github.com/knightfox75/ngine/blob/master/Media/terminal_running_install_script.png)
+
+This will install the necessary dependencies (SDL2, SFML) and the N'gine core into `/usr/local/`.
+
+---
+
+### 🎮 Your First Project
+
+1. Navigate to the `Templates/cmake` folder in the SDK.
+2. Copy the `basic_template` folder to your workspace (e.g. `C:\Projects\MyGame` or `~/Projects/MyGame`).
+3. Open that folder in **Visual Studio Code**.
+4. Wait for **CMake Tools** to configure the project. If prompted, select the Kit (`GCC x86_64`).
+5. Press **F7** or click "Build" in the bottom status bar to compile.
+
+![VS Code: Project Running](https://github.com/knightfox75/ngine/blob/master/Media/vscode_project_running.png)
+
+---
 
 ## 📥 Download
 
-The distribution package contains the **source code**, **pre-compiled libraries**, **documentation**, **commented examples**, and **functional demos**.
+The distribution package contains the **source code**, **compiled libraries**, **documentation**, **commented examples**, and **functional demos**.
 
 You can download the latest version from the **[GitHub Releases Page](https://github.com/knightfox75/ngine/releases/latest)**.
 
@@ -105,8 +209,8 @@ You can download the latest version from the **[GitHub Releases Page](https://gi
 
 ## 📜 License
 
-N'gine is distributed under the **MIT License**. This means you are free to use, modify, and distribute it for your projects (commercial or otherwise), provided that appropriate attribution is included.
+N'gine is distributed under the **MIT License**. This means you can freely use, modify, and distribute it for your projects (commercial or non-commercial), as long as the corresponding attribution is included.
 
 ## 📧 Contact
 
-For any questions or suggestions, please contact **contact@nightfoxandco.com**.
+For any questions or suggestions, you can contact me at **contact@nightfoxandco.com**.
