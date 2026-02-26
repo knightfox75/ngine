@@ -1,1 +1,0 @@
-docker run -it --rm ngn-rg35xx-builder bash
