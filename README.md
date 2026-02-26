@@ -141,7 +141,7 @@ Antes de las configuraciones específicas, asegúrate de tener el editor instala
 
 #### 1. Configuración de Herramientas
 * **Paso A:** Descarga e instala [CMake](https://cmake.org/download/). (Asegúrate de seleccionar *"Add CMake to system PATH"* durante la instalación).
-* **Paso B:** Descarga e instala[MSYS2](https://www.msys2.org/).
+* **Paso B:** Descarga e instala [MSYS2](https://www.msys2.org/).
 
 Abre la terminal de MSYS2 (MINGW64) y ejecuta los siguientes comandos para instalar el compilador:
 
