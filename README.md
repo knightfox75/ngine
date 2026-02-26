@@ -18,7 +18,7 @@
 
 **N’gine** es un motor de código abierto para el desarrollo de juegos 2D, programado en **C++** e inspirado en las técnicas de las consolas clásicas. Está especialmente diseñado para crear juegos con estética *pixel art*, utilizando fondos de tiles, *sprite-sheets* y una gestión de recursos eficiente.
 
-Con más de 6 años de desarrollo, se encuentra en una fase estable, con el foco puesto en la mejora de rendimiento y la incorporación de nuevas funcionalidades.
+Con más de 10 años de desarrollo, se encuentra en una fase estable, con el foco puesto en la mejora de rendimiento y la incorporación de nuevas funcionalidades.
 
 ## ✨ Características Principales
 
@@ -90,6 +90,110 @@ Actualmente, el motor funciona y se compila en:
 |:---:|:---:|:---:|
 | ![Screenshot 1](https://github.com/knightfox75/ngine/blob/master/Media/scr01.png) | ![Screenshot 2](https://github.com/knightfox75/ngine/blob/master/Media/scr02.png) | ![Screenshot 3](https://github.com/knightfox75/ngine/blob/master/Media/scr03.png) |
 
+---
+
+## 🛠️ Manual de Instalación del SDK
+
+N'gine ha evolucionado. El SDK ha migrado a un flujo de trabajo moderno usando **Visual Studio Code** y **CMake**. A continuación, se detalla la configuración para Windows, Linux y Raspberry Pi.
+
+> **Nota:** La carpeta raíz de tu distribución suele llamarse `ngn.X.X.X-stable`.
+
+### 📂 Estructura del paquete de distribución
+
+~~~text
+ngn.x.x.x-stable
+ ├── Demo                  - Demos compiladas de todos los ejemplos (Win/Linux/RPi)
+ ├── Docs                  - Documentación y manuales
+ ├── Examples              - Código fuente y assets cubriendo todas las funciones
+ ├── LibBuild              - Scripts y código para compilar/instalar el SDK
+ │    ├── BuildNgineSDK    - Windows Build Scripts (.bat)
+ │    ├── Dockers          - Imágenes Docker para Cross-Compile (RG35XX, RPi4)
+ │    └── InstallNgineSDK  - Scripts de instalación Linux/RPi (.sh)
+ ├── LibRelease            - Binarios de la librería N'gine listos para usar
+ ├── Ngine_SDK             - El SDK N'gine para Windows listo para usar
+ ├── Source                - Código fuente del núcleo de N'gine
+ ├── Templates             - Plantillas de Proyectos
+ │    ├── cmake               - Empieza Aquí: Plantillas para VS Code + CMake
+ │    ├── docker_Raspberry_Pi - Plantillas para compilación con Docker (RPi)
+ │    └── docker_RG35XX       - Plantillas para compilación con Docker (Anbernic)
+ └── Tools                 - Fuentes de las herramientas de conversión
+      ├── NGN_CollisionMap - PNG to Collision Map
+      ├── NGN_FileSystem   - Asset Packer
+      ├── NGN_Sprite       - PNG to Sprite
+      ├── NGN_TileMap      - PNG to Tilemap
+      └── ToolSet          - Herramientas compiladas listas para usar
+~~~
+
+### 🌍 Prerrequisitos Globales (Todos los Sistemas Operativos)
+
+Antes de las configuraciones específicas, asegúrate de tener el editor instalado:
+
+1. **Visual Studio Code:** [Descargar aquí](https://code.visualstudio.com/).
+2. **Extensiones:** Abre VS Code e instala estas extensiones oficiales de Microsoft:
+   * `C/C++` (IntelliSense, depuración)
+   * `CMake Tools` (Configuración de proyectos)
+
+![VS Code Extensions Marketplace](https://github.com/knightfox75/ngine/blob/master/Media/marketplace_de_extensiones_vs_code.png)
+
+---
+
+### 🪟 Configuración para Windows
+
+#### 1. Configuración de Herramientas
+* **Paso A:** Descarga e instala [CMake](https://cmake.org/download/). (Asegúrate de seleccionar *"Add CMake to system PATH"* durante la instalación).
+* **Paso B:** Descarga e instala[MSYS2](https://www.msys2.org/).
+
+Abre la terminal de MSYS2 (MINGW64) y ejecuta los siguientes comandos para instalar el compilador:
+
+~~~bash
+pacman -Syu
+pacman -S mingw-w64-x86_64-toolchain
+~~~
+
+#### 2. Variables de Entorno
+Windows necesita saber dónde están el compilador y el SDK.
+
+* **Añadir Compilador al Path:**
+  Edita las Variables de Entorno del Sistema. Dentro de la variable **Path**, añade la ruta a tu carpeta `bin` de MinGW64. Si usaste la ruta de instalación por defecto, será:
+  `C:\msys64\mingw64\bin`
+  *(Si instalaste MSYS2 en otro directorio, por ejemplo en `C:\Code\msys64`, ajusta la ruta en consecuencia).*
+
+  ![Windows Path Variable Edit](https://github.com/knightfox75/ngine/blob/master/Media/windows_path_variable_edit.png)
+
+* **Definir Ruta del SDK:**
+  1. Copia la carpeta `Ngine_SDK` (que contiene las librerías) a un lugar seguro (ej. `C:\Code\Ngine_SDK`).
+  2. Crea una **NUEVA variable de entorno del sistema** llamada `NGINE_SDK_PATH` que apunte a esa carpeta.
+
+  ![Nueva Variable de Sistema NGINE_SDK_PATH](https://github.com/knightfox75/ngine/blob/master/Media/new_system_variable_ngine_sdk_path.png)
+
+---
+
+### 🐧 Configuración para Linux / Raspberry Pi
+
+El SDK incluye scripts para gestionar las dependencias y la compilación de librerías automáticamente. Navega a la carpeta `LibBuild/InstallNgineSDK/` dentro de la distribución y ejecuta:
+
+~~~bash
+chmod +x install_ngine_sdk.sh
+./install_ngine_sdk.sh
+~~~
+
+![Terminal ejecutando script de instalación](https://github.com/knightfox75/ngine/blob/master/Media/terminal_running_install_script.png)
+
+Esto instalará las dependencias necesarias (SDL2, SFML) y el propio núcleo de N'gine en `/usr/local/`.
+
+---
+
+### 🎮 Tu Primer Proyecto
+
+1. Navega a la carpeta `Templates/cmake` en el directorio de tu SDK.
+2. Copia la carpeta `basic_template` a tu zona de trabajo (ej. `C:\Proyectos\MiJuego` o `~/Proyectos/MiJuego`).
+3. Abre esa carpeta en **Visual Studio Code**.
+4. Espera a que **CMake Tools** configure el proyecto. Si te pide seleccionar un *Kit* de compilación, selecciona `GCC x86_64`.
+5. Pulsa **F7** o haz clic en "Build" en la barra de estado inferior para compilar.
+
+![VS Code: Ejecutando un proyecto](https://github.com/knightfox75/ngine/blob/master/Media/vscode_project_running.png)
+
+---
 
 ## 📥 Descargar
 
