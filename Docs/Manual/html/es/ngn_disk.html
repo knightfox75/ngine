@@ -30,11 +30,13 @@
             <section id="ReadBinaryFile" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>int32_t ReadBinaryFile(
-    std::string filepath,           // Ruta al archivo
-    std::vector&lt;uint8_t&gt; &buffer    // Vector de almacenamiento
+    std::string filepath,                   // Ruta al archivo
+    std::vector<uint8_t> &buffer,                    // Vector de almacenamiento
+    uint32_t offset = NGN_DEFAULT_VALUE,    // Byte donde empezar la lectura (opcional)
+    uint32_t length = NGN_DEFAULT_VALUE     // Numero de bytes a leer (opcional)
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Abre y lee en modo binario el archivo especificado en la ruta del sistema de archivos del sistema y lo almacena en el buffer dado. Este método, además, devuelve el tamaño del archivo leído (en bytes) o -1 en caso de error.</p>
+                <p>Abre y lee en modo binario el archivo especificado en la ruta y vuelca su contenido en el buffer proporcionado. El método devuelve el tamaño de los datos leídos (en bytes) o -1 en caso de error. Permite realizar lecturas parciales mediante los parámetros opcionales offset y length. Si no se especifica una longitud, se leerá desde el offset hasta el final del archivo.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; data;
 int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);</code></pre>

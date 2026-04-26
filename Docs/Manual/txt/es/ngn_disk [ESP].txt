@@ -10,12 +10,14 @@ Español
 
 - Método
 int32_t ReadBinaryFile(
-	std::string filepath,			// Ruta al archivo
-	std::vector<uint8_t> &buffer	// Vector de almacenamiento
+	std::string filepath,					// Ruta al archivo
+	std::vector<uint8_t> &buffer,			// Vector de almacenamiento
+	uint32_t offset = NGN_DEFAULT_VALUE,	// Byte donde empezar la lectura (opcional)
+	uint32_t length = NGN_DEFAULT_VALUE		// Numero de bytes a leer (opcional)
 );
 
 - Descripción
-Abre y lee en modo binario el archivo especificado en la ruta del sistema de archivos del sistema y lo almacena en el buffer dado. Este método, además, devuelve el tamaño del archivo leído (en bytes) o -1 en caso de error.
+Abre y lee en modo binario el archivo especificado en la ruta y vuelca su contenido en el buffer proporcionado. El método devuelve el tamaño de los datos leídos (en bytes) o -1 en caso de error. Permite realizar lecturas parciales mediante los parámetros opcionales offset y length. Si no se especifica una longitud, se leerá desde el offset hasta el final del archivo.
 
 - Ejemplo
 std::vector<uint8_t> data;

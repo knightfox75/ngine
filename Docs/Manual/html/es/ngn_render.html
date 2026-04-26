@@ -25,6 +25,7 @@
                     <li><a href="#TiledBg">TiledBg</a></li>
                     <li><a href="#TextLayer">TextLayer</a></li>
                     <li><a href="#Canvas">Canvas</a></li>
+                    <li><a href="#Video">Video</a></li>
                     <li><a href="#Viewports">Viewports</a></li>
                     <li><a href="#RenderToTexture">RenderToTexture</a></li>
                     <li><a href="#RenderToScreen">RenderToScreen</a></li>
@@ -96,6 +97,20 @@ ngn->render->TextLayer(textbox, 200, 100);</code></pre>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->render->Canvas(mydraw);
 ngn->render->Canvas(mydraw, 10, 10);</code></pre>
+            </section>
+			
+			<section id="Video" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void Video(
+    NGN_VideoStream* video_frame,                // Objeto de flujo de vídeo
+    float position_x = (float)NGN_DEFAULT_VALUE, // Posición X (opcional)
+    float position_y = (float)NGN_DEFAULT_VALUE  // Posición Y (opcional)
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Renderiza el fotograma actual de un stream de vídeo en el backbuffer. Si no se especifican las coordenadas X e Y, se utilizan las almacenadas en el objeto de vídeo. El método aplica automáticamente todas las propiedades configuradas en el stream, incluyendo escalado, rotación, punto de pivote, inversión (flip), transparencia (alpha) y tintado de color.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->render->Video(intro);
+ngn->render->Video(intro, 0.0f, 0.0f);</code></pre>
             </section>
 
             <section id="Viewports" class="doc-block">

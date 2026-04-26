@@ -1,5 +1,5 @@
 NGN_LOAD.H
-v1.16.0-stable
+v1.22.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -191,5 +191,22 @@ From that moment on, set a file package created with the NGN_FileSystem tool as 
 
 - Example
 ngn->load->SetPackage("gamedata.pkg", "myawesomekey");
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t LoadFileChunk(
+    const std::string& filepath,   // Path to the file
+    std::vector<uint8_t> &data,    // Storage vector
+    uint32_t offset,               // Starting byte for reading
+    uint32_t length                // Number of bytes to read
+);
+
+- Description
+Loads a specific chunk of a file from the default source (either the file system or a data package). If the file is encrypted, the method will automatically decrypt it during loading. It returns the number of bytes read or -1 if an error occurs.
+
+- Example
+std::vector<uint8_t> chunk;
+int32_t bytes_read = ngn->load->LoadFileChunk("data/assets.pkg", chunk, 1024, 512);
 
 --------------------------------------------------------------------------------

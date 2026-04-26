@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -47,20 +47,22 @@
 
 
 /*** Includes ***/
+#include <SDL.h>
 #include <SFML/Audio.hpp>
 
 
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                             // Version mayor
-static const int32_t NGN_VERSION_MINOR = 21;                            // Version menor
+static const int32_t NGN_VERSION_MINOR = 22;                            // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                             // Version parche
-static const std::string NGN_VERSION_MD_CHAR = "+";                     // Caracter de metadatos "-" = prerelease, "+" = stable
-static const std::string NGN_VERSION_METADATA = "stable";               // Version metadatos
+static const std::string NGN_VERSION_MD_CHAR = "-";                     // Caracter de metadatos "-" = prerelease, "+" = stable
+static const std::string NGN_VERSION_METADATA = "wip_0x04";             // Version metadatos
 
 /*** Definiciones generales ***/
-static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;            // Valor de "defecto"
-static const uint32_t NGN_FPS_LIMIT = 60;                       // Limite del motor de render en FPS
+static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;                    // Valor de "defecto"
+static const uint32_t NGN_FPS_LIMIT = 60;                               // Limite del motor de render en FPS
+static const double NGN_MAX_FRAME_TIME = 1.0f/(float)NGN_FPS_LIMIT;     // Tiempo maximo de duracion de un frame
 /*** Definiciones de modos de pantalla ***/
 static const int8_t NGN_SCR_WINDOW = 1;                         // "Modo ventana x1"
 static const int8_t NGN_SCR_WINDOW_X2 = 2;                      // "Modo ventana x2"
@@ -80,6 +82,9 @@ static const SDL_BlendMode NGN_BLENDMODE_MODULATE = SDL_BLENDMODE_MOD;       // 
 /*** Definiciones de los modos de mascara ***/
 static const uint8_t NGN_MASKMODE_CUTOUT = 0;       // Recorta el origen con la forma de la mascara
 static const uint8_t NGN_MASKMODE_HOLLOW = 1;       // Extrae la mascara del origien
+/*** Definiciones de los formatos de pixel de las texturas ***/
+static const uint32_t NGN_PIXEL_FORMAT = SDL_PIXELFORMAT_RGBA8888;          // Formato por defecto
+static const uint32_t FREETYPE_PIXEL_FORMAT = SDL_PIXELFORMAT_ARGB8888;     // Formato especifico para SDL2_ttf (freetype)
 
 /*** Definiciones exclusivas para Anbernic RG35XX ***/
 #if defined (TARGET_RG35XX)
@@ -336,8 +341,13 @@ class NGN_TextFont {
         // Destructor
         ~NGN_TextFont();
 
-        // Vector contenedor de los 256 caracteres de la fuente
-        std::vector<NGN_TextureData*> character;
+        // Textura con el atlas con los caracteres (Siempre sera un GRID de 16x16, 256 caracteres)
+        SDL_Texture* characters_atlas;          // Almacena el Tileset
+
+        // Almacen de los tamaños de cada caracter
+        Size2I32 cell_size;                     // Tamaño de la celda del caracter en el atlas
+        Size2I32 atlas_size;                    // Tamaño del atlas
+        std::vector<Size2I32> char_size;        // Vector con los tamaños de cada caracter
 
         // Alto de fila de la fuente cargada
         uint32_t height;
@@ -399,6 +409,46 @@ class NGN_RendererSurface {
 
 
     // Private
+    private:
+
+};
+
+
+
+/*** Prototipo de datos de video ***/
+
+class NGN_VideoData {
+
+    // Segmento publico
+    public:
+
+        // Constructor
+        NGN_VideoData();
+
+        // Destructor
+        ~NGN_VideoData();
+
+
+        // Metadatos del stream de video
+        uint32_t width;             // Resolucion horizontal del video (pixeles)
+        uint32_t height;            // Resolucion vertical del video (pixeles)
+        double   framerate;         // Tasa de fotogramas declarada en el stream Theora
+
+
+        // Ruta al archivo en disco (modo disco directo)
+        std::string filepath;
+
+        // Flag de origen: false = disco directo | true = archivo empaquetado
+        bool from_package;
+
+        // Datos de localizacion dentro del paquete (validos solo si from_package == true)
+        // Se rellenan en NGN_Load::VideoClip() cuando el paquete esta activo.
+        // Reservados para el futuro soporte de streaming fragmentado con desencriptacion al vuelo.
+        uint32_t package_offset;    // Offset del archivo dentro del bloque de datos del paquete
+        uint32_t package_size;      // Tamaño total del archivo en bytes dentro del paquete
+
+
+    // Segmento privado
     private:
 
 };

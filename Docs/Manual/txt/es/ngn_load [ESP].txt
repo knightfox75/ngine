@@ -193,3 +193,20 @@ A partir de ese momento, establece un paquete de archivos creado con la herramie
 ngn->load->SetPackage("gamedata.pkg", "myawesomekey");
 
 --------------------------------------------------------------------------------
+
+- Método
+int32_t LoadFileChunk(
+    const std::string& filepath,   // Ruta del archivo
+    std::vector<uint8_t> &data,    // Vector de almacenamiento
+    uint32_t offset,               // Byte de inicio de lectura
+    uint32_t length                // Número de bytes a leer
+);
+
+- Descripción
+Carga un fragmento específico de un archivo desde el origen predeterminado (ya sea desde el sistema de archivos o desde un paquete de datos). Si el archivo se encuentra encriptado, el método lo desencriptará automáticamente durante la carga. Devuelve el número de bytes leídos o -1 en caso de error.
+
+- Ejemplo
+std::vector<uint8_t> chunk;
+int32_t bytes_read = ngn->load->LoadFileChunk("data/assets.pkg", chunk, 1024, 512);
+
+--------------------------------------------------------------------------------

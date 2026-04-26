@@ -41,6 +41,28 @@ bool focused = ngn->system->GetApplicationFocus();
 
 --------------------------------------------------------------------------------
 
+- Method
+double GetFrameTime();
+
+- Description
+Returns the total execution time of the last completed frame (in seconds). This value is calculated by measuring the difference between the start and the end of the frame processing using high-precision counters. It is essential for performance monitoring.
+
+- Example
+double dt = ngn->system->GetFrameTime();
+
+--------------------------------------------------------------------------------
+
+- Method
+float GetWorkLoad();
+
+- Description
+Returns the workload percentage of the last processed frame. This value represents the ratio between the actual execution time (last_frame_time) and the maximum time available to maintain the target refresh rate (based on NGN_FPS_LIMIT). A value of 100% indicates that the frame consumed all its allotted time; higher values indicate that the engine cannot maintain the target FPS.
+
+- Example
+float cpu_usage = ngn->system->GetWorkLoad();
+
+--------------------------------------------------------------------------------
+
 
 
 --------------------------------------------------------------------------------

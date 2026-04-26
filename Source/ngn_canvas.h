@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -169,6 +169,9 @@ class NGN_Canvas {
         // Dibuja un circulo con relleno (Implementacion del algoritmo de Bresenham)
         void BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry = NGN_DEFAULT_VALUE);
 
+        // Funcion de relleno
+        void FillScanline(uint32_t* p, int32_t scan_y, int32_t x_left, int32_t x_right, uint32_t color, bool blend = false);
+
         // Devuelve el color en formato RGBA
         Rgba GetRgbaColor(uint32_t color);
 
@@ -186,6 +189,9 @@ class NGN_Canvas {
         Rgba tint_color;
         Rgba last_tint_color;
         bool NewTint();
+
+        // Calcula la mezcla (alpha blending) entre dos pixeles y devuelve el resultado
+        uint32_t BlendPixel(uint32_t dst, uint32_t src);
 
 };
 

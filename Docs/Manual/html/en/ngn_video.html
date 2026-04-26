@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n'gine Documentation - NGN_VIDEO</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_VIDEO.H</h1>
+        </header>
+
+        <main>
+            <!-- INDEX OF METHODS -->
+            <h2>METHODS of the class</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#Open">Open</a></li>
+                    <li><a href="#Close">Close</a></li>
+                    <li><a href="#CloseAll">CloseAll</a></li>
+                    <li><a href="#Play">Play</a></li>
+                    <li><a href="#Pause">Pause</a></li>
+                    <li><a href="#Stop">Stop</a></li>
+                    <li><a href="#SetLoop">SetLoop</a></li>
+                    <li><a href="#PlaybackGlobal">PauseAll / ResumeAll / StopAll</a></li>
+                    <li><a href="#StateQueries">IsPlaying / IsAlive / IsFinished</a></li>
+                    <li><a href="#SetPosition">SetPosition</a></li>
+                    <li><a href="#GetPosition">GetPosition</a></li>
+                    <li><a href="#Translate">Translate</a></li>
+                    <li><a href="#SetSize">SetSize</a></li>
+                    <li><a href="#GetSize">GetSize</a></li>
+                    <li><a href="#SetScale">SetScale</a></li>
+                    <li><a href="#GetScale">GetScale</a></li>
+                    <li><a href="#SetRotation">SetRotation</a></li>
+                    <li><a href="#Rotate">Rotate</a></li>
+                    <li><a href="#GetRotation">GetRotation</a></li>
+                    <li><a href="#SetCenter">SetCenter</a></li>
+                    <li><a href="#GetCenter">GetCenter</a></li>
+                    <li><a href="#SetAlpha">SetAlpha</a></li>
+                    <li><a href="#GetAlpha">GetAlpha</a></li>
+                    <li><a href="#SetTintColor">SetTintColor</a></li>
+                    <li><a href="#GetTintColor">GetTintColor</a></li>
+                    <li><a href="#SetBlendMode">SetBlendMode</a></li>
+                    <li><a href="#SetVolume">SetVolume</a></li>
+                    <li><a href="#GetVolume">GetVolume</a></li>
+                    <li><a href="#Update">Update</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- METHOD DOCUMENTATION BLOCKS -->
+            <section id="Open" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>NGN_VideoStream* Open(
+    std::string filepath,                       // OGV file
+    bool auto_start = false,                    // Automatic playback
+    bool loop = false,                          // Loops the video when finished
+    int32_t volume = 100,                       // Initial volume (0-100)
+    uint32_t render_width = NGN_DEFAULT_VALUE,  // Render width (native by default)
+    uint32_t render_height = NGN_DEFAULT_VALUE, // Render height (native by default)
+    int32_t position_x = NGN_DEFAULT_VALUE,     // X position (centered by default)
+    int32_t position_y = NGN_DEFAULT_VALUE,     // Y position (centered by default)
+    uint8_t mixer_channel = MIXER_VIDEO_CH      // Assigned channel in the audio mixer
+);</code></pre>
+                <h3>Description</h3>
+                <p>Opens an OGV file and creates a stream ready to play. If the maximum limit of simultaneous streams is reached (MAX_VIDEO_STREAMS = 4) or the file is invalid, it returns nullptr.</p>
+                <h3>Example</h3>
+                <pre><code>NGN_VideoStream* intro = ngn_video->Open("data/intro.ogv", true, false, 80);</code></pre>
+            </section>
+
+            <section id="Close" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Close(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Closes the specified video stream, stops its playback, and frees its resources. The provided pointer becomes invalidated after this call.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Close(intro);</code></pre>
+            </section>
+
+            <section id="CloseAll" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void CloseAll();</code></pre>
+                <h3>Description</h3>
+                <p>Closes all currently active video streams in the queue and frees their resources.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->CloseAll();</code></pre>
+            </section>
+
+            <section id="Play" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Play(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Starts or resumes the playback of the specified video stream.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Play(intro);</code></pre>
+            </section>
+
+            <section id="Pause" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Pause(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Pauses the playback of the specified video stream.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Pause(intro);</code></pre>
+            </section>
+
+            <section id="Stop" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Stop(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Stops the playback of the specified video stream, returning the video to the beginning.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Stop(intro);</code></pre>
+            </section>
+
+            <section id="SetLoop" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetLoop(NGN_VideoStream* stream, bool loop);</code></pre>
+                <h3>Description</h3>
+                <p>Changes the loop state of the specified video. If true, the video will automatically restart when it reaches the end.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetLoop(intro, true);</code></pre>
+            </section>
+
+            <section id="PlaybackGlobal" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void PauseAll();
+void ResumeAll();
+void StopAll();</code></pre>
+                <h3>Description</h3>
+                <p>Global playback control. Pauses, resumes, or stops all video streams currently in the active queue.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->PauseAll();</code></pre>
+            </section>
+
+            <section id="StateQueries" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>bool IsPlaying(NGN_VideoStream* stream);
+bool IsAlive(NGN_VideoStream* stream);
+bool IsFinished(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Stream state query methods:<br>
+                - <strong>IsPlaying:</strong> Returns true if the video is currently playing.<br>
+                - <strong>IsAlive:</strong> Returns true if the video is open and active (either playing or paused).<br>
+                - <strong>IsFinished:</strong> Returns true if the video has reached the end of its playback.</p>
+                <h3>Example</h3>
+                <pre><code>if (ngn_video->IsFinished(intro)) {
+    ngn_video->Close(intro);
+}</code></pre>
+            </section>
+
+            <section id="SetPosition" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetPosition(NGN_VideoStream* stream, float position_x, float position_y);
+void SetPosition(NGN_VideoStream* stream, Vector2 pos);</code></pre>
+                <h3>Description</h3>
+                <p>Positions the video stream render at the given coordinate.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetPosition(intro, 128.0f, 64.0f);</code></pre>
+            </section>
+
+            <section id="GetPosition" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Vector2 GetPosition(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the current position of the video in a Vector2 format. If the stream is invalid, it returns Vector2::Zero().</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 current_pos = ngn_video->GetPosition(intro);</code></pre>
+            </section>
+
+            <section id="Translate" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Translate(NGN_VideoStream* stream, float speed_x, float speed_y);
+void Translate(NGN_VideoStream* stream, Vector2 spd);</code></pre>
+                <h3>Description</h3>
+                <p>Moves the render position of the video in the given direction and speeds, starting from its current position.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Translate(intro, 2.0f, 0.0f);</code></pre>
+            </section>
+
+            <section id="SetSize" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetSize(NGN_VideoStream* stream, float w, float h);</code></pre>
+                <h3>Description</h3>
+                <p>Sets a new absolute size (width and height) for the video stream render, resetting the current scale to 1.0f.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetSize(intro, 1920.0f, 1080.0f);</code></pre>
+            </section>
+
+            <section id="GetSize" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Size2 GetSize(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns a Size2 structure with the current size (width and height) of the video representation.</p>
+                <h3>Example</h3>
+                <pre><code>Size2 video_size = ngn_video->GetSize(intro);</code></pre>
+            </section>
+
+            <section id="SetScale" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetScale(NGN_VideoStream* stream, float w, float h);
+void SetScale(NGN_VideoStream* stream, float scale);</code></pre>
+                <h3>Description</h3>
+                <p>Applies a new scale to the video based on its original size. Depending on the overload used, it will scale the axes together or separately.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetScale(intro, 1.5f);</code></pre>
+            </section>
+
+            <section id="GetScale" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Size2 GetScale(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns a Size2 structure with the current scale on both axes of the specified video.</p>
+                <h3>Example</h3>
+                <pre><code>Size2 current_scale = ngn_video->GetScale(intro);</code></pre>
+            </section>
+
+            <section id="SetRotation" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetRotation(NGN_VideoStream* stream, double degrees);</code></pre>
+                <h3>Description</h3>
+                <p>Sets the absolute rotation of the video, applying the provided degrees (0.0 to 360.0).</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetRotation(intro, 45.0);</code></pre>
+            </section>
+
+            <section id="Rotate" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Rotate(NGN_VideoStream* stream, double degrees);</code></pre>
+                <h3>Description</h3>
+                <p>Rotates the video by adding the provided degrees to its current rotation.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Rotate(intro, 1.5);</code></pre>
+            </section>
+
+            <section id="GetRotation" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>double GetRotation(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the current rotation of the specified video, in degrees.</p>
+                <h3>Example</h3>
+                <pre><code>double current_rot = ngn_video->GetRotation(intro);</code></pre>
+            </section>
+
+            <section id="SetCenter" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetCenter(NGN_VideoStream* stream, float x, float y);</code></pre>
+                <h3>Description</h3>
+                <p>Specifies, in relative coordinates, the offset of the center for applying rotations to the video.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetCenter(intro, -10.0f, -5.0f);</code></pre>
+            </section>
+
+            <section id="GetCenter" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Vector2 GetCenter(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns a Vector2 with the current rotation center offset of the video.</p>
+                <h3>Example</h3>
+                <pre><code>Vector2 center_offset = ngn_video->GetCenter(intro);</code></pre>
+            </section>
+
+            <section id="SetAlpha" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetAlpha(NGN_VideoStream* stream, int32_t lv);</code></pre>
+                <h3>Description</h3>
+                <p>Sets the transparency level (Alpha) of the video, bounded between -1 (special engine behavior) and 255 (fully opaque).</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetAlpha(intro, 128);</code></pre>
+            </section>
+
+            <section id="GetAlpha" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>int32_t GetAlpha(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the current transparency level (Alpha) applied to the video stream.</p>
+                <h3>Example</h3>
+                <pre><code>int32_t current_alpha = ngn_video->GetAlpha(intro);</code></pre>
+            </section>
+
+            <section id="SetTintColor" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetTintColor(NGN_VideoStream* stream, uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);</code></pre>
+                <h3>Description</h3>
+                <p>Sets an RGB tint color to be applied to the video. If not specified, the white value (255, 255, 255) will be applied, showing the original colors without alterations.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetTintColor(intro, 255, 128, 64);</code></pre>
+            </section>
+
+            <section id="GetTintColor" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>Rgba GetTintColor(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns an Rgba structure with the current tint color being applied to the video.</p>
+                <h3>Example</h3>
+                <pre><code>Rgba current_tint = ngn_video->GetTintColor(intro);</code></pre>
+            </section>
+
+            <section id="SetBlendMode" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetBlendMode(NGN_VideoStream* stream, SDL_BlendMode blend_mode);</code></pre>
+                <h3>Description</h3>
+                <p>Adjusts the color blending mode of the video (e.g., NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE, etc.).</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetBlendMode(intro, NGN_BLENDMODE_ADDITIVE);</code></pre>
+            </section>
+
+            <section id="SetVolume" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetVolume(NGN_VideoStream* stream, int32_t volume);</code></pre>
+                <h3>Description</h3>
+                <p>Adjusts the volume level of the specified video stream. The value must be between 0 and 100.</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->SetVolume(intro, 50);</code></pre>
+            </section>
+
+            <section id="GetVolume" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>int32_t GetVolume(NGN_VideoStream* stream);</code></pre>
+                <h3>Description</h3>
+                <p>Returns the current volume level (0-100) of the specified stream. If the video does not exist, it returns 0.</p>
+                <h3>Example</h3>
+                <pre><code>int32_t current_volume = ngn_video->GetVolume(intro);</code></pre>
+            </section>
+
+            <section id="Update" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Update();</code></pre>
+                <h3>Description</h3>
+                <p>Core process of the video manager. Updates all active streams: decodes frames, synchronizes Audio/Video, and processes loop events. It must be called cyclically, once per game frame (ideally before ngn->graphics->Update()).</p>
+                <h3>Example</h3>
+                <pre><code>ngn_video->Update();</code></pre>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FLOATING BUTTONS AND SCRIPT (with dropdown menu for the Manual) -->
+    <div class="floating-buttons">
+        <!-- Button tray that will be shown/hidden -->
+        <div id="button-tray">
+            <a href="index.html">Back to Index</a>
+            <!-- Link to the equivalent Spanish page -->
+            <a href="../es/ngn_video.html">Versión en Español</a>
+            <a href="#" id="back-to-top">Back to Top</a>
+        </div>
+        <!-- Main button that is always visible on mobile -->
+        <button id="menu-toggle">Menu ▲</button>
+    </div>
+
+    <script>
+        // Logic for the "Back to Top" button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LOGIC FOR THE DROPDOWN MENU ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

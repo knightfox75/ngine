@@ -20,6 +20,8 @@
                     <li><a href="#EventUpdate">EventUpdate</a></li>
                     <li><a href="#GetVersion">GetVersion</a></li>
                     <li><a href="#GetApplicationFocus">GetApplicationFocus</a></li>
+                    <li><a href="#GetFrameTime">GetFrameTime</a></li>
+                    <li><a href="#GetWorkLoad">GetWorkLoad</a></li>
                 </ul>
             </nav>
             <hr>
@@ -51,6 +53,25 @@
                 <h3>Ejemplo</h3>
                 <pre><code>bool focused = ngn->system->GetApplicationFocus();</code></pre>
             </section>
+			
+			<section id="GetFrameTime" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>double GetFrameTime();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el tiempo total de ejecución del último frame completado (en segundos). Este valor se calcula midiendo la diferencia entre el inicio y el final del procesamiento del frame mediante contadores de alta precisión. Es fundamental para la monitorización del rendimiento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>double dt = ngn->system->GetFrameTime();</code></pre>
+            </section>
+			
+			<section id="GetWorkLoad" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>float GetWorkLoad();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el porcentaje de carga de trabajo (<em>workload</em>) del último frame procesado. Este valor representa la relación entre el tiempo real de ejecución y el tiempo máximo disponible para mantener la tasa de refresco objetivo. Un valor del 100% indica que el frame ha consumido todo su tiempo asignado; valores superiores indican que el motor no puede mantener la tasa de fotogramas por segundo (FPS) fijada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>float cpu_usage = ngn->system->GetWorkLoad();</code></pre>
+            </section>
+			
             <hr>
 
             <!-- ÍNDICE DE PROPIEDADES -->

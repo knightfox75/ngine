@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -166,9 +166,8 @@ Size2 NGN_TiledBg::GetCurrentScale() {
 /*** Rota el fondo los grados solicitados ***/
 void NGN_TiledBg::Rotate(double degrees) {
 
-    rotation += degrees;
-    while (rotation >= 360.0f) rotation -= 360.0f;
-    while (rotation < 0.0f) rotation += 360.0f;
+    rotation = std::fmod((rotation + degrees), 360.0);
+    if (rotation < 0.0) rotation += 360.0;
 
 }
 
@@ -256,12 +255,12 @@ void NGN_TiledBg::CreateTiledBg(
 
     // Crea el backbuffer de este fondo
     backbuffer = SDL_CreateTexture(
-                             ngn->graphics->renderer,       // Renderer
-                             SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                             SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                             bb_size.width,                 // Ancho de la textura
-                             bb_size.height                 // Alto de la textura
-                             );
+        ngn->graphics->renderer,        // Renderer
+        NGN_PIXEL_FORMAT,               // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+        bb_size.width,                  // Ancho de la textura
+        bb_size.height                  // Alto de la textura
+    );
 
     // Textura para aplicar la transformacion del fondo (si se requiere)
     transform_texture = nullptr;

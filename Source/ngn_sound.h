@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -64,12 +64,13 @@
 /*** Definiciones ***/
 static const uint8_t MAX_SFX_CHANNELS = 64;     // Numero maximo de efectos simultaneos
 static const uint8_t MAX_MUSIC_CHANNELS = 4;    // Numero maximo de musicas por streaming simultaneas
-static const uint8_t MIXER_CHANNELS = 5;        // Numero de canales del mixer
+static const uint8_t MIXER_CHANNELS = 6;        // Numero de canales del mixer
 static const uint8_t MIXER_MASTER_CH = 0;       // Canal maestro del mixer
 static const uint8_t MIXER_MUSIC_CH = 1;        // Canal de musica del mixer
 static const uint8_t MIXER_EFFECTS_CH = 2;      // Canal de efectos del mixer
-static const uint8_t MIXER_AUX1_CH = 3;         // Canal de efectos del mixer
-static const uint8_t MIXER_AUX2_CH = 4;         // Canal de efectos del mixer
+static const uint8_t MIXER_VIDEO_CH = 3;        // Canal de video del mixer
+static const uint8_t MIXER_AUX1_CH = 4;         // Canal auxiliar 1 del mixer
+static const uint8_t MIXER_AUX2_CH = 5;         // Canal auxiliar 2 del mixer
 
 
 
@@ -289,6 +290,9 @@ class NGN_Sound {
 
         // Actualiza la cola de musicas
         void MusicUpdate();
+
+        // Actualiza los volumenes de los videos (si exiten)
+        void VideoStreamAudioUpdate();
 
         // Parametros globales del volumen del sonido (mezclador de sonido)
         int32_t mixer_channel_level[MIXER_CHANNELS];

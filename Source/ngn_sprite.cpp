@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -206,9 +206,8 @@ Size2 NGN_Sprite::GetCurrentScale() {
 /*** Rota un sprite los grados solicitados ***/
 void NGN_Sprite::Rotate(double degrees) {
 
-    rotation += degrees;
-    while (rotation >= 360.0f) rotation -= 360.0f;
-    while (rotation < 0.0f) rotation += 360.0f;
+    rotation = std::fmod((rotation + degrees), 360.0);
+    if (rotation < 0.0) rotation += 360.0;
 
 }
 
@@ -228,7 +227,7 @@ float NGN_Sprite::GetSpriteRadius() {
 
     // Decide si hay que recalcular el radio (ha cambiado de tamaño?)
     if ((radius_info.width != width) || (radius_info.height != height)) {
-        radius_info.radius = (std::sqrt((width * width) + (height * height)) / 2.0f);
+        radius_info.radius = (std::sqrt((width * width) + (height * height)) * 0.5f);
         radius_info.width = width;
         radius_info.height = height;
     }

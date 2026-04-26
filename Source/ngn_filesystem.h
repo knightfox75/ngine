@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -62,14 +62,33 @@ class NGN_FileSystem {
         ~NGN_FileSystem();
 
         // Metodo para cargar un archivo desde un archivo empaquetado a un buffer temporal en RAM
-        int32_t LoadFileFromPakage(std::string filepath, std::vector<uint8_t> &buffer);
+        int32_t LoadFileFromPackage(const std::string& filepath, std::vector<uint8_t> &buffer);
+
+        // Metodo para cargar un fragmento de un archivo de un empaquetado a un buffer temporal en RAM
+        int32_t LoadFileChunkFromPackage(const std::string& filepath, std::vector<uint8_t> &buffer, uint32_t offset, uint32_t length);
 
         // Establece el uso de un archivo empaquetado
-        bool SetPackage(std::string pkg_file, std::string key);
+        bool SetPackage(const std::string& pkg_file, std::string key);
+
+        // Devuelve el archivo seleccionado actualmente como package
+        std::string GetCurrentPackage();
+
+        // Devuelve la clave del paquete actual
+        std::vector<uint8_t> GetCurrentPackageKey();
+
+        // Devuelve si se ha encontrado un archivo en el paquete y de ser asi, los datos de ubicacion del mismo
+        bool GetFileInfoInPackage(const std::string& filepath, uint32_t& offset, uint32_t& length);
+
+        // Desencripta "al vuelo" un paquete de datos del archivo empaquetado.
+        // Dado que es posible acceder a un paquete no seleccionado, debera de proporcionarse la clave del paquete
+        void DecryptChunk(uint8_t* data, uint32_t length, uint32_t offset_in_file, const std::vector<uint8_t>& key);
+
 
 
 
     private:
+
+        // Todos estos metodos solo son funcionales con el paquete actualmente seleccionado
 
         // Datos del archivo empaquetado
         std::string package_file;           // Ruta al archivo empaquetado
@@ -96,7 +115,7 @@ class NGN_FileSystem {
         // Magic string
         const std::string MAGIC_STRING = "NGN FILE SYSTEM";
         // Version del programa de empaquetado
-        const uint8_t VERSION = 2;
+        const uint8_t VERSION = 3;
 
 
         //Define la estructura de un nodo de la FAT
@@ -139,9 +158,22 @@ class NGN_FileSystem {
         int32_t ReadPackageHeader();
         // Crea una tabla de asignacion de archivos de un archivo empaquetado
         int32_t CreateFatFromPackage();
+        // Devuelve el ID de nodo de un arhcivo en la FAT
+        int32_t GetNodeId(const std::string& filepath);
 
         // Desencriptado de los datos contenidos en un vector
-        int32_t DecryptData(std::vector<uint8_t> &data);
+        void DecryptData(std::vector<uint8_t> &data);
+
+        // Desencripta un fragmento del buffer sabiendo su offset dentro del archivo logico.
+        void DecryptChunk(std::vector<uint8_t>& data, uint32_t offset_in_file);
+
+        // Calcula el valor del acumulador k del algoritmo de cifrado en la posicion
+        // offset_in_file, sin necesidad de iterar desde el byte 0.
+        uint32_t ComputeKAtOffset(uint32_t offset_in_file);
+        // Calcula el valor del acumulador k del algoritmo de cifrado en la posicion para un archivo de paquetes no seleccionado
+        // offset_in_file, sin necesidad de iterar desde el byte 0.
+        uint32_t ComputeKAtOffset(uint32_t offset_in_file,  const std::vector<uint8_t>& key);
+
         // Convierte la clave a un vector de valores numericos
         void KeyToValues();
         // Rota un valor n veces a la izquierda

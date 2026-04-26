@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -110,45 +110,86 @@ void NGN_Disk::BootUp() {
 
 
 
-/*** Lee un archivo en formato binario desde el disco y almacenalo en un buffer en RAM ***/
-int32_t NGN_Disk::ReadBinaryFile(std::string filepath, std::vector<uint8_t> &buffer) {
+/*** Lee un archivo en formato binario (o un fragmento de este) desde el disco y almacenalo en un buffer en RAM ***/
+int32_t NGN_Disk::ReadBinaryFile(const std::string& filepath, std::vector<uint8_t>& buffer, uint32_t offset, uint32_t length) {
 
-    // Convierte la ruta de archivo a constante
-    const char* _filepath = filepath.c_str();
-
-    // Prepara el buffer temporal para cargar el archivo
+    // Prepara el buffer temporal limpiandolo desde el inicio
     buffer.clear();
-    int32_t length = -1;
 
     // Intenta abrir el archivo en modo binario
     std::ifstream file;
-    file.open(_filepath, std::ifstream::in | std::ifstream::binary);
+    file.open(filepath.c_str(), std::ifstream::in | std::ifstream::binary);
 
-    // Si has abierto el archivo con exito...
-    if (file.is_open()) {
-        // Calcula el tamaño del archivo
-        file.seekg(0, file.end);        // Avanza hasta el final del archivo
-        length = file.tellg();          // Consulta el numero de bytes recorridos
-        file.seekg(0, file.beg);        // Rebobina el archivo
-        // Dimensiona el buffer
-        buffer.resize(length);
-        // Lee el archivo y coloca los datos en el buffer
-        file.read((char*)&buffer[0], length);
-        // Cierra el archivo
-        file.close();
-    } else {
+    // Si no se pudo abrir, registramos el error y salimos
+    if (!file.is_open()) {
         ngn->log->Message("[NGN_Disk error] <" + filepath + "> not found.");
+        return -1;
     }
 
-    // Devuelve el numero de bytes leidos (-1 == no se ha podido abrir el archivo)
-    return length;
+    // Calcula el tamaño real del archivo interrogando al sistema de archivos
+    file.seekg(0, std::ios::end);               // Avanza hasta el final del archivo
+    int64_t file_size = (int64_t)file.tellg();  // Consulta el numero total de bytes (usamos 64 bits temporalmente por seguridad)
+    
+    // Si el archivo esta vacio fisicamente (0 bytes), cerramos de forma segura
+    if (file_size <= 0) {
+        file.close();
+        return 0;
+    }
 
+    // Normaliza el offset: Si no se especifico, asume 0 (inicio del archivo)
+    uint32_t actual_offset = (offset == NGN_DEFAULT_VALUE) ? 0 : offset;
+
+    // Proteccion: Si el offset de inicio solicitado esta fuera de los limites del archivo
+    if (actual_offset >= (uint32_t)file_size) {
+        file.close();
+        return -1;
+    }
+
+    // Calcula el tamaño maximo que se puede leer desde el offset hasta el final
+    uint32_t max_length = (uint32_t)file_size - actual_offset;
+    
+    // Normaliza el tamaño de bloque a leer:
+    // Si no se especifico length, lee hasta el final. Si se especifico, previene desbordamientos.
+    uint32_t chunk_size = max_length;
+    if (length != NGN_DEFAULT_VALUE) {
+        chunk_size = (length > max_length) ? max_length : length;
+    }
+
+    // Salida temprana para prevenir comportamiento indefinido si el bloque final resulto ser de 0 bytes
+    if (chunk_size == 0) {
+        file.close();
+        return 0;
+    }
+
+    // Dimensiona el buffer para que encaje exactamente con lo que vamos a leer
+    buffer.resize(chunk_size);
+
+    // Coloca el cabezal de lectura en el offset solicitado
+    file.seekg((std::streamoff)actual_offset, std::ios::beg);
+    
+    // Lee el bloque del archivo y lo coloca directamente en la memoria cruda del vector
+    file.read((char*)buffer.data(), chunk_size);
+    
+    // Extrae cuantos bytes consiguio leer realmente la controladora de disco
+    int32_t bytes_read = (int32_t)file.gcount();
+    
+    // Cierra el archivo liberando el handle del sistema
+    file.close();
+
+    // Si por algun error del SO o desconexion del disco se leyeron menos bytes, recorta el buffer
+    if (bytes_read >= 0 && (uint32_t)bytes_read < chunk_size) {
+        buffer.resize(bytes_read);
+    }
+
+    // Devuelve el numero de bytes leidos (-1 indicaria error antes de leer)
+    return bytes_read;
+    
 }
 
 
 
 /*** Escribe un archivo en formato binario al disco desde un buffer en RAM ***/
-int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &buffer) {
+int32_t NGN_Disk::WriteBinaryFile(const std::string& filepath, std::vector<uint8_t> &buffer) {
 
     // Convierte la ruta de archivo a constante
     const char* _filepath = filepath.c_str();
@@ -193,7 +234,7 @@ int32_t NGN_Disk::WriteBinaryFile(std::string filepath, std::vector<uint8_t> &bu
 
 
 /*** Lee un archivo en formato de texto desde el disco y almacenalo en un string (Primera sobrecarga) ***/
-std::string NGN_Disk::ReadTextFile(std::string filepath) {
+std::string NGN_Disk::ReadTextFile(const std::string& filepath) {
 
     // Convierte la ruta de archivo a constante
     const char* _filepath = filepath.c_str();
@@ -229,7 +270,7 @@ std::string NGN_Disk::ReadTextFile(std::string filepath) {
 
 
 /*** Lee un archivo en formato de texto desde el disco y almacena las lineas en un vector de strings (Segunda sobrecarga) ***/
-bool NGN_Disk::ReadTextFile(std::string filepath, std::vector<std::string> &lines) {
+bool NGN_Disk::ReadTextFile(const std::string& filepath, std::vector<std::string> &lines) {
 
     // Convierte la ruta de archivo a constante
     const char* _filepath = filepath.c_str();
@@ -260,7 +301,7 @@ bool NGN_Disk::ReadTextFile(std::string filepath, std::vector<std::string> &line
 
 
 // Escribe un archivo en formato de texto al disco desde un string
-int32_t NGN_Disk::WriteTextFile(std::string filepath, std::string text, bool append) {
+int32_t NGN_Disk::WriteTextFile(const std::string& filepath, std::string text, bool append) {
 
     // Convierte la ruta de archivo a constante
     const char* _filepath = filepath.c_str();
@@ -304,7 +345,7 @@ int32_t NGN_Disk::WriteTextFile(std::string filepath, std::string text, bool app
 
 
 /*** Verifica que el archivo existe y devuelve su tamaño ***/
-int32_t NGN_Disk::CheckFile(std::string path) {
+int32_t NGN_Disk::CheckFile(const std::string& path) {
 
     // Convierte la ruta de archivo a constante
     const char* _path = path.c_str();
@@ -331,7 +372,7 @@ int32_t NGN_Disk::CheckFile(std::string path) {
 
 
 /*** Crea un directorio a partir de un path, si este no existe ***/
-int32_t NGN_Disk::MakePath(std::string path) {
+int32_t NGN_Disk::MakePath(const std::string& path) {
 
     // Caracter de referencia
     std::string getchar = "";

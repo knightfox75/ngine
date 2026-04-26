@@ -1,0 +1,350 @@
+NGN_VIDEO.H
+v1.22.0+stable
+English
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+NGN_VideoStream* Open(
+	std::string filepath,                       // OGV file
+	bool auto_start = false,                    // Automatic playback
+	bool loop = false,                          // Loops the video when finished
+	int32_t volume = 100,                       // Initial volume (0-100)
+	uint32_t render_width = NGN_DEFAULT_VALUE,  // Render width (native by default)
+	uint32_t render_height = NGN_DEFAULT_VALUE, // Render height (native by default)
+	int32_t position_x = NGN_DEFAULT_VALUE,     // X position (centered by default)
+	int32_t position_y = NGN_DEFAULT_VALUE,     // Y position (centered by default)
+	uint8_t mixer_channel = MIXER_VIDEO_CH      // Assigned channel in the audio mixer
+);
+
+- Description
+Opens an OGV file and creates a stream ready to play. If the maximum limit of simultaneous streams is reached (MAX_VIDEO_STREAMS = 4) or the file is invalid, it returns nullptr.
+
+- Example
+NGN_VideoStream* intro = ngn_video->Open("data/intro.ogv", true, false, 80);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Close(NGN_VideoStream* stream);
+
+- Description
+Closes the specified video stream, stops its playback, and frees its resources. The provided pointer becomes invalidated after this call.
+
+- Example
+ngn_video->Close(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void CloseAll();
+
+- Description
+Closes all currently active video streams in the queue and frees their resources.
+
+- Example
+ngn_video->CloseAll();
+
+--------------------------------------------------------------------------------
+
+- Method
+void Play(NGN_VideoStream* stream);
+
+- Description
+Starts or resumes the playback of the specified video stream.
+
+- Example
+ngn_video->Play(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Pause(NGN_VideoStream* stream);
+
+- Description
+Pauses the playback of the specified video stream.
+
+- Example
+ngn_video->Pause(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Stop(NGN_VideoStream* stream);
+
+- Description
+Stops the playback of the specified video stream, returning the video to the beginning.
+
+- Example
+ngn_video->Stop(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetLoop(NGN_VideoStream* stream, bool loop);
+
+- Description
+Changes the loop state of the specified video. If true, the video will automatically restart when it reaches the end.
+
+- Example
+ngn_video->SetLoop(intro, true);
+
+--------------------------------------------------------------------------------
+
+- Method
+void PauseAll();
+void ResumeAll();
+void StopAll();
+
+- Description
+Global playback control. Pauses, resumes, or stops all video streams currently in the active queue.
+
+- Example
+ngn_video->PauseAll();
+
+--------------------------------------------------------------------------------
+
+- Method
+bool IsPlaying(NGN_VideoStream* stream);
+bool IsAlive(NGN_VideoStream* stream);
+bool IsFinished(NGN_VideoStream* stream);
+
+- Description
+Stream state query methods:
+- IsPlaying: Returns true if the video is currently playing.
+- IsAlive: Returns true if the video is open and active (either playing or paused).
+- IsFinished: Returns true if the video has reached the end of its playback.
+
+- Example
+if (ngn_video->IsFinished(intro)) {
+    ngn_video->Close(intro);
+}
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetPosition(NGN_VideoStream* stream, float position_x, float position_y);
+void SetPosition(NGN_VideoStream* stream, Vector2 pos);
+
+- Description
+Positions the video stream render at the given coordinate.
+
+- Example
+ngn_video->SetPosition(intro, 128.0f, 64.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+Vector2 GetPosition(NGN_VideoStream* stream);
+
+- Description
+Returns the current position of the video in a Vector2 format. If the stream is invalid, it returns Vector2::Zero().
+
+- Example
+Vector2 current_pos = ngn_video->GetPosition(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Translate(NGN_VideoStream* stream, float speed_x, float speed_y);
+void Translate(NGN_VideoStream* stream, Vector2 spd);
+
+- Description
+Moves the render position of the video in the given direction and speeds, starting from its current position.
+
+- Example
+ngn_video->Translate(intro, 2.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetSize(NGN_VideoStream* stream, float w, float h);
+
+- Description
+Sets a new absolute size (width and height) for the video stream render, resetting the current scale to 1.0f.
+
+- Example
+ngn_video->SetSize(intro, 1920.0f, 1080.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2 GetSize(NGN_VideoStream* stream);
+
+- Description
+Returns a Size2 structure with the current size (width and height) of the video representation.
+
+- Example
+Size2 video_size = ngn_video->GetSize(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetScale(NGN_VideoStream* stream, float w, float h);
+void SetScale(NGN_VideoStream* stream, float scale);
+
+- Description
+Applies a new scale to the video based on its original size. Depending on the overload used, it will scale the axes together or separately.
+
+- Example
+ngn_video->SetScale(intro, 1.5f);
+
+--------------------------------------------------------------------------------
+
+- Method
+Size2 GetScale(NGN_VideoStream* stream);
+
+- Description
+Returns a Size2 structure with the current scale on both axes of the specified video.
+
+- Example
+Size2 current_scale = ngn_video->GetScale(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetRotation(NGN_VideoStream* stream, double degrees);
+
+- Description
+Sets the absolute rotation of the video, applying the provided degrees (0.0 to 360.0).
+
+- Example
+ngn_video->SetRotation(intro, 45.0);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Rotate(NGN_VideoStream* stream, double degrees);
+
+- Description
+Rotates the video by adding the provided degrees to its current rotation.
+
+- Example
+ngn_video->Rotate(intro, 1.5);
+
+--------------------------------------------------------------------------------
+
+- Method
+double GetRotation(NGN_VideoStream* stream);
+
+- Description
+Returns the current rotation of the specified video, in degrees.
+
+- Example
+double current_rot = ngn_video->GetRotation(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetCenter(NGN_VideoStream* stream, float x, float y);
+
+- Description
+Specifies, in relative coordinates, the offset of the center for applying rotations to the video.
+
+- Example
+ngn_video->SetCenter(intro, -10.0f, -5.0f);
+
+--------------------------------------------------------------------------------
+
+- Method
+Vector2 GetCenter(NGN_VideoStream* stream);
+
+- Description
+Returns a Vector2 with the current rotation center offset of the video.
+
+- Example
+Vector2 center_offset = ngn_video->GetCenter(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetAlpha(NGN_VideoStream* stream, int32_t lv);
+
+- Description
+Sets the transparency level (Alpha) of the video, bounded between -1 (special engine behavior) and 255 (fully opaque).
+
+- Example
+ngn_video->SetAlpha(intro, 128);
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t GetAlpha(NGN_VideoStream* stream);
+
+- Description
+Returns the current transparency level (Alpha) applied to the video stream.
+
+- Example
+int32_t current_alpha = ngn_video->GetAlpha(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetTintColor(NGN_VideoStream* stream, uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
+
+- Description
+Sets an RGB tint color to be applied to the video. If not specified, the white value (255, 255, 255) will be applied, showing the original colors without alterations.
+
+- Example
+ngn_video->SetTintColor(intro, 255, 128, 64);
+
+--------------------------------------------------------------------------------
+
+- Method
+Rgba GetTintColor(NGN_VideoStream* stream);
+
+- Description
+Returns an Rgba structure with the current tint color being applied to the video.
+
+- Example
+Rgba current_tint = ngn_video->GetTintColor(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetBlendMode(NGN_VideoStream* stream, SDL_BlendMode blend_mode);
+
+- Description
+Adjusts the color blending mode of the video (e.g., NGN_BLENDMODE_ALPHA, NGN_BLENDMODE_ADDITIVE, etc.).
+
+- Example
+ngn_video->SetBlendMode(intro, NGN_BLENDMODE_ADDITIVE);
+
+--------------------------------------------------------------------------------
+
+- Method
+void SetVolume(NGN_VideoStream* stream, int32_t volume);
+
+- Description
+Adjusts the volume level of the specified video stream. The value must be between 0 and 100.
+
+- Example
+ngn_video->SetVolume(intro, 50);
+
+--------------------------------------------------------------------------------
+
+- Method
+int32_t GetVolume(NGN_VideoStream* stream);
+
+- Description
+Returns the current volume level (0-100) of the specified stream. If the video does not exist, it returns 0.
+
+- Example
+int32_t current_volume = ngn_video->GetVolume(intro);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Update();
+
+- Description
+Core process of the video manager. Updates all active streams: decodes frames, synchronizes Audio/Video, and processes loop events. It must be called cyclically, once per game frame (ideally before ngn->graphics->Update()).
+
+- Example
+ngn_video->Update();
+
+--------------------------------------------------------------------------------

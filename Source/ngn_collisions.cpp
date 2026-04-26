@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Sistema de colisiones
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -273,7 +273,7 @@ bool NGN_Collisions::HitBox(NGN_Sprite* spr1, NGN_Sprite* spr2) {
 bool NGN_Collisions::CheckBoxColliders(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2) {
 
     // Verifica si existe la colision
-    return ((std::abs(x1 - x2) < ((w1 + w2) / 2.0f)) && (std::abs(y1 - y2) < ((h1 + h2) / 2.0f)));
+    return ((std::abs(x1 - x2) < ((w1 + w2) * 0.5f)) && (std::abs(y1 - y2) < ((h1 + h2) * 0.5f)));
 
 }
 
@@ -302,8 +302,8 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
         // Si no lo estan, colision por cajas
         const uint32_t dx = (uint32_t)(std::abs(spr1->position.x - spr2->position.x));
         const uint32_t dy = (uint32_t)(std::abs(spr1->position.y - spr2->position.y));
-        const uint32_t sw = (uint32_t)((spr1->width / 2.0f) + (spr2->width / 2.0f));
-        const uint32_t sh = (uint32_t)((spr1->height / 2.0f) + (spr2->height / 2.0f));
+        const uint32_t sw = (uint32_t)((spr1->width * 0.5f) + (spr2->width * 0.5f));
+        const uint32_t sh = (uint32_t)((spr1->height * 0.5f) + (spr2->height * 0.5f));
         if ((dx > sw) || (dy > sh)) return false;
     }
 
@@ -313,17 +313,17 @@ bool NGN_Collisions::PixelPerfect(NGN_Sprite* spr1, NGN_Sprite* spr2) {
     // Calculo del tamaño segun la rotacion
     float w1 = 0.0f, w2 = 0.0f, h1 = 0.0f, h2 = 0.0f;
     if (spr1->rotation == 0.0f) {
-        w1 = (spr1->width / 2.0f);
-        h1 = (spr1->height / 2.0f);
+        w1 = (spr1->width * 0.5f);
+        h1 = (spr1->height * 0.5f);
     } else {
-        w1 = (std::sqrt((spr1->width * spr1->width) + (spr1->height * spr1->height)) / 2.0f);
+        w1 = (std::sqrt((spr1->width * spr1->width) + (spr1->height * spr1->height)) * 0.5f);
         h1 = w1;
     }
     if (spr2->rotation == 0.0f) {
-        w2 = (spr2->width / 2.0f);
-        h2 = (spr2->height / 2.0f);
+        w2 = (spr2->width * 0.5f);
+        h2 = (spr2->height * 0.5f);
     } else {
-        w2 = (std::sqrt((spr2->width * spr2->width) + (spr2->height * spr2->height)) / 2.0f);
+        w2 = (std::sqrt((spr2->width * spr2->width) + (spr2->height * spr2->height)) * 0.5f);
         h2 = w2;
     }
 
@@ -418,8 +418,8 @@ bool NGN_Collisions::RaycastPoint(NGN_Sprite* spr, float position_x, float posit
         // Si no lo estan, colision por cajas
         const uint32_t dx = std::abs(spr->position.x - position_x);
         const uint32_t dy = std::abs(spr->position.y - position_y);
-        const uint32_t sw = (uint32_t)(spr->width / 2.0f);
-        const uint32_t sh = (uint32_t)(spr->height / 2.0f);
+        const uint32_t sw = (uint32_t)(spr->width * 0.5f);
+        const uint32_t sh = (uint32_t)(spr->height * 0.5f);
         if ((dx > sw) || (dy > sh)) return false;
     }
 
@@ -459,7 +459,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     SDL_Texture* backbuffer = nullptr;
     backbuffer = SDL_CreateTexture(
         ngn->graphics->renderer,        // Renderer
-        SDL_PIXELFORMAT_BGRA8888,       // Formato del pixel
+        NGN_PIXEL_FORMAT,               // Formato del pixel
         SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer (modo edicion)
         w,                              // Ancho de la textura
         h                               // Alto de la textura
@@ -475,8 +475,8 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
 
     // Calculos
     int32_t _x, _y;
-    _x = (int32_t)(x - (sprite->width / 2.0f));
-    _y = (int32_t)(y - (sprite->height / 2.0f));
+    _x = (int32_t)(x - (sprite->width * 0.5f));
+    _y = (int32_t)(y - (sprite->height * 0.5f));
 
     int32_t _width = (int32_t)sprite->width;
     int32_t _height = (int32_t)sprite->height;
@@ -484,9 +484,10 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     SDL_RendererFlip _flip;
 
     // Centro de la rotacion
-    SDL_Point* _center = new SDL_Point();
-    _center->x = ((sprite->width / 2.0f) + sprite->center.x);
-    _center->y = ((sprite->height / 2.0f) + sprite->center.y);
+    SDL_Point _center = {
+        (int32_t)((sprite->width * 0.5f) + sprite->center.x),
+        (int32_t)((sprite->height * 0.5f) + sprite->center.y)
+    };
 
     // Flip
     if (!sprite->flip_h && !sprite->flip_v) {
@@ -532,7 +533,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     };
 
     // Renderiza la textura
-    SDL_RenderCopyEx(ngn->graphics->renderer, sprite->data->gfx[sprite->frame], &source, &destination, (sprite->rotation + _rotation), _center, _flip);
+    SDL_RenderCopyEx(ngn->graphics->renderer, sprite->data->gfx[sprite->frame], &source, &destination, (sprite->rotation + _rotation), &_center, _flip);
 
     // Area a extraer
     SDL_Rect area = {0, 0, (int32_t)w, (int32_t)h};
@@ -548,7 +549,7 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
         0xFF000000      // Mascara A
          );
     // Extrae los pixeles
-    SDL_RenderReadPixels(ngn->graphics->renderer, &area, SDL_PIXELFORMAT_BGRA8888, surface->pixels, surface->pitch);
+    SDL_RenderReadPixels(ngn->graphics->renderer, &area, NGN_PIXEL_FORMAT, surface->pixels, surface->pitch);
 
     // Cambia el destino del renderer a la pantalla
     SDL_SetRenderTarget(ngn->graphics->renderer, nullptr);
@@ -556,7 +557,6 @@ SDL_Surface* NGN_Collisions::RenderSpriteInSurface(NGN_Sprite* sprite, int32_t x
     SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
 
     // Paso de limpieza
-    delete _center;
     SDL_DestroyTexture(backbuffer);
     backbuffer = nullptr;
 

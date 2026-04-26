@@ -25,6 +25,7 @@
                     <li><a href="#TiledBg">TiledBg</a></li>
                     <li><a href="#TextLayer">TextLayer</a></li>
                     <li><a href="#Canvas">Canvas</a></li>
+                    <li><a href="#Video">Video</a></li>
                     <li><a href="#Viewports">Viewports</a></li>
                     <li><a href="#RenderToTexture">RenderToTexture</a></li>
                     <li><a href="#RenderToScreen">RenderToScreen</a></li>
@@ -96,6 +97,20 @@ ngn->render->TextLayer(textbox, 200, 100);</code></pre>
                 <h3>Example</h3>
                 <pre><code>ngn->render->Canvas(mydraw);
 ngn->render->Canvas(mydraw, 10, 10);</code></pre>
+            </section>
+			
+			<section id="Video" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void Video(
+    NGN_VideoStream* video_frame,                // Video stream object
+    float position_x = (float)NGN_DEFAULT_VALUE, // X position (optional)
+    float position_y = (float)NGN_DEFAULT_VALUE  // Y position (optional)
+);</code></pre>
+                <h3>Description</h3>
+                <p>Renders the current frame of a video stream to the backbuffer. If X and Y coordinates are not specified, the ones stored in the video object are used. The method automatically applies all properties configured in the stream, including scaling, rotation, pivot point, flipping, alpha transparency, and color tinting.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->render->Video(intro);
+ngn->render->Video(intro, 0.0f, 0.0f);</code></pre>
             </section>
 
             <section id="Viewports" class="doc-block">

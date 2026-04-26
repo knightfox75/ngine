@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Clips de musica
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -68,7 +68,7 @@ class NGN_MusicClip {
         ~NGN_MusicClip();
 
         // Abre un archivo para su streaming
-        bool Open(std::string filepath);
+        bool Open(const std::string& filepath);
 
         // Reproduce la musica [1a sobrecarga]
         void Play(

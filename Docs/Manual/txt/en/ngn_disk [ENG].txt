@@ -1,5 +1,5 @@
 NGN_DISK.H
-v1.16.0-stable
+v1.22.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -10,12 +10,14 @@ English
 
 - Method
 int32_t ReadBinaryFile(
-    std::string filepath,          // Path to the file
-    std::vector<uint8_t> &buffer   // Storage vector
+    std::string filepath,          			// Path to the file
+    std::vector<uint8_t> &buffer,  			// Storage vector
+	uint32_t offset = NGN_DEFAULT_VALUE,    // Starting byte for reading (optional)
+	uint32_t length = NGN_DEFAULT_VALUE     // Number of bytes to read (optional)
 );
 
 - Description
-Opens and reads the specified file in binary mode from the system's file system and stores it in the given buffer. Additionally, this method returns the size of the read file (in bytes) or -1 in case of an error.
+Opens and reads the specified file in binary mode and stores its content in the provided buffer. This method returns the total bytes read or -1 if an error occurs. It optionally supports partial reads using the offset and length parameters. If length is not specified, the file will be read from the offset to the end of the file.
 
 - Example
 std::vector<uint8_t> data;

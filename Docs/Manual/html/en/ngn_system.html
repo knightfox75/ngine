@@ -20,6 +20,8 @@
                     <li><a href="#EventUpdate">EventUpdate</a></li>
                     <li><a href="#GetVersion">GetVersion</a></li>
                     <li><a href="#GetApplicationFocus">GetApplicationFocus</a></li>
+                    <li><a href="#GetFrameTime">GetFrameTime</a></li>
+                    <li><a href="#GetWorkLoad">GetWorkLoad</a></li>
                 </ul>
             </nav>
             <hr>
@@ -51,6 +53,25 @@
                 <h3>Example</h3>
                 <pre><code>bool focused = ngn->system->GetApplicationFocus();</code></pre>
             </section>
+			
+			<section id="GetFrameTime" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>double GetFrameTime();</code></pre>
+                <h3>Description</h3>
+                <p>Returns the total execution time of the last completed frame (in seconds). This value is calculated by measuring the difference between the start and the end of the frame processing using high-precision counters. It is essential for performance monitoring.</p>
+                <h3>Example</h3>
+                <pre><code>double dt = ngn->system->GetFrameTime();</code></pre>
+            </section>
+			
+			<section id="GetWorkLoad" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>float GetWorkLoad();</code></pre>
+                <h3>Description</h3>
+                <p>Returns the workload percentage of the last processed frame. This value represents the ratio between the actual execution time and the maximum time available to maintain the target refresh rate. A value of 100% indicates that the frame consumed all its allotted time; higher values indicate that the engine cannot maintain the target frame rate (FPS).</p>
+                <h3>Example</h3>
+                <pre><code>float cpu_usage = ngn->system->GetWorkLoad();</code></pre>
+            </section>
+			
             <hr>
 
             <!-- PROPERTIES INDEX -->

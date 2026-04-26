@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Sonido
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -49,6 +49,9 @@
 
 // Libreria
 #include "ngn.h"
+
+// Includes del proyecto
+#include "ngn_video.h"
 
 
 
@@ -950,6 +953,7 @@ void NGN_Sound::Update() {
 
     SfxUpdate();
     MusicUpdate();
+    VideoStreamAudioUpdate();
 
     for (uint8_t i = 0; i < MIXER_CHANNELS; i ++) last_mixer_channel_level[i] = mixer_channel_level[i];
 
@@ -1036,6 +1040,23 @@ NGN_AudioClip* NGN_Sound::_PlaySfx(
 
         return nullptr;
 
+    }
+
+}
+
+
+
+// Actualiza el volumen de los videos (si exiten)
+void NGN_Sound::VideoStreamAudioUpdate() {
+
+    // Actualiza cada stream activo
+    uint8_t ch = 0;
+    for (uint32_t i = 0; i < ngn->video->video_cue.size(); i++) {
+        if (!ngn->video->video_cue[i]) continue; 
+        ch = ngn->video->video_cue[i]->_mixer_channel;
+        if ((mixer_channel_level[ch] != last_mixer_channel_level[ch]) || (mixer_channel_level[MIXER_MASTER_CH] != last_mixer_channel_level[MIXER_MASTER_CH])) {
+            ngn->video->video_cue[i]->Volume(ngn->video->video_cue[i]->GetVolume());
+        }
     }
 
 }

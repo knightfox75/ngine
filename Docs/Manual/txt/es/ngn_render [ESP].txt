@@ -86,6 +86,22 @@ ngn->render->Canvas(mydraw, 10, 10);
 --------------------------------------------------------------------------------
 
 - Método
+void Video(
+    NGN_VideoStream* video_frame,                // Objeto de stream de vídeo
+    float position_x = (float)NGN_DEFAULT_VALUE, // Posición X (opcional)
+    float position_y = (float)NGN_DEFAULT_VALUE  // Posición Y (opcional)
+);
+
+- Descripción
+Renderiza el fotograma actual de un stream de vídeo en el backbuffer. Si no se especifican las coordenadas X e Y, se utilizan las almacenadas en el objeto de vídeo. El método aplica automáticamente todas las propiedades configuradas en el stream, incluyendo escalado, rotación, punto de pivote, inversión (flip), transparencia (alpha) y tintado de color.
+
+- Ejemplo
+ngn->render->Video(intro);
+ngn->render->Video(intro, 0.0f, 0.0f);
+
+--------------------------------------------------------------------------------
+
+- Método
 void Viewports();
 
 - Descripción

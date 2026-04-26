@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -84,64 +84,13 @@ NGN_FileSystem::~NGN_FileSystem() {
 
 
 /*** Metodo para cargar un archivo desde un archivo empaquetado a un buffer temporal en RAM ***/
-int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uint8_t> &buffer) {
+int32_t NGN_FileSystem::LoadFileFromPackage(const std::string& filepath, std::vector<uint8_t>& buffer) {
 
     // Prepara el buffer temporal para cargar el archivo
     buffer.clear();
 
-    // Busca el archivo en la FAT
-    /*
-    int32_t _id = -1;
-    for (uint32_t i = 0; i < fat.size(); i ++) {
-        // Si el archivo coincide...
-        if (filepath == fat[i].file_name) {
-            _id = (int32_t)i;
-            break;
-        }
-    }
-    */
-
-    // Busca el archivo en la FAT (modo indexado)
-    int32_t _id = -1;
-    int32_t r = 0;
-    uint32_t p_begin = 0;
-    uint32_t p_end = 0;
-    uint32_t position = 0;
-
-    // Hay al menos un elemento valido en la FAT?
-    if (fat.size() > 0) {
-        // Parametros iniciales de la busqueda
-        p_begin = 0;
-        p_end = (fat.size() - 1);
-        position = p_begin + (uint32_t)((p_end - p_begin) / 2);
-        // Busqueda indexada del archivo
-        do {
-            // Analisis del archivo
-            r = filepath.compare(fat[position].file_name);
-            if (r == 0) {
-                // Archivo encontrado
-                _id = (int32_t)position;
-                break;
-            } else {
-                // Nueva posicion, dependiendo de si el nombre esta por detras o por delante en el orden de la FAT
-                if (r > 0) {
-                    p_begin = position;
-                } else {
-                    p_end = position;
-                }
-                position = p_begin + (uint32_t)((p_end - p_begin) / 2);
-            }
-        } while ((p_end - p_begin) > 1);
-        // Paso adicional (ultimas 2 opciones)
-        if (_id < 0) {
-            if (filepath.compare(fat[p_begin].file_name) == 0) {
-                _id = (int32_t)p_begin;
-            } else if (filepath.compare(fat[p_end].file_name) == 0) {
-                _id = (int32_t)p_end;
-            }
-        }
-    }
-
+    // Busca el ID del nodo del archivo
+    int32_t _id = GetNodeId(filepath);
     // Si el nodo no se ha encontrado, error
     if (_id < 0) {
         ngn->log->Message("[NGN_FileSystem error] <" + filepath + "> not found.");
@@ -151,13 +100,14 @@ int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uin
     // Si el nodo es valido, guardalo
     uint32_t node_id = (uint32_t)_id;
 
-    // Prepara el checksum
-    std::vector<uint8_t> checksum;
-    checksum.clear();
+    // Si el archivo en la FAT indica que tiene 0 bytes, salimos de forma segura
+    if (fat[node_id].file_size == 0) {
+        return 0;
+    }
 
     // Abre el fichero de origen
     std::ifstream file;                                                 // Stream de acceso al archivo
-    const char* filename = package_file.c_str();                        // General el nombre de archivo
+    const char* filename = package_file.c_str();                        // Genera el nombre de archivo
     file.open(filename, std::ifstream::in | std::ifstream::binary);     // Abre el archivo en modo lectura
     if (!file.is_open()) {
         ngn->log->Message("[NGN_FileSystem error] Can't open <" + package_file + "> package for read.");
@@ -165,36 +115,123 @@ int32_t NGN_FileSystem::LoadFileFromPakage(std::string filepath, std::vector<uin
     }
 
     // Coloca el cabezal de lectura en el offset correcto
-    file.seekg(fat[node_id].file_offset);
-    // Prepara el buffer
+    // Usamos std::streamoff para prevenir desbordes si el empaquetado supera los 4GB
+    file.seekg((std::streamoff)fat[node_id].file_offset);
+    
+    // Prepara el buffer reservando el tamano exacto del archivo
     buffer.resize(fat[node_id].file_size);
-    // Copia los datos del archivo de origen al de buffer
-    file.read((char*)&buffer[0], fat[node_id].file_size);
-    // Cierra el archivo
+    
+    // Copia los datos del archivo de origen al buffer de forma segura
+    file.read((char*)buffer.data(), fat[node_id].file_size);
+    
+    // Verificamos a nivel de hardware/SO cuantos bytes se leyeron realmente
+    int32_t bytes_read = (int32_t)file.gcount();
+    
+    // Cierra el archivo de disco lo antes posible
     file.close();
 
-    // Si los datos tienen clave de encriptacion, desencriptalos
+    // Si el disco no entrego todos los bytes esperados (empaquetado corrupto o cortado)
+    if (bytes_read != (int32_t)fat[node_id].file_size) {
+        ngn->log->Message("[NGN_FileSystem error] <" + filepath + "> physical read incomplete or corrupted package.");
+        buffer.clear(); // Limpiamos la basura para evitar que el motor use datos corruptos
+        return -1;
+    }
+
+    // Si los datos tienen clave de encriptacion, desencriptalos en memoria
     if (package_key.length() > 0) DecryptData(buffer);
 
-    // Calcula el checksum del archivo extraido y comparalo con el alamcenado en el nodo
-    checksum = Checksum(buffer);                            // Calcula el checksum del archivo
-    for (uint8_t n = 0; n < CHK_SIZE; n ++) {               // Verifica que el checksum sea correcto
+    // Calcula el checksum del archivo extraido y comparalo con el almacenado en el nodo
+    std::vector<uint8_t> checksum = Checksum(buffer);       // Calcula el checksum del archivo
+    for (uint8_t n = 0; n < CHK_SIZE; n++) {                // Verifica que el checksum sea correcto byte a byte
         if (checksum[n] != fat[node_id].checksum[n]) {      // Si hay error de checksum
             ngn->log->Message("[NGN_FileSystem warning] <" + filepath + "> checksum failed.");
-            checksum.clear();
+            buffer.clear(); // Limpiamos el buffer para que no se devuelvan datos corruptos/modificados
             return -1;
         }
     }
 
+    // Devuelve el numero de bytes leidos validados
+    return bytes_read;
+    
+}
+
+
+
+// Metodo para cargar un fragmento de un archivo de un empaquetado a un buffer temporal en RAM
+int32_t NGN_FileSystem::LoadFileChunkFromPackage(const std::string& filepath, std::vector<uint8_t>& buffer, uint32_t offset, uint32_t length) {
+
+    // Prepara el buffer temporal para cargar el archivo
+    buffer.clear();
+
+    // Busca el ID del nodo del archivo
+    int32_t _id = GetNodeId(filepath);
+    // Si el nodo no se ha encontrado, error
+    if (_id < 0) {
+        ngn->log->Message("[NGN_FileSystem error] <" + filepath + "> not found.");
+        return -1;
+    }
+
+    // Si el nodo es valido, guardalo
+    uint32_t node_id = (uint32_t)_id;
+
+    // Abre el fichero de origen
+    std::ifstream file;                                                 // Stream de acceso al archivo
+    const char* filename = package_file.c_str();                        // Genera el nombre de archivo
+    file.open(filename, std::ifstream::in | std::ifstream::binary);     // Abre el archivo en modo lectura
+    if (!file.is_open()) {
+        ngn->log->Message("[NGN_FileSystem error] Can't open <" + package_file + "> package for read.");
+        return -1;   // Si el archivo no puede abrirse, sal
+    }
+
+    // Si el offset supera el limite del archivo
+    if (offset >= fat[node_id].file_size) {
+        file.close();
+        return -1;
+    }
+
+    // Calculo matematico seguro para prevenir el desbordamiento de enteros (integer overflow)
+    uint32_t max_length = fat[node_id].file_size - offset;
+    uint32_t chunk_size = (length > max_length) ? max_length : length;
+
+    // Salida temprana para prevenir comportamiento indefinido (UB) si el tamano del bloque a leer es 0
+    if (chunk_size == 0) {
+        file.close();
+        return 0;
+    }
+
+    // Reserva la memoria en el buffer
+    buffer.assign(chunk_size, 0);
+
+    // Coloca el cabezal de lectura en el offset correcto
+    // Se usa un casting a std::streamoff para evitar desbordes en archivos/empaquetados de mas de 4GB
+    file.seekg((std::streamoff)fat[node_id].file_offset + offset);
+    
+    // Copia los datos del archivo de origen al buffer
+    // Usar buffer.data() garantiza la seguridad de memoria en C++ moderno
+    file.read((char*)buffer.data(), chunk_size);
+    
+    // Obtiene el numero de bytes reales leidos directamente del hardware/SO
+    int32_t bytes_read = (int32_t)file.gcount();
+    
+    // Cierra el archivo
+    file.close();
+
+    // Si hubo un fallo de hardware/SO y se leyeron menos bytes, ajusta el tamano del buffer (evita ceros "basura")
+    if (bytes_read >= 0 && (uint32_t)bytes_read < chunk_size) {
+        buffer.resize(bytes_read);
+    }
+
+    if (package_key.length() > 0) DecryptChunk(buffer, offset);
+
     // Devuelve el numero de bytes leidos
-    return fat[node_id].file_size;
+    return bytes_read;
 
 }
 
 
 
 /*** Establece el uso de un archivo empaquetado ***/
-bool NGN_FileSystem::SetPackage(std::string pkg_file, std::string key) {
+bool NGN_FileSystem::SetPackage(const std::string& pkg_file, std::string key) {
 
     // Verifica si el package ha sido ya seleccionado con exito anteriormente
     if ((pkg_file != "") && (pkg_file == current_package_file)) return true;
@@ -249,6 +286,74 @@ bool NGN_FileSystem::SetPackage(std::string pkg_file, std::string key) {
 
     // Package establecido con exito
     return true;
+
+}
+
+
+
+/*** Devuelve el archivo seleccionado actualmente como package ***/
+std::string NGN_FileSystem::GetCurrentPackage() {
+
+    return current_package_file;
+
+}
+
+
+
+/*** Devuelve la clave del paquete actual ***/
+std::vector<uint8_t> NGN_FileSystem::GetCurrentPackageKey() {
+
+    return key_values;
+
+}
+
+
+
+// Devuelve si se ha encontrado un archivo en el paquete y de ser asi, los datos de ubicacion del mismo
+bool NGN_FileSystem::GetFileInfoInPackage(const std::string& filepath, uint32_t& offset, uint32_t& length) {
+
+    // Busca el ID del nodo del archivo
+    int32_t _id = GetNodeId(filepath);
+
+    // Si no se encuentra sal
+    if (_id < 0) {
+        offset = 0;
+        length = 0;
+        return false;
+    }
+
+    // Si lo encuentras devuelve los datos
+    uint32_t node_id = (uint32_t)_id;
+    offset = fat[node_id].file_offset;
+    length = fat[node_id].file_size;
+    return true;
+
+}
+
+
+
+/*** Desencripta "al vuelo" un bloque de datos de un archivo del empaquetado (puede ser que no sea el seleccionado actualmente) ***/
+void NGN_FileSystem::DecryptChunk(uint8_t* data, uint32_t length, uint32_t offset_in_file, const std::vector<uint8_t>& key) {
+
+    // Proteccion basica
+    if ((data == nullptr) || (length == 0) || (key.size() == 0)) return;
+
+    uint32_t m = key.size();
+
+    // Recupera el estado del acumulador k en la posicion offset_in_file
+    uint32_t k = ComputeKAtOffset(offset_in_file, key);
+
+    uint8_t v = 0;
+
+    for (uint32_t i = 0; i < length; i++) {
+        uint32_t id = offset_in_file + i;       // Posicion absoluta dentro del archivo logico
+        v = key[(id % m)];
+        k += v;
+        uint8_t byte = data[i];
+        byte = RotateRight((byte ^ ((k % 0x100) & 0xFF)), v);
+        byte ^= v;
+        data[i] = byte;
+    }
 
 }
 
@@ -350,8 +455,59 @@ int32_t NGN_FileSystem::CreateFatFromPackage() {
 
 
 
+/*** Devuelve el ID de nodo de un arhcivo en la FAT ***/
+int32_t NGN_FileSystem::GetNodeId(const std::string& filepath) {
+
+    // Busca el archivo en la FAT (modo indexado)
+    int32_t _id = -1;
+    int32_t r = 0;
+    uint32_t p_begin = 0;
+    uint32_t p_end = 0;
+    uint32_t position = 0;
+
+    // Hay al menos un elemento valido en la FAT?
+    if (fat.size() > 0) {
+        // Parametros iniciales de la busqueda
+        p_begin = 0;
+        p_end = (fat.size() - 1);
+        position = p_begin + (uint32_t)((p_end - p_begin) / 2);
+        // Busqueda indexada del archivo
+        do {
+            // Analisis del archivo
+            r = filepath.compare(fat[position].file_name);
+            if (r == 0) {
+                // Archivo encontrado
+                _id = (int32_t)position;
+                break;
+            } else {
+                // Nueva posicion, dependiendo de si el nombre esta por detras o por delante en el orden de la FAT
+                if (r > 0) {
+                    p_begin = position;
+                } else {
+                    p_end = position;
+                }
+                position = p_begin + (uint32_t)((p_end - p_begin) / 2);
+            }
+        } while ((p_end - p_begin) > 1);
+        // Paso adicional (ultimas 2 opciones)
+        if (_id < 0) {
+            if (filepath.compare(fat[p_begin].file_name) == 0) {
+                _id = (int32_t)p_begin;
+            } else if (filepath.compare(fat[p_end].file_name) == 0) {
+                _id = (int32_t)p_end;
+            }
+        }
+    }
+
+    // Devuelve el indice (-1 en caso de error)
+    return _id;
+
+}
+
+
+
 /*** Desencriptado de los datos contenidos en un vector ***/
-int32_t NGN_FileSystem::DecryptData(std::vector<uint8_t> &data) {
+void NGN_FileSystem::DecryptData(std::vector<uint8_t> &data) {
 
     // Bucle de encriptado
     uint8_t byte = 0;
@@ -363,13 +519,87 @@ int32_t NGN_FileSystem::DecryptData(std::vector<uint8_t> &data) {
         v = key_values[(id % m)];               // Obten un valor de la clave
         k += v;                                 // Calcula la K segun ese valor
         byte ^= ((k % 0x100) & 0xFF);           // XOR con el K
-        RotateRight(byte, v);                   // Rota los bits a la derecha
+        byte = RotateRight(byte, v);            // Rota los bits a la derecha
         byte ^= v;                              // XOR con el valor
         data[id] = byte;                        // Devuelve el byte desencriptado
     }
 
-    // Proceso correcto
-    return 0;
+}
+
+
+
+/*** Desencripta un fragmento del buffer sabiendo su offset dentro del archivo logico ***/
+void NGN_FileSystem::DecryptChunk(std::vector<uint8_t>& data, uint32_t offset_in_file) {
+
+    uint32_t m = key_values.size();
+
+    // Recupera el estado del acumulador k en la posicion offset_in_file,
+    // como si hubieramos iterado desde el byte 0 hasta ese punto.
+    uint32_t k = ComputeKAtOffset(offset_in_file);
+
+    uint8_t v = 0;
+
+    for (uint32_t i = 0; i < data.size(); i++) {
+        uint32_t id = offset_in_file + i;       // Posicion absoluta dentro del archivo logico
+        v = key_values[(id % m)];
+        k += v;
+        uint8_t byte = data[i];
+        byte = RotateRight((byte ^ ((k % 0x100) & 0xFF)), v);
+        byte ^= v;
+        data[i] = byte;
+    }
+
+}
+
+
+
+/*** Calcula el valor del acumulador k en la posicion offset_in_file ***/
+uint32_t NGN_FileSystem::ComputeKAtOffset(uint32_t offset_in_file) {
+
+    uint32_t m = key_values.size();
+
+    // Estado inicial del acumulador (igual que en DecryptData)
+    uint32_t k = m;
+
+    if (offset_in_file == 0) return k;
+
+    // Suma de un ciclo completo de la clave (constante para una clave dada)
+    uint32_t cycle_sum = 0;
+    for (uint32_t i = 0; i < m; i++) cycle_sum += key_values[i];
+
+    // Ciclos completos que caben antes de offset_in_file
+    uint32_t full_cycles = (offset_in_file / m);
+    // Elementos del ciclo parcial final
+    uint32_t remainder   = (offset_in_file % m);
+
+    // Contribucion de los ciclos completos
+    k += (full_cycles * cycle_sum);
+
+    // Contribucion del ciclo parcial
+    for (uint32_t i = 0; i < remainder; i++) k += key_values[i];
+
+    return k;
+
+}
+
+/*** Calcula el valor del acumulador k en la posicion offset_in_file con una clave externa ***/
+uint32_t NGN_FileSystem::ComputeKAtOffset(uint32_t offset_in_file, const std::vector<uint8_t>& key) {
+
+    uint32_t m = key.size();
+    uint32_t k = m;
+
+    if (offset_in_file == 0) return k;
+
+    uint32_t cycle_sum = 0;
+    for (uint32_t i = 0; i < m; i++) cycle_sum += key[i];
+
+    uint32_t full_cycles = (offset_in_file / m);
+    uint32_t remainder = (offset_in_file % m);
+
+    k += (full_cycles * cycle_sum);
+    for (uint32_t i = 0; i < remainder; i++) k += key[i];
+
+    return k;
 
 }
 

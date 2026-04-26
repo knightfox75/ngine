@@ -1,5 +1,5 @@
 NGN_RENDER.H
-v1.16.0-stable
+v1.22.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -83,6 +83,22 @@ Draws a canvas with the NGN_Canvas format to the specified target and at the pos
 - Example
 ngn->render->Canvas(mydraw);
 ngn->render->Canvas(mydraw, 10, 10);
+
+--------------------------------------------------------------------------------
+
+- Method
+void Video(
+    NGN_VideoStream* video_frame,                // Video stream object
+    float position_x = (float)NGN_DEFAULT_VALUE, // X position (optional)
+    float position_y = (float)NGN_DEFAULT_VALUE  // Y position (optional)
+);
+
+- Description
+Renders the current frame of a video stream to the backbuffer. If X and Y coordinates are not specified, the ones stored in the video object are used. The method automatically applies all properties configured in the stream, including scaling, rotation, pivot point, flipping, alpha transparency, and color tinting.
+
+- Example
+ngn->render->Video(intro);
+ngn->render->Video(intro, 0.0f, 0.0f);
 
 --------------------------------------------------------------------------------
 

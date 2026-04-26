@@ -30,6 +30,7 @@
                     <li><a href="#LoadFile">LoadFile</a></li>
                     <li><a href="#SetDisk">SetDisk</a></li>
                     <li><a href="#SetPackage">SetPackage</a></li>
+                    <li><a href="#LoadFileChunk">LoadFileChunk</a></li>
                 </ul>
             </nav>
             <hr>
@@ -184,6 +185,22 @@ int32_t file_length = ngn->load->LoadFile("data/stage.bin", buffer);</code></pre
                 <h3>Example</h3>
                 <pre><code>ngn->load->SetPackage("gamedata.pkg", "myawesomekey");</code></pre>
             </section>
+			
+			<section id="LoadFileChunk" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>int32_t LoadFileChunk(
+    const std::string& filepath,   // Path to the file
+    std::vector&lt;uint8_t&gt; &data,    // Storage vector
+    uint32_t offset,               // Starting byte for reading
+    uint32_t length                // Number of bytes to read
+);</code></pre>
+                <h3>Description</h3>
+                <p>Loads a specific chunk of a file from the default source (either the file system or a data package). If the file is encrypted, the method will automatically decrypt it during loading. It returns the number of bytes read or -1 if an error occurs.</p>
+                <h3>Example</h3>
+                <pre><code>std::vector&lt;uint8_t&gt; chunk;
+int32_t bytes_read = ngn->load->LoadFileChunk("data/assets.pkg", chunk, 1024, 512);</code></pre>
+            </section>
+			
         </main>
     </div>
 

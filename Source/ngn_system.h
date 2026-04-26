@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -45,6 +45,8 @@
 /*** Includes ***/
 // Includes de C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
+// SDL
+#include <SDL.h>                    // Tipos de datos de SDL2
 
 
 
@@ -76,8 +78,6 @@ class NGN_System {
         // Flags de sistema
         bool quit;                      // Se solicita la salida de la aplicacion
 
-        // Tiempo delta
-        float delta_time;
 
         // Contador de FPS por consola de debug habilitado
         bool fps_counter;
@@ -85,9 +85,18 @@ class NGN_System {
         // Estado del foco de la aplicacion
         bool GetApplicationFocus();
 
+        // Devuelve el tiempo de ejecucion del frame
+        double GetFrameTime();
+
+        // Devuelve el Workload del frame
+        float GetWorkLoad();
+
 
     // Private
     private:
+
+        // Clases amigas
+        friend class NGN_Graphics;
 
         // Contructor
         NGN_System();
@@ -116,11 +125,12 @@ class NGN_System {
         // Lectura del evento del GamePad [SDL_JOYBUTTONDOWN & SDL_JOYBUTTONUP]
         void JoystickButtons();
 
-        // Tiempo delta
-        uint32_t _delta_time;
-
         // Estado del foco de la aplicacion
         bool _focus;
+
+        // Calculo del tiempo de frame
+        uint64_t last_frame_time_start, last_frame_time_end;
+        double last_frame_time;
 
 };
 

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0-wip_0x04 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -164,11 +164,14 @@ NGN_AudioClipData::~NGN_AudioClipData() {
 // Constructor
 NGN_TextFont::NGN_TextFont() {
 
-    character.clear();
-    character.reserve(256);
-    for (uint32_t i = 0; i < 256; i ++) {
-        character.push_back(new NGN_TextureData());
-    }
+    characters_atlas = nullptr;
+
+    cell_size = {0, 0};
+
+    char_size.clear();
+    char_size.resize(256, {0, 0});
+
+    atlas_size = {0, 0};
 
     height = 0;
     line_spacing = 0;
@@ -178,11 +181,12 @@ NGN_TextFont::NGN_TextFont() {
 // Destructor
 NGN_TextFont::~NGN_TextFont() {
 
-    for (uint32_t i = 0; i < character.capacity(); i ++) {
-        delete character[i]; character[i] = nullptr;
+    if (characters_atlas != nullptr) {
+        SDL_DestroyTexture(characters_atlas);
+        characters_atlas = nullptr;
     }
 
-    character.clear();
+    char_size.clear();
 
 }
 
@@ -233,3 +237,24 @@ NGN_RendererSurface::~NGN_RendererSurface() {
 
 
 
+/*** Prototipo de datos de video ***/
+
+// Constructor
+NGN_VideoData::NGN_VideoData() {
+
+    // Metadatos del stream
+    width = 0;
+    height = 0;
+    framerate = 0.0;
+
+    // Origen del archivo
+    filepath = "";
+    from_package = false;
+    package_offset = 0;
+    package_size = 0;
+
+}
+
+// Destructor de la clase
+NGN_VideoData::~NGN_VideoData() {
+}
