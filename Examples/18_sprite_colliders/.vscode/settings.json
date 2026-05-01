@@ -9,7 +9,8 @@
     "**/*.dat": true,
     "**/*.pkg": true,
     "**/*.json": true,
-    "**/*NGN*": true,
+    "**/Ngine_SDK*": true,
+    "**/NGN_FileSystem*": true,
     "**/assets": true,
     "**/build": true,
     "**/data": true,
@@ -24,5 +25,8 @@
   "editor.autoClosingComments": "never",
   "editor.autoClosingDelete": "never",
   "editor.autoClosingOvertype": "never",
-  "editor.autoClosingQuotes": "never"
+  "editor.autoClosingQuotes": "never",
+  "C_Cpp.intelliSenseCacheSize": 0,
+  "C_Cpp.dimInactiveRegions": true,
+  "C_Cpp.errorSquiggles": "EnabledIfIncludesResolve"
 }

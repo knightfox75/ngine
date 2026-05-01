@@ -1,4 +1,23 @@
 --------------------------------------------------------------------------------
+2026-05-01 Ver.1.22.0+stable
+--------------------------------------------------------------------------------
+- Reescritos por completo los métodos de carga de tipografías y de impresión de caracteres de texto. Ahora se genera un atlas con todos los caracteres y la función de impresión almacena la lista de vértices de los glifos hasta que se renderiza todo el texto pendiente en una sola llamada.
+- Añadido soporte para el cambio de color de tinta en el método Print de la clase NGN_TextLayer, mediante el código de escape \a y el código de color en hexadecimal (ej. \a0xFF00FF para definir el color de tinta "rosa").
+- Se fija el formato de píxel a RGBA8888 en todas las texturas, excepto para las tipografías, ya que internamente FreeType usa ARGB8888. Las texturas relacionadas con el tratamiento de las tipografías usan este formato. De no ser así, causa fallos al ejecutar en la plataforma Evercade.
+- Optimizaciones internas a nivel de cálculo en varios métodos de la librería (cambios de /2.0f a *0.5f, etc).
+- Reescritura de parte del motor de render de la clase NGN_Canvas, que acelera el render un 500% aprox. Esto permite también que ahora las formas que se dibujan apliquen el canal alpha del color sobre el contenido actual del canvas (antes se sobrescribía el color directamente).
+- Reescritura del método del contador de FPS.
+- Reescritura del método que limita el framerate por software (ahora es más preciso).
+- Se añaden métodos de profiling GetFrameTime() y GetWorkLoad() en NGN_System, los cuales devuelven el tiempo (en milisegundos) y la carga de trabajo (en porcentual) del frame anterior.
+- Modificado el método ReadBinaryFile() de la clase NGN_Disk para que admita la lectura parcial de un archivo.
+- Añadido el método LoadFileChunk() a la clase NGN_Load, el cual lee un fragmento de un archivo desde origen predeterminado.
+- Añadida la clase NGN_Video, la cual permite la reproducción de archivos de vídeo en formato OGV.
+- Añadido el método Video() a la clase NGN_Render, el cual renderiza el fotograma de vídeo actual decodificado por la clase NGN_Video.
+- Corregido un bug en el algoritmo de ofuscación de la herramienta NGN_FileSystem. Esto obliga a reempaquetar todos los archivos de recursos con esta nueva versión si se actualiza a esta versión de la librería.
+- Se añade el parámetro "loop_delay" al método AddAnimation de la clase NGN_Sprite, el cual establece un tiempo de espera antes de repetir la animación, en caso de que esta deba repetirse. Este parámetro es opcional y, por defecto, tiene un valor de 0 (no se añade ningún tiempo de espera), manteniendo así la compatibilidad con versiones anteriores.
+
+
+--------------------------------------------------------------------------------
 2026-02-26 Ver.1.21.0+stable
 --------------------------------------------------------------------------------
 - Migración de todos los ejemplos y plantillas de Code::Blocks a CMake y Visual Studio Code.

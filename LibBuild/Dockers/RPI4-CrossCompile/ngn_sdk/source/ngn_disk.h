@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Funciones de acceso al disco
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -70,20 +70,20 @@ class NGN_Disk {
 
 
         // Lee un archivo en formato binario desde el disco y almacenalo en un buffer en RAM
-        int32_t ReadBinaryFile(std::string filepath, std::vector<uint8_t> &buffer);
+        int32_t ReadBinaryFile(const std::string& filepath, std::vector<uint8_t> &buffer, uint32_t offset = NGN_DEFAULT_VALUE, uint32_t length = NGN_DEFAULT_VALUE);
 
         // Escribe un archivo en formato binario al disco desde un buffer en RAM
-        int32_t WriteBinaryFile(std::string filepath, std::vector<uint8_t> &buffer);
+        int32_t WriteBinaryFile(const std::string& filepath, std::vector<uint8_t> &buffer);
 
         // Lee un archivo en formato de texto desde el disco y almacenalo en un string
-        std::string ReadTextFile(std::string filepath);                                 // Primera sobrecarga
-        bool ReadTextFile(std::string filepath, std::vector<std::string> &lines);       // Segunda sobrecarga
+        std::string ReadTextFile(const std::string& filepath);                                 // Primera sobrecarga
+        bool ReadTextFile(const std::string& filepath, std::vector<std::string> &lines);       // Segunda sobrecarga
 
         // Escribe un archivo en formato de texto al disco desde un string
-        int32_t WriteTextFile(std::string filepath, std::string text, bool append = false);
+        int32_t WriteTextFile(const std::string& filepath, std::string text, bool append = false);
 
         // Verifica si un archivo existe
-        int32_t CheckFile(std::string path);
+        int32_t CheckFile(const std::string& path);
 
 
     private:
@@ -99,7 +99,7 @@ class NGN_Disk {
 
 
         // Genera una estructura de directorios
-        int32_t MakePath(std::string path);
+        int32_t MakePath(const std::string& path);
 
 };
 

@@ -227,10 +227,10 @@ void Demo::CreateStage() {
 /*** Crea los sprites ***/
 void Demo::CreateSprites() {
 
-    // Crea los sprites estaticos de la parte superior
+    // Crea los sprites estaticos de la parte superior (con retraso en el loop)
     for (uint32_t i = 0; i < sprite.capacity(); i ++) {
         sprite[i] = new NGN_Sprite(sprite_data, (192 + (i * 128)), 128);
-        sprite[i]->AddAnimation("fly", 0, 7, 0, 5);
+        sprite[i]->AddAnimation("fly", 0, 7, 0, 5, 60);
         sprite[i]->SetAnimation("fly");
         sprite[i]->frame = i % 8;     // Empieza en un frame aleatorio
     }

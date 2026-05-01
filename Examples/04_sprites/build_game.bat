@@ -3,82 +3,101 @@ setlocal
 title Sample_Project - Windows Build Specialist
 
 rem ==============================================================================
-rem Sample_Project - Windows Build System
-rem Architecture: Windows x86_64 (Fixed)
-rem Default Mode: DEBUG
+rem SAMPLE_PROJECT - WINDOWS BUILD SYSTEM
+rem Target: Windows x86_64 (MinGW)
+rem Feature: Build Mode Selection + CMake Integration
 rem ==============================================================================
 
-:START
-cls
-echo ====================================================
-echo        Sample_Project - Windows Build System          
-echo        Target: Windows (x86_64) - MinGW
-echo ====================================================
+rem --- UTF-8 SAFETY JUMP ---
+rem Changes codepage to UTF-8 and immediately jumps to label to prevent 
+rem buffer read errors common in batch files with emojis.
+chcp 65001 >nul
+goto :START_LOGIC
 
-rem 1. SELECCIÓN DE MODO (Default = Debug)
+:START_LOGIC
+rem 1. Define ANSI Colors (Windows 10/11 Compatible)
+rem This trick captures the Escape character into the variable ESC
+for /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E# & echo on & for %%b in (1) do rem"') do (
+  set "ESC=%%b"
+)
+set "GREEN=%ESC%[1;32m"
+set "BLUE=%ESC%[1;34m"
+set "YELLOW=%ESC%[1;33m"
+set "RED=%ESC%[0;31m"
+set "NC=%ESC%[0m"
+
+cls
+echo %BLUE%====================================================%NC%
+echo %GREEN%      SAMPLE_PROJECT - WINDOWS BUILD SYSTEM           %NC%
+echo %BLUE%      Target: %YELLOW%Windows (x86_64) - MinGW%BLUE%                 %NC%
+echo %BLUE%====================================================%NC%
+
+rem --- STEP 2: BUILD MODE SELECTION ---
 echo.
-echo [Build Mode]
+echo %YELLOW%[Build Mode Selection]%NC%
 echo 1) Debug   (Default - Symbols enabled)
 echo 2) Release (Optimized - O3/LTO)
 echo.
-set /p m_choice="Selection [Enter for Debug]: "
+set /p m_choice="Select Build Mode [1-2] (Default: Debug): "
 
-rem Lógica de "Default": Si es 2, Release. Cualquier otra cosa (incluido vacío), Debug.
+rem Logic preservation: Default to Debug if input is not '2'
 if "%m_choice%"=="2" (
     set "MODE_VAL=Release"
 ) else (
     set "MODE_VAL=Debug"
 )
 
-rem 2. CONFIGURACIÓN
+rem --- STEP 3: PATH CONFIGURATION ---
 set "ARCH_VAL=Windows_x86_64"
 set "ARCH_TAG=Windows"
 set "BUILD_DIR=build\%ARCH_TAG%-%MODE_VAL%"
 
 echo.
-echo ----------------------------------------------------
-echo Configuring for: %ARCH_VAL%
-echo Mode:            %MODE_VAL%
-echo Path:            %BUILD_DIR%
-echo ----------------------------------------------------
+echo 📂 %BLUE%Configuring build directory: %GREEN%%BUILD_DIR%%NC%
 
-rem Limpieza y creación de directorio
-if exist "%BUILD_DIR%" rd /s /q "%BUILD_DIR%"
+rem Clean previous build artifacts for this specific configuration
+if exist "%BUILD_DIR%" (
+    rmdir /s /q "%BUILD_DIR%"
+)
 mkdir "%BUILD_DIR%"
 cd "%BUILD_DIR%"
 
-rem 3. CMAKE Y COMPILACIÓN
+rem --- STEP 4: CMAKE CONFIGURATION ---
 echo.
-echo [1/2] Running CMake configuration...
+echo 🔧 %BLUE%Configuring project with CMake (MinGW)...%NC%
+
 cmake ../.. -G "MinGW Makefiles" -DCMAKE_ARCH_TYPE="%ARCH_VAL%" -DCMAKE_BUILD_TYPE="%MODE_VAL%"
 
 if %ERRORLEVEL% neq 0 (
     echo.
-    color 4F
-    echo [ERROR] CMake Configuration failed.
+    echo %RED%❌ Error: CMake Configuration Failed.%NC%
+    echo %RED%   Check if MinGW is in your PATH.%NC%
     pause
-    color 07
     exit /b %ERRORLEVEL%
 )
 
+rem --- STEP 5: COMPILATION ---
 echo.
-echo [2/2] Compiling binary...
+echo 🚀 %BLUE%Compiling binary...%NC%
+
+rem Uses %NUMBER_OF_PROCESSORS% to match 'nproc' behavior
 cmake --build . -j %NUMBER_OF_PROCESSORS%
 
 if %ERRORLEVEL% neq 0 (
     echo.
-    color 4F
-    echo [ERROR] Build failed.
+    echo %RED%❌ Error: Build Failed during compilation.%NC%
     pause
-    color 07
     exit /b %ERRORLEVEL%
 )
 
-rem 4. FINALIZACIÓN
+rem --- STEP 6: FINAL STATUS ---
 cd ../..
 echo.
-echo ====================================================
-echo    BUILD SUCCESSFUL!
-echo    Executable: %BUILD_DIR%\Sample_Project.exe
-echo ====================================================
-pause
+echo %GREEN%====================================================%NC%
+echo %GREEN%✅ BUILD SUCCESSFUL!                                %NC%
+echo %GREEN%   Executable: %BUILD_DIR%\Sample_Project.exe         %NC%
+echo %GREEN%====================================================%NC%
+
+echo.
+echo %BLUE%Press any key to close...%NC%
+pause >nul

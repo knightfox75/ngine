@@ -167,14 +167,16 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
     uint32_t first_frame,       // First frame of the animation
     uint32_t last_frame,        // Last frame of the animation
     uint32_t loop,              // "Loop point" frame
-    uint32_t frame_duration     // Duration in cycles for each frame
+    uint32_t frame_duration,    // Duration in cycles for each frame
+    int32_t loop_delay = 0      // Pause (in runtime frames) before repeating the animation
 );</code></pre>
                 <h3>Description</h3>
                 <p>Adds a new animation to the created Sprite. It is possible to create animations with inverse kinematics. Returns 1 in case of an error.</p>
                 <h3>Example</h3>
                 <pre><code>player->AddAnimation(“walk”, 1, 7, 1, 5);
 player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
-player->AddAnimation(“run”, 0, 20, 8, 3);</code></pre>
+player->AddAnimation(“run”, 0, 20, 8, 3);
+stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);</code></pre>
             </section>
             
             <section id="SetAnimation" class="doc-block">

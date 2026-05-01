@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -176,6 +176,10 @@ void NGN_TextLayer::Cls() {
     text_boundaries.width = 0;
     text_boundaries.height = 0;
 
+    // Resetea el blitting y el vector de vertices
+    blit_text = false;
+    vertex.clear();
+
 }
 
 
@@ -240,6 +244,13 @@ void NGN_TextLayer::Padding(uint32_t pd) {
 /*** Selecciona la fuente de escritura ***/
 void NGN_TextLayer::Font(NGN_TextFont* fnt) {
 
+    // Si es la misma sal
+    if (fnt == font) return;
+
+    // De no serlo, vuelva el contenido actual del buffer de vertices al backbuffer
+    BlitText();
+
+    // Y asigna la nueva fuente
     font = fnt;
 
 }
@@ -289,73 +300,93 @@ void NGN_TextLayer::CanvasColor(uint32_t rgba) {    // 0xRRGGBBAA
 /*** Escribe un texto en la capa ***/
 void NGN_TextLayer::Print(std::string text) {
 
-    // Si no hay texto o fuente definida, sal
-    if ((text.size() ==  0) || (font == nullptr)) return;
+    // Si no hay texto, fuente o atlas definido, sal
+    if ((text.size() == 0) || !font || !font->characters_atlas) return;
 
-    // Prepara el render al backbuffer
-    // Centro de la rotacion
-    SDL_Point* _center = new SDL_Point();
-    // Define las areas de origen y destino
-    SDL_Rect source = {0, 0, 0, 0};
-    SDL_Rect destination = {0, 0, 0, 0};
+    // Color de tinta actual embebido en los vertices
+    SDL_Color ink_color = {ink.r, ink.g, ink.b, 0xFF};
 
-    // Informa al renderer que la textura "backbuffer" es su destino
-    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
-
-    // Prepara el contenido de la textura actual
-    SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(backbuffer, 0x00);
-
-    // Lee la cadena de texto
-    std::string character;
-    uint8_t c = 0;
+	// Codigo de caracter a imprimir
+	uint8_t c = 0;
+	
+	// Lee la cadena de texto y construye los quads
     for (uint32_t i = 0; i < text.size(); i ++) {
-        // Lee un caracter y conviertelo a su codigo ASCII
-        character = text.at(i);
-        c = (uint8_t)character[0];
+
+        // Lee el codigo ASCII del caracter actual
+        c = (uint8_t)text.at(i);
+
         // Salto de linea
-        if (c == 0x0A) {
+        if (c == CHAR_CODE.new_line) {            // Salto de linea
             locate.x = padding;
             locate.y += font->line_spacing;
-            if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
-        } else {
-            // Calculo del tamaño del texto escrito
-            GetTextBoundaries(locate.x, locate.y);
-            // Si el caracter es invalido, selecciona el caracter de espacio
-            if (font->character[c]->gfx == nullptr) c = 0x20;
-            // Prepara las dimensiones de la copia de la textura
-            source.w = font->character[c]->width;
-            source.h = font->character[c]->height;
-            destination.w = font->character[c]->width;
-            destination.h = font->character[c]->height;
-            // Coordenadas de las texturas
-            source.x = 0; source.y = 0;
-            if ((locate.x > (layer_width - destination.w - padding)) && word_wrap) {
-                locate.x = padding;
-                locate.y += font->line_spacing;
-                if ((locate.y > (layer_height - destination.h - padding)) && auto_home) locate.y = padding;
+            if ((locate.y > (layer_height - font->cell_size.height - padding)) && auto_home) locate.y = padding;
+            continue;
+        } else if (c == CHAR_CODE.color) {        // Cambia el color de tinta
+            if ((i + 8) < text.size()) {
+                ink_color = HexStringToColor(text.substr((i + 1), 8));
+                i += 8;
             }
-            destination.x = locate.x; destination.y = locate.y;
-            // Calcula el centro de la textura
-            _center->x = (destination.w / 2);
-            _center->y = (destination.h / 2);
-            // Aplica el color
-            SDL_SetTextureColorMod(font->character[c]->gfx, ink.r, ink.g, ink.b);
-            // Renderiza el caracter en el backbuffer de la capa
-            SDL_RenderCopyEx(ngn->graphics->renderer, font->character[c]->gfx, &source, &destination, 0.0f, _center, SDL_FLIP_NONE);
-            // Actualiza la posicion del cabezal de escritura
-            locate.x += destination.w;
-            // Calculo del tamaño del texto escrito
-            GetTextBoundaries(locate.x, (locate.y + destination.h));
+            continue;
         }
+
+        // Si el caracter esta fuera de rango, ignoralo
+        if (c < CHAR_CODE.space) continue;
+
+        // Si el caracter no tiene un ancho valido, imprime un espacio (0x20)
+        if (font->char_size[c].width == 0) c = CHAR_CODE.space;
+
+        // Dimensiones del caracter actual
+        float glyph_w = (float)font->char_size[c].width;
+        float glyph_h = (float)font->char_size[c].height;
+        // Distancia a avanzar el cursor
+        float glyph_advance = (float)font->char_size[c].width;
+
+        // Word wrap horizontal
+        if ((locate.x > (layer_width - (int32_t)glyph_w - padding)) && word_wrap) {
+            locate.x = padding;
+            locate.y += font->line_spacing;
+            if ((locate.y > (layer_height - (int32_t)glyph_h - padding)) && auto_home) locate.y = padding;
+        }
+
+        // Coordenadas de destino en el backbuffer
+        float dx = (float)locate.x;
+        float dy = (float)locate.y;
+
+        // Avanza el cabezal de escritura
+        locate.x += (int32_t)glyph_advance;
+
+        // Calculo del tamaño del texto escrito (usa las coordenadas y tamaño del caracter escrito)
+        GetTextBoundaries((int32_t)dx, (int32_t)dy, (int32_t)glyph_w, (int32_t)glyph_h);
+
+        // Si es un espacio, no es necesario añadirlo al buffer de vectores
+        if (c == CHAR_CODE.space) continue; 
+
+        // Calculo de la posicion del caracter en el atlas via bitwise (grid 16x16)
+        // col = 4 bits bajos del codigo ASCII
+        // row = 4 bits altos del codigo ASCII
+        float src_x = (float)((c & 0x0F) * font->cell_size.width);
+        float src_y = (float)(((c >> 4) & 0x0F) * font->cell_size.height);
+
+        // UVs normalizadas (0.0 a 1.0) usando division directa para evitar pérdida de precision IEEE 754
+        float u1 = (src_x / (float)font->atlas_size.width);
+        float v1 = (src_y / (float)font->atlas_size.height);
+        float u2 = ((src_x + glyph_w) / (float)font->atlas_size.width);
+        float v2 = ((src_y + glyph_h) / (float)font->atlas_size.height);
+
+        // Genera los 6 vertices del quad (2 triangulos)
+        // Triangulo 1
+        vertex.push_back({{dx, dy}, ink_color, {u1, v1}});
+        vertex.push_back({{(dx + glyph_w), dy}, ink_color, {u2, v1}});
+        vertex.push_back({{dx, (dy + glyph_h)}, ink_color, {u1, v2}});
+        // Triangulo 2
+        vertex.push_back({{(dx + glyph_w), dy}, ink_color, {u2, v1}});
+        vertex.push_back({{(dx + glyph_w), (dy + glyph_h)}, ink_color, {u2, v2}});
+        vertex.push_back({{dx, (dy + glyph_h)}, ink_color, {u1, v2}});
+
     }
 
-    // Restaura el render al seleccionado
-    ngn->graphics->RenderToSelected();
-
-    // Paso de limpieza
-    delete _center;
+    // Indica que hay contenido a actualizar
+    blit_text = true;
 
 }
 
@@ -437,9 +468,8 @@ Size2 NGN_TextLayer::GetCurrentScale() {
 /*** Rota una capa los grados solicitados ***/
 void NGN_TextLayer::Rotate(double degrees) {
 
-    rotation += degrees;
-    while (rotation >= 360.0f) rotation -= 360.0f;
-    while (rotation < 0.0f) rotation += 360.0f;
+    rotation = std::fmod((rotation + degrees), 360.0);
+    if (rotation < 0.0) rotation += 360.0;
 
 }
 
@@ -471,13 +501,13 @@ void NGN_TextLayer::SurfaceCleanUp() {
 
 
 /*** Calcula el tamaño del texto escrito en la capa ***/
-void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y) {
+void NGN_TextLayer::GetTextBoundaries(int32_t x, int32_t y, int32_t w, int32_t h) {
 
     // Calcula los limites
     if ((x < text_boundaries.left) || (text_boundaries.left < 0)) text_boundaries.left = x;
-    if ((x > text_boundaries.right) || (text_boundaries.right < 0)) text_boundaries.right = x;
+    if (((x + w) > text_boundaries.right) || (text_boundaries.right < 0)) text_boundaries.right = (x + w);
     if ((y < text_boundaries.top)  || (text_boundaries.top < 0)) text_boundaries.top = y;
-    if ((y > text_boundaries.bottom) || (text_boundaries.bottom < 0)) text_boundaries.bottom = y;
+    if (((y + h) > text_boundaries.bottom) || (text_boundaries.bottom < 0)) text_boundaries.bottom = (y + h);
 
     // Calcula el tamaño de texto escrito
     text_boundaries.width = (text_boundaries.right - text_boundaries.left);
@@ -532,12 +562,12 @@ void NGN_TextLayer::CreateTextLayer(
     #endif
     backbuffer = nullptr;
     backbuffer = SDL_CreateTexture(
-                         ngn->graphics->renderer,       // Renderer
-                         SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                         SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                         layer_width,                   // Ancho de la textura
-                         layer_height                   // Alto de la textura
-                         );
+        ngn->graphics->renderer,        // Renderer
+        NGN_PIXEL_FORMAT,               // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+        layer_width,                    // Ancho de la textura
+        layer_height                    // Alto de la textura
+    );
     #if !defined (DISABLE_BACKBUFFER)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
     #endif
@@ -579,10 +609,79 @@ void NGN_TextLayer::CreateTextLayer(
     tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
     last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
 
+    // Blitting
+    vertex.clear();
+    vertex.reserve(MIN_VERTEX_BUFFER);
+    blit_text = false;
+
     // Prepara la capa
     SurfaceCleanUp();
 
     // Borra el contenido para actualizar su fondo, padding etc
     Cls();
+
+}
+
+
+
+/*** Blittin del contenido al backbuffer ***/
+void NGN_TextLayer::BlitText() {
+
+    // Si no hay contenido a volcar, sal
+    if (!blit_text) return;
+
+    // Registra que la funcion se ha llamado
+    blit_text = false;
+
+    // Si no hay vertices que dibujar, sal
+    if (vertex.size() == 0) return;
+
+    // Informa al renderer que el backbuffer es su destino
+    SDL_SetRenderTarget(ngn->graphics->renderer, backbuffer);
+    SDL_SetTextureBlendMode(backbuffer, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(font->characters_atlas, SDL_BLENDMODE_BLEND);
+
+    // Render de todos los caracteres del string en una unica llamada
+    SDL_RenderGeometry(
+        ngn->graphics->renderer,
+        font->characters_atlas,
+        vertex.data(),
+        (int32_t)vertex.size(),
+        nullptr,
+        0
+    );
+
+    // Restaura el renderer al destino seleccionado
+    ngn->graphics->RenderToSelected();
+
+    // Vacia el array de vertices
+    vertex.clear();
+
+}
+
+
+
+/*** Convierte una cadena Hexadecimal con el formato 0x000000 a un uint32_t y aplicalo como color de tinta ***/
+SDL_Color NGN_TextLayer::HexStringToColor(const std::string& hex_str) {
+
+    SDL_Color ink_color = {ink.r, ink.g, ink.b, 0xFF};
+
+    if (hex_str.size() == 0) return ink_color;
+
+    // Puntero a los caracteres
+    char* end_ptr = nullptr;
+
+    // El "16" le indica que es base hexadecimal y acepta el prefijo "0x" o "0X"
+    uint64_t color = std::strtoul(hex_str.c_str(), &end_ptr, 16);
+
+    // Si el puntero final es igual al inicial, conversion fallida
+    if (end_ptr == hex_str.c_str()) return ink_color;
+
+    // Si el color es valido, aplicalo
+    InkColor((uint32_t)color);
+
+    // Calcula los valores de la tinta y devuelvelos
+    ink_color = {ink.r, ink.g, ink.b, 0xFF};
+    return ink_color;
 
 }

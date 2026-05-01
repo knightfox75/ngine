@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -73,22 +73,23 @@ NGN* ngn;                                       // Clase principal
 NGN::NGN() {
 
     // Prepara los singletons de los objetos de la libreria
-    log = nullptr;             // Mensages de depuracion
-    system = nullptr;          // Funciones del sistema
-    math = nullptr;            // Funciones matematicas
-    toolbox = nullptr;         // Caja de herramientas
-    input = nullptr;           // Metodos de entrada
-    graphics = nullptr;        // Gestion del Renderer de SDL
-    render = nullptr;          // Dibuja los diferentes elementos graficos
-    load = nullptr;            // Carga de archivos
-    collisions = nullptr;      // Sistema de colisiones
-    sound = nullptr;           // Efectos de sonido
-    image = nullptr;           // Manipulacion de imagenes en RAW
-    disk = nullptr;            // Gestion de archivos en el disco
-    resources = nullptr;       // Gestion integrada de recursos
+    log = nullptr;              // Mensages de depuracion
+    system = nullptr;           // Funciones del sistema
+    math = nullptr;             // Funciones matematicas
+    toolbox = nullptr;          // Caja de herramientas
+    input = nullptr;            // Metodos de entrada
+    graphics = nullptr;         // Gestion del Renderer de SDL
+    render = nullptr;           // Dibuja los diferentes elementos graficos
+    load = nullptr;             // Carga de archivos
+    collisions = nullptr;       // Sistema de colisiones
+    sound = nullptr;            // Efectos de sonido
+    image = nullptr;            // Manipulacion de imagenes en RAW
+    disk = nullptr;             // Gestion de archivos en el disco
+    resources = nullptr;        // Gestion integrada de recursos
+    video = nullptr;            // Reproduccion de video en formato OGV en una textura
 
     // Prepara los objetos de la libreria
-    camera = nullptr;          // Crea la camara virtual 2D
+    camera = nullptr;           // Crea la camara virtual 2D
 
 }
 
@@ -101,6 +102,7 @@ NGN::~NGN() {
     delete camera; camera = nullptr;
 
     // Elimina todas las instancias a los singletons
+    NGN_Video::RemoveInstance(); video = nullptr;
     NGN_Resources::RemoveInstance(); resources = nullptr;
     NGN_Disk::RemoveInstance(); disk = nullptr;
     NGN_Image::RemoveInstance(); image = nullptr;
@@ -115,6 +117,8 @@ NGN::~NGN() {
     NGN_System::RemoveInstance(); system = nullptr;
     NGN_Log::RemoveInstance(); log = nullptr;
 
+    // Cierra el subsistema de TTF
+    TTF_Quit();
     // Cierra los subsistemas de SDL
     SDL_Quit();     // Cierra la libreria SDL correctamente
 
@@ -139,6 +143,7 @@ bool NGN::Init() {
     image = NGN_Image::GetInstance();               // Manipulacion de imagenes en RAW
     disk = NGN_Disk::GetInstance();                 // Gestion de archivos en el disco
     resources = NGN_Resources::GetInstance();       // Gestion integrada de recursos
+    video = NGN_Video::GetInstance();               // Reproduccion de video en formato OGV en una textura
 
     // Inicia los singletons de la libreria
     log->BootUp();                      // Mensages de depuracion
@@ -154,6 +159,7 @@ bool NGN::Init() {
     image->BootUp();                    // Manipulacion de imagenes en RAW
     disk->BootUp();                     // Gestion de archivos en el disco
     resources->BootUp();                // Gestion integrada de recursos
+    video->BootUp();                    // Reproduccion de video en formato OGV en una textura
 
     // Crea los objetos adicionales de a libreria
     camera = new NGN_Camera();          // Crea la camara virtual 2D

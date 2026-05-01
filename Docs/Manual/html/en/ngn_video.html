@@ -57,6 +57,7 @@
     std::string filepath,                       // OGV file
     bool auto_start = false,                    // Automatic playback
     bool loop = false,                          // Loops the video when finished
+    bool disable_audio = false,                 // Disables the video audio track
     int32_t volume = 100,                       // Initial volume (0-100)
     uint32_t render_width = NGN_DEFAULT_VALUE,  // Render width (native by default)
     uint32_t render_height = NGN_DEFAULT_VALUE, // Render height (native by default)
@@ -67,7 +68,7 @@
                 <h3>Description</h3>
                 <p>Opens an OGV file and creates a stream ready to play. If the maximum limit of simultaneous streams is reached (MAX_VIDEO_STREAMS = 4) or the file is invalid, it returns nullptr.</p>
                 <h3>Example</h3>
-                <pre><code>NGN_VideoStream* intro = ngn_video->Open("data/intro.ogv", true, false, 80);</code></pre>
+                <pre><code>NGN_VideoStream* intro = ngn_video->Open("data/intro.ogv", true, false, false, 80);</code></pre>
             </section>
 
             <section id="Close" class="doc-block">

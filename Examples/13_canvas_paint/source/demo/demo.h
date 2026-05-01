@@ -126,7 +126,6 @@ class Demo {
         NGN_Canvas* canvas;
         void DrawCanvas();
 
-
 };
 
 

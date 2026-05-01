@@ -1,0 +1,37 @@
+#include <windows.h>
+#define VER_FILEVERSION 0,1,0,0
+#define VER_FILEVERSION_STR "0.1.0-alpha.0\0\0"
+#define VER_PRODUCTVERSION 0,1,0,0
+#define VER_PRODUCTVERSION_STR "0.1.0-alpha.0\0\0"
+
+IDI_MAINICON ICON "ngine.ico"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION VER_FILEVERSION
+PRODUCTVERSION VER_PRODUCTVERSION
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS 0x40004L
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"  // Language and code page (0409: English - US, 04E4: Unicode)
+        BEGIN
+            VALUE "CompanyName", "NightFox & Co.\0"
+            VALUE "FileDescription", "Sample Project executable file\0"
+            VALUE "FileVersion", VER_FILEVERSION_STR
+            VALUE "InternalName", "Sample Project\0"
+            VALUE "OriginalFilename", "Sample_Project.exe\0"
+            VALUE "ProductName", "Sample Project\0"
+            VALUE "ProductVersion", VER_PRODUCTVERSION_STR
+            VALUE "LegalCopyright", "(c) 2023-2026 by NightFox & Co.\0"
+            VALUE "LegalTrademarks", "NightFox & Co. is a video game studio managed by Cesar Rincon.\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1252  // English (US), Windows-1252 code page
+    END
+END

@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+# Incluimos el archivo de definición de targets generado automáticamente.
+# Esto hace que 'NGN::ngn', 'NGN::ngn_s', etc. estén disponibles para el consumidor.
+include("${CMAKE_CURRENT_LIST_DIR}/NGNTargets.cmake")
+
+# Verificamos que los componentes requeridos por find_package existan
+check_required_components(NGN)
+
+# Feedback visual para el usuario
+message(STATUS "Found NGN Library: ${CMAKE_CURRENT_LIST_DIR}")
+message(STATUS "  - Targets available: NGN::ngn (Shared), NGN::ngn_s (Static), etc.")

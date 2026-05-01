@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Fondos con texturas
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -83,7 +83,7 @@ NGN_Texture::NGN_Texture(
     data = new NGN_TextureData();
     data->gfx = SDL_CreateTexture(
         ngn->graphics->renderer,        // Renderer
-        SDL_PIXELFORMAT_BGRA8888,       // Formato del pixel
+        NGN_PIXEL_FORMAT,               // Formato del pixel
         SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
         width,                          // Ancho de la textura
         height                          // Alto de la textura
@@ -263,9 +263,8 @@ Size2 NGN_Texture::GetCurrentScale() {
 /*** Rota una textura los grados solicitados ***/
 void NGN_Texture::Rotate(double degrees) {
 
-    rotation += degrees;
-    while (rotation >= 360.0f) rotation -= 360.0f;
-    while (rotation < 0.0f) rotation += 360.0f;
+    rotation = std::fmod((rotation + degrees), 360.0);
+    if (rotation < 0.0) rotation += 360.0;
 
 }
 

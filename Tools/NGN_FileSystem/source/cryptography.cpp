@@ -86,7 +86,7 @@ int32_t Cryptography::EncryptData(std::vector<uint8_t> &data, std::string key) {
         v = key_values[(id % m)];               // Obten un valor de la clave
         k += v;                                 // Calcula la K segun ese valor
         byte ^= v;                              // XOR con el valor
-        RotateLeft(byte, v);                    // Rota los bits a la izquierda n veces segun el valor
+        byte = RotateLeft(byte, v);             // Rota los bits a la izquierda n veces segun el valor
         byte ^= ((k % 0x100) & 0xFF);           // XOR con K
         data[id] = byte;                        // Devuelve el byte encriptado
     }
@@ -114,7 +114,7 @@ int32_t Cryptography::DecryptData(std::vector<uint8_t> &data, std::string key) {
         v = key_values[(id % m)];               // Obten un valor de la clave
         k += v;                                 // Calcula la K segun ese valor
         byte ^= ((k % 0x100) & 0xFF);           // XOR con el K
-        RotateRight(byte, v);                   // Rota los bits a la derecha
+        byte = RotateRight(byte, v);            // Rota los bits a la derecha
         byte ^= v;                              // XOR con el valor
         data[id] = byte;                        // Devuelve el byte desencriptado
     }
@@ -158,7 +158,7 @@ uint8_t Cryptography::RotateLeft(uint8_t value, uint32_t positions) {
         bit = (byte & 0x80);
         // Rota una posicion a la izquierda
         byte = (byte << 1);
-        // A�ade el BIT7 guardado en la posicion 0
+        // Añade el BIT7 guardado en la posicion 0
         byte |= ((bit >> 7) & 0x01);
     }
 
@@ -187,7 +187,7 @@ uint8_t Cryptography::RotateRight(uint8_t value, uint32_t positions) {
         bit = (byte & 0x01);
         // Rota una posicion a la derecha
         byte = (byte >> 1);
-        // A�ade el BIT0 guardado en la posicion 7
+        // Añade el BIT0 guardado en la posicion 7
         byte |= ((bit << 7) & 0x80);
     }
 

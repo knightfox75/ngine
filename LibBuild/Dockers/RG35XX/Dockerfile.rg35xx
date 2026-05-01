@@ -21,10 +21,20 @@ ENV ARCH=aarch64 \
     CXXFLAGS="-O3 -mcpu=cortex-a53 -mtune=cortex-a53 -DNDEBUG -g0 -fomit-frame-pointer" \
     LDFLAGS="-s -Wl,--strip-all"
 
-# --- [1] BASE TOOLS & FIX REPOS ---
-# Install and clean cache in a single layer.
-RUN echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > /etc/apt/sources.list && \
-    echo "deb http://archive.debian.org/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list && \
+# --- [1] BASE TOOLS & FIX REPOS (SMART MIRROR FALLBACK) ---
+# Tests connection to Debian Archives. If blocked, switches to Kernel.org 
+# edge mirrors to bypass ISP firewalls. Installs everything in a single layer.
+RUN bash -c '\
+    echo "Checking connectivity to archive.debian.org..."; \
+    if timeout 3 bash -c ">/dev/tcp/archive.debian.org/80" 2>/dev/null; then \
+        echo "SUCCESS: Official Debian Archive is reachable."; \
+        echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > /etc/apt/sources.list; \
+        echo "deb http://archive.debian.org/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list; \
+    else \
+        echo "WARNING: Official mirror blocked or timed out! Switching to Kernel.org fallback..."; \
+        echo "deb http://mirrors.edge.kernel.org/debian-archive/debian/ buster main contrib non-free" > /etc/apt/sources.list; \
+        echo "deb http://mirrors.edge.kernel.org/debian-archive/debian-security/ buster/updates main contrib non-free" >> /etc/apt/sources.list; \
+    fi' && \
     dpkg --add-architecture arm64 && \
     apt-get -o Acquire::Check-Valid-Until=false update && \
     apt-get -o Acquire::Check-Valid-Until=false install -y --no-install-recommends \
@@ -32,7 +42,7 @@ RUN echo "deb http://archive.debian.org/debian/ buster main contrib non-free" > 
     crossbuild-essential-arm64 curl wget ca-certificates \
     ninja-build \
     libasound2-dev:arm64 libudev-dev:arm64 libdrm-dev:arm64 libgbm-dev:arm64 \
-    libopenal-dev:arm64 libvorbis-dev:arm64 libogg-dev:arm64 libflac-dev:arm64 \
+    libopenal-dev:arm64 libvorbis-dev:arm64 libogg-dev:arm64 libflac-dev:arm64 libtheora-dev:arm64 \
     libfreetype6-dev:arm64 libdbus-1-dev:arm64 libibus-1.0-dev:arm64 libsamplerate0-dev:arm64 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 

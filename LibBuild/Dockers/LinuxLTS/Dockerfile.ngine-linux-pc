@@ -1,0 +1,117 @@
+# syntax=docker/dockerfile:1
+# ==============================================================================
+# NIGHTFOX BUILD SYSTEM - LINUX PC PRODUCTION (x86_64)
+# ==============================================================================
+# Base OS:      Ubuntu 22.04 (Jammy Jellyfish)
+# Target:       Linux x86_64 / SteamDeck (High Performance Release)
+# Toolchain:    GCC 11 with LTO (Link Time Optimization) support
+# ==============================================================================
+
+FROM ubuntu:22.04 AS builder
+
+LABEL maintainer="NightFox"
+LABEL description="Production Build Environment for NGN Engine (Linux x86_64)"
+
+# Suppress interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+# ==============================================================================
+# 0. SMART MIRROR FALLBACK (ISP Block Bypass)
+# Tests connection to Canonical's servers. If blocked (e.g., by ISP firewalls),
+# automatically switches to Microsoft Azure mirrors to guarantee stability.
+# ==============================================================================
+RUN bash -c '\
+    echo "Checking connectivity to archive.ubuntu.com..."; \
+    if timeout 3 bash -c ">/dev/tcp/archive.ubuntu.com/80" 2>/dev/null; then \
+        echo "SUCCESS: Official mirrors are reachable. Using default sources."; \
+    else \
+        echo "WARNING: Official mirrors blocked or timed out! Switching to Azure fallback mirrors..."; \
+        sed -i "s|http://archive.ubuntu.com/ubuntu/|http://azure.archive.ubuntu.com/ubuntu/|g" /etc/apt/sources.list; \
+        sed -i "s|http://security.ubuntu.com/ubuntu/|http://azure.archive.ubuntu.com/ubuntu/|g" /etc/apt/sources.list; \
+    fi'
+
+# ==============================================================================
+# 1. SYSTEM TOOLCHAIN & MULTIMEDIA DEPENDENCIES
+# ==============================================================================
+# Includes essential build tools and development headers for graphics (X11/GL),
+# audio (OpenAL/Vorbis/FLAC), and system integration (dbus/udev).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc-11 g++-11 make cmake git wget curl ca-certificates pkg-config \
+    libopenal-dev libvorbis-dev libogg-dev libflac-dev libtheora-dev \
+    libfreetype6-dev libharfbuzz-dev \
+    libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev \
+    libgl1-mesa-dev libglu1-mesa-dev libudev-dev \
+    libsamplerate0-dev libdbus-1-dev libibus-1.0-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. TOOLCHAIN ALIASING & LTO OPTIMIZATION SETUP
+# Configures GCC 11 as the default compiler and ensures that LTO-aware 
+# binutils (ar, nm, ranlib) are used to handle fat LTO objects correctly.
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 100 \
+    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 100 \
+    && ln -sf /usr/bin/gcc-ar-11 /usr/bin/gcc-ar \
+    && ln -sf /usr/bin/gcc-nm-11 /usr/bin/gcc-nm \
+    && ln -sf /usr/bin/gcc-ranlib-11 /usr/bin/gcc-ranlib
+
+# Export environment variables for build-system recognition of LTO tools
+ENV AR="/usr/bin/gcc-ar"
+ENV NM="/usr/bin/gcc-nm"
+ENV RANLIB="/usr/bin/gcc-ranlib"
+
+# 3. GLOBAL PERFORMANCE FLAGS
+# -O3: Maximum optimization level.
+# -march=x86-64 -mtune=generic: Ensures compatibility across SteamDeck and standard PCs.
+# -flto: Enables Link Time Optimization for cross-module performance.
+# -ffat-lto-objects: Critical for static library compatibility.
+ENV CFLAGS="-O3 -march=x86-64 -mtune=generic -DNDEBUG -flto=auto -ffat-lto-objects"
+ENV CXXFLAGS="-O3 -march=x86-64 -mtune=generic -DNDEBUG -flto=auto -ffat-lto-objects"
+
+# 4. MIDDLEWARE COMPILATION (Source-based builds for stability)
+WORKDIR /tmp/build_libs
+
+# Build SDL2 - Core hardware abstraction layer
+RUN wget https://github.com/libsdl-org/SDL/releases/download/release-2.30.11/SDL2-2.30.11.tar.gz \
+    && tar -xzf SDL2-2.30.11.tar.gz && cd SDL2-2.30.11 \
+    && ./configure --enable-shared --enable-static \
+    && make -j$(nproc) && make install \
+    && cd .. && rm -rf SDL2-2.30.11*
+
+# Build SDL2_ttf - TrueType font rendering support
+RUN wget https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz \
+    && tar -xzf SDL2_ttf-2.24.0.tar.gz && cd SDL2_ttf-2.24.0 \
+    && ./configure CPPFLAGS="-I/usr/local/include/SDL2" \
+    && make -j$(nproc) && make install \
+    && cd .. && rm -rf SDL2_ttf-2.24.0*
+
+# Build SFML - Multimedia framework for secondary utilities/tools
+RUN wget https://github.com/SFML/SFML/archive/refs/tags/2.6.2.tar.gz -O SFML-2.6.2.tar.gz \
+    && tar -xzf SFML-2.6.2.tar.gz && cd SFML-2.6.2 \
+    && mkdir build && cd build \
+    && cmake .. -DCMAKE_BUILD_TYPE=Release \
+    && make -j$(nproc) && make install \
+    && cd ../.. && rm -rf SFML-2.6.2*
+
+# Refresh shared library cache
+RUN ldconfig
+
+# 5. NGN SDK COMPILATION
+# Integrates the local NGN SDK source into the environment.
+WORKDIR /tmp/build_ngn
+COPY ngn_sdk/ .
+RUN mkdir build && cd build \
+    && cmake .. -DCMAKE_BUILD_TYPE=Release \
+    && make -j$(nproc) && make install \
+    && cd ../.. && rm -rf build_ngn
+
+# 6. FINAL CLEANUP & POST-PROCESSING
+# Strips debug symbols from production shared objects to reduce binary footprint.
+RUN find /usr/local/lib -name "*.so*" -exec strip --strip-unneeded {} \;
+
+# VERIFICATION: Ensure the environment is correctly registered
+RUN pkg-config --modversion ngn
+
+WORKDIR /workspace
+
+# Container Entrypoint: Reports status and NGN version
+CMD ["/bin/bash", "-c", "echo '------------------------------------------------'; echo ' NIGHTFOX PRODUCTION ENVIRONMENT READY'; echo ' Target: Linux x86_64 (SteamDeck Compatible)'; echo -n ' NGN SDK Core Version: '; pkg-config --modversion ngn; echo '------------------------------------------------'"]

@@ -1,0 +1,3 @@
+N'gine resources tech demo.
+This text was created from a TXT file.
+Check the documentation for details.

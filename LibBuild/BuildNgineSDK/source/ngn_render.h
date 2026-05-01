@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -51,6 +51,7 @@
 #include "ngn_texture.h"
 #include "ngn_text_layer.h"
 #include "ngn_canvas.h"
+#include "ngn_video_stream.h"
 
 
 
@@ -84,6 +85,10 @@ class NGN_Render {
         // Dibuja un canvas
         void Canvas(NGN_Canvas* canvas, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
 
+        // "Dibuja" el frame de un stream de video
+        void Video(NGN_VideoStream* video_frame, float position_x = (float)NGN_DEFAULT_VALUE, float position_y = (float)NGN_DEFAULT_VALUE);
+
+
         // Render de los viewports
         void Viewports();
 
@@ -113,15 +118,6 @@ class NGN_Render {
 
         bool render2texture;        // Flag de render to texture
         NGN_Texture* rend2text;     // Textura de destino del render
-
-        /*** Propiedades comunes ***/
-        SDL_RendererFlip _flip;             // Estado del flip
-        SDL_Point* _center;                 // Centro de la rotacion
-        int32_t _x, _y;                     // Coordenadas
-        int32_t _width, _height;            // Medidas
-        double _rotation;                   // Rotacion
-        SDL_Rect _source, _destination;     // Areas de origen y destino del render
-        int32_t _alpha;                     // Nivel del alpha
 
 };
 

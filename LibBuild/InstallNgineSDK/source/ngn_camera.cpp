@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -765,13 +765,13 @@ void NGN_Camera::RenderSprites(uint32_t l) {
 
         // Si esta dentro de la pantalla, dibujalo en el renderer e indicalo
         if (
-            (screen_pos.x > -(layer[l].spr[s]->width / 2.0f))
+            (screen_pos.x > -(layer[l].spr[s]->width * 0.5f))
             &&
-            (screen_pos.x < (render_area.width + (layer[l].spr[s]->width / 2.0f)))
+            (screen_pos.x < (render_area.width + (layer[l].spr[s]->width * 0.5f)))
             &&
-            (screen_pos.y > -(layer[l].spr[s]->height / 2.0f))
+            (screen_pos.y > -(layer[l].spr[s]->height * 0.5f))
             &&
-            (screen_pos.y < (render_area.height + (layer[l].spr[s]->height / 2.0f)))
+            (screen_pos.y < (render_area.height + (layer[l].spr[s]->height * 0.5f)))
         ) {
             // Indica que esta en pantalla
             layer[l].spr[s]->on_screen |= true;

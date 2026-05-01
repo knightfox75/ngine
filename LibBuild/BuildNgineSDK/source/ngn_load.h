@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -65,6 +65,7 @@ static const uint32_t COLLISION_MAP_MAX_TILE_SIZE = 1024;
 /*** Definicion de la clase ***/
 class NGN_Load {
 
+
    // Public
     public:
 
@@ -78,23 +79,23 @@ class NGN_Load {
 
 
         // Carga de texturas
-        NGN_TextureData* Texture(std::string filepath);
+        NGN_TextureData* Texture(const std::string& filepath);
 
         // Carga un fondo tileado
-        NGN_TiledBgData* TiledBg(std::string filepath);
+        NGN_TiledBgData* TiledBg(const std::string& filepath);
 
         // Carga un sprite
-        NGN_SpriteData* Sprite(std::string filepath);
+        NGN_SpriteData* Sprite(const std::string& filepath);
 
         // Carga un mapa de colisiones
-        NGN_CollisionMapData* CollisionMap(std::string filepath);
+        NGN_CollisionMapData* CollisionMap(const std::string& filepath);
 
         // Carga un archivo de audio en RAM
-        NGN_AudioClipData* AudioClip(std::string filepath);
+        NGN_AudioClipData* AudioClip(const std::string& filepath);
 
         // Carga y convierte una fuente TTF al formato de la libreria
         NGN_TextFont* TrueTypeFont(
-            std::string filepath,                   // Archivo a cargar
+            const std::string& filepath,            // Archivo a cargar
             uint32_t height,                        // Altura de la fuente (en pixeles)
             bool antialias = true,                  // Antialias?
             uint32_t font_color = 0xFFFFFF,         // Color base
@@ -104,38 +105,45 @@ class NGN_Load {
 
 
         // Carga una imagen PNG como RAW
-        NGN_RawImage* PngAsRaw(std::string filepath);
+        NGN_RawImage* PngAsRaw(const std::string& filepath);
 
         // Carga un fotograma de un sprite como RAW
-        NGN_RawImage* SpriteAsRaw(std::string filepath, uint32_t frame = 0);
+        NGN_RawImage* SpriteAsRaw(const std::string& filepath, uint32_t frame = 0);
 
         // Carga los fotogramas de un sprite como un vector de RAWs
         bool SpriteAsRawVector(
-            std::string filepath,                       // Archivo a cargar
+            const std::string& filepath,                // Archivo a cargar
             std::vector<NGN_RawImage*> &raw_frames,     // Vector de destino con los frames
             uint32_t first_frame = 0,                   // Frame inicial (0 por defecto)
             uint32_t last_frame = NGN_DEFAULT_VALUE     // Frame final (ultimo por defecto)
         );
 
         // Metodos para cargar archivos de texto
-        std::string TextFile(std::string filepath);                                     // Primera sobrecarga
-        bool TextFile(std::string filepath, std::vector<std::string> &text_lines);      // Segunda sobrecarga
+        std::string TextFile(const std::string& filepath);                                     // Primera sobrecarga
+        bool TextFile(const std::string& filepath, std::vector<std::string> &text_lines);      // Segunda sobrecarga
 
         // Metodo para cargar un archivo desde de el origen predeterminado, en caso de estar encriptado, se desencriptara.
-        int32_t LoadFile(std::string filepath, std::vector<uint8_t> &data);
+        int32_t LoadFile(const std::string& filepath, std::vector<uint8_t> &data);
+
+        // Metodo para cargar un fragmento de archivo desde de el origen predeterminado, en caso de estar encriptado, se desencriptara.
+        int32_t LoadFileChunk(const std::string& filepath, std::vector<uint8_t> &data, uint32_t offset, uint32_t length);
 
         // Establece el disco como el origen de datos
         void SetDisk();
 
         // Establece un archivo empaquetado como el origen de datos
-        bool SetPackage(std::string pkg_file, std::string key = "");
+        bool SetPackage(const std::string& pkg_file, std::string key = "");
 
         // Devuelve si se esta usando actualmente un archivo de empaquetado de datos
         bool PackageEnabled();
 
 
+
     // Private
     private:
+
+        // Ajuste de permisos
+        friend class NGN_VideoStream;
 
         // Contructor
         NGN_Load();
@@ -155,7 +163,19 @@ class NGN_Load {
 
 
         // Carga los datos de un sprite
-        bool LoadSpriteData(std::string filepath, std::vector<uint8_t> &img_pixels, NGN_SpriteData* spr);
+        bool LoadSpriteData(const std::string& filepath, std::vector<uint8_t> &img_pixels, NGN_SpriteData* spr);
+
+        // Devuelve la ruta al archivo empaquetado (si hay alguno seleccionado)
+        std::string GetCurrentSelectedPackageFile();
+
+        // Devuelve la clave del archivo empaquetado (si hay alguno seleccionado)
+        std::vector<uint8_t> GetCurrentSelectedPackageFileKey();
+
+        // Devuelve si se ha encontrado un archivo en el paquete y de ser asi, los datos de ubicacion del mismo
+        bool GetFileInfoInPackage(const std::string& filepath, uint32_t& offset, uint32_t& length);
+
+        // Desencripta "al vuelo" un bloque de datos de un archivo del empaquetado
+        void DecryptChunk(uint8_t* data, uint32_t length, uint32_t offset_in_file, const std::vector<uint8_t>& key);
 
 
 };

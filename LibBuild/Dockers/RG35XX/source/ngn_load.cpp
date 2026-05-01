@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -124,7 +124,7 @@ void NGN_Load::BootUp() {
 
 
 /*** Carga una textura ***/
-NGN_TextureData* NGN_Load::Texture(std::string filepath) {
+NGN_TextureData* NGN_Load::Texture(const std::string& filepath) {
 
     // Crea los buffers temporales para la descompresion del PNG
     std::vector<uint8_t> buffer;
@@ -154,16 +154,16 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
 
     // Crea la superficie en base a los pixeles cargados
     surface = SDL_CreateRGBSurfaceFrom(
-                                        (uint8_t*)&pixels[0],   // Datos
-                                        w,                      // Ancho
-                                        h,                      // Alto
-                                        32,                     // Profuncidad de color 32bpp [RGBA8888]
-                                        (w << 2),               // Longitud de una fila de pixeles en bytes
-                                        0x000000ff,             // Mascara R
-                                        0x0000ff00,             // Mascara G
-                                        0x00ff0000,             // Mascara B
-                                        0xff000000              // Mascara A
-                                        );
+        (uint8_t*)&pixels[0],   // Datos
+        w,                      // Ancho
+        h,                      // Alto
+        32,                     // Profuncidad de color 32bpp [RGBA8888]
+        (w << 2),               // Longitud de una fila de pixeles en bytes
+        0x000000FF,             // Mascara R
+        0x0000FF00,             // Mascara G
+        0x00FF0000,             // Mascara B
+        0xFF000000              // Mascara A
+    );
 
     // Elimina los buffers temporales
     buffer.clear();
@@ -204,7 +204,7 @@ NGN_TextureData* NGN_Load::Texture(std::string filepath) {
 
 
 /*** Carga un fondo de tiles ***/
-NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
+NGN_TiledBgData* NGN_Load::TiledBg(const std::string& filepath) {
 
     // Crea un objeto temporal para procesar el fondo cargado
     NGN_TiledBgData* bg = new NGN_TiledBgData();
@@ -272,10 +272,10 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
             h,                          // Alto del atlas
             32,                         // Profundidad de color 32bpp [RGBA8888]
             (w << 2),                   // Longitud de una fila de pixeles en bytes
-            0x000000ff,                 // Mascara R
-            0x0000ff00,                 // Mascara G
-            0x00ff0000,                 // Mascara B
-            0xff000000                  // Mascara A
+            0x000000FF,                 // Mascara R
+            0x0000FF00,                 // Mascara G
+            0x00FF0000,                 // Mascara B
+            0xFF000000                  // Mascara A
     );
     // Verifica si se ha generado el surface
     if (surface == nullptr) {
@@ -309,7 +309,7 @@ NGN_TiledBgData* NGN_Load::TiledBg(std::string filepath) {
 
 
 /*** Carga un sprite ***/
-NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
+NGN_SpriteData* NGN_Load::Sprite(const std::string& filepath) {
 
     // Crea un objeto temporal para procesar el sprite
     NGN_SpriteData* spr = new NGN_SpriteData();
@@ -332,27 +332,30 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
     // Crea una superficie temporal para la generacion del spritesheet
     SDL_Surface* surface = nullptr;
 
+    // Control de errores
+    bool err = false;
+
     // Crea una textura por cada fotograma
     for (uint32_t i = 0; i < spr->header.total_frames; i ++) {
 
         // Crea la superficie en base a los pixeles cargados
         surface = SDL_CreateRGBSurfaceFrom(
-                                            (uint8_t*)&pixels[((frame_data_size * i) << 2)],    // Datos [frame * datos del frame * 4bpp]
-                                            spr->header.frame_width,                            // Ancho
-                                            spr->header.frame_height,                           // Alto
-                                            32,                                                 // Profuncidad de color 32bpp [RGBA8888]
-                                            (spr->header.frame_width << 2),                     // Longitud de una fila de pixeles en bytes
-                                            0x000000ff,             // Mascara R
-                                            0x0000ff00,             // Mascara G
-                                            0x00ff0000,             // Mascara B
-                                            0xff000000              // Mascara A
-                                            );
+            (uint8_t*)&pixels[((frame_data_size * i) << 2)],    // Datos [frame * datos del frame * 4bpp]
+            spr->header.frame_width,                            // Ancho
+            spr->header.frame_height,                           // Alto
+            32,                                                 // Profuncidad de color 32bpp [RGBA8888]
+            (spr->header.frame_width << 2),                     // Longitud de una fila de pixeles en bytes
+            0x000000FF,             // Mascara R
+            0x0000FF00,             // Mascara G
+            0x00FF0000,             // Mascara B
+            0xFF000000              // Mascara A
+        );
 
 
         if (surface == nullptr) {
             ngn->log->Message("[NGN_Load error] Unable to convert <" + filepath + "> to a surface.");
-            pixels.clear();
-            return nullptr;
+            err = true;
+            break;
         }
 
         // Si se ha creado la superficie con exito, conviertela a textura
@@ -361,14 +364,20 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
         // Verifica que la conversion ha sido correcta
         if (spr->gfx[i] == nullptr) {
             ngn->log->Message("[NGN_Load error] Unable to load <" + filepath + "> as a sprite.");
-            SDL_FreeSurface(surface);
-            pixels.clear();
-            return nullptr;
+            err = true;
+            break;
         }
 
         // Borra el surface creado
         SDL_FreeSurface(surface);
 
+    }
+
+    // En caso de error...
+    if (err) {
+        delete spr;
+        spr = nullptr;
+        SDL_FreeSurface(surface);
     }
 
     // Borra el buffer de pixeles
@@ -382,7 +391,7 @@ NGN_SpriteData* NGN_Load::Sprite(std::string filepath) {
 
 
 /*** Carga un mapa de colisiones ***/
-NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
+NGN_CollisionMapData* NGN_Load::CollisionMap(const std::string& filepath) {
 
     // Crea un objeto temporal para procesar el archivo
     NGN_CollisionMapData* collision = new NGN_CollisionMapData();
@@ -461,25 +470,6 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
         collision->bit_mask = 0;
     }
 
-
-
-    /*
-    uint32_t bb = 0;
-    for (uint32_t z = 0; z < collision->tmap.capacity(); z ++) {
-        bb = collision->tmap[z];
-        std::cout << z << ":" << bb << std::endl;
-    }
-    std::cout << "Debug: Collision Map Loading" << std::endl;
-    std::cout << "Map size: " << collision->header.width << "x" << collision->header.height << std::endl;
-    std::cout << "Size of the tile: " << collision->header.tile_size << std::endl;
-    std::cout << "Palette length: " << collision->palette.capacity() << std::endl;
-    std::cout << "Tileset length: " << (collision->tiles.capacity() / collision->tile_bytes) << std::endl;
-    std::cout << "Map length: " << collision->tmap.capacity() << std::endl;
-    std::cout << "Row width: " << collision->tiles_row_width << std::endl;
-    std::cout << "Tile space: " << collision->tile_bytes << std::endl;
-    */
-
-
     // Devuelve el mapa cargado
     return collision;
 
@@ -488,7 +478,7 @@ NGN_CollisionMapData* NGN_Load::CollisionMap(std::string filepath) {
 
 
 /*** Carga un archivo de audio ***/
-NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
+NGN_AudioClipData* NGN_Load::AudioClip(const std::string& filepath) {
 
     // Crea un buffer temporal para la carga del archivo
     std::vector<uint8_t> buffer;
@@ -526,13 +516,15 @@ NGN_AudioClipData* NGN_Load::AudioClip(std::string filepath) {
 
 /*** Carga y convierte una fuente TFF al formato de la libreria ***/
 NGN_TextFont* NGN_Load::TrueTypeFont(
-    std::string filepath,                   // Archivo a cargar
+    const std::string& filepath,            // Archivo a cargar
     uint32_t height,                        // Altura de la fuente (en pixeles)
     bool antialias,                         // Antialias?
     uint32_t font_color,                    // Color base
     uint32_t outline,                       // Borde? (en pixeles)
     uint32_t outline_color                  // Color del borde
 ) {
+
+    /*** Paso 1: Crea un vector de texturas con todos los caracteres imprimibles de la fuente ***/
 
     // Crea un buffer temporal para la carga del archivo
     std::vector<uint8_t> buffer;
@@ -546,27 +538,31 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
         return nullptr;
     }
 
-    // Intenta iniciar el subsitema de TTF para SDL
-    if (TTF_Init() < 0) {
-        ngn->log->Message("[NGN_Load error] SDL TTF initialization failed.");
-        buffer.clear();
-        return nullptr;
-    }
-
     // Crea un objeto temporal para almacenar la fuente resultante
     NGN_TextFont* font = new NGN_TextFont();
 
     // Intenta cargar la tipografia
-    TTF_Font* ttf = TTF_OpenFontRW(SDL_RWFromMem((uint8_t*)&buffer[0], file_length), 0, height);
-    if (ttf == nullptr) {
-        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> from memory.");
+    SDL_RWops* rw = SDL_RWFromMem((uint8_t*)&buffer[0], file_length);
+    if (!rw) {
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> from memory (SDL_RWFromMem).");
         buffer.clear();
         delete font;
+        font = nullptr;
+        return nullptr;
+    }
+    TTF_Font* ttf = TTF_OpenFontRW(rw, 0, height);
+    if (!ttf) {
+        ngn->log->Message("[NGN_Load error] Error opening <" + filepath + "> from memory (TTF_OpenFontRW).");
+        SDL_RWclose(rw);
+        rw = nullptr;
+        buffer.clear();
+        delete font;
+        font = nullptr;
         return nullptr;
     }
 
-    // Elimina los datos del buffer del archivo temporal
-    buffer.clear();
+    // Si se aplica antialias, fija el modo
+    if (antialias) TTF_SetFontHinting(ttf, TTF_HINTING_NORMAL);
 
     // Ajuste del outline
     if (outline > 0) {
@@ -574,17 +570,16 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
         outline = (outline < 1) ? 1 : outline;
     }
 
-    // Guarda los parametros de la fuente
-    /*
-    TTF_SetFontOutline(ttf, outline);
-    font->height = TTF_FontHeight(ttf);
-    TTF_SetFontOutline(ttf, 0);
-    font->line_spacing = (font->height + 1);
-    */
-
     // Crea una superficie temporal para la generacion de la tipografia
     SDL_Surface* surface = nullptr;
     SDL_Surface* surface_outline = nullptr;
+
+    // Vector temporal contenedor de los 256 caracteres de la fuente
+    std::vector<NGN_TextureData*> character;
+    character.reserve(256);
+    for (uint32_t i = 0; i < 256; i ++) {
+        character.push_back(new NGN_TextureData());
+    }
 
     // Crea el color por defecto del texto (blanco por defecto)
     SDL_Color _font_color;
@@ -600,10 +595,6 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     _outline_color.g = (outline_color & 0x00FF00) >> 8;
     _outline_color.b = (outline_color & 0x0000FF);
 
-    // Marcos de dibujado de las superficies
-    SDL_Rect rect_in = {0, 0, 0, 0};
-    SDL_Rect rect_out = {0, 0, 0, 0};
-
     // Conversion de int a char
     unsigned char t[2];
     t[1] = '\0';
@@ -612,21 +603,21 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
     for (uint32_t i = 0x20; i <= 0xFF; i ++) {
 
         // Vacia el contenido previo del surface
-        SDL_FreeSurface(surface);
-        if (outline > 0) SDL_FreeSurface(surface_outline);
+        if (surface) SDL_FreeSurface(surface);
+        if (surface_outline) SDL_FreeSurface(surface_outline);
         // Renderiza el caracter en el surface
         t[0] = i;
-        if (antialias) {
+        if (antialias) { 
             surface = TTF_RenderText_Blended(ttf, (const char*)t, _font_color);
             if (outline > 0) {
-                TTF_SetFontOutline(ttf, outline);
+                TTF_SetFontOutline(ttf, (int32_t)outline);
                 surface_outline = TTF_RenderText_Blended(ttf, (const char*)t, _outline_color);
                 TTF_SetFontOutline(ttf, 0);
             }
         } else {
             surface = TTF_RenderText_Solid(ttf, (const char*)t, _font_color);
             if (outline > 0) {
-                TTF_SetFontOutline(ttf, outline);
+                TTF_SetFontOutline(ttf, (int32_t)outline);
                 surface_outline = TTF_RenderText_Solid(ttf, (const char*)t, _outline_color);
                 TTF_SetFontOutline(ttf, 0);
             }
@@ -653,31 +644,40 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
 
         // Si hay outline, haz la mezcla
         if (outline > 0) {
-            // Mezcla las dos surfaces
-            rect_in.x = outline;
-            rect_in.y = outline;
-            rect_in.w = surface->w;
-            rect_in.h = surface->h;
-            rect_out.x = 0;
-            rect_out.y = 0;
-            rect_out.w = surface_outline->w;
-            rect_out.h = surface_outline->h;
-            if (antialias) {
-                SDL_SetSurfaceBlendMode(surface_outline, SDL_BLENDMODE_BLEND);
-            } else {
-                SDL_SetSurfaceBlendMode(surface_outline, SDL_BLENDMODE_NONE);
+            // Si no hay antialias, los SURFACE generados seran SOLID (indexados), promocionalos a ARGB (Freetype)
+            if (!antialias) {
+                SDL_Surface* temp_surface_outline = SDL_ConvertSurfaceFormat(surface_outline, FREETYPE_PIXEL_FORMAT, 0);
+                if (temp_surface_outline) {
+                    SDL_FreeSurface(surface_outline);
+                    surface_outline = temp_surface_outline;
+                }
+                SDL_Surface* temp_surface = SDL_ConvertSurfaceFormat(surface, FREETYPE_PIXEL_FORMAT, 0);
+                if (temp_surface) {
+                    SDL_FreeSurface(surface);
+                    surface = temp_surface;
+                }
             }
-            SDL_BlitSurface(surface, &rect_out, surface_outline, &rect_in);
+            // Configura el destino
+            SDL_Rect dest_rect = {
+                (int32_t)outline,
+                (int32_t)outline,
+                surface->w,
+                surface->h
+            };
+            // Ajusta el modo de blending
+            SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_BLEND);
+            // Blit pasando "nullptr" al origen. Esto copiara la totalidad del mismo a la coordenada dest_rect
+            SDL_BlitSurface(surface, nullptr, surface_outline, &dest_rect);
             // Pasalo a la textura
-            TTF_SetFontOutline(ttf, outline);
+            TTF_SetFontOutline(ttf, (int32_t)outline);
             if (
                 (surface_outline)
                 &&
                 (surface)
                 &&
-                (TTF_SizeText(ttf, (const char*)t, &font->character[i]->width, &font->character[i]->height) == 0)
+                (TTF_SizeText(ttf, (const char*)t, &character[i]->width, &character[i]->height) == 0)
             ) {
-                font->character[i]->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface_outline);
+                character[i]->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface_outline);
             }
             TTF_SetFontOutline(ttf, 0);
         } else {
@@ -685,27 +685,143 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
             if (
                 (surface)
                 &&
-                (TTF_SizeText(ttf, (const char*)t, &font->character[i]->width, &font->character[i]->height) == 0)
+                (TTF_SizeText(ttf, (const char*)t, &character[i]->width, &character[i]->height) == 0)
             ) {
-                font->character[i]->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+                character[i]->gfx = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
             }
         }
 
-        // Calcula la altura maxima del texto
-        if ((uint32_t)font->character[i]->height > font->height) {
-            font->height = (uint32_t)font->character[i]->height;
-            font->line_spacing = (font->height + 1);
+        // Almacena el tamaño del caracter
+        font->char_size[i].width = character[i]->width;
+        font->char_size[i].height = character[i]->height;
+
+        // Calcula la altura maxima de la celda de texto (y de la linea)
+        if (font->char_size[i].height > font->cell_size.height) {
+            font->cell_size.height = font->char_size[i].height;
+            font->height = font->cell_size.height;
+            font->line_spacing = (font->cell_size.height + 1);
+        }
+        // Calcula el ancho maximo de la celda de texto
+        if (font->char_size[i].width > font->cell_size.width) {
+            font->cell_size.width = font->char_size[i].width;
         }
 
     }
 
-    // Paso de limpieza
-    SDL_FreeSurface(surface);
-    SDL_FreeSurface(surface_outline);
+    // Paso de limpieza del buffer temporal
+    if (surface) SDL_FreeSurface(surface);
+    if (surface_outline) SDL_FreeSurface(surface_outline);
     TTF_CloseFont(ttf); ttf = nullptr;
+    SDL_RWclose(rw); rw = nullptr;
+    // Elimina los datos del buffer del archivo temporal
+    buffer.clear();
 
-    // Cierra el subsistema de TTF
-    TTF_Quit();
+
+    /*** Paso 2: Genera un atlas de 16x16 celdas con los caracteres de la fuente ordenados para bitwise operations ***/
+
+    // Constantes
+    const uint32_t ATLAS_BITSHIFT = 4;
+    const uint32_t ATLAS_COLUMNS = (1 << ATLAS_BITSHIFT);
+    const uint32_t ATLAS_ROWS = (1 << ATLAS_BITSHIFT);
+    const uint32_t ATLAS_WIDTH = (ATLAS_COLUMNS * font->cell_size.width);
+    const uint32_t ATLAS_HEIGHT = (ATLAS_ROWS * font->cell_size.height);
+
+    // Almacena el tamaño del atlas
+    font->atlas_size.width = (int32_t)ATLAS_WIDTH;
+    font->atlas_size.height = (int32_t)ATLAS_HEIGHT;
+    // Si el atlas es demasiado grande, aborta
+    if (
+        (font->atlas_size.width > ngn->graphics->renderer_info.max_texture_width)
+        ||
+        (font->atlas_size.height > ngn->graphics->renderer_info.max_texture_height)
+    ) {
+        ngn->log->Message("[NGN_Load error] Failed to create font atlas for <" + filepath + "> (too big).");
+        delete font;
+        font = nullptr;
+        // Paso de limpieza del vector de caracteres
+        for (uint32_t i = 0; i < character.size(); i ++) {
+            delete character[i];
+        }
+        character.clear();
+        return nullptr;
+    }
+
+    // Crea la textura del tamaño calculado para el atlas (usa el formato especial de color de pixel en ARGB8888)
+    font->characters_atlas = SDL_CreateTexture(
+        ngn->graphics->renderer,
+        FREETYPE_PIXEL_FORMAT,
+        SDL_TEXTUREACCESS_TARGET,
+        (int32_t)ATLAS_WIDTH,
+        (int32_t)ATLAS_HEIGHT
+    );
+
+    // Si el atlas se ha creado con exito...
+    if (font->characters_atlas) {
+
+        // Fuerza que al atlas, nunca se le aplique filtrado
+        SDL_SetTextureScaleMode(font->characters_atlas, SDL_ScaleModeNearest);
+
+        // Selecciona la textura creada como target del renderer
+        SDL_SetRenderTarget(ngn->graphics->renderer, font->characters_atlas);
+
+        // Limpia la textura para que sea transparente
+        SDL_SetRenderDrawBlendMode(ngn->graphics->renderer, SDL_BLENDMODE_NONE);
+        SDL_SetRenderDrawColor(ngn->graphics->renderer, 0x00, 0x00, 0x00, 0x00);
+        SDL_RenderClear(ngn->graphics->renderer);
+
+        // Configura el blend mode del atlas
+        SDL_SetTextureBlendMode(font->characters_atlas, SDL_BLENDMODE_BLEND);
+
+        // Datos para el volcado de cada caracter en el atlas
+        SDL_Rect src = {0, 0, 0, 0};
+        SDL_Rect dst = {0, 0, 0, 0};
+        const uint8_t FIRST_CHAR = 0x20;
+        const uint8_t LAST_CHAR = 0xFF;
+
+        for (uint32_t i = FIRST_CHAR; i <= LAST_CHAR; i ++) {
+
+            if (!character[i]->gfx) continue;
+
+            if ((character[i]->width <= 0) || (character[i]->height <= 0)) continue;
+
+            // Calculo de posicion en el atlas usando bitwise (grid 16x16)
+            // col = 4 bits bajos del codigo ASCII
+            // row = 4 bits altos del codigo ASCII
+            uint32_t col = (i & 0x0F);
+            uint32_t row = ((i >> 4) & 0x0F);
+
+            // Calcula el origen
+            src.x = 0;
+            src.y = 0;
+            src.w = character[i]->width;
+            src.h = character[i]->height;
+
+            // Calcula el destino (el origen esta arriba a la izquierda)
+            dst.x = (int32_t)(col * font->cell_size.width);
+            dst.y = (int32_t)(row * font->cell_size.height);
+            dst.w = character[i]->width;
+            dst.h = character[i]->height;
+
+            // Render del caracter actual en el atlas
+            SDL_SetTextureBlendMode(character[i]->gfx, SDL_BLENDMODE_BLEND);
+            SDL_RenderCopy(ngn->graphics->renderer, character[i]->gfx, &src, &dst);
+
+        }
+
+        // Restaura el renderer a la pantalla
+        ngn->graphics->RenderToSelected();
+
+    } else {
+        ngn->log->Message("[NGN_Load error] Failed to create font atlas for <" + filepath + ">.");
+        delete font;
+        font = nullptr;
+    }
+
+    // Paso de limpieza del vector de caracteres
+    for (uint32_t i = 0; i < character.size(); i ++) {
+        delete character[i];
+    }
+    character.clear();
 
     // Devuelve la fuente cargada y convertida
     return font;
@@ -715,7 +831,7 @@ NGN_TextFont* NGN_Load::TrueTypeFont(
 
 
 /*** Carga una imagen en formato PNG como RAW ***/
-NGN_RawImage* NGN_Load::PngAsRaw(std::string filepath) {
+NGN_RawImage* NGN_Load::PngAsRaw(const std::string& filepath) {
 
     // Crea los buffers temporales para la descompresion del PNG
     std::vector<uint8_t> buffer;
@@ -751,7 +867,7 @@ NGN_RawImage* NGN_Load::PngAsRaw(std::string filepath) {
 
 
 /*** Carga un fotograma de un sprite como RAW ***/
-NGN_RawImage* NGN_Load::SpriteAsRaw(std::string filepath, uint32_t frame) {
+NGN_RawImage* NGN_Load::SpriteAsRaw(const std::string& filepath, uint32_t frame) {
 
     // Crea un objeto temporal para procesar el sprite
     NGN_SpriteData* spr = new NGN_SpriteData();
@@ -800,7 +916,7 @@ NGN_RawImage* NGN_Load::SpriteAsRaw(std::string filepath, uint32_t frame) {
 
 /*** Carga los fotogramas de un sprite como un vector de RAWs ***/
 bool NGN_Load::SpriteAsRawVector(
-    std::string filepath,                       // Archivo a cargar
+    const std::string& filepath,                // Archivo a cargar
     std::vector<NGN_RawImage*> &raw_frames,     // Vector de destino con los frames
     uint32_t first_frame,                       // Frame inicial (0 por defecto)
     uint32_t last_frame                         // Frame final (ultimo por defecto)
@@ -871,7 +987,7 @@ bool NGN_Load::SpriteAsRawVector(
 
 
 /*** Metodo para cargar un archivo de texto: Primera sobrecarga, archivo a string ***/
-std::string NGN_Load::TextFile(std::string filepath) {
+std::string NGN_Load::TextFile(const std::string& filepath) {
 
     // Prepara los datos
     std::vector<uint8_t> buffer;
@@ -914,7 +1030,7 @@ std::string NGN_Load::TextFile(std::string filepath) {
 }
 
 /*** Metodo para cargar un archivo de texto: Segunda sobrecarga, archivo a vector de lineas ***/
-bool NGN_Load::TextFile(std::string filepath, std::vector<std::string> &text_lines) {
+bool NGN_Load::TextFile(const std::string& filepath, std::vector<std::string> &text_lines) {
 
     // Prepara el vector de destino
     text_lines.clear();
@@ -954,14 +1070,29 @@ bool NGN_Load::TextFile(std::string filepath, std::vector<std::string> &text_lin
 
 
 /*** Metodo para cargar un archivo desde el origen predeterminado. El archivo se desencriptara en el caso de estarlo ***/
-int32_t NGN_Load::LoadFile(std::string filepath, std::vector<uint8_t> &data) {
+int32_t NGN_Load::LoadFile(const std::string& filepath, std::vector<uint8_t> &data) {
 
     if (use_package) {
         // Lee el archivo desde un paquete
-        return file_system->LoadFileFromPakage(filepath, data);
+        return file_system->LoadFileFromPackage(filepath, data);
     } else {
         // Lee el archivo desde el disco
         return ngn->disk->ReadBinaryFile(filepath, data);
+    }
+
+}
+
+
+
+// Metodo para cargar un fragmento de archivo desde de el origen predeterminado, en caso de estar encriptado, se desencriptara.
+int32_t NGN_Load::LoadFileChunk(const std::string& filepath, std::vector<uint8_t> &data, uint32_t offset, uint32_t length) {
+
+    if (use_package) {
+        // Lee el archivo desde un paquete
+        return file_system->LoadFileChunkFromPackage(filepath, data, offset, length);
+    } else {
+        // Lee el archivo desde el disco
+        return ngn->disk->ReadBinaryFile(filepath, data, offset, length);
     }
 
 }
@@ -978,7 +1109,7 @@ void NGN_Load::SetDisk() {
 
 
 /*** Establece un archivo empaquetado como el origen de datos ***/
-bool NGN_Load::SetPackage(std::string pkg_file, std::string key) {
+bool NGN_Load::SetPackage(const std::string& pkg_file, std::string key) {
 
     if (file_system->SetPackage(pkg_file, key)) {
         use_package = true;
@@ -1001,9 +1132,58 @@ bool NGN_Load::PackageEnabled() {
 
 
 
+/*** Devuelve la ruta al archivo empaquetado (si hay alguno seleccionado) ***/
+std::string NGN_Load::GetCurrentSelectedPackageFile() {
+
+    if (!use_package) return "";
+
+    return file_system->GetCurrentPackage();
+
+}
+
+
+
+// Devuelve la clave del archivo empaquetado (si hay alguno seleccionado)
+std::vector<uint8_t> NGN_Load::GetCurrentSelectedPackageFileKey() {
+
+    std::vector<uint8_t> key;
+    key.clear();
+
+    if (!use_package) return key;
+
+    return file_system->GetCurrentPackageKey();
+
+}
+
+
+
+// Devuelve si se ha encontrado un archivo en el paquete y de ser asi, los datos de ubicacion del mismo
+bool NGN_Load::GetFileInfoInPackage(const std::string& filepath, uint32_t& offset, uint32_t& length) {
+
+    // Si no se esta usando un empaquetado, devuelve false
+    if (!use_package) {
+        offset = 0;
+        length = 0;
+        return false;
+    }
+
+    return file_system->GetFileInfoInPackage(filepath, offset, length);
+
+}
+
+
+
+/*** Desencripta "al vuelo" un bloque de datos de un archivo del empaquetado ***/
+void NGN_Load::DecryptChunk(uint8_t* data, uint32_t length, uint32_t offset_in_file, const std::vector<uint8_t>& key) {
+
+    file_system->DecryptChunk(data, length, offset_in_file, key);
+
+}
+
+
 
 /*** Carga los datos de un sprite ***/
-bool NGN_Load::LoadSpriteData(std::string filepath, std::vector<uint8_t> &img_pixels, NGN_SpriteData* spr) {
+bool NGN_Load::LoadSpriteData(const std::string& filepath, std::vector<uint8_t> &img_pixels, NGN_SpriteData* spr) {
 
     // Crea un buffer temporal para la carga del archivo
     std::vector<uint8_t> buffer;

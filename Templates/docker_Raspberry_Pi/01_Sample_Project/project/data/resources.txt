@@ -1,0 +1,51 @@
+# Resources loading template file
+
+# Usage: Regular files
+# TYPE; INTERNAL_NAME; FILE_PATH
+# Example:
+# TEX; logo; data/logo_overlay.png
+
+# Usage: Font files
+# FNT; INTERNAL_NAME; FILE_PATH; FONT_HEIGHT; [ANTIALIAS]; [BASE_COLOR]; [BORDER_SIZE]; [BORDER_COLOR]
+# Example:
+# FNT; mono_16; data/monofonto.ttf; 16
+# FNT; mono_24; data/monofonto.ttf; 24; 1; 0xFFFFFF; 2; 0x202020
+
+# Admited filetypes
+# TEX	Textures (.png)
+# TBG	Tiled backgrounds (.tbg)
+# SPR	Sprites (.spr)
+# MAP	Collision maps (.map)
+# SFX	Sound Effects (.wav) (.ogg)
+# TXT	Plain text files (.txt)
+# FNT	Font files (.ttf) (.otf)
+
+
+
+# --- Resources loading ---
+
+# Textures
+TEX; background; data/textures/background.png
+TEX; land; data/textures/land.png
+TEX; textbg; data/textures/textbox_bg.png
+
+
+# Sprites
+SPR; boat; data/sprites/boat.spr
+SPR; bird; data/sprites/bird.spr
+
+
+# Tiled backgrounds
+TBG; clouds; data/tiles/clouds.tbg
+
+
+# Sound Effects
+SFX; horn; data/sounds/boat_horn.wav
+
+
+# Fonts
+FNT; chary_64; data/fonts/chary.ttf; 64; 0;
+
+
+# Text files
+TXT; dialog; data/texts/dialog.txt

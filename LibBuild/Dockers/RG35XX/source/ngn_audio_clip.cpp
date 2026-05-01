@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Clips de audio
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -60,9 +60,6 @@ NGN_AudioClip::NGN_AudioClip() {
 
     // Volumen
     _volume = 0;
-
-    // Multiplicador de volumen para la atenuacion panoramica
-    _panning_attenuation = 1.0f;
 
     // Canal por defecto
     _mixer_channel = MIXER_EFFECTS_CH;
@@ -158,7 +155,7 @@ void NGN_AudioClip::Volume(int32_t volume) {
     if (_volume < 0) _volume = 0;
     if (_volume > 100) _volume = 100;
     float mixer = ((float)ngn->sound->GetMixerLevel(MIXER_MASTER_CH) / 100.0f) * ((float)ngn->sound->GetMixerLevel(_mixer_channel) / 100.0f);
-    int32_t v = (int32_t)((float)_volume * _panning_attenuation * mixer);
+    int32_t v = (int32_t)((float)_volume * mixer);
     sound.setVolume(v);
 }
 

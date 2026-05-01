@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -74,6 +74,7 @@ class NGN_Sprite {
             int32_t last_frame;                 // Ultimo frame (inclusive) de la animacion
             int32_t loop;                       // Frame que es el punto de loop
             int32_t frame_duration;             // Duracion de cada frame de la animacion en ciclos del juego
+            int32_t loop_delay;                 // Duracion de la pausa antes de repetir la animacion (0 = repite inmediatamente, por defecto)
         };
 
         // Datos de las cajas de colision
@@ -195,7 +196,8 @@ class NGN_Sprite {
             int32_t first_frame,                        // Primer fotograma de la animacion
             int32_t last_frame,                         // Ultimo fotograma de la animacion
             int32_t loop,                               // Fotograma "punto de loop"
-            int32_t frame_duration                      // Duracion en ciclos de cada fotograma
+            int32_t frame_duration,                     // Duracion en ciclos de cada fotograma
+            int32_t loop_delay = 0                      // Pausa (en frames del runtime) antes de repetir la animacion (0 por defecto)
             );
         int32_t SetAnimation(std::string name = "");    // Selecciona una animacion a reproducir
         void PlayAnimation();                           // Reproduce la animacion seleccionada
@@ -220,6 +222,7 @@ class NGN_Sprite {
         // Gestion de animaciones
         std::vector<animation_data> animation;      // Vector con las animaciones
         int32_t animation_timer;                    // Control de velocidad de la animacion
+        int32_t delay_counter;                      // Control de la pausa entre loops
 
         // Propiedades de la escala
         Size2 original_size;         		        // Tamaño original

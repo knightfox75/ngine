@@ -167,14 +167,16 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
     uint32_t first_frame,       // Primer fotograma de la animación
     uint32_t last_frame,        // Ultimo fotograma de la animación
     uint32_t loop,              // Fotograma "punto de loop”
-    uint32_t frame_duration     // Duracion en ciclos de cada fotograma
+    uint32_t frame_duration,    // Duracion en ciclos de cada fotograma
+    int32_t loop_delay = 0      // Pausa (en frames del runtime) antes de repetir la animación
 );</code></pre>
                 <h3>Descripción</h3>
                 <p>Añade una nueva animación al Sprite creado. Es posible crear animaciones con cinemática inversa. Devuelve 1 en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>player->AddAnimation(“walk”, 1, 7, 1, 5);
 player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
-player->AddAnimation(“run”, 0, 20, 8, 3);</code></pre>
+player->AddAnimation(“run”, 0, 20, 8, 3);
+stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);</code></pre>
             </section>
             
             <section id="SetAnimation" class="doc-block">

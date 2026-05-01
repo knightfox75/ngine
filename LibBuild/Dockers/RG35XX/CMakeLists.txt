@@ -2,6 +2,7 @@
 # NGN Library - Dedicated RG35XX Forge (ARM64 Docker SDK)
 # Version: 1.21.0 - "Static Monolith Edition"
 # TARGET: Anbernic RG35XX (Cortex-A53)
+# Features: Integrated Theoraplay & Xiph Multimedia dependencies
 # ==============================================================================
 
 cmake_minimum_required(VERSION 3.14)
@@ -24,7 +25,7 @@ set(CMAKE_BASE_PATH "/usr/aarch64-linux-gnu")
 set(ARCH_FLAGS "-mcpu=cortex-a53")
 set(TARGET_DEF "TARGET_RG35XX")
 
-project(ngn_library LANGUAGES CXX C VERSION 1.21.0.6)
+project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
 include(GNUInstallDirs) 
 
 message(STATUS "${BoldBlue}Forging NGN SDK for Anbernic RG35XX (ARM64 - Static)${ColorReset}")
@@ -46,18 +47,28 @@ find_library(SDL2_TTF_LIB NAMES SDL2_ttf REQUIRED PATHS ${EXTRA_LIB_PATHS})
 find_library(SFML_SYSTEM_LIB NAMES sfml-system sfml-system-s REQUIRED PATHS ${EXTRA_LIB_PATHS})
 find_library(SFML_AUDIO_LIB NAMES sfml-audio sfml-audio-s REQUIRED PATHS ${EXTRA_LIB_PATHS})
 
+# Xiph Multimedia Libraries (Required for Theoraplay decoding)
+find_library(THEORADEC_LIB NAMES theoradec theora REQUIRED PATHS ${EXTRA_LIB_PATHS})
+find_library(VORBIS_LIB NAMES vorbis REQUIRED PATHS ${EXTRA_LIB_PATHS})
+find_library(OGG_LIB NAMES ogg REQUIRED PATHS ${EXTRA_LIB_PATHS})
+
 find_library(LIB_M m)
 find_library(LIB_DL dl)
 find_library(LIB_PTHREAD pthread)
 find_library(LIB_RT rt)
 
 set(SYSTEM_DEPS ${LIB_M} ${LIB_DL} ${LIB_PTHREAD} ${LIB_RT})
-set(NGINE_DEPS ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB})
+# Added Xiph dependencies into the core engine requirements
+set(NGINE_DEPS ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB} ${THEORADEC_LIB} ${VORBIS_LIB} ${OGG_LIB})
 
 message(STATUS "Static Libs Detected: ${BoldGreen}YES${ColorReset}")
 
 # 5. SOURCES
-file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.h")
+# Added "source/*.c" to capture C middleware (theoraplay.c)
+file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.c" "source/*.h")
+
+# Suppress benign warnings for 3rd-party C middleware
+set_source_files_properties("source/theoraplay/theoraplay.c" PROPERTIES COMPILE_FLAGS "-Wno-cast-function-type -Wno-unused-parameter")
 
 # 6. FACTORY
 function(build_ngn_variant target_name output_name is_shared is_debug)

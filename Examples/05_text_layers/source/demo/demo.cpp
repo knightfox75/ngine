@@ -261,6 +261,8 @@ void Demo::CreateTextBox() {
     textbox->InkColor(0, 255, 0);
     textbox->Print("like in this little example.\n");
 
+    textbox->Print("\a0xFFFFFFLet's try now the in-line\a0xFF00FF color change\a0xFFFFFF two times \a0x00FFFFin a single \a0xFFFFFFline.\n");
+
 }
 
 

@@ -1,4 +1,23 @@
 --------------------------------------------------------------------------------
+2026-05-01 Ver.1.22.0+stable
+--------------------------------------------------------------------------------
+- Completely rewritten font loading and text character rendering methods. A texture atlas is now generated for all characters, and the print function batches glyph vertex lists to render all pending text in a single draw call.
+- Added support for changing ink color in the NGN_TextLayer class Print method, using the \a escape sequence followed by a hex color code (e.g., \a0xFF00FF to set the color to "pink").
+- Pixel format is set to RGBA8888 for all textures, except for fonts, as FreeType internally uses ARGB8888. Textures related to font processing use this format. Otherwise, it causes crashes when running on the Evercade platform.
+- Internal calculation optimizations in several library methods (changes from /2.0f to *0.5f, etc).
+- Rewrite of part of the NGN_Canvas class render engine, which speeds up rendering by approx. 500%. This also allows drawn shapes to apply the color alpha channel over the current canvas content (previously the color was directly overwritten).
+- Rewrite of the FPS counter method.
+- Rewrite of the method that limits the framerate by software (now it is more precise).
+- GetFrameTime() and GetWorkLoad() profiling methods are added to NGN_System, which return the time (in milliseconds) and the workload (as a percentage) of the previous frame.
+- Modified the ReadBinaryFile() method of the NGN_Disk class to support partial file reading.
+- Added the LoadFileChunk() method to the NGN_Load class, which reads a file fragment from a default source.
+- Added the NGN_Video class, which allows the playback of video files in OGV format.
+- Added the Video() method to the NGN_Render class, which renders the current video frame decoded by the NGN_Video class.
+- Fixed a bug in the obfuscation algorithm of the NGN_FileSystem tool. This forces all resource files to be repacked with this new version if updating to this version of the library.
+- Added the "loop_delay" parameter to the AddAnimation method of the NGN_Sprite class, which sets a delay before repeating the animation, provided it is set to loop. This parameter is optional and defaults to 0 (no delay added), thus maintaining backward compatibility.
+
+
+--------------------------------------------------------------------------------
 2026-02-26 Ver.1.21.0+stable
 --------------------------------------------------------------------------------
 - Migrated all Code::Blocks examples and templates to CMake and Visual Studio Code.

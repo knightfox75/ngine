@@ -5,7 +5,7 @@ cls
 
 :: --- [1] CONFIGURATION ---
 set "TOOL_NAME=NGN_FileSystem"
-set "LINUX_IMAGE=ngn-linux-pc-builder"
+set "LINUX_IMAGE=ngn-linux-pc-builder_production"
 set "RPI_IMAGE=ngn-rpi4-builder_production"
 
 echo ========================================================

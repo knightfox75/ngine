@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Funciones de sistema
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -98,9 +98,9 @@ NGN_System::NGN_System() {
     fps_counter = false;
     _focus = true;
 
-    // Tiempo delta
-    _delta_time = SDL_GetTicks();
-    delta_time = 0.0f;
+    // Variables
+    last_frame_time_start = last_frame_time_end = 0;
+    last_frame_time = 0;
 
     // Inicia el seed del random
     srand(time(nullptr));
@@ -139,6 +139,12 @@ bool NGN_System::Init() {
         return false;
     }
 
+    // Intenta iniciar el subsitema de TTF para SDL
+    if (TTF_Init() < 0) {
+        ngn->log->Message("[NGN_Load error] SDL TTF initialization failed.");
+        return false;
+    }
+
     // Returns result
     return true;
 
@@ -149,12 +155,11 @@ bool NGN_System::Init() {
 /*** Gestor de eventos de SDL ***/
 void NGN_System::EventUpdate() {
 
+    // Registra el tiempo al iniciar el frame
+    last_frame_time_start = SDL_GetPerformanceCounter();
+
     // Prepara la pantalla para renderizar el frame actual
     ngn->graphics->PrepareFrame();
-
-    // Tiempo delta
-    delta_time = (((float)(SDL_GetTicks() - _delta_time)) / 1000.0f);
-    _delta_time = SDL_GetTicks();
 
     // Resetea todos los flags de evento
     ResetFlags();
@@ -238,11 +243,13 @@ void NGN_System::EventUpdate() {
 /*** Devuelve un string con la version actual de N'gine ***/
 std::string NGN_System::GetVersion() {
 
+    const std::string DASHED_LINE = "------------------------------------------------------------\n"; 
+
     std::string version = "\n";
 
-    version += "--------------------------------------------------\n";
+    version += DASHED_LINE;
     version += " Core Libs\n";
-    version += "--------------------------------------------------\n";
+    version += DASHED_LINE;
 
     // N'gine
     version += "  N'gine version: ";
@@ -292,19 +299,20 @@ std::string NGN_System::GetVersion() {
     version += "\n";
 
     // Renderer info
-    version += "--------------------------------------------------\n";
+    version += DASHED_LINE;
     version += " Renderer Information\n";
-    version += "--------------------------------------------------\n";
-    SDL_RendererInfo renderer_info;
-    SDL_GetRendererInfo(ngn->graphics->renderer, &renderer_info);
+    version += DASHED_LINE;
     version += "  Driver: ";
-    version += std::string(renderer_info.name);
+    version += std::string(ngn->graphics->renderer_info.name);
     version += "\n";
     version += "  Max texture size: ";
-    version += std::to_string(renderer_info.max_texture_width) + "x" + std::to_string(renderer_info.max_texture_height);
+    version += std::to_string(ngn->graphics->renderer_info.max_texture_width) + "x" + std::to_string(ngn->graphics->renderer_info.max_texture_height);
+    version += "\n";
+    version += "  Pixel format: ";
+    version += SDL_GetPixelFormatName(NGN_PIXEL_FORMAT);
     version += "\n";
 
-    version += "--------------------------------------------------\n";
+    version += DASHED_LINE;
 
     return version;
 
@@ -316,6 +324,24 @@ std::string NGN_System::GetVersion() {
 bool NGN_System::GetApplicationFocus() {
 
     return _focus;
+
+}
+
+
+
+/*** Devuelve el tiempo de ejecucion del frame ***/
+double NGN_System::GetFrameTime() {
+
+    return last_frame_time;
+
+}
+
+
+
+// Devuelve el Workload del frame
+float NGN_System::GetWorkLoad() {
+
+    return (float)((last_frame_time * 100.0) / NGN_MAX_FRAME_TIME);
 
 }
 

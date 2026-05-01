@@ -362,7 +362,10 @@ void Demo::DrawCanvas() {
 
     // Al pulsar el boton del mouse
     if (ngn->input->mouse.LB.held) {
-        canvas->Circle(ngn->input->mouse.x, ngn->input->mouse.y, r, color, r, true);
+        int32_t x = ngn->input->mouse.x;
+        int32_t y = ngn->input->mouse.y;
+        if (color != 0x00000000) canvas->Circle(x, y, r, 0x00000000, r, true);
+        canvas->Circle(x, y, r, color, r, true);
     }
 
 }

@@ -12,6 +12,20 @@ LABEL description="High-Performance Cross-Compiler for Raspberry Pi 4 (Static & 
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# --- [0] SMART MIRROR FALLBACK (ISP Block Bypass) ---
+# Tests connection to Debian's CDN. If blocked (e.g., by ISP firewalls),
+# automatically switches to a highly stable direct mirror to guarantee stability.
+# Handles both modern deb822 format (debian.sources) and legacy sources.list.
+RUN bash -c '\
+    echo "Checking connectivity to deb.debian.org..."; \
+    if timeout 3 bash -c ">/dev/tcp/deb.debian.org/80" 2>/dev/null; then \
+        echo "SUCCESS: Official CDN mirrors are reachable. Using default sources."; \
+    else \
+        echo "WARNING: Official CDN blocked or timed out! Switching to fallback mirrors..."; \
+        sed -i "s|http://deb.debian.org/debian|http://ftp.de.debian.org/debian|g" /etc/apt/sources.list.d/debian.sources 2>/dev/null || true; \
+        sed -i "s|http://deb.debian.org/debian|http://ftp.de.debian.org/debian|g" /etc/apt/sources.list 2>/dev/null || true; \
+    fi'
+
 # --- [1] CROSS-COMPILATION TOOLCHAIN SETUP ---
 RUN dpkg --add-architecture arm64 && \
     apt-get update && apt-get install -y --no-install-recommends \
@@ -38,6 +52,7 @@ RUN dpkg --add-architecture arm64 && \
     libvorbis-dev:arm64 \
     libflac-dev:arm64 \
     libogg-dev:arm64 \
+    libtheora-dev:arm64 \
     libopenal-dev:arm64 \
     libwayland-dev:arm64 \
     libxkbcommon-dev:arm64 \

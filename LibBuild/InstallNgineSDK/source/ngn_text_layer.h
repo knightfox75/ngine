@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Text Layer - Capa de texto con soporte TTF
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -51,6 +51,7 @@
 
 // Includes de la libreria
 #include "ngn_defines.h"
+#include "ngn_math.h"
 
 
 
@@ -195,6 +196,13 @@ class NGN_TextLayer {
         // Ajuste de los permisos
         friend class NGN_Render;
 
+        // Codigos de caracter
+        const struct {
+            uint8_t color = 0x07;
+            uint8_t new_line = 0x0A;
+            uint8_t space = 0x20;
+        } CHAR_CODE;
+
         // Bufferes internos
         SDL_Texture* backbuffer;            // Backbufer de la capa para su renderizado
         NGN_TextFont* font;                 // Fuente actual
@@ -207,7 +215,7 @@ class NGN_TextLayer {
         void SurfaceCleanUp();
 
         // Calcula el tamaño del texto escrito
-        void GetTextBoundaries(int32_t x, int32_t y);
+        void GetTextBoundaries(int32_t x, int32_t y, int32_t w, int32_t h);
 
         // Propiedades adicionales
         Size2 scale;                        // Escala actual
@@ -227,6 +235,19 @@ class NGN_TextLayer {
             uint32_t _height,               // Alto de la capa (Toda la pantalla por defecto)
             bool _filtering                 // Filtrado del contenido?
         );
+
+        // Almacen de vertices del texto
+        const uint32_t MIN_VERTEX_BUFFER = 256;
+        std::vector<SDL_Vertex> vertex;
+
+        // Se ha de actualizar el contenido?
+        bool blit_text;
+
+        // Blittin del contenido al backbuffer
+        void BlitText();
+
+        // Convierte una cadena Hexadecimal con el formato 0x000000 a un uint32_t y aplicalo como color de tinta
+        SDL_Color HexStringToColor(const std::string& hex_str);
 
 };
 

@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-project(ngn_library LANGUAGES CXX C VERSION 1.21.0.6)
+project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
 include(GNUInstallDirs)
 
 # --- [1] ARCHITECTURE TUNING (Raspberry Pi 4) ---
@@ -37,8 +37,18 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 find_package(SFML COMPONENTS system audio REQUIRED)
 
+# Xiph Multimedia Libraries (Required for Theoraplay decoding)
+# Utilizing find_library since standard find_package modules might not exist in cross-sysroot natively
+find_library(THEORADEC_LIB NAMES theoradec theora REQUIRED)
+find_library(VORBIS_LIB NAMES vorbis REQUIRED)
+find_library(OGG_LIB NAMES ogg REQUIRED)
+
 # --- [4] SOURCE FILES ---
-file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.h")
+# Added "source/*.c" to capture C middleware (theoraplay.c)
+file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.c" "source/*.h")
+
+# Suppress benign warnings for 3rd-party C middleware
+set_source_files_properties("source/theoraplay/theoraplay.c" PROPERTIES COMPILE_FLAGS "-Wno-cast-function-type -Wno-unused-parameter")
 
 # --- [5] BUILD TARGETS ---
 
@@ -66,6 +76,9 @@ foreach(target ngn ngn_shared)
         SDL2_ttf::SDL2_ttf 
         sfml-system 
         sfml-audio
+        ${THEORADEC_LIB}
+        ${VORBIS_LIB}
+        ${OGG_LIB}
     )
 endforeach()
 

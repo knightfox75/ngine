@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -147,9 +147,8 @@ NGN_Graphics::NGN_Graphics() {
 
     // Inicializa el control del contador FPS
     fps = 0;
+    fps_frame_count = 0;
     fps_last_time = current_count;
-    fps_ticks_last = fps_ticks_now = current_count;
-    fps_total_ticks = 0;
 
     // Inicia los viewports
     SetupViewports();
@@ -183,7 +182,7 @@ NGN_Graphics::NGN_Graphics() {
 NGN_Graphics::~NGN_Graphics() {
 
     // Elimina los vectores de memoria
-    for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
+    for (uint8_t i = 0; i < viewport_list.size(); i ++) {
         if (viewport_list[i].surface != nullptr) SDL_DestroyTexture(viewport_list[i].surface);
     }
     viewport_list.clear();
@@ -342,6 +341,9 @@ bool NGN_Graphics::Init(
         ngn->log->Message(msg);
         return false;
     }
+
+    // Guarda la informacion del renderer
+    SDL_GetRendererInfo(renderer, &renderer_info);
 
     // Selecciona el color por defecto del renderer
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
@@ -535,10 +537,11 @@ void NGN_Graphics::Update() {
     // Si es necesario, realiza la captura de pantalla
     SaveCurrentFrameToPng();
 
-    // Espera al siguiente frame (60fps soft limit, definido en NGN_FPS_LIMIT)
-    SyncFrame();
     // Contador de frames por segundo
     CountFramesPerSecond();
+
+    // Espera al siguiente frame (60fps soft limit, definido en NGN_FPS_LIMIT)
+    SyncFrame();
 
     // Contador de FPS en la consola [*** Debug ***]
     if (ngn->system->fps_counter) FpsCounter();
@@ -594,12 +597,12 @@ void NGN_Graphics::OpenViewport(
 
     // Crea la textura
     v.surface = SDL_CreateTexture(
-                             renderer,                      // Renderer
-                             SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-                             SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-                             v.render_w,                    // Ancho de la textura
-                             v.render_h                     // Alto de la textura
-                             );
+        renderer,                       // Renderer
+        NGN_PIXEL_FORMAT,               // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+        v.render_w,                     // Ancho de la textura
+        v.render_h                      // Alto de la textura
+    );
 
     // Restaura el filtrado
     #if !defined (DISABLE_BACKBUFFER)
@@ -931,13 +934,17 @@ void NGN_Graphics::SyncFrame() {
     // Calcula el tiempo actual
     current_frame_count = SDL_GetPerformanceCounter();
 
-    // Calcula el diferencial
-    double delta_time = ((double)(current_frame_count - last_frame_count) / (double)sdl_performance_freq);
+    // Calcula el delta
+    double delta_time = (((double)(current_frame_count - last_frame_count) / (double)sdl_performance_freq));
 
     // Si es necesario, esperate los ticks necesarios
     if (delta_time < frame_time) {
-        uint32_t time_lapse = std::floor((frame_time - delta_time) * 1000.0);
-        SDL_Delay(time_lapse);
+        // SDL_Delay para la mayor parte de la espera, dejando 2ms de margen
+        uint32_t time_lapse = (uint32_t)std::floor((frame_time - delta_time) * 1000.0f);
+        if (time_lapse > 2) SDL_Delay(time_lapse - 2);
+        // Busy-wait de precision para el tramo final
+        // Si el frame ya va justo, este while no ejecuta ni un ciclo
+        while (((double)(SDL_GetPerformanceCounter() - last_frame_count) / (double)sdl_performance_freq) < frame_time);
     }
 
     // Guarda la marca de tiempo de este frame
@@ -982,14 +989,14 @@ void NGN_Graphics::ChangeScreenMode() {
                 scale_y = (h / (float)native_h);
                 // Area de dibujado
                 viewport.x = 0;
-                viewport.y = (int32_t)((((float)desktop_h - h) / scale_y) / 2.0f);
+                viewport.y = (int32_t)((((float)desktop_h - h) / scale_y) * 0.5f);
             } else {    // Letter box en pantalla wide
                 // Escala
                 w = (((float)native_w * (float)desktop_h) / (float)native_h);
                 scale_x = (w / (float)native_w);
                 scale_y = ((float)desktop_h / (float)native_h);
                 // Area de dibujado
-                viewport.x = (int32_t)((((float)desktop_w - w) / scale_x) / 2.0f);
+                viewport.x = (int32_t)((((float)desktop_w - w) / scale_x) * 0.5f);
                 viewport.y = 0;
             }
 
@@ -1022,14 +1029,14 @@ void NGN_Graphics::ChangeScreenMode() {
                 scale_y = (h / (float)native_h);
                 // Area de dibujado
                 viewport.x = 0;
-                viewport.y = (int32_t)((((float)display_mode.h - h) / scale_y) / 2.0f);
+                viewport.y = (int32_t)((((float)display_mode.h - h) / scale_y) * 0.5f);
             } else {    // Letter box en pantalla wide
                 // Escala
                 w = (((float)native_w * (float)display_mode.h) / (float)native_h);
                 scale_x = (w / (float)native_w);
                 scale_y = ((float)display_mode.h / (float)native_h);
                 // Area de dibujado
-                viewport.x = (int32_t)((((float)display_mode.w - w) / scale_x) / 2.0f);
+                viewport.x = (int32_t)((((float)display_mode.w - w) / scale_x) * 0.5f);
                 viewport.y = 0;
             }
 
@@ -1160,23 +1167,20 @@ void NGN_Graphics::FpsCounter() {
 /*** Cuenta el numero de frames por segundo ***/
 void NGN_Graphics::CountFramesPerSecond() {
 
-    // Marca actual
     uint64_t current_time = SDL_GetPerformanceCounter();
-    fps_ticks_now = current_time;
 
-    // Tiempo transcurrido
+    // Calcula el tiempo transcurrido desde la ultima medicion
     double time_elapsed = ((double)(current_time - fps_last_time) / (double)sdl_performance_freq);
 
-    // Contador de fps
-    if (time_elapsed >= 1.0) {
-        fps = std::round(((double)fps_total_ticks / (double)sdl_performance_freq) / frame_time);
-        fps_total_ticks = 0;
-        fps_last_time = current_time;
-    } else {
-        fps_total_ticks += (fps_ticks_now - fps_ticks_last);
-    }
+    // Cuenta este frame
+    fps_frame_count++;
 
-    fps_ticks_last = fps_ticks_now;
+    // Cada segundo, calcula los FPS reales
+    if (time_elapsed >= 1.0) {
+        fps = fps_frame_count;
+        fps_frame_count = 0;
+        fps_last_time = current_time;
+    }
 
 }
 
@@ -1199,12 +1203,7 @@ void NGN_Graphics::SetupViewports() {
     v._local_filter = v.local_filter = false;
     v.backdrop_color = {0x00, 0x00, 0x00, 0x00};
 
-    viewport_list.clear();
-    viewport_list.reserve(VIEWPORT_NUMBER);
-
-    for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
-        viewport_list.push_back(v);
-    }
+    viewport_list.assign(VIEWPORT_NUMBER, v);
 
     current_viewport = -1;
 
@@ -1215,7 +1214,7 @@ void NGN_Graphics::SetupViewports() {
 /*** Limpia todas las texturas de los viewports ***/
 void NGN_Graphics::ClearViewports() {
 
-    for (uint8_t i = 0; i < viewport_list.capacity(); i ++) {
+    for (uint8_t i = 0; i < viewport_list.size(); i ++) {
         if (viewport_list[i].available) {
             // Si hay un cambio de modo en el filtrado...
             if (viewport_list[i].local_filter != viewport_list[i]._local_filter) {
@@ -1230,7 +1229,7 @@ void NGN_Graphics::ClearViewports() {
                 // Crea la textura
                 viewport_list[i].surface = SDL_CreateTexture(
                      renderer,                      // Renderer
-                     SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
+                     NGN_PIXEL_FORMAT,              // Formato del pixel
                      SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
                      viewport_list[i].render_w,     // Ancho de la textura
                      viewport_list[i].render_h      // Alto de la textura
@@ -1297,11 +1296,11 @@ void NGN_Graphics::GenerateRuntimeFrameId() {
 
         // Crea el backbuffer de este fondo
         backbuffer = SDL_CreateTexture(
-            renderer,                      // Renderer
-            SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-            SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-            native_w,                      // Ancho de la textura
-            native_h                       // Alto de la textura
+            renderer,                       // Renderer
+            NGN_PIXEL_FORMAT,               // Formato del pixel
+            SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+            native_w,                       // Ancho de la textura
+            native_h                        // Alto de la textura
         );
 
         SDL_SetRenderTarget(renderer, backbuffer);
@@ -1334,9 +1333,10 @@ void NGN_Graphics::RenderBackbuffer() {
         double _rotation = 0.0f;
         SDL_RendererFlip _flip = SDL_FLIP_NONE;
         // Centro de la rotacion
-        SDL_Point* _center = new SDL_Point();
-        _center->x = (native_w / 2);
-        _center->y = (native_h / 2);
+        SDL_Point _center = { 
+            (native_w / 2), 
+            (native_h / 2) 
+        };
 
         // Define el area de render
         SDL_Rect _src = {
@@ -1353,12 +1353,12 @@ void NGN_Graphics::RenderBackbuffer() {
         };
 
         // Renderiza la textura
-        SDL_RenderCopyEx(renderer, backbuffer, &_src, &_dst, _rotation, _center, _flip);
-
-        // Paso de limpieza
-        delete _center;
+        SDL_RenderCopyEx(renderer, backbuffer, &_src, &_dst, _rotation, &_center, _flip);
 
     #endif
+
+    // Registra el tiempo de ejecucion
+    CalculateFrameTime();
 
     // Actualiza el cambio de modo grafico
     ChangeScreenMode();
@@ -1436,9 +1436,10 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     double _rotation = 0.0f;
     SDL_RendererFlip _flip = SDL_FLIP_NONE;
     // Centro de la rotacion
-    SDL_Point* _center = new SDL_Point();
-    _center->x = (native_w / 2);
-    _center->y = (native_h / 2);
+    SDL_Point _center = {
+        (native_w / 2),
+        (native_h / 2)
+    };
 
     // Define el area de render
     SDL_Rect _src = {
@@ -1457,7 +1458,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     #if !defined (DISABLE_BACKBUFFER)
 
         // Renderiza el contenido del frame
-        SDL_RenderCopyEx(renderer, backbuffer, &_src, &_dst, _rotation, _center, _flip);
+        SDL_RenderCopyEx(renderer, backbuffer, &_src, &_dst, _rotation, &_center, _flip);
 
     #endif
 
@@ -1468,11 +1469,8 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
         _src.h = screenshot_overlay->height;
         SDL_SetTextureBlendMode(screenshot_overlay->gfx, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(screenshot_overlay->gfx, screenshot_overlay_alpha);
-        SDL_RenderCopyEx(renderer, screenshot_overlay->gfx, &_src, &_dst, _rotation, _center, _flip);
+        SDL_RenderCopyEx(renderer, screenshot_overlay->gfx, &_src, &_dst, _rotation, &_center, _flip);
     }
-
-    // Paso de limpieza
-    delete _center;
 
     // Borra los buffers
     png_buffer.clear();
@@ -1496,7 +1494,7 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
     );
 
     // Copia los pixeles del renderer al surface
-    if (SDL_RenderReadPixels(renderer, nullptr, SDL_PIXELFORMAT_RGBA8888, png_surface->pixels, png_surface->pitch) != 0) {
+    if (SDL_RenderReadPixels(renderer, nullptr, NGN_PIXEL_FORMAT, png_surface->pixels, png_surface->pitch) != 0) {
         ngn->log->Message("[NGN_Graphics error] PNG Screenshot: Error creating surface.");
         SDL_FreeSurface(png_surface);
         take_screenshot = false;
@@ -1572,3 +1570,16 @@ void NGN_Graphics::SaveCurrentFrameToPng() {
 
 }
 
+
+// Gestion del tiempo de ejecucion del frame
+void NGN_Graphics::CalculateFrameTime() {
+
+    ngn->system->last_frame_time_end = SDL_GetPerformanceCounter();
+
+    // Tiempo transcurrido
+    double time_elapsed = ((double)(ngn->system->last_frame_time_end - ngn->system->last_frame_time_start) / (double)sdl_performance_freq);
+    if (time_elapsed < 0.0f) time_elapsed = 0.0f;
+
+    ngn->system->last_frame_time = time_elapsed;
+
+}

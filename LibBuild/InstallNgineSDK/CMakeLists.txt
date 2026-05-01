@@ -25,7 +25,7 @@ else()
 endif()
 
 # 3. PROYECTO
-project(ngn_library LANGUAGES CXX C VERSION 1.21.0.6)
+project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
 include(GNUInstallDirs)
 
 message(STATUS "${BoldBlue}Configuring NGN Library v${PROJECT_VERSION} for ${ARCH}${ColorReset}")
@@ -43,16 +43,34 @@ find_library(SDL2_TTF_LIB SDL2_ttf)
 find_library(SFML_SYSTEM_LIB sfml-system)
 find_library(SFML_AUDIO_LIB sfml-audio)
 
-foreach(LIB_VAR SDL2_LIB SDL2_TTF_LIB SFML_SYSTEM_LIB SFML_AUDIO_LIB)
+# Video decoding dependencies
+find_library(THEORAPLAY_LIB theoraplay) # Optional (often built from source)
+find_library(THEORADEC_LIB NAMES theoradec theora)
+find_library(VORBIS_LIB vorbis)
+find_library(OGG_LIB ogg)
+
+foreach(LIB_VAR SDL2_LIB SDL2_TTF_LIB SFML_SYSTEM_LIB SFML_AUDIO_LIB THEORADEC_LIB VORBIS_LIB OGG_LIB)
     if(NOT ${LIB_VAR})
         message(FATAL_ERROR "${BoldRed}CRITICAL: Dependency ${LIB_VAR} NOT FOUND. Environment setup is incomplete.${ColorReset}")
     endif()
 endforeach()
 
-set(ALL_LIBS ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB})
+set(ALL_LIBS 
+    ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB}
+    ${THEORADEC_LIB} ${VORBIS_LIB} ${OGG_LIB}
+)
+
+# Safely append Theoraplay if it exists as a precompiled library
+if(THEORAPLAY_LIB)
+    list(APPEND ALL_LIBS ${THEORAPLAY_LIB})
+endif()
 
 # 5. FUENTES
-file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.h")
+# PRAGMATIC FIX: Added "source/*.c" to capture standard C middleware like theoraplay.c
+file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.c" "source/*.h")
+
+# Suppress benign warnings for 3rd-party C middleware to keep build logs clean
+set_source_files_properties("source/theoraplay/theoraplay.c" PROPERTIES COMPILE_FLAGS "-Wno-cast-function-type -Wno-unused-parameter")
 
 # 6. FUNCIÓN "FACTORY"
 function(build_ngn_variant target_name output_name is_shared is_debug)

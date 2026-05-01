@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -48,6 +48,7 @@
 // N'gine
 #include "ngn_defines.h"
 #include "ngn_sprite.h"
+#include "ngn_math.h"
 
 
 
@@ -176,6 +177,9 @@ class NGN_Graphics {
         // ID del frame en tiempo de ejecucion
         uint32_t runtime_frame;
 
+        // Guarda la informacion sobre el renderer
+        SDL_RendererInfo renderer_info;
+
 
         /*** Clonado de objetos ***/
         // Clona un sprite con los parametros actuales
@@ -236,9 +240,7 @@ class NGN_Graphics {
 
         // Contador de FPS (Debug)
         uint64_t fps_last_time;         // Marca de tiempo
-        uint64_t fps_ticks_last;
-        uint64_t fps_ticks_now;
-        uint64_t fps_total_ticks;
+        uint32_t fps_frame_count;
         uint32_t fps;                   // Guarda el numero actual de FPS del ultimo segundo
         void FpsCounter();
         void CountFramesPerSecond();
@@ -272,6 +274,9 @@ class NGN_Graphics {
         NGN_TextureData* screenshot_overlay;    // Overlay del screenshoot
         uint8_t screenshot_overlay_alpha;       // Alpha del overlay
         void SaveCurrentFrameToPng();           // Realiza una captura de pantalla al final del frame si se solicita
+
+        // Gestion del tiempo de ejecucion del frame
+        void CalculateFrameTime();
 
 };
 

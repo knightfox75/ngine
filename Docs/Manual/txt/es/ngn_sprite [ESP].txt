@@ -1,5 +1,5 @@
 NGN_SPRITE.H
-v1.20.0-10th-Anniversay
+v1.22.0+stable
 Español
 
 --------------------------------------------------------------------------------
@@ -160,7 +160,8 @@ int32_t AddAnimation(
 	uint32_t first_frame,		// Primer fotograma de la animación
 	uint32_t last_frame,		// Ultimo fotograma de la animación
 	uint32_t loop,				// Fotograma "punto de loop”
-	uint32_t frame_duration		// Duracion en ciclos de cada fotograma
+	uint32_t frame_duration,	// Duracion en ciclos de cada fotograma
+	int32_t loop_delay = 0      // Pausa (en frames del runtime) antes de repetir la animación
 );
 
 - Descripción
@@ -172,6 +173,7 @@ Devuelve 1 en caso de error.
 player->AddAnimation(“walk”, 1, 7, 1, 5);
 player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
 player->AddAnimation(“run”, 0, 20, 8, 3);
+stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);
 
 --------------------------------------------------------------------------------
 

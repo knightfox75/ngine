@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Canvas - Capa de dibujo
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -44,6 +44,7 @@
 #include <string>
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 
 // n'gine
 #include "ngn.h"
@@ -107,11 +108,11 @@ NGN_Canvas::NGN_Canvas(
     #endif
     backbuffer = nullptr;
     backbuffer = SDL_CreateTexture(
-        ngn->graphics->renderer,       // Renderer
-        SDL_PIXELFORMAT_BGRA8888,      // Formato del pixel
-        SDL_TEXTUREACCESS_TARGET,      // Textura como destino del renderer
-        surface_width,                 // Ancho de la textura
-        surface_height                 // Alto de la textura
+        ngn->graphics->renderer,        // Renderer
+        NGN_PIXEL_FORMAT,               // Formato del pixel
+        SDL_TEXTUREACCESS_STREAMING,    // Textura de acceso streaming (update sin realloc)
+        surface_width,                  // Ancho de la textura
+        surface_height                  // Alto de la textura
     );
     #if !defined (DISABLE_BACKBUFFER)
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
@@ -237,9 +238,8 @@ Size2 NGN_Canvas::GetCurrentScale() {
 /*** Rota el canvas los grados solicitados ***/
 void NGN_Canvas::Rotate(double degrees) {
 
-    rotation += degrees;
-    while (rotation >= 360.0f) rotation -= 360.0f;
-    while (rotation < 0.0f) rotation += 360.0f;
+    rotation = std::fmod((rotation + degrees), 360.0);
+    if (rotation < 0.0) rotation += 360.0;
 
 }
 
@@ -291,15 +291,16 @@ void NGN_Canvas::Point(int32_t x, int32_t y, uint32_t color) {
     // Proteccion de coordenadas
     if ((x < 0) || (x >= surface_width) || (y < 0) || (y >= surface_height)) return;
 
-    // Bloquea el surface
-    //SDL_LockSurface(surface);
-
-    // Dibuja el punto del color dado
+    // Datos de acceso al buffer
     uint32_t* p = (uint32_t*)surface->pixels;
-    p[((y * surface_width) + x)] = color;
+    uint32_t addr = ((y * surface_width) + x);
 
-    // Desbloquea el surface
-    //SDL_UnlockSurface(surface);
+    uint8_t alpha = (color & 0xFF);
+    if (alpha == 0xFF) {
+        p[addr] = color;
+    } else if (alpha > 0x00) {
+        p[addr] = BlendPixel(p[addr], color);
+    }
 
     // Indica el blit
     blit = true;
@@ -321,20 +322,24 @@ void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t c
     int32_t ix = (dx >= 0) ? 1:-1;              // Sentido del dibujado
     int32_t iy = (dy >= 0) ? 1:-1;
     int32_t pk = 0;                             // Precision de la pendiente
+    uint8_t alpha = (color & 0xFF); 
+    bool blend = ((alpha > 0x00) && (alpha < 0xFF)); 
 
     // Valor absoluto de las distancias
     dx = std::abs(dx);
     dy = std::abs(dy);
-
-    // Bloquea el surface
-    //SDL_LockSurface(surface);
 
     // Acceso al array de pixeles
     uint32_t* p = (uint32_t*)surface->pixels;
 
     // Dibuja el primer pixel
     if (!((x < 0) || (y < 0) || (x > right) || (y > bottom))) {
-        p[((y * surface_width) + x)] = color;
+        uint32_t addr = ((y * surface_width) + x);
+        if (blend) {
+            p[addr] = BlendPixel(p[addr], color);
+        } else {
+            p[addr] = color;
+        }
     }
 
     // Segun la pendiente (mandan la X o mandan las Y)
@@ -355,7 +360,12 @@ void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t c
             }
             // Dibuja el pixel
             if (!((x < 0) || (y < 0) || (x > right) || (y > bottom))) {
-                p[((y * surface_width) + x)] = color;
+                uint32_t addr = ((y * surface_width) + x);
+                if (blend) {
+                    p[addr] = BlendPixel(p[addr], color);
+                } else {
+                    p[addr] = color;
+                }
             }
         }
 
@@ -376,14 +386,16 @@ void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t c
             }
             // Dibuja el pixel
             if (!((x < 0) || (y < 0) || (x > right) || (y > bottom))) {
-                p[((y * surface_width) + x)] = color;
+                uint32_t addr = ((y * surface_width) + x);
+                if (blend) {
+                    p[addr] = BlendPixel(p[addr], color);
+                } else {
+                    p[addr] = color;
+                }
             }
         }
 
     }
-
-    // Desbloquea el surface
-    //SDL_UnlockSurface(surface);
 
     // Indica el blit
     blit = true;
@@ -395,54 +407,32 @@ void NGN_Canvas::Line(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t c
 /*** Dibuja un cuadrado ***/
 void NGN_Canvas::Box(int32_t x1, int32_t y1, int32_t x2, int32_t y2, uint32_t color, bool paint) {
 
-    // Calcula y ordena los puntos del rectangulo
     int32_t xa = 0, ya = 0, xb = 0, yb = 0;
     if (x1 <= x2) {
-        xa = x1;
-        xb = x2;
+        xa = x1; xb = x2;
     } else {
-        xa = x2;
-        xb = x1;
+        xa = x2; xb = x1;
     }
     if (y1 <= y2) {
-        ya = y1;
-        yb = y2;
+        ya = y1; yb = y2;
     } else {
-        ya = y2;
-        yb = y1;
+        ya = y2; yb = y1;
     }
 
     if (paint) {
-        int32_t x = 0, y = 0;
-        // Bloquea el surface
-        //SDL_LockSurface(surface);
-        // Acceso al array de pixeles
         uint32_t* p = (uint32_t*)surface->pixels;
-        uint32_t idx = 0;
-        // Rectangulo con relleno (rellena el buffer de pixeles)
-        for (y = ya; y <= yb; y ++) {
-            // Proteccion de coordenadas
-            if ((y < 0) || (y >= surface_height)) continue;
-            // Calcula la posicion del puntero
-            idx = (y * surface_width);
-            for (x = xa; x <= xb; x ++) {
-                // Proteccion de coordenadas
-                if ((x < 0) || (x >= surface_width)) continue;
-                // Escribe el dato
-                p[(idx + x)] = color;
-            }
+        uint8_t alpha = (color & 0xFF); 
+        bool blend = ((alpha > 0x00) && (alpha < 0xFF));
+        for (int32_t y = ya; y <= yb; y++) {
+            FillScanline(p, y, xa, xb, color, blend);
         }
-        // Desbloquea el surface
-        //SDL_UnlockSurface(surface);
     } else {
-        // Rectangulo sin relleno (usa lineas)
         Line(xa, ya, xb, ya, color);
-        Line(xb, ya, xb, yb, color);
-        Line(xb, yb, xa, yb, color);
-        Line(xa, yb, xa, ya, color);
+        Line(xa, yb, xb, yb, color);
+        Line(xa, (ya + 1), xa, (yb - 1), color);
+        Line(xb, (ya + 1), xb, (yb - 1), color);
     }
 
-    // Indica el blit
     blit = true;
 
 }
@@ -469,64 +459,69 @@ void NGN_Canvas::Arc(int32_t cx, int32_t cy, int32_t r, double start_angle, doub
 
     // Asignacion de los radios
     int32_t _rx = r;
-    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx:ry;
+    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx : ry;
 
     // Ordena los angulos de inicio y fin
-    double st_angle = 0.0f, ed_angle = 0.0f;
-    if (start_angle == end_angle) {
-        // Si son identicos, sal
-        return;
-    } else if (start_angle > end_angle) {
-        // Si el angulo inicial es mayor que el final
+    if (start_angle == end_angle) return;
+    if ((_rx == 0) && (_ry == 0)) return;
+
+    double st_angle = 0.0, ed_angle = 0.0;
+    if (start_angle > end_angle) {
         st_angle = start_angle;
-        ed_angle = end_angle += (PI * 2.0f);
+        ed_angle = end_angle + (PI * 2.0);
     } else {
         st_angle = start_angle;
         ed_angle = end_angle;
     }
 
-    // Algun ambos radios son 0...
-    if ((_rx == 0) && (_ry == 0)) {
-        return;
-    }
+    // Precision angular: un paso por pixel aproximado segun el radio mayor
+    double p = ((PI * 4.0) / (double)((_rx >= _ry) ? _rx : _ry));
 
-    // Calculos
-    int32_t x = 0, y = 0;                               // Coordenadas
-    int32_t _x = 0, _y = 0;
-    int32_t _fx = 0, _fy = 0;
+    // --- Optimizacion Arc: recurrence relation (DDA angular) ---
+    // En lugar de llamar cos/sin en cada iteracion del bucle,
+    // se precalculan los incrementos angulares una sola vez
+    // y se actualiza la posicion con rotacion incremental:
+    //   x' = x*cos(p) - y*sin(p)
+    //   y' = x*sin(p) + y*cos(p)
+    double cos_p = std::cos(p);
+    double sin_p = std::sin(p);
 
-    // Precision
-    double p = 0.0f;
-    if (_rx >= _ry) {
-        p = (PI * 4.0f) / (double)_rx;
-    } else {
-        p = (PI * 4.0f) / (double)_ry;
-    }
+    // Punto de inicio sobre la elipse
+    double ex = (std::cos(st_angle) * (double)_rx);
+    double ey = (std::sin(st_angle) * (double)_ry);
 
-    // Primer punto del angulo
-    _fx = _x = (std::round((std::cos(st_angle) * (float)_rx)) + cx);
-    _fy = _y = (std::round((std::sin(st_angle) * (float)_ry)) + cy);
-    // Dibuja los segmentos del arco
-    for (double angle = st_angle; angle <= ed_angle; angle += p) {
-        // Calculos de las coordenadas
-        x = (std::round((std::cos(angle) * (float)_rx)) + cx);
-        y = (std::round((std::sin(angle) * (float)_ry)) + cy);
+    int32_t _fx = ((int32_t)std::round(ex) + cx);
+    int32_t _fy = ((int32_t)std::round(ey) + cy);
+    int32_t _x = _fx, _y = _fy;
+    int32_t x = 0, y = 0;
+
+    // El angulo cubierto se controla por el numero de pasos,
+    // evitando acumulacion de error en la comparacion de doubles.
+    int32_t steps = (int32_t)std::ceil(((ed_angle - st_angle) / p));
+
+    for (int32_t i = 0; i < steps; i ++) {
+        // Rotacion incremental sobre el espacio de la elipse
+        double nx = (ex * cos_p) - (((ey / (double)_ry) * (double)_rx) * sin_p);
+        double ny = (((ex / (double)_rx) * (double)_ry) * sin_p) + (ey * cos_p);
+        ex = nx;
+        ey = ny;
+        x = ((int32_t)std::round(ex) + cx);
+        y = ((int32_t)std::round(ey) + cy);
         if ((_x != x) || (_y != y)) Line(x, y, _x, _y, color);
         _x = x;
         _y = y;
     }
-    // Ultimo punto del arco
-    x = (std::round((std::cos(ed_angle) * (float)_rx)) + cx);
-    y = (std::round((std::sin(ed_angle) * (float)_ry)) + cy);
+
+    // Ultimo punto exacto del arco (evita gap por redondeo del step count)
+    x = ((int32_t)std::round(std::cos(ed_angle) * (double)_rx) + cx);
+    y = ((int32_t)std::round(std::sin(ed_angle) * (double)_ry) + cy);
     if ((_x != x) || (_y != y)) Line(x, y, _x, _y, color);
 
-    // Has de cerrar el arco (0 = no, 1 = entre los puntos, 2 = con el centro)
+    // Has de cerrar el arco? (0 = no, 1 = entre los puntos, 2 = con el centro)
     switch (close) {
-        // Entre ellos
         case 1:
             Line(x, y, _fx, _fy, color);
             break;
-        // Con el centro
         case 2:
             Line(x, y, cx, cy, color);
             Line(_fx, _fy, cx, cy, color);
@@ -575,26 +570,16 @@ Rgba NGN_Canvas::GetPixelRgba(int32_t x, int32_t y) {
 
 
 
-/*** Convierte el buffer de pixeles en una textura ***/
+/*** Actualiza la textura con los datos del buffer ***/
 void NGN_Canvas::Blit() {
 
     // Si no es necesario, ignora el comando
     if (!blit) return;
 
-    // Convierte la superficie generada en textura
-    SDL_DestroyTexture(backbuffer);
-    backbuffer = nullptr;
-    #if !defined (DISABLE_BACKBUFFER)
-        if (filtering) {
-            SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-        }
-    #endif
-    backbuffer = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
-    #if !defined (DISABLE_BACKBUFFER)
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
-    #endif
+    // Actualiza el contenido de la textura
+    SDL_UpdateTexture(backbuffer, nullptr, surface->pixels, surface->pitch);
 
-    // Marca la conversion como realizada
+    // Marca el comando como completado
     blit = false;
 
 }
@@ -642,11 +627,11 @@ void NGN_Canvas::BackbufferCleanUp() {
 /*** Dibuja un circulo (Implementacion del algoritmo de Bresenham) ***/
 void NGN_Canvas::BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry) {
 
-    // Asignacion de los radios y proteccion de 0
+    // Asigna el radio. Proteccion contra 0
     int32_t _rx = r;
-    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx:ry;
+    int32_t _ry = (ry == (int32_t)NGN_DEFAULT_VALUE) ? _rx : ry;
 
-    // Algun radio es 0...
+    // Si alguno de los radios es 0...
     if ((_rx == 0) && (_ry == 0)) {
         return;
     } else if (_ry == 0) {
@@ -657,132 +642,144 @@ void NGN_Canvas::BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t col
         return;
     }
 
-    // Calculos
+    // Calculos previos
     int32_t right = (surface_width - 1);                // Limites del buffer
     int32_t bottom = (surface_height - 1);
     int32_t x = _rx;                                    // Coordenadas
     int32_t y = 0;
-    int32_t ix = ((_ry * _ry) * (1 - (_rx << 1)));      // Cambios de coordenada
-    int32_t iy = (_rx * _rx);
-    int32_t square_x = ((_rx * _rx) << 1);              // Cuadrados
-    int32_t square_y = ((_ry * _ry) << 1);
-    int32_t stop_x = (square_y * _rx);                  // Puntos de detencion
-    int32_t stop_y = 0;
-    int32_t ellip_error = 0;                            // Error en el dibujado de la elipse
+
+    // Usamos int64_t para evitar desbordes en los calculos con radios grandes (>512)
+    int64_t ix = ((int64_t)_ry * _ry) * (1 - ((int64_t)_rx << 1));  // Cambios de coordenadas
+    int64_t iy = ((int64_t)_rx * _rx);
+    int64_t square_x = (((int64_t)_rx * _rx) << 1);                  // Cuadrados
+    int64_t square_y = (((int64_t)_ry * _ry) << 1);
+    int64_t stop_x = (square_y * _rx);                               // Puntos de detencion
+    int64_t stop_y = 0;
+    int64_t ellip_error = 0;                                         // Error en el dibujado de elipses
+    uint8_t alpha = (color & 0xFF);                                  // Hay que usar alpha?
 
     // Variables adicionales
-    int32_t _x = 0, _y = 0;
+    int32_t _px = 0, _py = 0;
 
-    // Bloquea el surface
-    //SDL_LockSurface(surface);
     // Acceso al array de pixeles
     uint32_t* p = (uint32_t*)surface->pixels;
 
-    // Primera area de dibujado (izquierda y derecha)
+    // Prime area de dibujado (lados izquierdo y derecho)
     while (stop_x >= stop_y) {
-        // Dibuja el pixel del cuadrante 1
-        _x = cx + x;
-        _y = cy + y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
+        
+        // --- Dibujado por simetria de 4 vias, con proteccion de overlap ---
+        
+        // Cuadrante 1 (+, +) - Se dibuja siempre
+        _px = cx + x; _py = cy + y;
+        if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+            uint32_t addr = ((_py * surface_width) + _px);
+            p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
         }
-        // Dibuja el pixel del cuadrante 2
-        _x = cx - x;
-        _y = cy + y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
+        
+        // Cuadrante 2 (-, +) - Solo si x > 0 para evitar el overlap en este axis
+        if (x > 0) {
+            _px = cx - x; _py = cy + y;
+            if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+                uint32_t addr = ((_py * surface_width) + _px);
+                p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
+            }
         }
-        // Dibuja el pixel del cuadrante 3
-        _x = cx - x;
-        _y = cy - y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
+        
+        // Reflejo vertical solo si y > 0
+        if (y > 0) {
+            // Cuadrante 3 (-, -) - Solo si x > 0
+            if (x > 0) {
+                _px = cx - x; _py = cy - y;
+                if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+                    uint32_t addr = ((_py * surface_width) + _px);
+                    p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
+                }
+            }
+            // Cuadrante 4 (+, -)
+            _px = cx + x; _py = cy - y;
+            if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+                uint32_t addr = ((_py * surface_width) + _px);
+                p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
+            }
         }
-        // Dibuja el pixel del cuadrante 4
-        _x = cx + x;
-        _y = cy - y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
-        }
+
         // Incrementa la Y
-        y ++;
-        // Incrementa stop_y
+        y++;
         stop_y += square_x;
-        // Incrementa el error de elipse
         ellip_error += iy;
-        // Incrementa el incremento de Y
         iy += square_x;
+
         // Correccion de valores
         if (((ellip_error << 1) + ix) > 0) {
-            // Reduce X
-            x --;
-            // Reduce stop_x
+            x--;
             stop_x -= square_y;
-            // Incrementa el error de elipse
             ellip_error += ix;
-            // Incremente el incremento de X
             ix += square_y;
         }
     }
 
-    // Prepara la segunda area (arriba y abajo)
+    // Prepara la siguiente area de dibujado (arriba y abajo)
     x = 0;
     y = _ry;
-    ix = (_ry * _ry);
-    iy = ((_rx * _rx) * (1 - (_ry << 1)));
+    ix = ((int64_t)_ry * _ry);
+    iy = ((int64_t)_rx * _rx) * (1 - ((int64_t)_ry << 1));
     ellip_error = 0;
     stop_x = 0;
     stop_y = (square_x * _ry);
 
-    // Segunda area de dibujado (arriba y abajo)
-    while (stop_x <= stop_y) {
-        // Dibuja el pixel del cuadrante 1
-        _x = cx + x;
-        _y = cy + y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
+    // Segunda area de dibujado (arcos superior e inferior)
+    while (stop_x < stop_y) {
+        
+        // --- Dibujado por simetria de 4 vias, con proteccion de overlap ---
+        
+        // Cuadrante 1 (+, +)
+        _px = cx + x; _py = cy + y;
+        if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+            uint32_t addr = ((_py * surface_width) + _px);
+            p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
         }
-        // Dibuja el pixel del cuadrante 2
-        _x = cx - x;
-        _y = cy + y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
+        
+        // Cuadrante 2 (-, +) - Solo si x > 0
+        if (x > 0) {
+            _px = cx - x; _py = cy + y;
+            if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+                uint32_t addr = ((_py * surface_width) + _px);
+                p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
+            }
         }
-        // Dibuja el pixel del cuadrante 3
-        _x = cx - x;
-        _y = cy - y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
+        
+        // Reflejo vertical solo si y > 0
+        if (y > 0) {
+            // Cuadrante 3 (-, -) - Solo si x > 0
+            if (x > 0) {
+                _px = cx - x; _py = cy - y;
+                if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+                    uint32_t addr = ((_py * surface_width) + _px);
+                    p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
+                }
+            }
+            // Cuadrante 4 (+, -)
+            _px = cx + x; _py = cy - y;
+            if (!((_px < 0) || (_py < 0) || (_px > right) || (_py > bottom))) {
+                uint32_t addr = ((_py * surface_width) + _px);
+                p[addr] = (alpha == 0xFF) ? color : BlendPixel(p[addr], color);
+            }
         }
-        // Dibuja el pixel del cuadrante 4
-        _x = cx + x;
-        _y = cy - y;
-        if (!((_x < 0) || (_y < 0) || (_x > right) || (_y > bottom))) {
-            p[((_y * surface_width) + _x)] = color;
-        }
+
         // Incrementa la X
-        x ++;
-        // Incrementa stop_x
+        x++;
         stop_x += square_y;
-        // Incrementa el error de elipse
         ellip_error += ix;
-        // Incrementa el incremento de X
         ix += square_y;
+
         // Correccion de valores
         if (((ellip_error << 1) + iy) > 0) {
-            // Reduce Y
-            y --;
-            // Reduce stop_y
+            y--;
             stop_y -= square_x;
-            // Incrementa el error de elipse
             ellip_error += iy;
-            // Incremente el incremento de Y
             iy += square_x;
         }
     }
-
-    // Desbloquea el surface
-    //SDL_UnlockSurface(surface);
 
     // Indica el blit
     blit = true;
@@ -794,11 +791,11 @@ void NGN_Canvas::BresenhamCircle(int32_t cx, int32_t cy, int32_t r, uint32_t col
 /*** Dibuja un circulo relleno (Implementacion del algoritmo de Bresenham) ***/
 void NGN_Canvas::BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32_t color, int32_t ry) {
 
-    // Asignacion de los radios y proteccion de 0
+    // Asigna los radios
     int32_t _rx = r;
-    int32_t _ry = (ry == NGN_DEFAULT_VALUE) ? _rx:ry;
+    int32_t _ry = (ry == (int32_t)NGN_DEFAULT_VALUE) ? _rx : ry;
 
-    // Algun radio es 0...
+    // Proteccion contra desbordes
     if ((_rx == 0) && (_ry == 0)) {
         return;
     } else if (_ry == 0) {
@@ -809,137 +806,115 @@ void NGN_Canvas::BresenhamFilledCircle(int32_t cx, int32_t cy, int32_t r, uint32
         return;
     }
 
-    // Calculos
-    int32_t right = (surface_width - 1);                // Limites del buffer
-    int32_t bottom = (surface_height - 1);
-    int32_t x = _rx;                                    // Coordenadas
-    int32_t y = 0;
-    int32_t ix = ((_ry * _ry) * (1 - (_rx << 1)));      // Cambios de coordenada
-    int32_t iy = (_rx * _rx);
-    int32_t square_x = ((_rx * _rx) << 1);              // Cuadrados
-    int32_t square_y = ((_ry * _ry) << 1);
-    int32_t stop_x = (square_y * _rx);                  // Puntos de detencion
-    int32_t stop_y = 0;
-    int32_t ellip_error = 0;                            // Error en el dibujado de la elipse
+    // Usamos int64_t para evitar desbordes en los calculos con radios grandes (>512)
+    int64_t x = _rx;
+    int64_t y = 0;
+    int64_t ix = ((int64_t)_ry * _ry) * (1 - ((int64_t)_rx << 1));
+    int64_t iy = ((int64_t)_rx * _rx);
+    int64_t square_x = (((int64_t)_rx * _rx) << 1);
+    int64_t square_y = (((int64_t)_ry * _ry) << 1);
+    int64_t stop_x = (square_y * _rx);
+    int64_t stop_y = 0;
+    int64_t ellip_error = 0;
 
-    // Variables adicionales
-    int32_t _x = 0, _y = 0;
-    int32_t _start = 0, _end = 0;
-    int32_t _py = 0;
+    // Uso de alpha blending?
+    uint8_t alpha = (color & 0xFF); 
+    bool blend = ((alpha > 0x00) && (alpha < 0xFF));
 
-    // Bloquea el surface
-    //SDL_LockSurface(surface);
-    // Acceso al array de pixeles
+    // Puntero a la matriz de pixeles
     uint32_t* p = (uint32_t*)surface->pixels;
 
-    // Primera area de dibujado (izquierda y derecha)
+    // AREA 1
     while (stop_x >= stop_y) {
-        // Dibuja la linea del cuadrante 1
-        _start = cx - x;
-        _end = cx + x;
-        _y = cy - y;
-        if (!((_y < 0) || (_y > bottom))) {
-            _py = (_y * surface_width);
-            for (_x = _start; _x <= _end; _x ++) {
-                if (!((_x < 0) || (_x > right))) {
-                    p[(_py + _x)] = color;
-                }
-            }
+        // Dibuja la linea actual en Y. Nos aseguramos que no se repita en esta iteracion.
+        FillScanline(p, (cy + (int32_t)y), (cx - (int32_t)x), (cx + (int32_t)x), color, blend);
+        // Evita el doble dibujado en el centro
+        if (y > 0) {
+            FillScanline(p, (cy - (int32_t)y), (cx - (int32_t)x), (cx + (int32_t)x), color, blend);
         }
-        // Dibuja la linea del cuadrante 2
-        _start = cx - x;
-        _end = cx + x;
-        _y = cy + y;
-        if (!((_y < 0) || (_y > bottom))) {
-            _py = (_y * surface_width);
-            for (_x = _start; _x <= _end; _x ++) {
-                if (!((_x < 0) || (_x > right))) {
-                    p[(_py + _x)] = color;
-                }
-            }
-        }
-        // Incrementa la Y
         y ++;
-        // Incrementa stop_y
         stop_y += square_x;
-        // Incrementa el error de elipse
         ellip_error += iy;
-        // Incrementa el incremento de Y
         iy += square_x;
-        // Correccion de valores
         if (((ellip_error << 1) + ix) > 0) {
-            // Reduce X
             x --;
-            // Reduce stop_x
             stop_x -= square_y;
-            // Incrementa el error de elipse
             ellip_error += ix;
-            // Incremente el incremento de X
             ix += square_y;
         }
     }
 
-    // Prepara la segunda area (arriba y abajo)
+    // Guarda el limite para evitar que el segundo bucle sobreescriba la linea central
+    int32_t last_y = (int32_t)y - 1;
+
+    // AREA 2
     x = 0;
     y = _ry;
-    ix = (_ry * _ry);
-    iy = ((_rx * _rx) * (1 - (_ry << 1)));
+    ix = ((int64_t)_ry * _ry);
+    iy = ((int64_t)_rx * _rx) * (1 - ((int64_t)_ry << 1));
     ellip_error = 0;
     stop_x = 0;
     stop_y = (square_x * _ry);
-
-    // Segunda area de dibujado (arriba y abajo)
+    int64_t current_y = y;
+    int64_t max_x = 0;
     while (stop_x <= stop_y) {
-        // Dibuja la linea del cuadrante 1
-        _start = cx - x;
-        _end = cx + x;
-        _y = cy - y;
-        if (!((_y < 0) || (_y > bottom))) {
-            _py = (_y * surface_width);
-            for (_x = _start; _x <= _end; _x ++) {
-                if (!((_x < 0) || (_x > right))) {
-                    p[(_py + _x)] = color;
-                }
-            }
-        }
-        // Dibuja la linea del cuadrante 2
-        _start = cx - x;
-        _end = cx + x;
-        _y = cy + y;
-        if (!((_y < 0) || (_y > bottom))) {
-            _py = (_y * surface_width);
-            for (_x = _start; _x <= _end; _x ++) {
-                if (!((_x < 0) || (_x > right))) {
-                    p[(_py + _x)] = color;
-                }
-            }
-        }
-        // Incrementa la X
+        // Calcula el ancho maximo
+        max_x = x; 
         x ++;
-        // Incrementa stop_x
         stop_x += square_y;
-        // Incrementa el error de elipse
         ellip_error += ix;
-        // Incrementa el incremento de X
         ix += square_y;
-        // Correccion de valores
+        // Si la Y va a salirse de rango en este paso, dibuja la linea en la pantalla
         if (((ellip_error << 1) + iy) > 0) {
-            // Reduce Y
+            if (current_y > last_y) {
+                FillScanline(p, (cy + (int32_t)current_y), (cx - (int32_t)max_x), (cx + (int32_t)max_x), color, blend);
+                FillScanline(p, (cy - (int32_t)current_y), (cx - (int32_t)max_x), (cx + (int32_t)max_x), color, blend);
+            }
             y --;
-            // Reduce stop_y
+            current_y = y;
             stop_y -= square_x;
-            // Incrementa el error de elipse
             ellip_error += iy;
-            // Incremente el incremento de Y
             iy += square_x;
         }
     }
 
-    // Desbloquea el surface
-    //SDL_UnlockSurface(surface);
+    // Si llegas al final y hay la ultima linea pendiente de dibujado, dibujala ahora.
+    if (current_y > last_y) {
+        FillScanline(p, (cy + (int32_t)current_y), (cx - (int32_t)max_x), (cx + (int32_t)max_x), color, blend);
+        FillScanline(p, (cy - (int32_t)current_y), (cx - (int32_t)max_x), (cx + (int32_t)max_x), color, blend);
+    }
 
-    // Indica el blit
     blit = true;
+
+}
+
+
+
+/*** Funcion de relleno ***/
+void NGN_Canvas::FillScanline(uint32_t* p, int32_t scan_y, int32_t x_left, int32_t x_right, uint32_t color, bool blend) {
+
+    // Calculos de seguridad previos
+    if ((scan_y < 0) || (scan_y > (surface_height - 1))) return;
+    int32_t xs = std::max(x_left,  0);
+    int32_t xe = std::min(x_right, (surface_width - 1));
+    if (xs > xe) return;
+
+    // Calcula el puntero a la fila a dibujar
+    uint32_t start_addr = ((scan_y * surface_width) + xs);
+    uint32_t data_length = (xe - xs + 1);
+    
+    // Segun si hay mezcla o no
+    if (blend) {
+        uint32_t addr = start_addr;
+        uint32_t last_addr = (start_addr + data_length);
+        while (addr < last_addr) {
+            p[addr] = BlendPixel(p[addr], color);
+            addr ++;
+        }  
+    } else {
+        uint32_t* row = (p + start_addr);
+        std::fill(row, (row + data_length), color);
+    }
 
 }
 
@@ -955,5 +930,37 @@ Rgba NGN_Canvas::GetRgbaColor(uint32_t color) {
     c.a = color & 0x000000FF;
 
     return c;
+
+}
+
+
+
+/*** Calcula la mezcla (alpha blending) entre dos pixeles y devuelve el resultado ***/
+uint32_t NGN_Canvas::BlendPixel(uint32_t dst, uint32_t src) {
+
+    uint8_t src_a = (src & 0x000000FF);
+    // Si el pixel de origen es opaco o transparente, no hay nada que mezclar
+    if (src_a == 0xFF) return src;
+    if (src_a == 0x00) return dst;
+
+    // Descompon los canales del destino
+    uint8_t dst_r = (dst >> 24) & 0xFF;
+    uint8_t dst_g = (dst >> 16) & 0xFF;
+    uint8_t dst_b = (dst >> 8) & 0xFF;
+    uint8_t dst_a = (dst & 0xFF);
+
+    // Descompon los canales del origen
+    uint8_t src_r = (src >> 24) & 0xFF;
+    uint8_t src_g = (src >> 16) & 0xFF;
+    uint8_t src_b = (src >> 8) & 0xFF;
+
+    // Porter-Duff "over" por canal
+    uint8_t inv_a = (255 - src_a);
+    uint8_t out_r = (uint8_t)(((src_a * src_r) + (inv_a * dst_r)) / 255);
+    uint8_t out_g = (uint8_t)(((src_a * src_g) + (inv_a * dst_g)) / 255);
+    uint8_t out_b = (uint8_t)(((src_a * src_b) + (inv_a * dst_b)) / 255);
+    uint8_t out_a = (uint8_t)(src_a + ((inv_a * dst_a) / 255));
+
+    return ((out_r << 24) | (out_g << 16) | (out_b << 8) | out_a);
 
 }

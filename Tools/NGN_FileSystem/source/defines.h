@@ -58,7 +58,7 @@ const int32_t ERR_CODE_INFILE_EMPTY = 0x06;
 
 /*** Version de N'gine ***/
 const int32_t NGN_VERSION_MAJOR = 1;                                    // Version mayor
-const int32_t NGN_VERSION_MINOR = 11;                                   // Version menor
+const int32_t NGN_VERSION_MINOR = 22;                                   // Version menor
 const int32_t NGN_VERSION_PATCH = 0;                                    // Version parche
 const std::string NGN_VERSION_METADATA = "stable";                      // Version metadatos
 
@@ -68,11 +68,11 @@ const std::string PROGRAM_NAME = "N'gine file system manager";          // Nombr
 const std::string CPR_YEARS = "2021-2026";                              // Años en el texto de CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 1;                                // Version mayor
 const int32_t PROGRAM_VERSION_MINOR = 4;                                // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 0;                                // Version parche
+const int32_t PROGRAM_VERSION_PATCH = 1;                                // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                  // Version metadatos
 const std::string MAGIC_STRING = "NGN FILE SYSTEM";    	                // Magic string
 const uint8_t MS_LENGTH = 15;                                           // Logitud del magic string
-const uint8_t VERSION = 2;                                              // Version del archivo
+const uint8_t VERSION = 3;                                              // Version del archivo
 
 
 /*** Textos recurrentes ***/

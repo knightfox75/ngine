@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Funciones para la manipulacion de imagenes en RAW
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -115,10 +115,10 @@ NGN_TextureData* NGN_Image::ConvertRawToTextureData(NGN_RawImage* raw) {
         raw->height,                    // Alto
         32,                             // Profuncidad de color 32bpp [RGBA8888]
         (raw->width << 2),              // Longitud de una fila de pixeles en bytes
-        0x000000ff,                     // Mascara R
-        0x0000ff00,                     // Mascara G
-        0x00ff0000,                     // Mascara B
-        0xff000000                      // Mascara A
+        0x000000FF,                     // Mascara R
+        0x0000FF00,                     // Mascara G
+        0x00FF0000,                     // Mascara B
+        0xFF000000                      // Mascara A
     );
 
     // Verifica si el surface se ha creado correctamente
@@ -369,7 +369,7 @@ bool NGN_Image::RendererToSurface(NGN_RendererSurface* destination) {
 
 
     // Copia los pixeles del renderer al surface
-    if (SDL_RenderReadPixels(ngn->graphics->renderer, nullptr, SDL_PIXELFORMAT_RGBA8888, destination->surface->pixels, destination->surface->pitch) != 0) {
+    if (SDL_RenderReadPixels(ngn->graphics->renderer, nullptr, NGN_PIXEL_FORMAT, destination->surface->pixels, destination->surface->pitch) != 0) {
         ngn->log->Message("[NGN_Image error] RendererToSurface: Error creating surface.");
         SDL_FreeSurface(destination->surface);
         return false;

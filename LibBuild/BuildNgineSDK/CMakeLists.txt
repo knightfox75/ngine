@@ -30,7 +30,7 @@ set(CMAKE_RANLIB       "gcc-ranlib")
 # 2. PROJECT INITIALIZATION
 # ------------------------------------------------------------------------------
 # We enable CXX (C++), C, and RC (Windows Resources) languages.
-project(ngn_library LANGUAGES CXX C RC VERSION 1.21.0.6)
+project(ngn_library LANGUAGES CXX C RC VERSION 1.22.0.7)
 
 message(STATUS "--------------------------------------------------------")
 message(STATUS " N'GINE BUILD SYSTEM - Windows MinGW Forge")
@@ -52,18 +52,45 @@ endif()
 # Normalize Windows backslashes (\) to CMake forward slashes (/)
 file(TO_CMAKE_PATH "${WIN_LIBS_PATH}" WIN_LIBS_PATH)
 
-set(EXTRA_INCLUDES "${WIN_LIBS_PATH}/sdl2/include" "${WIN_LIBS_PATH}/sfml/include")
-set(EXTRA_LIB_PATHS "${WIN_LIBS_PATH}/sdl2/lib" "${WIN_LIBS_PATH}/sfml/lib")
+set(EXTRA_INCLUDES 
+    "${WIN_LIBS_PATH}/sdl2/include" 
+    "${WIN_LIBS_PATH}/sfml/include"
+    "${WIN_LIBS_PATH}/theora/include"
+    "${WIN_LIBS_PATH}/vorbis/include"
+    "${WIN_LIBS_PATH}/ogg/include"
+)
+set(EXTRA_LIB_PATHS 
+    "${WIN_LIBS_PATH}/sdl2/lib" 
+    "${WIN_LIBS_PATH}/sfml/lib"
+    "${WIN_LIBS_PATH}/theora/lib"
+    "${WIN_LIBS_PATH}/vorbis/lib"
+    "${WIN_LIBS_PATH}/ogg/lib"
+)
 
 # Prioritize .dll.a (Import Libraries) and then fallback to .a (Static Libraries)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".dll.a" ".a")
 
-find_library(SDL2_LIB NAMES SDL2 PATHS ${EXTRA_LIB_PATHS} REQUIRED)
-find_library(SDL2_TTF_LIB NAMES SDL2_ttf PATHS ${EXTRA_LIB_PATHS} REQUIRED)
-find_library(SFML_SYSTEM_LIB NAMES sfml-system PATHS ${EXTRA_LIB_PATHS} REQUIRED)
-find_library(SFML_AUDIO_LIB NAMES sfml-audio PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+find_library(SDL2_LIB       NAMES SDL2                 PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+find_library(SDL2_TTF_LIB   NAMES SDL2_ttf             PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+find_library(SFML_SYSTEM_LIB NAMES sfml-system         PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+find_library(SFML_AUDIO_LIB NAMES sfml-audio           PATHS ${EXTRA_LIB_PATHS} REQUIRED)
 
-set(ALL_LIBS ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB})
+# Video decoding dependencies
+find_library(THEORAPLAY_LIB NAMES theoraplay           PATHS ${EXTRA_LIB_PATHS}) # Optional
+find_library(THEORADEC_LIB  NAMES theoradec theora     PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+find_library(VORBIS_LIB     NAMES vorbis               PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+find_library(OGG_LIB        NAMES ogg                  PATHS ${EXTRA_LIB_PATHS} REQUIRED)
+
+# Base list of strictly required libraries
+set(ALL_LIBS 
+    ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB}
+    ${THEORADEC_LIB} ${VORBIS_LIB} ${OGG_LIB}
+)
+
+# Safely append Theoraplay if it exists in the SDK
+if(THEORAPLAY_LIB)
+    list(APPEND ALL_LIBS ${THEORAPLAY_LIB})
+endif()
 
 # ------------------------------------------------------------------------------
 # 4. WINDOWS SYSTEM LIBRARIES
@@ -95,7 +122,11 @@ file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/source/"
 # ------------------------------------------------------------------------------
 # 6. SOURCE DISCOVERY
 # ------------------------------------------------------------------------------
-file(GLOB_RECURSE BASE_SOURCES "source/*.cpp" "source/*.h")
+# PRAGMATIC FIX: Added "source/*.c" to capture standard C middleware like theoraplay.c
+file(GLOB_RECURSE BASE_SOURCES "source/*.cpp" "source/*.c" "source/*.h")
+
+# Suppress benign warnings for 3rd-party C middleware to keep build logs clean
+set_source_files_properties("source/theoraplay/theoraplay.c" PROPERTIES COMPILE_FLAGS "-Wno-cast-function-type -Wno-unused-parameter")
 
 # ------------------------------------------------------------------------------
 # 7. VARIANT FACTORY (Target Generator)

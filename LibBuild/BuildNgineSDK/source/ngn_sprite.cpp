@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.21.0+stable ***
+    *** Version 1.22.0+stable ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -206,9 +206,8 @@ Size2 NGN_Sprite::GetCurrentScale() {
 /*** Rota un sprite los grados solicitados ***/
 void NGN_Sprite::Rotate(double degrees) {
 
-    rotation += degrees;
-    while (rotation >= 360.0f) rotation -= 360.0f;
-    while (rotation < 0.0f) rotation += 360.0f;
+    rotation = std::fmod((rotation + degrees), 360.0);
+    if (rotation < 0.0) rotation += 360.0;
 
 }
 
@@ -228,7 +227,7 @@ float NGN_Sprite::GetSpriteRadius() {
 
     // Decide si hay que recalcular el radio (ha cambiado de tamaño?)
     if ((radius_info.width != width) || (radius_info.height != height)) {
-        radius_info.radius = (std::sqrt((width * width) + (height * height)) / 2.0f);
+        radius_info.radius = (std::sqrt((width * width) + (height * height)) * 0.5f);
         radius_info.width = width;
         radius_info.height = height;
     }
@@ -329,12 +328,13 @@ int32_t NGN_Sprite::RemoveCollider(std::string name) {
 
 /*** Añade una animacion al Sprite ***/
 int32_t NGN_Sprite::AddAnimation(
-                              std::string name,
-                              int32_t first_frame,
-                              int32_t last_frame,
-                              int32_t loop,
-                              int32_t frame_duration
-                            ) {
+    std::string name,
+    int32_t first_frame,
+    int32_t last_frame,
+    int32_t loop,
+    int32_t frame_duration,
+    int32_t loop_delay
+) {
 
     // Verifica el nombre
     if ((name.length() < 1) || (name.length() > 255)) return 1;
@@ -358,6 +358,7 @@ int32_t NGN_Sprite::AddAnimation(
     a.last_frame = last_frame;
     a.loop = loop;
     a.frame_duration = frame_duration;
+    a.loop_delay = loop_delay;
 
     // Añade la animacion
     animation.push_back(a);
@@ -392,8 +393,10 @@ int32_t NGN_Sprite::SetAnimation(std::string name) {
     current_animation.first_frame = animation[a].first_frame;
     current_animation.last_frame = animation[a].last_frame;
     current_animation.loop = animation[a].loop;
+    current_animation.loop_delay = animation[a].loop_delay;
     current_animation.frame_duration = animation[a].frame_duration;
     animation_timer = 0;
+    delay_counter = 0;
     frame = current_animation.first_frame;
 
     // Animacion seleccionada con exito
@@ -411,15 +414,39 @@ void NGN_Sprite::PlayAnimation() {
     if (runtime_frame == ngn->graphics->runtime_frame) return;
     if (animation_pause) return;
 
-    animation_timer ++;
-    if (animation_timer >= current_animation.frame_duration) {
-        animation_timer = 0;
-        if (current_animation.first_frame <= current_animation.last_frame) {
-            frame ++;
-            if (frame > current_animation.last_frame) frame = current_animation.loop;
-        } else {
-            frame --;
-            if (frame < current_animation.last_frame) frame = current_animation.loop;
+    // Si no hay ninguna pausa asignada al finalizar la animacion...
+    if (delay_counter == 0) {
+        animation_timer ++;
+        if (animation_timer >= current_animation.frame_duration) {
+            animation_timer = 0;
+            if (current_animation.first_frame <= current_animation.last_frame) {
+                frame ++;
+                if (frame > current_animation.last_frame) {
+                    if (current_animation.loop_delay > 0) {
+                        delay_counter = current_animation.loop_delay;
+                        frame = current_animation.last_frame;
+                    } else {
+                        frame = current_animation.loop;
+                    }
+                }
+            } else {
+                frame --;
+                if (frame < current_animation.last_frame) {
+                    if (current_animation.loop_delay > 0) {
+                        delay_counter = current_animation.loop_delay;
+                        frame = current_animation.last_frame;
+                    } else {
+                        frame = current_animation.loop;
+                    }
+                }
+            }
+        }
+    } else {
+        // Aplica el retraso
+        delay_counter --;
+        if (delay_counter <= 0) {
+            delay_counter = 0;
+            frame = current_animation.loop;
         }
     }
 
@@ -556,6 +583,7 @@ void NGN_Sprite::CreateSprite(
     current_animation.id = -1;
     animation_pause = false;
     animation_timer = 0;
+    delay_counter = 0;
 
     // Otros parametros
     camera_layer = -1;      // Por defecto, no estas en la camara
