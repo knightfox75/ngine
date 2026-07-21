@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -96,6 +96,7 @@
 #include "ngn_disk.h"               // Clase para la gestion de archivos en disco
 #include "ngn_resources.h"          // Clase para la gestion de recursos
 #include "ngn_video.h"              // Clase para la reproduccion de video en formato OGV en una textura
+#include "ngn_gpio.h"               // Clase para el acceso al GPIO de RaspberryPI (fuera de RPi, las operaciones se ignoran)
 
 
 
@@ -126,6 +127,7 @@ class NGN {
         NGN_Disk* disk;                 // Gestion de archivos en el disco
         NGN_Resources* resources;       // Gestion integrada de recursos
         NGN_Video* video;               // Reproduccion de video en formato OGV en una textura
+        NGN_Gpio* gpio;                 // Acceso al GPIO de Raspberry PI
 
         // Punteros a los objetos
         NGN_Camera* camera;             // Camara virtual 2D integrada

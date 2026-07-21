@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -648,6 +648,9 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     // Si no debe dibujarse, sal
     if (!bg->visible) return;
 
+    // Si es un fondo indexado, actualiza las paletas y el atlas si es necesario
+    ItbUpdatePalette(bg);
+
     // Rotacion y FLIP
     SDL_RendererFlip _flip = SDL_FLIP_NONE;
 
@@ -702,7 +705,20 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
         ngn->graphics->force_redraw
         ||
         (bg->last_buffer != target_texture)
+        ||
+        bg->palette_updated
     ) {
+
+        // Asigna los datos del fondo segun el tipo
+        SDL_Texture* bg_atlas = nullptr;
+        const uint32_t* bg_map = nullptr;
+        if (bg->is_indexed) {
+            bg_atlas = bg->indexed_atlas;
+            bg_map = bg->ibgdata->bg_map.data();
+        } else {
+            bg_atlas = bg->bgdata->bg_atlas;
+            bg_map = bg->bgdata->bg_map.data();
+        }
 
         // Parametros del mapa
         int32_t map_x = 0;
@@ -731,7 +747,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
 
         // Tamaño del atlas
         int32_t atlas_width = 0, atlas_height = 0;
-        SDL_QueryTexture(bg->bgdata->tiles_atlas, NULL, NULL, &atlas_width, &atlas_height);
+        SDL_QueryTexture(bg_atlas, NULL, NULL, &atlas_width, &atlas_height);
         uint32_t tiles_per_row = (atlas_width / bg->tile_size);
 
         // Recorre la pantalla para dibujar el fondo
@@ -750,18 +766,16 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
                 if ((get_tile_x < 0) || (get_tile_x >= map_w)) continue;
 
                 // ID de tile
-                id = (((get_tile_y * map_w) + get_tile_x) << 2);      // * 4 bytes
+                id = ((get_tile_y * map_w) + get_tile_x);
 
                 // Numero de Tile
-                tile = bg->bgdata->tmap[id];
-                tile |= (bg->bgdata->tmap[(id + 1)] << 8);
-                tile |= (bg->bgdata->tmap[(id + 2)] << 16);
+                tile = (bg_map[id] & 0x00FFFFFF);
 
                 // Si el tile ES TRANSPARENTE (es el primero del mapa), ignora el dibujado
                 if (tile == 0) continue;
 
                 // Orientacion del tile
-                flip = bg->bgdata->tmap[(id + 3)];
+                flip = ((bg_map[id] >> 24) & 0x000000FF);
 
                 // Coordenadas de origen del tile DENTRO del atlas
                 float src_x = (float)((tile % tiles_per_row) * bg->tile_size);
@@ -851,7 +865,7 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
         if (vertex.size() > 0) {
             SDL_RenderGeometry(
                 ngn->graphics->renderer,
-                bg->bgdata->tiles_atlas,
+                bg_atlas,
                 vertex.data(),
                 vertex.size(),
                 nullptr,
@@ -939,4 +953,116 @@ void NGN_Render::TiledBg(NGN_TiledBg* bg) {
     // Render de la textura con la transformacion aplicada
     SDL_RenderCopyEx(ngn->graphics->renderer, bg->backbuffer, &_source, &_destination, bg->rotation, &_center, _flip);
 
+}
+
+
+
+/*** Actualiza la paleta del atlas de un fondo indexado ***/
+void NGN_Render::ItbUpdatePalette(NGN_TiledBg* bg) {
+
+    // Si no es un fondo indexado, ignora la orden
+    if (!bg->is_indexed) return;
+
+    // Por defecto, no se ha actualizado la paleta
+    if (bg->runtime_frame != ngn->graphics->runtime_frame) bg->palette_updated = false;
+
+    // Si la animacion esta en pausa sal
+    if (bg->animation_pause) return;
+
+    // Si en este frame ya se ha actualizado, ignora la orden
+    if (bg->runtime_frame == ngn->graphics->runtime_frame) return;
+    // Guarda el frame ID actual
+    bg->runtime_frame = ngn->graphics->runtime_frame;
+
+    // Por defecto, se realiza el render con una copia de la paleta local
+    bg->render_palette = bg->local_palette;
+
+    // Si hay ciclos de paleta, ejecuta la orden
+    if (bg->pal_cycles.size() > 0) ItbPaletteCycling(bg);
+
+    // Si no hay cambios en la paleta, sal
+    if (!bg->palette_updated) return;
+
+    // Prepara la expansion de la paleta para actualizar el atlas
+    NGN_IndexedTiledBgData* data = bg->ibgdata;
+    const uint32_t atlas_pixels = data->itb_file_header.tileset_length;
+    uint32_t* dst_atlas = (uint32_t*)bg->rgba_atlas.data(); 
+    uint8_t* src_atlas = data->bg_atlas.data();
+    uint32_t* pal_atlas = bg->render_palette.data();
+
+    // Actualiza los datos de los pixeles del atlas
+    for (uint32_t k = 0; k < atlas_pixels; k++) {
+        dst_atlas[k] = pal_atlas[src_atlas[k]];
+    }
+
+    // Actualiza la textura
+    SDL_UpdateTexture(
+        bg->indexed_atlas,
+        nullptr,
+        bg->rgba_atlas.data(),
+        (data->itb_file_header.tileset_width << 2)
+    );
+
+}
+
+
+
+/*** Efecto de ciclo de paleta ***/
+void NGN_Render::ItbPaletteCycling(NGN_TiledBg* bg) {
+
+    // Flag de actualizacion del atlas
+    bool palette_is_dirty = false;
+
+    // Prepara la copia de trabajo
+    std::vector<uint32_t> temp_palette = bg->render_palette;
+
+	// Procesa cada ciclo activo
+    for (uint32_t i = 0; i < bg->pal_cycles.size(); i ++) {
+
+        // Si el ciclo esta desactivado, saltatelo
+        if (!bg->pal_cycles[i].enabled) continue;
+
+        // Tamaño del rango
+        uint8_t swap_size = (bg->pal_cycles[i].high - bg->pal_cycles[i].low + 1);
+        if (swap_size < 2) continue;
+
+        // Hay que esperar a que termine la pausa entre ciclos?
+        if (bg->pal_cycles[i].delay_cnt > 0) {
+            bg->pal_cycles[i].delay_cnt --;
+        } else {
+            // Decrementa el temporizador y comprueba si toca avanzar un paso
+            bg->pal_cycles[i].timer --;
+            if (bg->pal_cycles[i].timer <= 0) {
+                // Resetea el temporizador
+                bg->pal_cycles[i].timer = (int32_t)bg->pal_cycles[i].rate;
+                // Avanza un paso segun la direccion
+                bg->pal_cycles[i].step += bg->pal_cycles[i].direction;
+                // Wrapping del step dentro del rango
+                if (bg->pal_cycles[i].step >= (int32_t)swap_size) {
+                    bg->pal_cycles[i].step = 0;
+                    bg->pal_cycles[i].delay_cnt = bg->pal_cycles[i].loop_delay;
+                }
+                if (bg->pal_cycles[i].step < 0) {
+                    bg->pal_cycles[i].step = ((int32_t)swap_size - 1);
+                    bg->pal_cycles[i].delay_cnt = bg->pal_cycles[i].loop_delay;
+                }
+                // Indica que la paleta se ha actualizado
+                palette_is_dirty = true;
+            }
+        }
+
+        // Aplica la rotacion a la parte afectada de la paleta
+        for (uint8_t k = 0; k < swap_size; k ++) {
+            uint8_t src = (uint8_t)((k + bg->pal_cycles[i].step) % swap_size);
+            bg->render_palette[(bg->pal_cycles[i].low + k)] = temp_palette[(bg->pal_cycles[i].low + src)];
+        }
+
+    }
+
+    // Paso de limpieza
+    temp_palette.clear();
+
+    // Indica si hay cambios
+    bg->palette_updated |= palette_is_dirty;
+    
 }

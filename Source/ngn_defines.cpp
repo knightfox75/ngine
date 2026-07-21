@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -71,26 +71,51 @@ NGN_TextureData::~NGN_TextureData() {
 
 
 
-/*** Prototipo de datos del FONDO TILEADO [NGN_TiledBgData] ***/
+/*** Prototipo de datos del FONDO DE TILES [NGN_TiledBgData] ***/
 
 // Constructor
 NGN_TiledBgData::NGN_TiledBgData() {
 
-    tiles_atlas = nullptr;
-    tmap.clear();
+    bg_atlas = nullptr;
+    bg_map.clear();
 
 }
 
 // Destructor
 NGN_TiledBgData::~NGN_TiledBgData() {
 
-    if (tiles_atlas != nullptr) {
-        SDL_DestroyTexture(tiles_atlas);
-        tiles_atlas = nullptr;
+    if (bg_atlas != nullptr) {
+        SDL_DestroyTexture(bg_atlas);
+        bg_atlas = nullptr;
     }
-    tmap.clear();
+    bg_map.clear();
 
 }
+
+
+
+/*** Prototipo de datos del FONDO DE TILES INDEXADO [NGN_IndexedTiledBgData] ***/
+
+// Constructor
+NGN_IndexedTiledBgData::NGN_IndexedTiledBgData() {
+
+    bg_atlas.clear();
+    bg_map.clear();
+    bg_palette.clear();
+    pal_cycles.clear();
+
+}
+
+// Destructor
+NGN_IndexedTiledBgData::~NGN_IndexedTiledBgData() {
+
+    bg_atlas.clear();
+    bg_map.clear();
+    bg_palette.clear();
+    pal_cycles.clear();
+
+}
+
 
 
 

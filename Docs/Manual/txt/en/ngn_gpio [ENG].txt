@@ -1,0 +1,98 @@
+NGN_GPIO.H
+v1.22.0-stable
+English
+
+--------------------------------------------------------------------------------
+	TYPES of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Type
+enum class NGN_GpioMode : uint8_t
+
+- Description
+Defines the operating mode of a GPIO pin, equivalent to Arduino's pinMode(). Used as a parameter of the PinMode() method. Available values:
+INPUT — Standard digital input, no internal pull resistor.
+OUTPUT — Digital output.
+INPUT_PULLUP — Digital input with the internal pull-up resistor enabled.
+INPUT_PULLDOWN — Digital input with the internal pull-down resistor enabled.
+
+- Example
+ngn->gpio->PinMode(17, NGN_GpioMode::OUTPUT);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	METHODS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Method
+bool PinMode(uint8_t pin, NGN_GpioMode mode);
+
+- Description
+Configures the operating mode of a GPIO pin (BCM numbering). Must be called before using DigitalWrite() or DigitalRead() on that pin. If the pin already had a mode assigned, it is reconfigured with the new mode. Returns TRUE if the operation succeeded, or FALSE if the pin number is not valid or an error occurred while requesting it. Outside a Raspberry Pi the GPIO module is not available, so this method has no effect and always returns FALSE.
+
+- Example
+ngn->gpio->PinMode(17, NGN_GpioMode::OUTPUT);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool DigitalWrite(uint8_t pin, bool value);
+
+- Description
+Writes a digital value to a pin previously configured as OUTPUT via PinMode(). TRUE corresponds to a high level (HIGH) and FALSE to a low level (LOW). Returns FALSE if the pin is not valid, has no mode assigned, or its current mode is not OUTPUT.
+
+- Example
+ngn->gpio->DigitalWrite(17, true);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool DigitalRead(uint8_t pin);
+
+- Description
+Reads the digital value of a pin previously configured as INPUT, INPUT_PULLUP or INPUT_PULLDOWN via PinMode(). Returns TRUE if the pin is at a high level and FALSE if it is at a low level, if the pin is not valid, if it has no mode assigned, or if its current mode is not an input mode.
+
+- Example
+bool state = ngn->gpio->DigitalRead(27);
+
+--------------------------------------------------------------------------------
+
+- Method
+void ReleasePin(uint8_t pin);
+
+- Description
+Releases a pin previously reserved via PinMode(), making it available to be configured again. Has no effect if the pin is not valid or had no mode assigned.
+
+- Example
+ngn->gpio->ReleasePin(17);
+
+--------------------------------------------------------------------------------
+
+- Method
+void ReleaseAllPins();
+
+- Description
+Releases every GPIO pin reserved so far via PinMode().
+
+- Example
+ngn->gpio->ReleaseAllPins();
+
+--------------------------------------------------------------------------------
+
+- Method
+bool IsAvailable();
+
+- Description
+Indicates whether the GPIO module was initialized successfully during library startup and is ready to be used. Its value will always be FALSE outside a Raspberry Pi, or on a Raspberry Pi if it was not possible to open the system's GPIO chip.
+
+- Example
+if (ngn->gpio->IsAvailable()) ngn->gpio->PinMode(17, NGN_GpioMode::OUTPUT);
+
+--------------------------------------------------------------------------------

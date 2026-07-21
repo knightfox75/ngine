@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Camara virtual en 2D
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -658,6 +658,9 @@ void NGN_Camera::RenderTiles(uint32_t l) {
 	// Posiciona el fondo
 	layer[l].tiled_bg->Position(screen_pos.x, ((float)screen_pos.y + shake_effect.offset.y));
 	//std::cout << "L: " << l << " BG:" << b << " POS:" << layer[l].tiled_bg->position.x << "x" << layer[l].tiled_bg->position.y << std::endl;
+
+    // Actualiza automaticamente el flag de animacion en pausa
+    layer[l].tiled_bg->animation_pause = animation_pause;
 
 	// Y dibujalo en el renderer
 	ngn->render->TiledBg(layer[l].tiled_bg);

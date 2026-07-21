@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Gestion del Renderer de SDL
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -118,6 +118,10 @@ class NGN_Render {
 
         bool render2texture;        // Flag de render to texture
         NGN_Texture* rend2text;     // Textura de destino del render
+
+        /*** Actualiza la paleta del atlas de un fondo indexado ***/
+        void ItbUpdatePalette(NGN_TiledBg* bg);
+        void ItbPaletteCycling(NGN_TiledBg* bg);        // Efecto de ciclo de paleta
 
 };
 

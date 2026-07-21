@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Sprites
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -584,6 +584,7 @@ void NGN_Sprite::CreateSprite(
     animation_pause = false;
     animation_timer = 0;
     delay_counter = 0;
+    runtime_frame = 0xFFFFFFFF;
 
     // Otros parametros
     camera_layer = -1;      // Por defecto, no estas en la camara

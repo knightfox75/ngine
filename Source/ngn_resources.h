@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x02 ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -84,6 +84,12 @@ class NGN_Resources {
             std::string id;
         };
 
+        // Prototipo de datos: Fondos de tiles indexados
+        struct IdxTiledbgT {
+            NGN_IndexedTiledBgData* data;
+            std::string id;
+        };
+
         // Prototipo de datos: Sprites
         struct SpriteT {
             NGN_SpriteData* data;
@@ -119,6 +125,7 @@ class NGN_Resources {
 
             std::vector<TextureT> texture;
             std::vector<TiledbgT> tiledbg;
+            std::vector<IdxTiledbgT> idxtiledbg;
             std::vector<SpriteT> sprite;
             std::vector<CmapT> cmap;
             std::vector<SfxT> sfx;
@@ -150,6 +157,7 @@ class NGN_Resources {
         // Busca y devuelve el recurso solicitado del repositorio especificado
         NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
         NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+        NGN_IndexedTiledBgData* GetIndexedTiledbg(std::string repo_name, std::string resource_name, bool err = true);
         NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
         NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
         NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
@@ -159,6 +167,7 @@ class NGN_Resources {
         // Busca y elimina el recurso solicitado del repositorio especificado
         bool RemoveTexture(std::string repo_name, std::string resource_name);
         bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+        bool RemoveIndexedTiledbg(std::string repo_name, std::string resource_name);
         bool RemoveSprite(std::string repo_name, std::string resource_name);
         bool RemoveCmap(std::string repo_name, std::string resource_name);
         bool RemoveSfx(std::string repo_name, std::string resource_name);
@@ -185,6 +194,7 @@ class NGN_Resources {
         const struct {
             std::string texture = "TEX";        // Texturas (.png)
             std::string tiledbg = "TBG";        // Fondos de tiles (.tbg)
+            std::string idxtiledbg = "ITB";     // Fondos de tiles indexados (.itb)
             std::string sprite = "SPR";         // Sprites (.spr)
             std::string cmap = "MAP";           // Mapas de colisiones (.map)
             std::string sfx = "SFX";            // Efectos de sonido (.wav .ogg)
@@ -204,6 +214,10 @@ class NGN_Resources {
                 std::string outline;
                 std::string outline_color;
             } typeface;
+            struct {
+                std::string palette;
+                std::string cycles;
+            } auxfile;
         };
         const std::string CSV_CHAR = ";";
 
