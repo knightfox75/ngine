@@ -1,8 +1,8 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.23.0-wip_0x02 ***
-    GPIO - Acceso a los pines de entrada/salida de Raspberry PI
+    *** Version 1.23.0-wip_0x03 ***
+    GPIO - Acceso a los puertos de entrada/salida de Raspberry PI
 
     Proyecto iniciado el 1 de Febrero del 2016
     (c) 2016 - 2026 by Cesar Rincon "NightFox"
@@ -79,18 +79,18 @@ void NGN_Gpio::RemoveInstance() {
 
 
 
-/*** Contructor ***/
+/*** Constructor ***/
 NGN_Gpio::NGN_Gpio() {
 
     available = false;
 
     #if defined (TARGET_RASPBERRY)
         chip = nullptr;
-        for (uint8_t k = 0; k < MAX_PINS; k ++) lines[k] = nullptr;
+        for (uint8_t k = 0; k < MAX_PORTS; k ++) requests[k] = nullptr;
     #endif
 
-    for (uint8_t k = 0; k < MAX_PINS; k ++) {
-        pin_mode[k] = NGN_GpioMode::UNDEFINED;
+    for (uint8_t k = 0; k < MAX_PORTS; k ++) {
+        port_mode[k] = NGN_GPIO_MODE.undefined;
     }
 
 }
@@ -103,7 +103,7 @@ NGN_Gpio::~NGN_Gpio() {
     #if defined (TARGET_RASPBERRY)
 
         // Libera todas las lineas reservadas
-        ReleaseAllPins();
+        ReleaseAllPorts();
 
         // Cierra el chip GPIO si estaba abierto
         if (chip) {
@@ -122,15 +122,21 @@ void NGN_Gpio::BootUp() {
 
     #if defined (TARGET_RASPBERRY)
 
-        // Intenta abrir el chip GPIO principal de la Raspberry Pi
-        chip = gpiod_chip_open_by_name(chip_name);
+        // Si el chip ya estaba abierto, cierralo primero
+        if (chip) {
+            gpiod_chip_close(chip);
+            chip = nullptr;
+        }
+
+        // Intenta abrir el dispositivo del chip GPIO principal (libgpiod v2)
+        chip = gpiod_chip_open(chip_path);
 
         // Segun si se tiene exito o no...
         if (chip) {
             available = true;
         } else {
             available = false;
-            ngn->log->Message("[NGN_Gpio] error: unable to open " + std::string(chip_name));
+            ngn->log->Message("[NGN_Gpio] error: unable to open " + std::string(chip_path));
         }
 
     #else
@@ -144,77 +150,110 @@ void NGN_Gpio::BootUp() {
 
 
 
-/*** Configura el modo de un pin ***/
-bool NGN_Gpio::PinMode(uint8_t pin, NGN_GpioMode mode) {
+/*** Configura el modo de un puerto ***/
+bool NGN_Gpio::PortMode(uint8_t port_id, uint8_t mode) {
 
     #if defined (TARGET_RASPBERRY)
 
         // Si no esta disponible, sal
         if (!available) return false;
 
-        // Si el pin no es valido, sal
-        if (!ValidPin(pin)) return false;
+        // Si el puerto no es valido, sal
+        if (!ValidPort(port_id)) return false;
 
-        // Si el pin ya tenia una linea reservada, liberala antes de reconfigurarlo
-        if (lines[pin]) {
-            gpiod_line_release(lines[pin]);
-            lines[pin] = nullptr;
+        // Si el puerto ya tenia una solicitud reservada, liberala antes de reconfigurarlo
+        if (requests[port_id]) {
+            gpiod_line_request_release(requests[port_id]);
+            requests[port_id] = nullptr;
         }
 
-        // Intenta acceder al pin solicitado mediante un puntero temporal
-        gpiod_line* line = gpiod_chip_get_line(chip, pin);
-        if (!line) {
-            ngn->log->Message("[NGN_Gpio] error: unable to get line for pin " + std::to_string(pin));
+        // Crea los ajustes de linea
+        gpiod_line_settings* settings = gpiod_line_settings_new();
+        if (!settings) {
+            ngn->log->Message("[NGN_Gpio] error: unable to allocate line settings");
             return false;
         }
 
-
-        // Guarda el resultado de la operacion
-        int32_t result = -1;
-
-        // Segun el modo solicitado...
+        // Configura la direccion y el bias segun el modo solicitado
         switch (mode) {
 
-            case NGN_GpioMode::OUTPUT:
-                result = gpiod_line_request_output(line, consumer_name, 0);
+            case NGN_GPIO_MODE.output:
+                gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_OUTPUT);
+                gpiod_line_settings_set_output_value(settings, GPIOD_LINE_VALUE_INACTIVE);
                 break;
 
-            case NGN_GpioMode::INPUT:
-                result = gpiod_line_request_input(line, consumer_name);
+            case NGN_GPIO_MODE.input:
+                gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_INPUT);
+                gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_DISABLED);
                 break;
 
-            case NGN_GpioMode::INPUT_PULLUP:
-                result = gpiod_line_request_input_flags(line, consumer_name, GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_UP);
+            case NGN_GPIO_MODE.input_pullup:
+                gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_INPUT);
+                gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_PULL_UP);
                 break;
 
-            case NGN_GpioMode::INPUT_PULLDOWN:
-                result = gpiod_line_request_input_flags(line, consumer_name, GPIOD_LINE_REQUEST_FLAG_BIAS_PULL_DOWN);
+            case NGN_GPIO_MODE.input_pulldown:
+                gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_INPUT);
+                gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_PULL_DOWN);
                 break;
 
             default:
-                break;
+                gpiod_line_settings_free(settings);
+                return false;
 
         }
 
-        // Si no se ha podido reconfigurar, indica el error
-        if (result < 0) {
-            ngn->log->Message("[NGN_Gpio] error: unable to request pin " + std::to_string(pin));
-            pin_mode[pin] = NGN_GpioMode::UNDEFINED;
+        // Crea la configuracion de linea y añade los ajustes para el pin solicitado
+        gpiod_line_config* line_cfg = gpiod_line_config_new();
+        if (!line_cfg) {
+            gpiod_line_settings_free(settings);
+            ngn->log->Message("[NGN_Gpio] error: unable to allocate line config");
             return false;
         }
 
-        // Guarda el modo
-        pin_mode[pin] = mode;
+        uint32_t offset = port_id;
+        if (gpiod_line_config_add_line_settings(line_cfg, &offset, 1, settings) != 0) {
+            gpiod_line_config_free(line_cfg);
+            gpiod_line_settings_free(settings);
+            ngn->log->Message("[NGN_Gpio] error: unable to add line settings for port_id " + std::to_string(port_id));
+            return false;
+        }
 
-        // Guarda la linea ya reservada, lista para leer/escribir
-        lines[pin] = line;
+        // Crea la configuracion de la solicitud y establece el nombre del consumidor
+        gpiod_request_config* req_cfg = gpiod_request_config_new();
+        if (!req_cfg) {
+            gpiod_line_config_free(line_cfg);
+            gpiod_line_settings_free(settings);
+            ngn->log->Message("[NGN_Gpio] error: unable to allocate request config");
+            return false;
+        }
+        gpiod_request_config_set_consumer(req_cfg, consumer_name);
+
+        // Realiza la solicitud de la linea
+        gpiod_line_request* request = gpiod_chip_request_lines(chip, req_cfg, line_cfg);
+
+        // Libera los objetos de configuracion temporales
+        gpiod_request_config_free(req_cfg);
+        gpiod_line_config_free(line_cfg);
+        gpiod_line_settings_free(settings);
+
+        // Si no se ha podido reservar, indica el error
+        if (!request) {
+            ngn->log->Message("[NGN_Gpio] error: unable to request port_id " + std::to_string(port_id));
+            port_mode[port_id] = NGN_GPIO_MODE.undefined;
+            return false;
+        }
+
+        // Guarda la solicitud y el modo
+        requests[port_id] = request;
+        port_mode[port_id] = mode;
 
         return true;
 
     #else
 
-        // NOOP fuera de RPi
-        (void)pin; (void)mode;
+        // NOOP fuera de Raspberry Pi
+        (void)port_id; (void)mode;
         return false;
 
     #endif
@@ -223,34 +262,36 @@ bool NGN_Gpio::PinMode(uint8_t pin, NGN_GpioMode mode) {
 
 
 
-/*** Escribe un valor digital en un pin ya configurado como OUTPUT ***/
-bool NGN_Gpio::DigitalWrite(uint8_t pin, bool value) {
+/*** Escribe un valor digital en un puerto ya configurado como OUTPUT ***/
+bool NGN_Gpio::DigitalWrite(uint8_t port_id, bool value) {
 
     #if defined (TARGET_RASPBERRY)
 
         // Si no esta disponible, sal
         if (!available) return false;
-        // Si el pin no es valido, sal
-        if (!ValidPin(pin)) return false;
+        // Si el puerto no es valido, sal
+        if (!ValidPort(port_id)) return false;
 
         // Si la linea no esta configurada, sal
-        if (!lines[pin]) {
-            ngn->log->Message("[NGN_Gpio] error: pin " + std::to_string(pin) + " has no PinMode set");
+        if (!requests[port_id]) {
+            ngn->log->Message("[NGN_Gpio] error: port_id " + std::to_string(port_id) + " has no PortMode set");
             return false;
         }
 
         // Si el modo es incorrecto, sal
-        if (pin_mode[pin] != NGN_GpioMode::OUTPUT) return false;
+        if (port_mode[port_id] != NGN_GPIO_MODE.output) return false;
 
         // Intenta establecer el valor y guarda el resultado de la operacion
-        int32_t result = gpiod_line_set_value(lines[pin], (value ? 1 : 0));
+        gpiod_line_value val = value ? GPIOD_LINE_VALUE_ACTIVE : GPIOD_LINE_VALUE_INACTIVE;
+        int32_t result = gpiod_line_request_set_value(requests[port_id], port_id, val);
 
+        // Devuelve TRUE en caso de exito (0). Si hay un error (-1), devuelve FALSE
         return (result == 0);
 
     #else
 
         // NOOP fuera de la RPi
-        (void)pin; (void)value;
+        (void)port_id; (void)value;
         return false;
 
     #endif
@@ -259,40 +300,41 @@ bool NGN_Gpio::DigitalWrite(uint8_t pin, bool value) {
 
 
 
-/*** Lee el valor digital de un pin ya configurado como INPUT ***/
-bool NGN_Gpio::DigitalRead(uint8_t pin) {
+/*** Lee el valor digital de un puerto ya configurado como INPUT ***/
+bool NGN_Gpio::DigitalRead(uint8_t port_id) {
 
     #if defined (TARGET_RASPBERRY)
 
         // Si no esta disponible, sal
         if (!available) return false;
-        // Si el pin no es valido, sal
-        if (!ValidPin(pin)) return false;
+        // Si el puerto no es valido, sal
+        if (!ValidPort(port_id)) return false;
 
         // Si la linea no esta configurada, sal
-        if (!lines[pin]) {
-            ngn->log->Message("[NGN_Gpio] error: pin " + std::to_string(pin) + " has no PinMode set");
+        if (!requests[port_id]) {
+            ngn->log->Message("[NGN_Gpio] error: port_id " + std::to_string(port_id) + " has no PortMode set");
             return false;
         }
 
         // Si el modo es incorrecto, sal
         if (
-            (pin_mode[pin] != NGN_GpioMode::INPUT)
+            (port_mode[port_id] != NGN_GPIO_MODE.input)
             &&
-            (pin_mode[pin] != NGN_GpioMode::INPUT_PULLUP)
+            (port_mode[port_id] != NGN_GPIO_MODE.input_pullup)
             &&
-            (pin_mode[pin] != NGN_GpioMode::INPUT_PULLDOWN)
+            (port_mode[port_id] != NGN_GPIO_MODE.input_pulldown)
         ) return false;
 
         // Intenta la lectura y guarda el resultado de la operacion
-        int32_t result = gpiod_line_get_value(lines[pin]);
+        gpiod_line_value val = gpiod_line_request_get_value(requests[port_id], port_id);
 
-        return (result == 1);
+        // Devuelve TRUE solo en caso de valor HIGH (1). En los casos de LOW (0) o ERROR (-1), devuelve FALSE
+        return (val == GPIOD_LINE_VALUE_ACTIVE);
 
     #else
 
         // NOOP fuera de la RPi
-        (void)pin;
+        (void)port_id;
         return false;
 
     #endif
@@ -301,25 +343,25 @@ bool NGN_Gpio::DigitalRead(uint8_t pin) {
 
 
 
-/*** Libera un pin previamente reservado ***/
-void NGN_Gpio::ReleasePin(uint8_t pin) {
+/*** Libera un puerto previamente reservado ***/
+void NGN_Gpio::ReleasePort(uint8_t port_id) {
 
     #if defined (TARGET_RASPBERRY)
 
-        // Si el pin no es valido, sal
-        if (!ValidPin(pin)) return;
+        // Si el puerto no es valido, sal
+        if (!ValidPort(port_id)) return;
 
-        // Si la linea del pin esta declarada, liberala
-        if (lines[pin]) {
-            gpiod_line_release(lines[pin]);
-            lines[pin] = nullptr;
-            pin_mode[pin] = NGN_GpioMode::UNDEFINED;
+        // Si la solicitud del puerto esta declarada, liberala
+        if (requests[port_id]) {
+            gpiod_line_request_release(requests[port_id]);
+            requests[port_id] = nullptr;
+            port_mode[port_id] = NGN_GPIO_MODE.undefined;
         }
 
     #else
 
         // NOOP fuera de la RPi
-        (void)pin;
+        (void)port_id;
 
     #endif
 
@@ -327,18 +369,12 @@ void NGN_Gpio::ReleasePin(uint8_t pin) {
 
 
 
-/*** Libera todos los pines reservados hasta el momento ***/
-void NGN_Gpio::ReleaseAllPins() {
+/*** Libera todos los puertos reservados hasta el momento ***/
+void NGN_Gpio::ReleaseAllPorts() {
 
     #if defined (TARGET_RASPBERRY)
 
-        for (uint8_t k = 0; k < MAX_PINS; k ++) {
-            if (lines[k]) {
-                gpiod_line_release(lines[k]);
-                lines[k] = nullptr;
-                pin_mode[k] = NGN_GpioMode::UNDEFINED;
-            }
-        }
+        for (uint8_t k = 0; k < MAX_PORTS; k ++) ReleasePort(k);
 
     #endif
 
@@ -355,9 +391,18 @@ bool NGN_Gpio::IsAvailable() {
 
 
 
-/*** Comprueba si el numero de pin esta dentro del rango valido ***/
-bool NGN_Gpio::ValidPin(uint8_t pin) {
+/*** Comprueba si el numero de puerto esta dentro del rango valido ***/
+bool NGN_Gpio::ValidPort(uint8_t port_id) {
 
-    return (pin < MAX_PINS);
+    // Si se sale de rango, indica que no esta disponible
+    if (port_id >= MAX_PORTS) return false;
+    
+    // Si el puerto esta en la lista de reservados, tampoco esta disponible
+    for (uint8_t k = 0; k < RESERVED_PORTS_NUMBER; k ++) {
+        if (port_id == RESERVED_PORTS_LIST[k]) return false;
+    }
+
+    // Puerto disponible
+    return true;
 
 }

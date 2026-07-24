@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.23.0-wip_0x02 ***
+    *** Version 1.23.0-wip_0x03 ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -57,7 +57,7 @@ static const int32_t NGN_VERSION_MAJOR = 1;                             // Versi
 static const int32_t NGN_VERSION_MINOR = 23;                            // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                             // Version parche
 static const std::string NGN_VERSION_MD_CHAR = "-";                     // Caracter de metadatos "-" = prerelease, "+" = stable
-static const std::string NGN_VERSION_METADATA = "wip_0x02";             // Version metadatos
+static const std::string NGN_VERSION_METADATA = "wip_0x03";             // Version metadatos
 
 /*** Definiciones generales ***/
 static const int32_t NGN_DEFAULT_VALUE = 0x7FFFFFFF;                    // Valor de "defecto"

@@ -1,8 +1,8 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.23.0-wip_0x02 ***
-    GPIO - Acceso a los pines de entrada/salida de Raspberry PI
+    *** Version 1.23.0-wip_0x03 ***
+    GPIO - Acceso a los puertos de entrada/salida de Raspberry PI
 
     Proyecto iniciado el 1 de Febrero del 2016
     (c) 2016 - 2026 by Cesar Rincon "NightFox"
@@ -47,22 +47,24 @@
 // C++
 #include <cstdint>                  // Tipos de datos INTXX_T de C++ 11
 
-// Solo en Raspberry Pi: Requiere "libgpiod"
-// El resto de plataformas compilan la clase igualmente, pero como no-op
+// Solo en Raspberry Pi: Requiere "libgpiod" (v2)
+// El resto de plataformas compilan la clase igualmente, pero como NO-OP
 #if defined (TARGET_RASPBERRY)
     #include <gpiod.h>
 #endif
 
 
 
-/*** Define el Modo de un pin, igual que en Arduino ***/
-enum class NGN_GpioMode : uint8_t {
-    INPUT = 0x00,
-    OUTPUT,
-    INPUT_PULLUP,
-    INPUT_PULLDOWN,
-    UNDEFINED = 0xFF
-};
+/*** Define el Modo de un puerto, igual que en Arduino ***/
+const struct {
+    enum {
+        input = 0x00,
+        output,
+        input_pullup,
+        input_pulldown,
+        undefined = 0xFF
+    };
+} NGN_GPIO_MODE;
 
 
 
@@ -79,27 +81,20 @@ class NGN_Gpio {
         // Procesos iniciales despues de crear la instancia
         void BootUp();
 
-        // Numero maximo de pines GPIO validos (numeracion BCM, Raspberry Pi 4)
-        static const uint8_t MAX_PINS = 28;
+        // Configura el modo de un puerto (INPUT, OUTPUT, INPUT_PULLUP, INPUT_PULLDOWN)
+        bool PortMode(uint8_t port_id, uint8_t mode);
 
+        // Escribe un valor digital (true = HIGH, false = LOW) en un puerto ya configurado como OUTPUT
+        bool DigitalWrite(uint8_t port_id, bool value);
 
-        /*** Entrada / salida digital ***/
+        // Lee el valor digital de un puerto ya configurado como INPUT
+        bool DigitalRead(uint8_t port_id);
 
-        // Configura el modo de un pin (INPUT, OUTPUT, INPUT_PULLUP, INPUT_PULLDOWN)
-        bool PinMode(uint8_t pin, NGN_GpioMode mode);
+        // Libera un puerto previamente reservado, dejandolo disponible de nuevo
+        void ReleasePort(uint8_t port_id);
 
-        // Escribe un valor digital (true = HIGH, false = LOW) en un pin ya configurado como OUTPUT
-        bool DigitalWrite(uint8_t pin, bool value);
-
-        // Lee el valor digital de un pin ya configurado como INPUT
-        bool DigitalRead(uint8_t pin);
-
-        // Libera un pin previamente reservado, dejandolo disponible de nuevo
-        void ReleasePin(uint8_t pin);
-
-        // Libera todos los pines reservados hasta el momento
-        void ReleaseAllPins();
-
+        // Libera todos los puertos reservados hasta el momento
+        void ReleaseAllPorts();
 
         // Indica si el backend de GPIO se ha inicializado correctamente
         // (siempre sera "false" fuera de Raspberry Pi)
@@ -117,26 +112,31 @@ class NGN_Gpio {
         // Puntero de memoria a la instancia
         static NGN_Gpio* instance;
 
-        // Comprueba si el numero de pin esta dentro del rango valido
-        bool ValidPin(uint8_t pin);
+        // Numero maximo de puertos GPIO validos (numeracion BCM)
+        static const uint8_t MAX_PORTS = 28;
+        static const uint8_t RESERVED_PORTS_NUMBER = 2;
+        const uint8_t RESERVED_PORTS_LIST[RESERVED_PORTS_NUMBER] = {0, 1};
+
+        // Comprueba si el numero de puerto esta dentro del rango valido
+        bool ValidPort(uint8_t port_id);
 
         // Flag de disponibilidad del modulo
         bool available;
 
-        // Guarda el modo de capa linea
-        NGN_GpioMode pin_mode[MAX_PINS];
+        // Guarda el modo de cada puerto
+        uint8_t port_mode[MAX_PORTS];
 
         #if defined (TARGET_RASPBERRY)
 
-            // Nombre del chip GPIO principal de la Raspberry Pi (gpiochip0)
-            const char* chip_name = "gpiochip0";
+            // Ruta al dispositivo del chip GPIO principal de la Raspberry Pi (libgpiod v2)
+            const char* chip_path = "/dev/gpiochip0";
 
             // Puntero al chip GPIO abierto
             gpiod_chip* chip;
 
-            // Lineas GPIO reservadas, indexadas directamente por numero de pin (BCM)
-            // nullptr = pin sin PinMode() asignado todavia
-            gpiod_line* lines[MAX_PINS];
+            // Solicitudes de lineas GPIO reservadas, indexadas por numero de puerto (BCM)
+            // nullptr = puerto sin PortMode() asignado todavia
+            gpiod_line_request* requests[MAX_PORTS];
 
             // Consumidor que se registra al reservar cada linea (aparece en herramientas como gpioinfo)
             const char* consumer_name = "ngine";
