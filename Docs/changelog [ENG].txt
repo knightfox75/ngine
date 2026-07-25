@@ -1,9 +1,10 @@
 --------------------------------------------------------------------------------
 2026-07-25 Ver.1.23.0+stable
 --------------------------------------------------------------------------------
-- Added NGN_IndexedTiledBgData class to manage indexed tile backgrounds, enabling palette swap and color effects.
-- Fixed headers in all data files to prevent data misalignment issues when switching platforms. Backward compatibility with previously generated files is preserved.
-- Added necessary loading methods for the new indexed backgrounds to the NGN_Load class.
+- Added the NGN_IndexedTiledBgData class to manage indexed tiled backgrounds, enabling color palette effects.
+- Fixed header structures across all data files to prevent cross-platform data alignment issues. Backward compatibility with previously generated files is maintained.
+- Added methods to the NGN_Load class for loading the new indexed backgrounds.
+- Added the NGN_Gpio class for accessing Raspberry Pi I/O ports.
 - Updated the Docker image for Raspberry Pi cross-compilation from "Debian Bookworm" to "Debian Trixie".
 - Updated documentation.
 - Added and updated code examples.
