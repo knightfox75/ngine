@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -72,8 +72,34 @@ NGN_TiledBg::NGN_TiledBg(
     int32_t position_y              // Posicion Y del fondo [0 por defecto]
 ) {
 
+    // Deteccion automatica de fondo
+    NGN_TiledBgData* normal_bg = ngn->resources->GetTiledbg(repo_name, resource_name, false);
+    NGN_IndexedTiledBgData* indexed_bg = ngn->resources->GetIndexedTiledbg(repo_name, resource_name, false);
+
     // Crea el fondo
-    CreateTiledBg(ngn->resources->GetTiledbg(repo_name, resource_name), position_x, position_y);
+    if (normal_bg && indexed_bg) {
+        ngn->log->Message("[NGN_Resources error] Tiled background with duplicated name.");
+    } else if (normal_bg) {
+        CreateTiledBg(normal_bg, position_x, position_y);
+    } else if (indexed_bg) {
+        CreateIndexedTiledBg(indexed_bg, position_x, position_y);
+    } else {
+        ngn->log->Message("[NGN_Resources error] Tiled background with " + resource_name + " ID in " + repo_name + " repository not found.");
+    }
+
+}
+
+
+
+/*** Contructor (3ra sobrecarga) ***/
+NGN_TiledBg::NGN_TiledBg(
+    NGN_IndexedTiledBgData* bg,     // Datos del fondo
+    int32_t position_x,             // Posicion X del fondo [0 por defecto]
+    int32_t position_y              // Posicion Y del fondo [0 por defecto]
+) {
+
+    // Crea el fondo
+    CreateIndexedTiledBg(bg, position_x, position_y);
 
 }
 
@@ -89,6 +115,18 @@ NGN_TiledBg::~NGN_TiledBg() {
     // De existir, elimina la textura de transformacion
     if (transform_texture != nullptr) SDL_DestroyTexture(transform_texture);
     transform_texture = nullptr;
+
+    // De existir, elimina la textura del atlas indexado
+    if (indexed_atlas != nullptr) {
+        SDL_DestroyTexture(indexed_atlas);
+        indexed_atlas = nullptr;
+    }
+
+    // Buffers de trabajo
+    pal_cycles.clear();
+    local_palette.clear();
+    render_palette.clear();
+    rgba_atlas.clear();
 
     // Elimina la referencia al fondo
     bgdata = nullptr;
@@ -213,6 +251,16 @@ void NGN_TiledBg::CreateTiledBg(
     int32_t position_y      // Posicion Y del fondo
 ) {
 
+    // Datos comunes
+    CreateCommonData(position_x, position_y);
+
+    // Si es indexado o no...
+    is_indexed = false;
+    pal_cycles.clear();
+    local_palette.clear();
+    render_palette.clear();
+    rgba_atlas.clear();
+
     // Copia del fondo
     bgdata = bg;
 
@@ -229,7 +277,108 @@ void NGN_TiledBg::CreateTiledBg(
     width = bgdata->header.bg_width;
     height = bgdata->header.bg_height;
 
-    // Almacena los datos del fondo, segun los datos facilitados
+    // Crea el backbuffer de este fondo
+    backbuffer = SDL_CreateTexture(
+        ngn->graphics->renderer,        // Renderer
+        NGN_PIXEL_FORMAT,               // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+        bb_size.width,                  // Ancho de la textura
+        bb_size.height                  // Alto de la textura
+    );
+
+}
+
+
+
+
+/*** Crea el objeto que contiene el fondo indexado ***/
+void NGN_TiledBg::CreateIndexedTiledBg(
+    NGN_IndexedTiledBgData* bg,     // Datos del fondo
+    int32_t position_x,             // Posicion X del fondo
+    int32_t position_y              // Posicion Y del fondo
+) {
+
+    // Datos comunes
+    CreateCommonData(position_x, position_y);
+
+    // Si es indexado o no...
+    is_indexed = true;
+    pal_cycles = bg->pal_cycles;
+    local_palette = bg->bg_palette;
+    render_palette = bg->bg_palette;
+    rgba_atlas.assign(bg->itb_file_header.tileset_length, 0);
+
+    // Copia del fondo
+    ibgdata = bg;
+
+    // Guarda el tamaño del tile
+    tile_size = bg->itb_file_header.tile_size;
+    // Guarda el tamaño del mapa
+    map_size.width = bg->itb_file_header.map_width;
+    map_size.height = bg->itb_file_header.map_height;
+
+    // Tamaño del backbuffer
+    bb_size.width = ngn->graphics->native_w + (tile_size << 1);
+    bb_size.height = ngn->graphics->native_h + (tile_size << 1);
+    // Tamaño del fondo completo
+    width = ibgdata->itb_file_header.bg_width;
+    height = ibgdata->itb_file_header.bg_height;
+
+    // Crea el backbuffer de este fondo
+    backbuffer = SDL_CreateTexture(
+        ngn->graphics->renderer,        // Renderer
+        NGN_PIXEL_FORMAT,               // Formato del pixel
+        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
+        bb_size.width,                  // Ancho de la textura
+        bb_size.height                  // Alto de la textura
+    );
+
+    // Obtenen el numero total de pixeles del atlas
+    const uint32_t atlas_pixels = ibgdata->itb_file_header.tileset_length;
+
+    // Buffer temporal para la composicion del atlas
+    std::vector<uint32_t> rgba_atlas(atlas_pixels, 0);
+
+    // Genera la textura inicial con una simple asignacion de 32 bits
+    for (uint32_t k = 0; k < atlas_pixels; k++) {
+        rgba_atlas[k] = ibgdata->bg_palette[ibgdata->bg_atlas[k]];
+    }
+
+    // Crea la textura STREAMING del atlas indexado
+    indexed_atlas = SDL_CreateTexture(
+        ngn->graphics->renderer,
+        NGN_PIXEL_FORMAT,
+        SDL_TEXTUREACCESS_STREAMING,
+        ibgdata->itb_file_header.tileset_width,
+        ibgdata->itb_file_header.tileset_height
+    );
+
+    // Actualiza la textura inmediatamente con los datos
+    if (indexed_atlas) {
+        SDL_UpdateTexture(
+            indexed_atlas,
+            nullptr,
+            rgba_atlas.data(), // SDL aceptará el puntero de uint32_t sin problemas
+            (ibgdata->itb_file_header.tileset_width << 2) // El pitch sigue siendo ancho * 4
+        );
+    }
+
+    // Limpia el buffer temporal
+    rgba_atlas.clear();
+
+}
+
+
+
+/*** Datos comunes a la creacion ***/
+void NGN_TiledBg::CreateCommonData(int32_t position_x, int32_t position_y) {
+
+    // Asegurate que los punteros son null
+    bgdata = nullptr;
+    ibgdata = nullptr;
+    indexed_atlas = nullptr;
+
+    // Datos de las transformadas del fondo
     position.x = position_x;
     position.y = position_y;
 
@@ -252,16 +401,6 @@ void NGN_TiledBg::CreateTiledBg(
     scale.x = 1.0f;
     scale.y = 1.0f;
 
-
-    // Crea el backbuffer de este fondo
-    backbuffer = SDL_CreateTexture(
-        ngn->graphics->renderer,        // Renderer
-        NGN_PIXEL_FORMAT,               // Formato del pixel
-        SDL_TEXTUREACCESS_TARGET,       // Textura como destino del renderer
-        bb_size.width,                  // Ancho de la textura
-        bb_size.height                  // Alto de la textura
-    );
-
     // Textura para aplicar la transformacion del fondo (si se requiere)
     transform_texture = nullptr;
     last_buffer = nullptr;
@@ -282,5 +421,10 @@ void NGN_TiledBg::CreateTiledBg(
     tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
     last_tint_color = {0xFF, 0xFF, 0xFF, 0xFF};
     ignore_camera_tint = false;
+
+    // Rotacion de paletas
+    animation_pause = false;
+    runtime_frame = 0xFFFFFFFF;
+    palette_updated = false;
 
 }

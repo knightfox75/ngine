@@ -26,7 +26,7 @@ Creates a new Sprite using previously loaded data.
 
 - Example
 NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 100, 200);
-NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 300, 300, 256, 256, 160, 256);
+NGN_Sprite* player2 = new NGN_Sprite(wizard_sprite, 300, 300, 256, 256, 160, 256);
 
 --------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ int32_t GetColliderId(std::string name);
 Returns the ID (position) in the collider vector of the collider with the given name. If not found, it returns -1.
 
 - Example
-Int32_t id = player->GetColliderId(“left”);
+int32_t id = player->GetColliderId("left");
 
 --------------------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ int32_t ColliderEnabled(std::string name, bool status);
 Enables or disables the collider with the given name. This function returns 0 if the state change is successful.
 
 - Example
-player->ColliderEnabled(“left”, false);
+player->ColliderEnabled("left", false);
 
 --------------------------------------------------------------------------------
 
@@ -150,7 +150,7 @@ int32_t RemoveCollider(std::string name);
 Removes the collider with the specified name. If successful, this function returns 0.
 
 - Example
-player->RemoveCollider(“left”);
+player->RemoveCollider("left");
 
 --------------------------------------------------------------------------------
 
@@ -170,10 +170,10 @@ It is possible to create animations with inverse kinematics.
 Returns 1 in case of an error.
 
 - Example
-player->AddAnimation(“walk”, 1, 7, 1, 5);
-player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
-player->AddAnimation(“run”, 0, 20, 8, 3);
-stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);
+player->AddAnimation("walk", 1, 7, 1, 5);
+player->AddAnimation("moonwalk", 7, 1, 7, 8);
+player->AddAnimation("run", 0, 20, 8, 3);
+stonegem->AddAnimation("shine", 0, 10, 0, 5, 120);
 
 --------------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ If the currently selected animation is requested, the command is ignored and it 
 In case of an error, it returns 1.
 
 - Example
-player->SetAnimation(“walk”);
+player->SetAnimation("walk");
 
 --------------------------------------------------------------------------------
 

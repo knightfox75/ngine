@@ -127,7 +127,7 @@ player->Scale(2.0f, 0.75f);</code></pre>
     float height        // Altura del colisionador
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Añade un colisionador (collider) adicional al sprite, con el nombre, tamaño y posición indicados. Pueden añadirse tantos colisionadores adicionales como sea necesario. Estos colisionadores serán detectados por la instrucción “HitBox” de la clase “NGN_Collisions” de manera automática. La rotación o escalado del sprite no afecta a estos colisionadores. Esta función devuelve 0 si el colisionador se añade con éxito.</p>
+                <p>Añade un colisionador (collider) adicional al sprite, con el nombre, tamaño y posición indicados. Pueden añadirse tantos colisionadores adicionales como sea necesario. Estos colisionadores serán detectados por la instrucción "HitBox" de la clase "NGN_Collisions" de manera automática. La rotación o escalado del sprite no afecta a estos colisionadores. Esta función devuelve 0 si el colisionador se añade con éxito.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>player->AddCollider("bottom", -16.0f, 80.0f, 32.0f, 96.0f);
 player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
@@ -139,7 +139,7 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Descripción</h3>
                 <p>Devuelve la ID (posición) en el vector de colisionadores del colisionador con el nombre dado. Si no se encuentra, devuelve -1.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>Int32_t id = player->GetColliderId(“left”);</code></pre>
+                <pre><code>int32_t id = player->GetColliderId("left");</code></pre>
             </section>
             
             <section id="ColliderEnabled" class="doc-block">
@@ -148,7 +148,7 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Descripción</h3>
                 <p>Habilita o deshabilita el colisionador con el nombre dado. Esta función devuelve 0 si tiene éxito el cambio de estado.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>player->ColliderEnabled(“left”, false);</code></pre>
+                <pre><code>player->ColliderEnabled("left", false);</code></pre>
             </section>
             
             <section id="RemoveCollider" class="doc-block">
@@ -157,7 +157,7 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Descripción</h3>
                 <p>Elimina el colisionador con el nombre especificado. En caso de éxito, esta función devuelve 0.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>player->RemoveCollider(“left”);</code></pre>
+                <pre><code>player->RemoveCollider("left");</code></pre>
             </section>
             
             <section id="AddAnimation" class="doc-block">
@@ -166,17 +166,17 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
     std::string name,           // Nombre de la animación
     uint32_t first_frame,       // Primer fotograma de la animación
     uint32_t last_frame,        // Ultimo fotograma de la animación
-    uint32_t loop,              // Fotograma "punto de loop”
+    uint32_t loop,              // Fotograma "punto de loop"
     uint32_t frame_duration,    // Duracion en ciclos de cada fotograma
     int32_t loop_delay = 0      // Pausa (en frames del runtime) antes de repetir la animación
 );</code></pre>
                 <h3>Descripción</h3>
                 <p>Añade una nueva animación al Sprite creado. Es posible crear animaciones con cinemática inversa. Devuelve 1 en caso de error.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>player->AddAnimation(“walk”, 1, 7, 1, 5);
-player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
-player->AddAnimation(“run”, 0, 20, 8, 3);
-stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);</code></pre>
+                <pre><code>player->AddAnimation("walk", 1, 7, 1, 5);
+player->AddAnimation("moonwalk", 7, 1, 7, 8);
+player->AddAnimation("run", 0, 20, 8, 3);
+stonegem->AddAnimation("shine", 0, 10, 0, 5, 120);</code></pre>
             </section>
             
             <section id="SetAnimation" class="doc-block">
@@ -185,7 +185,7 @@ stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);</code></pre>
                 <h3>Descripción</h3>
                 <p>Selecciona una animación con el nombre dado para su reproducción. Si se solicita la animación actualmente seleccionada, se ignora la orden y devuelve 2. En caso de error, devuelve 1.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>player->SetAnimation(“walk”);</code></pre>
+                <pre><code>player->SetAnimation("walk");</code></pre>
             </section>
 
             <section id="PlayAnimation" class="doc-block">
@@ -273,7 +273,7 @@ float box.offset.x
 float box.offset.y
 bool box_enabled</code></pre>
                 <h3>Descripción</h3>
-                <p>Propiedades de la caja principal de colisión del sprite. Puede habilitarse o deshabilitarse mediante el flag “box_enabled”.</p>
+                <p>Propiedades de la caja principal de colisión del sprite. Puede habilitarse o deshabilitarse mediante el flag "box_enabled".</p>
             </section>
             
             <section id="prop_frame" class="doc-block">

@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentación n'gine - NGN_CAMERA</title>
-    <!-- RUTA AL CSS ACTUALIZADA -->
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="container">
-	
         <header>
             <h1>NGN_CAMERA.H</h1>
         </header>
@@ -42,6 +40,7 @@
                     <li><a href="#GetLayerPosition">GetLayerPosition</a></li>
                     <li><a href="#Shake">Shake</a></li>
                     <li><a href="#SetLayerTintColor">SetLayerTintColor</a></li>
+                    <li><a href="#SetLayerAutoScroll">SetLayerAutoScroll</a></li>
                 </ul>
             </nav>
 
@@ -61,7 +60,7 @@
                 <h3>Método</h3>
                 <pre><code>void SetSizeOfSpritesLayer(uint32_t layer_number, uint32_t width, uint32_t height);</code></pre>
                 <h3>Descripción</h3>
-                <p>Define el tamaño la capa de sprites (por defecto, todas las capas tienen el tamaño del fondo de esa capa).</p>
+                <p>Define el tamaño de la capa de sprites (por defecto, todas las capas tienen el tamaño del fondo de esa capa).</p>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->camera->SetSizeOfSpritesLayer(3, 4000.0f, 2000.0f);</code></pre>
             </section>
@@ -192,14 +191,14 @@ int32_t SendToBack(NGN_Texture* texture);</code></pre>
                 <h3>Descripción</h3>
                 <p>Envía un sprite al fondo de la capa asignada. En caso de no encontrar ese sprite en la lista, devuelve -1.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>ngn->camera->SendToFront(player->sprite);</code></pre>
+                <pre><code>ngn->camera->SendToBack(player->sprite);</code></pre>
             </section>
 
             <section id="Reset" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>void Reset();</code></pre>
                 <h3>Descripción</h3>
-                <p>Reinicia la camara, eliminando todas las capas y las referencias contenidas.</p>
+                <p>Reinicia la cámara, eliminando todas las capas y las referencias contenidas.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->camera->Reset();</code></pre>
             </section>
@@ -286,6 +285,15 @@ bool CheckIfRegistered(NGN_Texture* texture);</code></pre>
                 <pre><code>ngn->camera->SetLayerTintColor(4, 96, 255, 192);</code></pre>
             </section>
 
+            <section id="SetLayerAutoScroll" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetLayerAutoScroll(uint32_t layer_number, float x, float y);</code></pre>
+                <h3>Descripción</h3>
+                <p>Modifica los valores del auto-scroll de una capa, siempre y cuando esta esté registrada en la cámara y esté declarada como "virtual".</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->camera->SetLayerAutoScroll(4, 0.2f, 0.1f);</code></pre>
+            </section>
+
             <!-- ÍNDICE DE PROPIEDADES -->
             <hr>
             <h2>Propiedades de la clase</h2>
@@ -337,7 +345,7 @@ bool CheckIfRegistered(NGN_Texture* texture);</code></pre>
 	</div>
 
     <script>
-        // Lógica para el botón "Volver Arriba"
+        // Logic for the "Back to Top" button
         const backToTopButton = document.getElementById('back-to-top');
         window.onscroll = () => {
             const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
@@ -345,7 +353,7 @@ bool CheckIfRegistered(NGN_Texture* texture);</code></pre>
             else { backToTopButton.classList.remove('visible'); }
         };
         
-        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        // --- LOGIC FOR THE DROPDOWN MENU ---
         const menuToggle = document.getElementById('menu-toggle');
         const floatingButtonsContainer = document.querySelector('.floating-buttons');
         menuToggle.addEventListener('click', () => {

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Definiciones de prototipos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -54,7 +54,7 @@
 
 /*** Version de N'gine ***/
 static const int32_t NGN_VERSION_MAJOR = 1;                             // Version mayor
-static const int32_t NGN_VERSION_MINOR = 22;                            // Version menor
+static const int32_t NGN_VERSION_MINOR = 23;                            // Version menor
 static const int32_t NGN_VERSION_PATCH = 0;                             // Version parche
 static const std::string NGN_VERSION_MD_CHAR = "+";                     // Caracter de metadatos "-" = prerelease, "+" = stable
 static const std::string NGN_VERSION_METADATA = "stable";               // Version metadatos
@@ -186,7 +186,7 @@ class NGN_TextureData {
 
 
 
-/*** Prototipo de datos del FONDO TILEADO [NGN_TiledBgData] ***/
+/*** Prototipo de datos del FONDO DE TILES [NGN_TiledBgData] ***/
 class NGN_TiledBgData {
 
     // Public
@@ -199,9 +199,11 @@ class NGN_TiledBgData {
         ~NGN_TiledBgData();
 
         // Cabecera del archivo
+        #pragma pack(push, 1)
         struct {
             uint8_t version;                // Version del programa de mapeado
             char magic[32];                 // Magic string
+            uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
             uint32_t bg_width;              // Ancho del fondo (imagen original)
             uint32_t bg_height;             // Alto del fondo (imagen original)
             uint32_t tileset_width;         // Ancho del Tileset en pixeles
@@ -213,10 +215,78 @@ class NGN_TiledBgData {
             uint32_t map_length;            // Tamaño de los datos del mapa
             char reserve[256];              // Posible uso futuro
         } header;
+        #pragma pack(pop)
 
         // Contenido del fondo
-        SDL_Texture* tiles_atlas;           // Almacena el Tileset
-        std::vector<uint8_t> tmap;          // Almacena el mapa
+        SDL_Texture* bg_atlas;              // Almacena el Atlas
+        std::vector<uint32_t> bg_map;       // Almacena el mapa
+
+    // Private
+    private:
+
+};
+
+
+
+/*** Prototipo de datos del FONDO DE TILES INDEXADO [NGN_IndexedTiledBgData] ***/
+class NGN_IndexedTiledBgData {
+
+    // Public
+    public:
+
+        // Constructor
+        NGN_IndexedTiledBgData();
+
+        // Destructor
+        ~NGN_IndexedTiledBgData();
+
+		// Cabecera del archivo (Atlas + Mapa)
+        #pragma pack(push, 1)
+		struct {
+			uint8_t version;                    // Version del programa de mapeado
+			char magic[32];                     // Magic string
+            uint8_t _padding_fix[3];            // FIX: Padding de datos para mantener compatibilidad
+			uint32_t bg_width;                  // Ancho del fondo (imagen original)
+			uint32_t bg_height;                 // Alto del fondo (imagen original)
+			uint32_t tileset_width;             // Ancho del Tileset en pixeles
+			uint32_t tileset_height;            // Ancho del Tileset en pixeles
+			uint32_t map_width;                 // Ancho del mapa (segun los tiles) en pixeles
+			uint32_t map_height;                // Alto del mapa (segun los tiles) en pixeles
+			uint32_t tile_size;                 // Tamaño del tile
+			uint32_t tileset_length;            // Tamaño de los datos del tileset
+			uint32_t map_length;                // Tamaño de los datos del mapa
+			char reserve[256];                  // Posible uso futuro
+		} itb_file_header;
+		
+		// Cabecera del archivo (Paleta)
+		struct {
+			uint8_t version;                    // Version del programa de mapeado
+			char magic[32];                     // Magic string
+            uint8_t _padding_fix[3];            // FIX: Padding de datos para mantener compatibilidad
+			uint32_t colors;                    // Colores en la paleta
+			char reserve[256];                  // Posible uso futuro
+		} pal_file_header;
+        #pragma pack(pop)
+
+        // Contenido del fondo
+        std::vector<uint8_t> bg_atlas;          // Almacena el BITMAP del atlas
+        std::vector<uint32_t> bg_map;           // Almacena el mapa
+        std::vector<uint32_t> bg_palette;       // Almacena la paleta de los tiles del atlas (32 bits, formato RGBA)
+
+        // Efectos de paleta (rotacion de colores, cambios de paleta etc)
+        struct PalRotationCycle {
+            int32_t id;             // Id unico para identificarlo el ciclo
+            uint8_t low;            // Indice de la paleta (bajo)
+            uint8_t high;           // Indice de la paleta (alto)
+            uint16_t rate;          // Velocidad (numero de frames entre cambios)
+            int8_t direction;       // +1 adelante, -1 atras
+            uint16_t loop_delay;    // Espera a repetir el loop
+            bool enabled;           // Esta habilitado? (si por defecto)
+            int32_t timer;          // Cuenta atras para los cambios
+            int32_t step;           // Registro del paso actual
+            int32_t delay_cnt;      // Cuenta atras para la espera del loop
+        };
+        std::vector<PalRotationCycle> pal_cycles;
 
     // Private
     private:
@@ -238,9 +308,11 @@ class NGN_SpriteData {
         ~NGN_SpriteData();
 
         // Cabecera del archivo
+        #pragma pack(push, 1)
         struct {
             uint8_t version;                // Version del programa de conversion
             char magic[32];                 // Magic string
+            uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
             uint32_t sheet_width;           // Tamaño del sheet completo
             uint32_t sheet_height;
             uint32_t frame_width;           // Tamaño del frame
@@ -248,6 +320,7 @@ class NGN_SpriteData {
             uint32_t total_frames;          // Numero total de frames de la imagen
             uint8_t reserve[256];           // Posible uso futuro
         } header;
+        #pragma pack(pop)
 
 
         // Contenido del fondo
@@ -274,9 +347,11 @@ class NGN_CollisionMapData {
 
 
         // Cabecera del archivo
+        #pragma pack(push, 1)
         struct {
             uint8_t version;                // Version del programa de conversion
             char magic[32];                 // Magic String
+            uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
             uint32_t width;                 // Ancho del mapa
             uint32_t height;                // Alto del mapa
             uint32_t tile_size;             // Tamaño del tile
@@ -285,6 +360,7 @@ class NGN_CollisionMapData {
             uint32_t map_length;            // Tamaño de los datos (nº de elementos) del mapa
             uint8_t reserve[256];           // Posible uso futuro
         } header;
+        #pragma pack(pop)
 
         std::vector<uint32_t> palette;      // Buffer para almacenar la paleta de colores
         std::vector<uint8_t> tiles;         // Buffer para almacenar los pixeles de los tiles

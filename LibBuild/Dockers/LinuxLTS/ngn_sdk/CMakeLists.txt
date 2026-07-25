@@ -7,7 +7,7 @@
 # ==============================================================================
 
 cmake_minimum_required(VERSION 3.14)
-project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
+project(ngn_library LANGUAGES CXX C VERSION 1.23.0.4)
 include(GNUInstallDirs)
 
 # 1. ENVIRONMENT & PATH CONFIGURATION

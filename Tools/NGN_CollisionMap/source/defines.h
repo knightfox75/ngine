@@ -69,7 +69,7 @@ const std::string PROGRAM_NAME = "N'gine PNG to Collision Map converter";   // N
 const std::string CPR_YEARS = "2016-2026";                                  // Años en el texto del CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 2;                                    // Version mayor
 const int32_t PROGRAM_VERSION_MINOR = 2;                                    // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 0;                                    // Version parche
+const int32_t PROGRAM_VERSION_PATCH = 2;                                    // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                      // Version metadatos
 const std::string MAGIC_STRING = "NGN COLLISION MAP";    	                // Magic string
 const uint8_t MS_LENGTH = 17;                                               // Logitud del magic string
@@ -103,9 +103,11 @@ const uint32_t DPI72 = 72;
 /*** Estructuras personalizadas ***/
 
 // Cabecera del archivo
+#pragma pack(push, 1)
 struct FileHeader {
     uint8_t version;                // Version del programa de conversion
     char magic[32];                 // Magic String
+    uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
     uint32_t width;                 // Ancho del mapa
     uint32_t height;                // Alto del mapa
     uint32_t tile_size;             // Tamaño del tile
@@ -114,6 +116,7 @@ struct FileHeader {
     uint32_t map_length;            // Tamaño de los datos (nº de elementos) del mapa
     uint8_t reserve[256];           // Posible uso futuro
 };
+#pragma pack(pop)
 
 
 #endif // DEFINES_H_INCLUDED

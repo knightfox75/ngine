@@ -69,7 +69,7 @@ TileMap::TileMap(int32_t argc, char* args[]) {
 
     // General al lista de argumentos
     argument_list.clear();
-    argument_list.resize(argument_count);
+    argument_list.assign(argument_count, "");
     for (int32_t i = 0; i < argument_count; i ++) argument_list[i] = args[i];
 
     // Parametros
@@ -196,7 +196,7 @@ int32_t TileMap::CheckArguments() {
             arg_out_file.value = argument_list[i];
             valid = true;
 
-        } else if (argument_list[i] == ARG_TILE_SIZE) {             // Tama�o del tile
+        } else if (argument_list[i] == ARG_TILE_SIZE) {             // Tamaño del tile
 
             if (arg_tile_size.state) return -1;
             if ((i + 1) >= argument_list.size()) return -1;
@@ -267,7 +267,7 @@ bool TileMap::ValidateParameters() {
     }
 
 
-    // Tama�o del tile
+    // Tamaño del tile
     if (arg_tile_size.state) {
         parameter.tile_size = std::stoi(arg_tile_size.value);
         if ((parameter.tile_size < MIN_TILE_SIZE) || (parameter.tile_size > MAX_TILE_SIZE)) {

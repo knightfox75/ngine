@@ -33,15 +33,28 @@
             <!-- METHODS DOCUMENTATION BLOCKS -->
             <section id="Constructor" class="doc-block">
                 <h3>Method</h3>
-                <pre><code>NGN_TiledBg(
+                <pre><code>// First Overload (Standard Background)
+NGN_TiledBg(
     NGN_TiledBgData* bg,        // Previously loaded background data
     int32_t position_x = 0,     // Background X position [0 by default]
     int32_t position_y = 0      // Background Y position [0 by default]
+);
+
+// Second Overload (Indexed Background)
+NGN_TiledBg(
+    NGN_IndexedTiledBgData* bg, // Indexed background data
+    int32_t position_x = 0,     // X position of the background [0 by default]
+    int32_t position_y = 0      // Y position of the background [0 by default]
 );</code></pre>
                 <h3>Description</h3>
-                <p>Creates a new tiled background using the previously loaded data. Refer to the tools provided with the library for converting a PNG image to tiles data.</p>
+                <p>Creates a new tiled background using previously loaded data (either standard <code>NGN_TiledBgData</code> or indexed <code>NGN_IndexedTiledBgData</code> format), placing it initially at the specified X and Y coordinates. Refer to the tools provided with the library for converting a PNG image to tiles data.</p>
                 <h3>Example</h3>
-                <pre><code>NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);</code></pre>
+                <pre><code>// Standard Background
+NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);
+
+// Indexed Background
+NGN_IndexedTiledBgData* bg_data = ngn->load->IndexedTiledBg("data/bg.itb", "data/bg.pal");
+NGN_TiledBg* background = new NGN_TiledBg(bg_data, 0, 0);</code></pre>
             </section>
 
             <section id="Position" class="doc-block">
@@ -195,6 +208,36 @@ bool flip_v</code></pre>
                 <pre><code>bool ignore_camera_tint</code></pre>
                 <h3>Description</h3>
                 <p>Indicates whether the background should ignore the tint color assigned to the camera layer.</p>
+            </section>
+            <hr>
+
+            <!-- PALETTE CYCLE FILE FORMAT (.CYC) -->
+            <h2>PALETTE CYCLE FILE FORMAT (.CYC)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#cyc_format">.CYC Format</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="cyc_format" class="doc-block">
+                <h3>Line Syntax</h3>
+                <pre><code>UNIQUE_ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]</code></pre>
+                <h3>Parameters</h3>
+                <p>
+                1. <strong>UNIQUE_ID:</strong> Unique numeric identifier for the rotation cycle within the file.<br>
+                2. <strong>LOW:</strong> Lower index (minimum) of the palette range to rotate (0 to 255).<br>
+                3. <strong>HIGH:</strong> Upper index (maximum) of the palette range to rotate (0 to 255).<br>
+                4. <strong>RATE:</strong> Rotation speed expressed in number of frames between each step.<br>
+                5. <strong>DIRECTION:</strong> Direction of color rotation (+1 for forward, -1 for backward).<br>
+                6. <strong>LOOP_DELAY:</strong> (Optional) Wait time in frames before restarting the cycle.
+                </p>
+                <h3>Description</h3>
+                <p>Plain text file used to define palette animations by rotating color ranges in indexed tiled backgrounds. Each non-empty line not starting with '#' defines an independent cycle.</p>
+                <h3>Example</h3>
+                <pre><code># Format: ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]
+1; 2; 10; 8; 1
+2; 15; 20; 4; -1; 60</code></pre>
             </section>
         </main>
     </div>

@@ -28,6 +28,17 @@ Con más de **10 años de desarrollo**, se encuentra en una fase estable, con el
     <li>Teclado</li>
     <li>Ratón</li>
     <li>Gamepads (estándar X-Input)</li>
+    <li>Entradas digitales GPIO (Raspberry Pi)</li>
+</ul>
+</details>
+
+<details>
+<summary><strong>🔌 Puertos GPIO (Raspberry Pi)</strong></summary>
+<ul>
+    <li>Acceso e interacción directa con los puertos de entrada/salida en Raspberry Pi 4 y 5</li>
+    <li>Modos de salida y entrada digital con resistencias internas Pull-Up y Pull-Down configurables</li>
+    <li>Filtro anti-rebote (<i>debounce</i>) por hardware en microsegundos para botones y switches mecánicos</li>
+    <li>Implementado sobre la API v2 de <code>libgpiod</code> del Kernel de Linux</li>
 </ul>
 </details>
 
@@ -35,7 +46,7 @@ Con más de **10 años de desarrollo**, se encuentra en una fase estable, con el
 <summary><strong>🎨 Gráficos</strong></summary>
 <ul>
     <li>Texturas de hasta 8192×8192 píxeles</li>
-    <li>Fondos basados en tiles de gran tamaño</li>
+    <li>Fondos basados en tiles de gran tamaño (estándar e indexados)</li>
     <li>Sprites con y sin animación</li>
     <li>Cámara virtual 2D</li>
     <li>Capas de texto y lienzo para primitivas</li>
@@ -93,7 +104,7 @@ N'gine está destinado a cualquier persona con nociones de programación orienta
 Actualmente, el motor funciona y permite exportar para:
 *   **Windows**
 *   **Linux** (probado en Linux Mint / Ubuntu)
-*   **Raspberry Pi OS**
+*   **Raspberry Pi OS** (con soporte GPIO nativo)
 *   **Anbernic RG35XX** (usando imágenes de Docker proporcionadas)
 *   **Evercade***
 
@@ -150,7 +161,7 @@ ngn.x.x.x-stable
 
 ### 🐧 Configuración para Linux / Raspberry Pi
 
-El SDK facilita la gestión de dependencias (SDL2, SFML, etc.) mediante scripts:
+El SDK facilita la gestión de dependencias (SDL2, SFML, libgpiod, etc.) mediante scripts:
 1. Navega a `LibBuild/InstallNgineSDK/`.
 2. Ejecuta:
    ~~~bash

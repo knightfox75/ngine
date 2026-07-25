@@ -25,7 +25,7 @@ set(CMAKE_BASE_PATH "/usr/aarch64-linux-gnu")
 set(ARCH_FLAGS "-mcpu=cortex-a53")
 set(TARGET_DEF "TARGET_RG35XX")
 
-project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
+project(ngn_library LANGUAGES CXX C VERSION 1.23.0.4)
 include(GNUInstallDirs) 
 
 message(STATUS "${BoldBlue}Forging NGN SDK for Anbernic RG35XX (ARM64 - Static)${ColorReset}")

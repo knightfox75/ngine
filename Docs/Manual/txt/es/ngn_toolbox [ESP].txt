@@ -57,6 +57,6 @@ std::string AnsiToUtf8(std::string text);
 Convierte una cadena de texto en formato ANSI a UTF-8 (2 bytes).
 
 - Ejemplo
-std::string utf8_t = ngn->toolbox->Utf8ToAnsi(ansi_t);
+std::string utf8_t = ngn->toolbox->AnsiToUtf8(ansi_t);
 
 --------------------------------------------------------------------------------

@@ -82,9 +82,9 @@ bool RendererToSurface(NGN_RendererSurface* destination);
 
 - Description
 Saves the current content of the renderer in the specified object of type NGN_RendererSurface. Returns TRUE on success or FALSE on error.
-RendererSurface* renderer_surface = new NGN_RendererSurface();
 
 - Example
+NGN_RendererSurface* renderer_surface = new NGN_RendererSurface();
 ngn->image->RendererToSurface(renderer_surface);
 
 --------------------------------------------------------------------------------

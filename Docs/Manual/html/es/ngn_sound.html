@@ -32,6 +32,9 @@
                     <li><a href="#SfxIsPlaying">SfxIsPlaying</a></li>
                     <li><a href="#SfxIsAlive">SfxIsAlive</a></li>
                     <li><a href="#ClearSfx">ClearSfx</a></li>
+                    <li><a href="#PauseAllSfx">PauseAllSfx</a></li>
+                    <li><a href="#ResumeAllSfx">ResumeAllSfx</a></li>
+                    <li><a href="#StopAllSfx">StopAllSfx</a></li>
                 </ul>
             </nav>
             <hr>
@@ -94,7 +97,7 @@ ngn->sound->SfxVolume(my_sound, 50);</code></pre>
 
             <section id="SfxGetVolume" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>int32_t SfxGetVolume(NGN_AudioClip* sound);</code></pre>
+                <pre><code>uint32_t SfxGetVolume(NGN_AudioClip* sound);</code></pre>
                 <h3>Descripción</h3>
                 <p>Devuelve el nivel actual de volumen de un sonido.</p>
                 <h3>Ejemplo</h3>
@@ -181,6 +184,33 @@ ngn->sound->SfxVolume(my_sound, 50);</code></pre>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->sound->ClearSfx();</code></pre>
             </section>
+
+            <section id="PauseAllSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PauseAllSfx();</code></pre>
+                <h3>Descripción</h3>
+                <p>Pausa todos los efectos de sonido que se estén reproduciendo en ese momento. Este comando no afecta a los que se reproduzcan posteriormente.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PauseAllSfx();</code></pre>
+            </section>
+
+            <section id="ResumeAllSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ResumeAllSfx();</code></pre>
+                <h3>Descripción</h3>
+                <p>Reanuda la reproducción de todos los efectos de sonido que estén pausados en ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ResumeAllSfx();</code></pre>
+            </section>
+
+            <section id="StopAllSfx" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void StopAllSfx();</code></pre>
+                <h3>Descripción</h3>
+                <p>Detiene la reproducción de todos los efectos de sonido que estén en curso en ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->StopAllSfx();</code></pre>
+            </section>
             <hr>
 
             <!-- MÚSICA Y DIÁLOGOS (BGM) -->
@@ -202,6 +232,9 @@ ngn->sound->SfxVolume(my_sound, 50);</code></pre>
                     <li><a href="#MusicIsPlaying">MusicIsPlaying</a></li>
                     <li><a href="#MusicIsAlive">MusicIsAlive</a></li>
                     <li><a href="#ClearMusic">ClearMusic</a></li>
+                    <li><a href="#PauseAllMusics">PauseAllMusics</a></li>
+                    <li><a href="#ResumeAllMusics">ResumeAllMusics</a></li>
+                    <li><a href="#StopAllMusics">StopAllMusics</a></li>
                 </ul>
             </nav>
             <hr>
@@ -291,7 +324,7 @@ NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);<
 
             <section id="MusicGetVolume" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>int32_t MusicGetVolume(NGN_MusicClip* music);</code></pre>
+                <pre><code>uint32_t MusicGetVolume(NGN_MusicClip* music);</code></pre>
                 <h3>Descripción</h3>
                 <p>Devuelve el nivel actual de la música indicada.</p>
                 <h3>Ejemplo</h3>
@@ -360,6 +393,33 @@ NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);<
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->sound->ClearMusic();</code></pre>
             </section>
+
+            <section id="PauseAllMusics" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void PauseAllMusics();</code></pre>
+                <h3>Descripción</h3>
+                <p>Pausa todos los streams de música que se estén reproduciendo en ese momento. Este comando no afecta a los que se reproduzcan posteriormente.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->PauseAllMusics();</code></pre>
+            </section>
+
+            <section id="ResumeAllMusics" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ResumeAllMusics();</code></pre>
+                <h3>Descripción</h3>
+                <p>Reanuda la reproducción de todos los streams de música que estén pausados en ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->ResumeAllMusics();</code></pre>
+            </section>
+
+            <section id="StopAllMusics" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void StopAllMusics();</code></pre>
+                <h3>Descripción</h3>
+                <p>Detiene la reproducción de todos los streams que estén en curso en ese momento.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->sound->StopAllMusics();</code></pre>
+            </section>
             <hr>
 
             <!-- MEZCLADOR -->
@@ -377,7 +437,7 @@ NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);<
                 <h3>Método</h3>
                 <pre><code>void SetMixerLevel(uint8_t channel, int32_t level);</code></pre>
                 <h3>Descripción</h3>
-                <p>Cambia el nivel de volumen de unos de los canales del mezclador de sonido. Los canales disponibles son <code>MIXER_MASTER_CH</code> (canal maestro), <code>MIXER_MUSIC_CH</code> (música), <code>MIXER_EFFECTS_CH</code> (efectos de sonido), <code>MIXER_AUX1_CH</code> (canal auxiliar 1) y <code>MIXER_AUX2_CH</code> (canal auxiliar 2). El valor del volumen es un número entero entre 0 y 100.</p>
+                <p>Cambia el nivel de volumen de unos de los canales del mezclador de sonido. Los canales disponibles son <code>MIXER_MASTER_CH</code> (canal maestro), <code>MIXER_MUSIC_CH</code> (música), <code>MIXER_EFFECTS_CH</code> (efectos de sonido), <code>MIXER_VIDEO_CH</code> (stream de video), <code>MIXER_AUX1_CH</code> (canal auxiliar 1) y <code>MIXER_AUX2_CH</code> (canal auxiliar 2). El valor del volumen es un número entero entre 0 y 100.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->sound->SetMixerLevel(MIXER_MASTER_CH, 75);</code></pre>
             </section>
@@ -467,7 +527,7 @@ ngn->sound->PopMixer();</code></pre>
 	</div>
 
     <script>
-        // Lógica para el botón "Volver Arriba"
+        // Logic for the "Back to Top" button
         const backToTopButton = document.getElementById('back-to-top');
         window.onscroll = () => {
             const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
@@ -475,7 +535,7 @@ ngn->sound->PopMixer();</code></pre>
             else { backToTopButton.classList.remove('visible'); }
         };
         
-        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        // --- LOGIC FOR THE DROPDOWN MENU ---
         const menuToggle = document.getElementById('menu-toggle');
         const floatingButtonsContainer = document.querySelector('.floating-buttons');
         menuToggle.addEventListener('click', () => {

@@ -59,12 +59,15 @@ find_library(THEORADEC_LIB  NAMES theoradec theora  PATHS ${EXTRA_LIB_PATHS} NO_
 find_library(VORBIS_LIB     NAMES vorbis            PATHS ${EXTRA_LIB_PATHS} NO_DEFAULT_PATH)
 find_library(OGG_LIB        NAMES ogg               PATHS ${EXTRA_LIB_PATHS} NO_DEFAULT_PATH)
 
+# GPIO access (NGN_Gpio module, libgpiod v1 API) - Raspberry Pi only, not needed on x86
+find_library(GPIOD_LIB 		NAMES gpiod				PATHS ${EXTRA_LIB_PATHS} NO_DEFAULT_PATH)
+
 # 4. STATIC SDK RESOLUTION (Force Static .a)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 find_library(NGN_LIB NAMES ngn PATHS ${EXTRA_LIB_PATHS} NO_DEFAULT_PATH)
 
 # Validation: Check critical underlying libraries.
-foreach(LIB_VAR NGN_LIB SDL2_LIB SDL2_TTF_LIB SFML_SYS_LIB SFML_AUD_LIB THEORADEC_LIB VORBIS_LIB OGG_LIB)
+foreach(LIB_VAR NGN_LIB SDL2_LIB SDL2_TTF_LIB SFML_SYS_LIB SFML_AUD_LIB THEORADEC_LIB VORBIS_LIB OGG_LIB GPIOD_LIB)
     if(NOT ${LIB_VAR})
         message(FATAL_ERROR "CRITICAL: Dependency ${LIB_VAR} NOT FOUND. Check your library paths.")
     endif()
@@ -75,6 +78,7 @@ message(STATUS "  - NGN Core (Static): ${NGN_LIB}")
 message(STATUS "  - SDL2 (Shared):     ${SDL2_LIB}")
 message(STATUS "  - SFML (Shared):     ${SFML_SYS_LIB}")
 message(STATUS "  - Xiph Video/Audio:  Resolved")
+message(STATUS "  - GPIO access:  Resolved")
 
 # 5. SOURCE & EXECUTABLE
 file(GLOB_RECURSE SOURCES "source/*.cpp" "source/*.h")
@@ -90,6 +94,7 @@ target_compile_definitions(${BINARY_NAME} PRIVATE
     TARGET_RASPBERRY 
     MODE_RELEASE 
     _REENTRANT 
+    $<$<BOOL:${TARGET_DEMO}>:TARGET_DEMO>
 )
 
 # 6. PERFORMANCE TUNING (Cortex-A72 Specific)
@@ -131,6 +136,7 @@ target_link_libraries(${BINARY_NAME} PRIVATE
     -Wl,--whole-archive 
     ${NGN_LIB} 
     -Wl,--no-whole-archive
+    ${GPIOD_LIB}
     ${THEORADEC_LIB}
     ${VORBIS_LIB}
     ${OGG_LIB}

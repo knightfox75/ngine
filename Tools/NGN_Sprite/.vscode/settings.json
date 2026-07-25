@@ -9,19 +9,18 @@
     "**/*.dat": true,
     "**/*.pkg": true,
     "**/*.json": true,
-    "**/*NGN*": true,
-    "**/*build*": true,
-    "**/data": true,
-    "**/libs": true,
-    "**/licences": true,
-    "**/temp": true,
     "**/scripts": true,
     "**/exports": true,
+    "**/build": true,
+    "**/temp": true,
     "**/.vscode": true
   },
   "editor.autoClosingBrackets": "never",
   "editor.autoClosingComments": "never",
   "editor.autoClosingDelete": "never",
   "editor.autoClosingOvertype": "never",
-  "editor.autoClosingQuotes": "never"
+  "editor.autoClosingQuotes": "never",
+  "C_Cpp.intelliSenseCacheSize": 0,
+  "C_Cpp.dimInactiveRegions": true,
+  "C_Cpp.errorSquiggles": "EnabledIfIncludesResolve"
 }

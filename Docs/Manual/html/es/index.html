@@ -57,10 +57,19 @@
                     <ul>
                         <li><a href="ngn_graphics.html#Init">Init</a></li>
                         <li><a href="ngn_graphics.html#SetMode">SetMode</a></li>
+                        <li><a href="ngn_graphics.html#SetFiltering">SetFiltering</a></li>
                         <li><a href="ngn_graphics.html#SetVerticalSync">SetVerticalSync</a></li>
                         <li><a href="ngn_graphics.html#Update">Update</a></li>
+                        <li><a href="ngn_graphics.html#SetViewportClip">SetViewportClip</a></li>
+                        <li><a href="ngn_graphics.html#ShowMouse">ShowMouse</a></li>
                         <li><a href="ngn_graphics.html#OpenViewport">OpenViewport</a></li>
+                        <li><a href="ngn_graphics.html#CloseViewport">CloseViewport</a></li>
+                        <li><a href="ngn_graphics.html#SelectViewport">SelectViewport</a></li>
+                        <li><a href="ngn_graphics.html#ViewportPosition">ViewportPosition</a></li>
+                        <li><a href="ngn_graphics.html#ViewportLocalFilter">ViewportLocalFilter</a></li>
+                        <li><a href="ngn_graphics.html#DefaultViewport">DefaultViewport</a></li>
                         <li><a href="ngn_graphics.html#CloneSprite">CloneSprite</a></li>
+                        <li><a href="ngn_graphics.html#GetDesktopResolution">GetDesktopResolution</a></li>
                         <li><a href="ngn_graphics.html#GetFps">GetFps</a></li>
                         <li><a href="ngn_graphics.html#ScreenShot">ScreenShot</a></li>
                     </ul>
@@ -87,14 +96,20 @@
                     <ul>
                         <li><a href="ngn_load.html#Texture">Texture</a></li>
                         <li><a href="ngn_load.html#TiledBg">TiledBg</a></li>
+                        <li><a href="ngn_load.html#IndexedTiledBg">IndexedTiledBg</a></li>
                         <li><a href="ngn_load.html#Sprite">Sprite</a></li>
                         <li><a href="ngn_load.html#CollisionMap">CollisionMap</a></li>
                         <li><a href="ngn_load.html#AudioClip">AudioClip</a></li>
                         <li><a href="ngn_load.html#TrueTypeFont">TrueTypeFont</a></li>
+                        <li><a href="ngn_load.html#PngAsRaw">PngAsRaw</a></li>
+                        <li><a href="ngn_load.html#SpriteAsRaw">SpriteAsRaw</a></li>
+                        <li><a href="ngn_load.html#SpriteAsRawVector">SpriteAsRawVector</a></li>
+                        <li><a href="ngn_load.html#TextFile">TextFile</a></li>
                         <li><a href="ngn_load.html#LoadFile">LoadFile</a></li>
+                        <li><a href="ngn_load.html#LoadFileChunk">LoadFileChunk</a></li>
                         <li><a href="ngn_load.html#SetDisk">SetDisk</a></li>
                         <li><a href="ngn_load.html#SetPackage">SetPackage</a></li>
-                        <li><a href="ngn_load.html#LoadFileChunk">LoadFileChunk</a></li>
+                        <li><a href="ngn_load.html#PackageEnabled">PackageEnabled</a></li>
                     </ul>
                 </nav>
             </section>
@@ -110,8 +125,8 @@
                         <li><a href="ngn_resources.html#RemoveRepository">RemoveRepository</a></li>
                         <li><a href="ngn_resources.html#Clear">Clear</a></li>
                         <li><a href="ngn_resources.html#Load">Load</a></li>
-                        <li><a href="ngn_resources.html#GetResource">GetTexture / ...</a></li>
-                        <li><a href="ngn_resources.html#RemoveResource">RemoveTexture / ...</a></li>
+                        <li><a href="ngn_resources.html#GetResource">GetTexture / GetTiledbg / GetIndexedTiledbg / ...</a></li>
+                        <li><a href="ngn_resources.html#RemoveResource">RemoveTexture / RemoveTiledbg / RemoveIndexedTiledbg / ...</a></li>
                     </ul>
                 </nav>
             </section>
@@ -144,13 +159,29 @@
                 <nav class="index">
                     <ul>
                         <li><a href="ngn_camera.html#CreateLayers">CreateLayers</a></li>
+                        <li><a href="ngn_camera.html#SetSizeOfSpritesLayer">SetSizeOfSpritesLayer</a></li>
                         <li><a href="ngn_camera.html#Setup">Setup</a></li>
                         <li><a href="ngn_camera.html#PushBackground">PushBackground</a></li>
+                        <li><a href="ngn_camera.html#PushVirtualBg">PushVirtualBg</a></li>
                         <li><a href="ngn_camera.html#PushSprite">PushSprite</a></li>
                         <li><a href="ngn_camera.html#LookAt">LookAt</a></li>
                         <li><a href="ngn_camera.html#Update">Update</a></li>
+                        <li><a href="ngn_camera.html#RemoveBackground">RemoveBackground</a></li>
+                        <li><a href="ngn_camera.html#RemoveSprite">RemoveSprite</a></li>
+                        <li><a href="ngn_camera.html#ChangeLayer">ChangeLayer</a></li>
+                        <li><a href="ngn_camera.html#SendToFront">SendToFront</a></li>
+                        <li><a href="ngn_camera.html#SendToBack">SendToBack</a></li>
+                        <li><a href="ngn_camera.html#Reset">Reset</a></li>
+                        <li><a href="ngn_camera.html#CheckIfRegistered">CheckIfRegistered</a></li>
+                        <li><a href="ngn_camera.html#GetLookAt">GetLookAt</a></li>
+                        <li><a href="ngn_camera.html#GetTargetSprite">GetTargetSprite</a></li>
+                        <li><a href="ngn_camera.html#GetTargetPosition">GetTargetPosition</a></li>
+                        <li><a href="ngn_camera.html#GetRendererSize">GetRendererSize</a></li>
+                        <li><a href="ngn_camera.html#GetLayerSize">GetLayerSize</a></li>
+                        <li><a href="ngn_camera.html#GetLayerPosition">GetLayerPosition</a></li>
                         <li><a href="ngn_camera.html#Shake">Shake</a></li>
                         <li><a href="ngn_camera.html#SetLayerTintColor">SetLayerTintColor</a></li>
+                        <li><a href="ngn_camera.html#SetLayerAutoScroll">SetLayerAutoScroll</a></li>
                     </ul>
                 </nav>
                  <h3>Propiedades</h3>
@@ -172,7 +203,15 @@
                     <ul>
                         <li><a href="ngn_sprite.html#Constructor">Constructor</a></li>
                         <li><a href="ngn_sprite.html#Position">Position</a></li>
+                        <li><a href="ngn_sprite.html#Translate">Translate</a></li>
+                        <li><a href="ngn_sprite.html#Size">Size</a></li>
+                        <li><a href="ngn_sprite.html#Scale">Scale</a></li>
+                        <li><a href="ngn_sprite.html#Rotate">Rotate</a></li>
+                        <li><a href="ngn_sprite.html#SetCenter">SetCenter</a></li>
                         <li><a href="ngn_sprite.html#AddCollider">AddCollider</a></li>
+                        <li><a href="ngn_sprite.html#GetColliderId">GetColliderId</a></li>
+                        <li><a href="ngn_sprite.html#ColliderEnabled">ColliderEnabled</a></li>
+                        <li><a href="ngn_sprite.html#RemoveCollider">RemoveCollider</a></li>
                         <li><a href="ngn_sprite.html#AddAnimation">AddAnimation</a></li>
                         <li><a href="ngn_sprite.html#SetAnimation">SetAnimation</a></li>
                         <li><a href="ngn_sprite.html#PlayAnimation">PlayAnimation</a></li>
@@ -188,10 +227,16 @@
                         <li><a href="ngn_sprite.html#prop_size">width / height</a></li>
                         <li><a href="ngn_sprite.html#prop_box">box</a></li>
                         <li><a href="ngn_sprite.html#prop_frame">frame</a></li>
+                        <li><a href="ngn_sprite.html#prop_total_frames">total_frames</a></li>
+                        <li><a href="ngn_sprite.html#prop_current_animation">current_animation</a></li>
+                        <li><a href="ngn_sprite.html#prop_animation_pause">animation_pause</a></li>
                         <li><a href="ngn_sprite.html#prop_visible">visible</a></li>
                         <li><a href="ngn_sprite.html#prop_alpha">alpha</a></li>
+                        <li><a href="ngn_sprite.html#prop_blend_mode">blend_mode</a></li>
+                        <li><a href="ngn_sprite.html#prop_on_screen">on_screen</a></li>
                         <li><a href="ngn_sprite.html#prop_rotation">rotation</a></li>
                         <li><a href="ngn_sprite.html#prop_flip">flip_h / flip_v</a></li>
+                        <li><a href="ngn_sprite.html#prop_ignore_camera_tint">ignore_camera_tint</a></li>
                     </ul>
                 </nav>
             </section>
@@ -204,7 +249,13 @@
                 <nav class="index">
                     <ul>
                         <li><a href="ngn_texture.html#ConstructorData">Constructor (con datos)</a></li>
+                        <li><a href="ngn_texture.html#ConstructorBlank">Constructor (en blanco)</a></li>
                         <li><a href="ngn_texture.html#Position">Position</a></li>
+                        <li><a href="ngn_texture.html#Translate">Translate</a></li>
+                        <li><a href="ngn_texture.html#Size">Size</a></li>
+                        <li><a href="ngn_texture.html#Scale">Scale</a></li>
+                        <li><a href="ngn_texture.html#Rotate">Rotate</a></li>
+                        <li><a href="ngn_texture.html#SetCenter">SetCenter</a></li>
                         <li><a href="ngn_texture.html#ClearContent">ClearContent</a></li>
                         <li><a href="ngn_texture.html#SetTintColor">SetTintColor</a></li>
                         <li><a href="ngn_texture.html#GetCameraLayer">GetCameraLayer</a></li>
@@ -218,8 +269,10 @@
                         <li><a href="ngn_texture.html#prop_size">width / height</a></li>
                         <li><a href="ngn_texture.html#prop_visible">visible</a></li>
                         <li><a href="ngn_texture.html#prop_alpha">alpha</a></li>
+                        <li><a href="ngn_texture.html#prop_blend_mode">blend_mode</a></li>
                         <li><a href="ngn_texture.html#prop_rotation">rotation</a></li>
                         <li><a href="ngn_texture.html#prop_flip">flip_h / flip_v</a></li>
+                        <li><a href="ngn_texture.html#prop_ignore_camera_tint">ignore_camera_tint</a></li>
                     </ul>
                 </nav>
             </section>
@@ -227,12 +280,16 @@
             <!-- NGN_TILEDBG.H -->
             <section id="ngn_tiledbg" class="doc-block">
                 <h2><a href="ngn_tiledbg.html">NGN_TILEDBG.H</a></h2>
-                <p>Define un fondo gráfico compuesto por tiles, optimizado para escenas grandes con patrones repetitivos.</p>
+                <p>Define un fondo gráfico compuesto por tiles, optimizado para escenas grandes con patrones repetitivos y soporte para fondos indexados.</p>
                 <h3>Métodos</h3>
                 <nav class="index">
                      <ul>
                         <li><a href="ngn_tiledbg.html#Constructor">Constructor</a></li>
                         <li><a href="ngn_tiledbg.html#Position">Position</a></li>
+                        <li><a href="ngn_tiledbg.html#Translate">Translate</a></li>
+                        <li><a href="ngn_tiledbg.html#Scale">Scale</a></li>
+                        <li><a href="ngn_tiledbg.html#Rotate">Rotate</a></li>
+                        <li><a href="ngn_tiledbg.html#SetCenter">SetCenter</a></li>
                         <li><a href="ngn_tiledbg.html#SetTintColor">SetTintColor</a></li>
                         <li><a href="ngn_tiledbg.html#GetCameraLayer">GetCameraLayer</a></li>
                         <li><a href="ngn_tiledbg.html#GetCurrentScale">GetCurrentScale</a></li>
@@ -242,10 +299,19 @@
                 <nav class="index">
                     <ul>
                         <li><a href="ngn_tiledbg.html#prop_position">position</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_size">width / height</a></li>
                         <li><a href="ngn_tiledbg.html#prop_visible">visible</a></li>
                         <li><a href="ngn_tiledbg.html#prop_alpha">alpha</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_blend_mode">blend_mode</a></li>
                         <li><a href="ngn_tiledbg.html#prop_rotation">rotation</a></li>
                         <li><a href="ngn_tiledbg.html#prop_flip">flip_h / flip_v</a></li>
+                        <li><a href="ngn_tiledbg.html#prop_ignore_camera_tint">ignore_camera_tint</a></li>
+                    </ul>
+                </nav>
+                <h3>Formatos</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_tiledbg.html#cyc_format">Formato .CYC</a></li>
                     </ul>
                 </nav>
             </section>
@@ -358,12 +424,63 @@
             <section id="ngn_sound" class="doc-block">
                 <h2><a href="ngn_sound.html">NGN_SOUND.H</a></h2>
                 <p>Gestiona toda la reproducción de audio, incluyendo efectos de sonido (SFX) y música por streaming (BGM), con control sobre volumen, pitch, panning y canales del mezclador.</p>
-                <h3>Métodos</h3>
+                <h3>Efectos de sonido (SFX)</h3>
                 <nav class="index">
                     <ul>
                         <li><a href="ngn_sound.html#PlaySfx">PlaySfx</a></li>
+                        <li><a href="ngn_sound.html#ResumeSfx">ResumeSfx</a></li>
+                        <li><a href="ngn_sound.html#PauseSfx">PauseSfx</a></li>
+                        <li><a href="ngn_sound.html#StopSfx">StopSfx</a></li>
+                        <li><a href="ngn_sound.html#SfxVolume">SfxVolume</a></li>
+                        <li><a href="ngn_sound.html#SfxGetVolume">SfxGetVolume</a></li>
+                        <li><a href="ngn_sound.html#SfxPitch">SfxPitch</a></li>
+                        <li><a href="ngn_sound.html#SfxGetPitch">SfxGetPitch</a></li>
+                        <li><a href="ngn_sound.html#SfxLoop">SfxLoop</a></li>
+                        <li><a href="ngn_sound.html#SfxGetLoop">SfxGetLoop</a></li>
+                        <li><a href="ngn_sound.html#SfxPanning">SfxPanning</a></li>
+                        <li><a href="ngn_sound.html#SfxGetPanning">SfxGetPanning</a></li>
+                        <li><a href="ngn_sound.html#SfxIsPlaying">SfxIsPlaying</a></li>
+                        <li><a href="ngn_sound.html#SfxIsAlive">SfxIsAlive</a></li>
+                        <li><a href="ngn_sound.html#ClearSfx">ClearSfx</a></li>
+                        <li><a href="ngn_sound.html#PauseAllSfx">PauseAllSfx</a></li>
+                        <li><a href="ngn_sound.html#ResumeAllSfx">ResumeAllSfx</a></li>
+                        <li><a href="ngn_sound.html#StopAllSfx">StopAllSfx</a></li>
+                    </ul>
+                </nav>
+                <h3>Música y diálogos (BGM)</h3>
+                <nav class="index">
+                    <ul>
                         <li><a href="ngn_sound.html#OpenMusic">OpenMusic</a></li>
+                        <li><a href="ngn_sound.html#CloseMusic">CloseMusic</a></li>
+                        <li><a href="ngn_sound.html#PlayMusic">PlayMusic</a></li>
+                        <li><a href="ngn_sound.html#ResumeMusic">ResumeMusic</a></li>
+                        <li><a href="ngn_sound.html#PauseMusic">PauseMusic</a></li>
+                        <li><a href="ngn_sound.html#StopMusic">StopMusic</a></li>
+                        <li><a href="ngn_sound.html#MusicVolume">MusicVolume</a></li>
+                        <li><a href="ngn_sound.html#MusicGetVolume">MusicGetVolume</a></li>
+                        <li><a href="ngn_sound.html#MusicPitch">MusicPitch</a></li>
+                        <li><a href="ngn_sound.html#MusicGetPitch">MusicGetPitch</a></li>
+                        <li><a href="ngn_sound.html#MusicLoop">MusicLoop</a></li>
+                        <li><a href="ngn_sound.html#MusicGetLoop">MusicGetLoop</a></li>
+                        <li><a href="ngn_sound.html#MusicIsPlaying">MusicIsPlaying</a></li>
+                        <li><a href="ngn_sound.html#MusicIsAlive">MusicIsAlive</a></li>
+                        <li><a href="ngn_sound.html#ClearMusic">ClearMusic</a></li>
+                        <li><a href="ngn_sound.html#PauseAllMusics">PauseAllMusics</a></li>
+                        <li><a href="ngn_sound.html#ResumeAllMusics">ResumeAllMusics</a></li>
+                        <li><a href="ngn_sound.html#StopAllMusics">StopAllMusics</a></li>
+                    </ul>
+                </nav>
+                <h3>Mezclador</h3>
+                <nav class="index">
+                    <ul>
                         <li><a href="ngn_sound.html#SetMixerLevel">SetMixerLevel</a></li>
+                        <li><a href="ngn_sound.html#GetMixerLevel">GetMixerLevel</a></li>
+                        <li><a href="ngn_sound.html#PushPopMixer">PushMixer / PopMixer</a></li>
+                    </ul>
+                </nav>
+                <h3>Métodos comunes</h3>
+                <nav class="index">
+                    <ul>
                         <li><a href="ngn_sound.html#PauseAll">PauseAll</a></li>
                         <li><a href="ngn_sound.html#ResumeAll">ResumeAll</a></li>
                         <li><a href="ngn_sound.html#StopAll">StopAll</a></li>
@@ -393,6 +510,38 @@
                 </nav>
             </section>
 
+            <!-- NGN_GPIO.H -->
+            <section id="ngn_gpio" class="doc-block">
+                <h2><a href="ngn_gpio.html">NGN_GPIO.H</a></h2>
+                <p>Proporciona acceso e interacción directa con los puertos de entrada/salida (GPIO) en dispositivos Raspberry Pi, incluyendo control digital, anti-rebote por hardware y consulta de modos.</p>
+                <h3>Tipos</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_gpio.html#NGN_GPIO_MODE">NGN_GPIO_MODE</a></li>
+                    </ul>
+                </nav>
+                <h3>Métodos</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_gpio.html#SetPortMode">SetPortMode</a></li>
+                        <li><a href="ngn_gpio.html#SetDebounce">SetDebounce</a></li>
+                        <li><a href="ngn_gpio.html#SetDebounceAll">SetDebounceAll</a></li>
+                        <li><a href="ngn_gpio.html#DigitalWrite">DigitalWrite</a></li>
+                        <li><a href="ngn_gpio.html#DigitalRead">DigitalRead</a></li>
+                        <li><a href="ngn_gpio.html#ReleasePort">ReleasePort</a></li>
+                        <li><a href="ngn_gpio.html#ReleaseAllPorts">ReleaseAllPorts</a></li>
+                        <li><a href="ngn_gpio.html#GetPortMode">GetPortMode</a></li>
+                        <li><a href="ngn_gpio.html#IsAvailable">IsAvailable</a></li>
+                    </ul>
+                </nav>
+                <h3>Constantes</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_gpio.html#NGN_GPIO_DEBOUNCE_TIME">NGN_GPIO_DEBOUNCE_TIME</a></li>
+                    </ul>
+                </nav>
+            </section>
+
             <!-- NGN_COLLISIONS.H -->
             <section id="ngn_collisions" class="doc-block">
                 <h2><a href="ngn_collisions.html">NGN_COLLISIONS.H</a></h2>
@@ -413,11 +562,24 @@
             <section id="ngn_math" class="doc-block">
                 <h2><a href="ngn_math.html">NGN_MATH.H</a></h2>
                 <p>Ofrece una colección de utilidades matemáticas, incluyendo una clase completa para vectores 2D y funciones para calcular distancias, ángulos y números aleatorios.</p>
-                <h3>Secciones</h3>
+                <h3>Clase Vector2</h3>
                 <nav class="index">
                     <ul>
-                        <li><a href="ngn_math.html">Clase Vector2</a></li>
-                        <li><a href="ngn_math.html#GetDistance">Funciones Matemáticas</a></li>
+                        <li><a href="ngn_math.html#Magnitude">Magnitude</a></li>
+                        <li><a href="ngn_math.html#Normalize">Normalize</a></li>
+                        <li><a href="ngn_math.html#Normal">Normal</a></li>
+                        <li><a href="ngn_math.html#Zero">Zero</a></li>
+                        <li><a href="ngn_math.html#prop_xy">x / y</a></li>
+                    </ul>
+                </nav>
+                <h3>Funciones Matemáticas</h3>
+                <nav class="index">
+                    <ul>
+                        <li><a href="ngn_math.html#GetDistance">GetDistance</a></li>
+                        <li><a href="ngn_math.html#GetAngle">GetAngle</a></li>
+                        <li><a href="ngn_math.html#GetManhattan">GetManhattan</a></li>
+                        <li><a href="ngn_math.html#Random">RandomInt / RandomFloat / RandomDouble</a></li>
+                        <li><a href="ngn_math.html#Adler32Checksum">Adler32Checksum</a></li>
                     </ul>
                 </nav>
             </section>
@@ -539,7 +701,7 @@
 	</div>
 
     <script>
-        // Lógica para el botón "Volver Arriba"
+        // Logic for the "Back to Top" button
         const backToTopButton = document.getElementById('back-to-top');
         window.onscroll = () => {
             const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
@@ -547,7 +709,7 @@
             else { backToTopButton.classList.remove('visible'); }
         };
         
-        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        // --- LOGIC FOR THE DROPDOWN MENU ---
         const menuToggle = document.getElementById('menu-toggle');
         const floatingButtonsContainer = document.querySelector('.floating-buttons');
         menuToggle.addEventListener('click', () => {

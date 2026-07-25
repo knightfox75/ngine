@@ -119,6 +119,9 @@ find_library(SDL2_LIB       NAMES SDL2                 REQUIRED PATHS ${EXTRA_LI
 find_library(SDL2_TTF_LIB   NAMES SDL2_ttf             REQUIRED PATHS ${EXTRA_LIB_PATHS})
 find_library(SFML_SYS_LIB   NAMES ${LIB_NAME_SFML_SYS} REQUIRED PATHS ${EXTRA_LIB_PATHS})
 find_library(SFML_AUD_LIB   NAMES ${LIB_NAME_SFML_AUD} REQUIRED PATHS ${EXTRA_LIB_PATHS})
+if(CMAKE_ARCH_TYPE STREQUAL ARCH_RASPBERRY)
+	find_library(GPIOD_LIB	NAMES gpiod	REQUIRED PATHS ${EXTRA_LIB_PATHS})
+endif()
 
 # ------------------------------------------------------------------------------
 # 7. SOURCE FILES & RESOURCES
@@ -192,14 +195,17 @@ if(CMAKE_ARCH_TYPE STREQUAL ARCH_WINDOWS_X86_64)
         setupapi imm32 version winmm gdi32 ole32 oleaut32 uuid comdlg32 shlwapi shell32 user32 advapi32
     )
 else()
-    target_link_libraries(${BINARY_TARGET_NAME} PRIVATE 
-        ${NGN_LIB} ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_AUD_LIB} ${SFML_SYS_LIB}
-    )
     
     # RPATH Subdirectory
     if(CMAKE_ARCH_TYPE STREQUAL ARCH_LINUX_X86_64)
+		target_link_libraries(${BINARY_TARGET_NAME} PRIVATE 
+			${NGN_LIB} ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_AUD_LIB} ${SFML_SYS_LIB}
+		)
         set(LIB_SUBDIR "x86_64-linux-gnu")
     elseif(CMAKE_ARCH_TYPE STREQUAL ARCH_RASPBERRY)
+		target_link_libraries(${BINARY_TARGET_NAME} PRIVATE 
+			${NGN_LIB} ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_AUD_LIB} ${SFML_SYS_LIB} ${GPIOD_LIB}
+		)
         set(LIB_SUBDIR "aarch64-linux-gnu")
     endif()
 

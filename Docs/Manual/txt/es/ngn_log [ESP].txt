@@ -36,6 +36,6 @@ void Message(std::string msg);
 Imprime en la consola de depuración el contenido de la cadena de texto en formato STRING del parámetro dado, añadiendo además la marca de tiempo actual de manera automática. Si el archivo de registro está habilitado, esta información también se guardará en dicho archivo. 
 
 - Ejemplo
-ngn->log->Message(“Hello World!”);
+ngn->log->Message("Hello World!");
 
 --------------------------------------------------------------------------------

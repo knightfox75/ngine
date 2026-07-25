@@ -69,7 +69,7 @@ const std::string PROGRAM_NAME = "N'gine PNG to Sprite converter";          // N
 const std::string CPR_YEARS = "2016-2026";                                  // Años en el texto de CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 2;                                    // Version mayor
 const int32_t PROGRAM_VERSION_MINOR = 1;                                    // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 0;                                    // Version parche
+const int32_t PROGRAM_VERSION_PATCH = 2;                                    // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                      // Version metadatos
 const std::string MAGIC_STRING = "NGN SPRITE";    	                        // Magic string
 const uint8_t MS_LENGTH = 10;                                               // Logitud del magic string
@@ -104,9 +104,11 @@ const int32_t MAX_FRAME_SIZE = 8192;        // Tamaño maximo del fotograma
 /*** Estructuras personalizadas ***/
 
 // Cabecera del archivo
+#pragma pack(push, 1)
 struct FileHeader {
     uint8_t version;                // Version del programa de conversion
     char magic[32];                 // Magic String
+	uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
     uint32_t sheet_width;           // Tamaño del sheet completo
     uint32_t sheet_height;
     uint32_t frame_width;           // Tamaño del frame
@@ -114,6 +116,7 @@ struct FileHeader {
     uint32_t total_frames;          // Numero total de frames de la imagen
     uint8_t reserve[256];           // Posible uso futuro
 };
+#pragma pack(pop)
 
 
 #endif // DEFINES_H_INCLUDED

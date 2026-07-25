@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Funciones del gestor de recursos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -195,6 +195,16 @@ void NGN_Resources::Clear(std::string repo_name) {
     }
     repository[repo_id].tiledbg.clear();
 
+    // Fondos de tiles indexados
+    for (uint32_t i = 0; i < repository[repo_id].idxtiledbg.size(); i ++) {
+        #if (defined MODE_DEBUG && defined RESOURCES_DEBUG)
+            std::cout << "Deleting Indexed Tiled Background in " << repository[repo_id].name << ": " << i << " > " << repository[repo_id].idxtiledbg[i].id << std::endl;
+        #endif
+        delete repository[repo_id].idxtiledbg[i].data;
+        repository[repo_id].idxtiledbg[i].data = nullptr;
+    }
+    repository[repo_id].idxtiledbg.clear();
+
     // Sprites
     for (uint32_t i = 0; i < repository[repo_id].sprite.size(); i ++) {
         #if (defined MODE_DEBUG && defined RESOURCES_DEBUG)
@@ -275,6 +285,7 @@ bool NGN_Resources::Load(std::string repo_name, std::string filelist) {
     // Prepara los objetos temporales
     TextureT texture;
     TiledbgT tiledbg;
+    IdxTiledbgT idxtiledbg;
     SpriteT sprite;
     CmapT cmap;
     SfxT sfx;
@@ -297,6 +308,13 @@ bool NGN_Resources::Load(std::string repo_name, std::string filelist) {
             if (!tiledbg.data) return false;
             tiledbg.id = fat[i].id;
             repository[repo_id].tiledbg.push_back(tiledbg);
+
+        } else if (fat[i].filetype == FILETYPE_ID.idxtiledbg) {
+
+            idxtiledbg.data = ngn->load->IndexedTiledBg(fat[i].filename, fat[i].auxfile.palette, fat[i].auxfile.cycles);
+            if (!idxtiledbg.data) return false;
+            idxtiledbg.id = fat[i].id;
+            repository[repo_id].idxtiledbg.push_back(idxtiledbg);
 
         } else if (fat[i].filetype == FILETYPE_ID.sprite) {
 
@@ -416,6 +434,8 @@ bool NGN_Resources::ParseFileTable(std::vector<std::string> &text, std::vector<F
         node.typeface.base_color = "";
         node.typeface.outline = "";
         node.typeface.outline_color = "";
+        node.auxfile.palette = "";
+        node.auxfile.cycles = "";
         p_count = 0;
         offset = 0;
         line = text[i];
@@ -442,19 +462,21 @@ bool NGN_Resources::ParseFileTable(std::vector<std::string> &text, std::vector<F
                     node.filename += chr;
                     break;
                 case 3:
-                    node.typeface.height += chr;
+                    if (node.filetype == FILETYPE_ID.typeface) node.typeface.height += chr;
+                    if (node.filetype == FILETYPE_ID.idxtiledbg) node.auxfile.palette += chr;
                     break;
                 case 4:
-                    node.typeface.antialias += chr;
+                    if (node.filetype == FILETYPE_ID.typeface) node.typeface.antialias += chr;
+                    if (node.filetype == FILETYPE_ID.idxtiledbg) node.auxfile.cycles += chr;
                     break;
                 case 5:
-                    node.typeface.base_color += chr;
+                    if (node.filetype == FILETYPE_ID.typeface) node.typeface.base_color += chr;
                     break;
                 case 6:
-                    node.typeface.outline += chr;
+                    if (node.filetype == FILETYPE_ID.typeface) node.typeface.outline += chr;
                     break;
                 case 7:
-                    node.typeface.outline_color += chr;
+                    if (node.filetype == FILETYPE_ID.typeface) node.typeface.outline_color += chr;
                     break;
                 default:
                     return false;
@@ -464,13 +486,12 @@ bool NGN_Resources::ParseFileTable(std::vector<std::string> &text, std::vector<F
         }
 
         // Si no se han completado el nodo, error
-        if (
-            ((node.filetype != FILETYPE_ID.typeface) && (p_count > 2))
-            ||
-            ((node.filetype == FILETYPE_ID.typeface) && (p_count > 7))
-            ||
-            (p_count < 2)
-        ) return false;
+        if (p_count < 2) return false;
+        if (node.filetype == FILETYPE_ID.typeface) {
+            if (p_count > 7) return false;
+        } else if (node.filetype == FILETYPE_ID.idxtiledbg) {
+            if (p_count > 4) return false;
+        }
 
         // Si todo ha ido bien, registra el nodo
         fat.push_back(node);
@@ -515,6 +536,24 @@ NGN_TiledBgData* NGN_Resources::GetTiledbg(std::string repo_name, std::string re
     return nullptr;
 
 }
+
+
+
+/*** Busca un fondo de tiles indexado (requiere minimo el archivo de fondo y la paleta) ***/
+NGN_IndexedTiledBgData* NGN_Resources::GetIndexedTiledbg(std::string repo_name, std::string resource_name, bool err) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return nullptr;
+
+    for (uint32_t i = 0; i < repository[repo_id].idxtiledbg.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].idxtiledbg[i].id) == 0) return repository[repo_id].idxtiledbg[i].data;
+    }
+
+    if (err) ngn->log->Message("[NGN_Resources error] Indexed tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return nullptr;
+
+}
+
 
 
 
@@ -643,6 +682,26 @@ bool NGN_Resources::RemoveTiledbg(std::string repo_name, std::string resource_na
     }
 
     ngn->log->Message("[NGN_Resources error] Tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
+    return false;
+
+}
+
+
+
+/*** Elimina un fondo de tiles indexado ***/
+bool NGN_Resources::RemoveIndexedTiledbg(std::string repo_name, std::string resource_name) {
+
+    int8_t repo_id = GetRepositoryId(repo_name);
+    if (repo_id < 0) return false;
+
+    for (uint32_t i = 0; i < repository[repo_id].idxtiledbg.size(); i ++) {
+        if (resource_name.compare(repository[repo_id].idxtiledbg[i].id) != 0) continue;
+        delete repository[repo_id].idxtiledbg[i].data;
+        repository[repo_id].idxtiledbg.erase(repository[repo_id].idxtiledbg.begin() + i);
+        return true;
+    }
+
+    ngn->log->Message("[NGN_Resources error] Indexed tiled background with " + resource_name + " ID in " + repository[repo_id].name + " repository not found.");
     return false;
 
 }

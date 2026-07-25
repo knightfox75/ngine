@@ -75,7 +75,7 @@ class ConvertToTiles {
         bool Convert(
             std::string in_file,        // Archivo PNG a convertir
             std::string out_file,       // Nombre base de los archivos de salida
-            uint32_t tile_size,         // Tama�o del tile
+            uint32_t tile_size,         // Tamaño del tile
             uint32_t op_level,          // Nivel de optimizacion
             bool ex_files               // Generar archivos adicionales?
         );
@@ -86,14 +86,14 @@ class ConvertToTiles {
         /*** Propiedades ***/
 
         // Parametros de funcionamiento
-        uint32_t size_of_tile;                      // Tama�o del tile [32x32 por defecto]
+        uint32_t size_of_tile;                      // Tamaño del tile [32x32 por defecto]
         uint32_t optimize;                          // Nivel de optimizacion
         bool extra_files;                           // Generar archivos adicionales?
 
         // Parametros de las imagenes
-        uint32_t bg_width, bg_height;               // Tama�o real del fondo
-        uint32_t map_width, map_height;             // Tama�o del mapa a generar
-        uint32_t out_width, out_height;             // Tama�o del archivo de salida
+        uint32_t bg_width, bg_height;               // Tamaño real del fondo
+        uint32_t map_width, map_height;             // Tamaño del mapa a generar
+        uint32_t out_width, out_height;             // Tamaño del archivo de salida
         uint32_t tileset_length;                    // Numero de tiles unicos del tileset
 
         // Buffers de datos
@@ -137,9 +137,9 @@ class ConvertToTiles {
         bool CompareFlipV();
         // Compara si 2 tiles estan en espejo completo (H & V FLIP)
         bool Compare180deg();
-        // Compara si 2 tiles estan rotadas 90� a la derecha (90� Clock Wise)
+        // Compara si 2 tiles estan rotadas 90º a la derecha (90º Clock Wise)
         bool Compare90degCW();
-        // Compara si 2 tiles estan rotadas 90� a la izquierda (90� Anti Clock Wise)
+        // Compara si 2 tiles estan rotadas 90º a la izquierda (90º Anti Clock Wise)
         bool Compare90degACW();
 
 };

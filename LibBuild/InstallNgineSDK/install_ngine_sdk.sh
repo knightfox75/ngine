@@ -111,6 +111,7 @@ SYS_DEPS=(
     libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
     libgl1-mesa-dev libglu1-mesa-dev libudev-dev
     libsamplerate0-dev libdbus-1-dev libibus-1.0-dev
+    libgpiod-dev
 )
 sudo apt-get install -y --no-install-recommends "${SYS_DEPS[@]}"
 

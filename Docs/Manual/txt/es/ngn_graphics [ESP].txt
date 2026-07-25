@@ -12,7 +12,7 @@ bool Init(
 	std::string window_name,			// Nombre a mostrar en la pestaña de la ventana
 	uint32_t native_width,				// Resolución nativa del juego
 	uint32_t native_height,
-	int8_t scr_mode = NGN_SCR_WINDOW	// Modo de pantalla
+	int8_t scr_mode = NGN_SCR_WINDOW,	// Modo de pantalla
 	bool bilinear_filter = false,		// Filtro bilinear activado?
 	bool sync = true					// VSYNC activo?
 );
@@ -36,7 +36,7 @@ ngn->graphics->Init("Ngine Demo", 1280, 720);
 void SetMode(int8_t mode);
 
 - Descripción
-Cambia el modo gráfico al indicado. Los cambios de modo gráfico pueden provocar que las capas de texto o canvas deban de redibujarse por completo. Usar la variable “force_redraw” de la clase para detectar si debe realizarse dicho redibujado.
+Cambia el modo gráfico al indicado. Los cambios de modo gráfico pueden provocar que las capas de texto o canvas deban de redibujarse por completo. Usar la variable "force_redraw" de la clase para detectar si debe realizarse dicho redibujado.
 
 - Ejemplo
 ngn->graphics->SetMode(NGN_SCR_WINDOW_X2);
@@ -117,7 +117,7 @@ void OpenViewport(
 
 - Descripción
 Abre uno de los 8 viewports disponibles con los parámetros facilitados.
-Se puede cambiar el estado del filtrado local con el parámetro “local_filter”. Esto no afecta al estado del filtrado general de la ventana.
+Se puede cambiar el estado del filtrado local con el parámetro "local_filter". Esto no afecta al estado del filtrado general de la ventana.
 
 - Ejemplo
 ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120);
@@ -225,8 +225,8 @@ void ScreenShot(
 Guarda una captura del contenido del renderer del frame actual en formato PNG en el archivo y rutas especificados. De manera adicional, puede especificarse una textura para superponerla en la captura y pudiendo además especificar su nivel de opacidad.
 
 - Ejemplo
-ngn->graphics->ScreenShot(“captures/myscreen1.png”);
-ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);
+ngn->graphics->ScreenShot("captures/myscreen1.png");
+ngn->graphics->ScreenShot("captures/myscreen2.png", overlay_tex, 0XD0);
 
 --------------------------------------------------------------------------------
 

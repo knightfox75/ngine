@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -50,12 +50,15 @@
 #include <SDL_ttf.h>
 // Includes de la libreria
 #include "ngn_filesystem.h"
+#include "ngn_defines.h"
 
 
 /*** Defines ***/
 static const std::string MAGIC_STRING_TBG = "NGN TILEDBG";
 static const std::string MAGIC_STRING_SPR = "NGN SPRITE";
 static const std::string MAGIC_STRING_CMAP = "NGN COLLISION MAP";
+static const std::string MAGIC_STRING_ITB = "NGN IDX TBG";
+static const std::string MAGIC_STRING_IPAL = "NGN IDX PAL";
 static const uint32_t COLLISION_MAP_MIN_TILE_SIZE = 8;
 static const uint32_t COLLISION_MAP_MAX_TILE_SIZE = 1024;
 
@@ -81,8 +84,11 @@ class NGN_Load {
         // Carga de texturas
         NGN_TextureData* Texture(const std::string& filepath);
 
-        // Carga un fondo tileado
+        // Carga un fondo de tiles
         NGN_TiledBgData* TiledBg(const std::string& filepath);
+
+        // Carga un fondo de tiles indexado
+        NGN_IndexedTiledBgData* IndexedTiledBg(const std::string& bg_file, const std::string& pal_file, const std::string& cyc_file = "");
 
         // Carga un sprite
         NGN_SpriteData* Sprite(const std::string& filepath);
@@ -176,6 +182,9 @@ class NGN_Load {
 
         // Desencripta "al vuelo" un bloque de datos de un archivo del empaquetado
         void DecryptChunk(uint8_t* data, uint32_t length, uint32_t offset_in_file, const std::vector<uint8_t>& key);
+
+        // Prepara la tabla rotacion de paletas
+        bool ParseCycFile(std::vector<std::string> &text, std::vector<NGN_IndexedTiledBgData::PalRotationCycle> &cyc_table);
 
 
 };

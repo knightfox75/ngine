@@ -69,7 +69,7 @@ const std::string PROGRAM_NAME = "N'gine PNG to Tile Map converter";        // N
 const std::string CPR_YEARS = "2016-2026";                                  // Años en el texto de CopyRight
 const int32_t PROGRAM_VERSION_MAJOR = 2;                                    // Version mayor
 const int32_t PROGRAM_VERSION_MINOR = 1;                                    // Version menor
-const int32_t PROGRAM_VERSION_PATCH = 0;                                    // Version parche
+const int32_t PROGRAM_VERSION_PATCH = 2;                                    // Version parche
 const std::string PROGRAM_VERSION_METADATA = "stable";                      // Version metadatos
 const std::string MAGIC_STRING = "NGN TILEDBG";    	                        // Magic string
 const uint8_t MS_LENGTH = 11;                                               // Logitud del magic string
@@ -113,9 +113,11 @@ struct RgbaPixel {
 };
 
 // Cabecera del archivo
+#pragma pack(push, 1)
 struct FileHeader {
     uint8_t version;                // Version del programa de mapeado
     char magic[32];                 // Magic string
+    uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
     uint32_t bg_width;              // Ancho del fondo (imagen original)
     uint32_t bg_height;             // Alto del fondo (imagen original)
     uint32_t tileset_width;         // Ancho del Tileset en pixeles
@@ -127,6 +129,7 @@ struct FileHeader {
     uint32_t map_length;            // Tamaño de los datos del mapa
     char reserve[256];              // Posible uso futuro
 };
+#pragma pack(pop)
 
 
 #endif // DEFINES_H_INCLUDED

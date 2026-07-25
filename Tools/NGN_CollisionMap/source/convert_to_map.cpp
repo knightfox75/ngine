@@ -137,12 +137,12 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
 
     // Prepara los bufferes de destino
     bitmap.clear();
-    bitmap.resize((map_width * map_height), 0);
+    bitmap.assign((map_width * map_height), 0);
 
     // Prepara los buffers temporales
     std::vector<uint32_t> t_palette;
     t_palette.clear();
-    t_palette.resize(256, 0);
+    t_palette.assign(256, 0);
 
     // Variables de uso temporal
     uint32_t pixel;         // Alamacena el valor del pixel
@@ -158,7 +158,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
     std::cout << std::endl;
     std::cout << "Generating bitmap & palette..." << std::endl;
 
-    // Identifica el color de cada pixel e identificalo en la paleta, de no existir, a�adelo
+    // Identifica el color de cada pixel e identificalo en la paleta, de no existir, añadelo
     for (uint32_t y = 0; y < map_height; y ++) {
         for (uint32_t x = 0; x < map_width; x ++) {
             // Color del pixel actual
@@ -213,7 +213,7 @@ bool ConvertToMap::GenerateBitmap(std::vector<uint8_t> &data) {
 
     // Copia la paleta temporal a la final
     palette.clear();
-    palette.resize(pal_length, 0);
+    palette.assign(pal_length, 0);
     for (uint32_t n = 0; n < pal_length; n ++) palette[n] = t_palette[n];
     t_palette.clear();
 
@@ -243,14 +243,14 @@ void ConvertToMap::GenerateTileMap() {
     // Crea el buffer para el mapa
     map_length = (width * height);
     tmap.clear();
-    tmap.resize(map_length, 0);
+    tmap.assign(map_length, 0);
 
     // Crea el buffer temporal para el tileset
     uint32_t tile_length = (size_of_tile * size_of_tile);
     uint32_t l = (width * height * tile_length);
     std::vector<uint8_t> t_tiles;   // Buffer para almacenar los pixeles de los tiles
     t_tiles.clear();
-    t_tiles.resize(l, 0);
+    t_tiles.assign(l, 0);
 
     // Crea el buffer temporal para el tile actual a analizar
     std::vector<uint8_t> t_tl;
@@ -286,7 +286,7 @@ void ConvertToMap::GenerateTileMap() {
                         break;
                     }
                 }
-                // Si no hay discrepancia, a�ade el tile actual al mapa
+                // Si no hay discrepancia, añade el tile actual al mapa
                 if (!miss_match) {
                     t_num = ((ty * width) + tx);
                     tmap[t_num] = i;
@@ -294,7 +294,7 @@ void ConvertToMap::GenerateTileMap() {
                     break;
                 }
             }
-            // Si no se encuentra coincidencia, a�ade el tile
+            // Si no se encuentra coincidencia, añade el tile
             if (new_tile) {
                 t_num = ((ty * width) + tx);
                 tmap[t_num] = last_tile;
@@ -316,7 +316,7 @@ void ConvertToMap::GenerateTileMap() {
     // Copia el tileset final al buffer de destino
     tileset_length = (last_tile * tile_length);
     tiles.clear();
-    tiles.resize(tileset_length, 0);
+    tiles.assign(tileset_length, 0);
     for (uint32_t n = 0; n < tileset_length; n ++) tiles[n] = t_tiles[n];
 
     // Borra los buffers temporales
@@ -355,9 +355,9 @@ bool ConvertToMap::WriteFile(std::string filename) {
     file.open(map_filename, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
         file.write((char*)&header, sizeof(header));                                 // Cabecera
-        file.write((char*)&palette[0], (palette.capacity() * sizeof(int32_t)));    // Paleta
-        file.write((char*)&tiles[0], tiles.capacity());                             // Tiles
-        file.write((char*)&tmap[0], (tmap.capacity() * sizeof(int32_t)));          // Mapa de tiles
+        file.write((char*)&palette[0], (palette.size() * sizeof(int32_t)));    // Paleta
+        file.write((char*)&tiles[0], tiles.size());                             // Tiles
+        file.write((char*)&tmap[0], (tmap.size() * sizeof(int32_t)));          // Mapa de tiles
         file.close();
         std::cout << "File " << fname << " successfully saved." << std::endl;
     } else {
@@ -475,7 +475,7 @@ uint32_t ConvertToMap::GetPixel(std::vector<uint8_t> &data, uint32_t offset) {
     uint32_t pixel = 0;
 
     // Lee los bits del pixel
-    /*if ((offset + 3) < data.capacity()) {*/
+    /*if ((offset + 3) < data.size()) {*/
     pixel = data[(offset + 3)] | (data[(offset + 2)] << 8) | (data[(offset + 1)] << 16) | (data[offset] << 24);
     /*} else {
         pixel.r = pixel.g = pixel.b = pixel.a = 0;
@@ -493,7 +493,7 @@ void ConvertToMap::GetTile(std::vector<uint8_t> &data, uint32_t pos_x, uint32_t 
 
     // Prepara el buffer de salida
     data.clear();
-    data.resize((size_of_tile * size_of_tile), 0);
+    data.assign((size_of_tile * size_of_tile), 0);
     // Calcula los puntos de corte
     uint32_t start_x = (pos_x * size_of_tile);
     uint32_t end_x = (start_x + size_of_tile);

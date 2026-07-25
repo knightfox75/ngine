@@ -226,8 +226,8 @@ void ScreenShot(
 Saves a capture of the content of the current frame's renderer in PNG format at the specified file and path. Additionally, you can specify a texture to overlay on the capture and specify its opacity level.
 
 - Example
-ngn->graphics->ScreenShot(“captures/myscreen1.png”);
-ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);
+ngn->graphics->ScreenShot("captures/myscreen1.png");
+ngn->graphics->ScreenShot("captures/myscreen2.png", overlay_tex, 0XD0);
 
 --------------------------------------------------------------------------------
 
@@ -239,7 +239,7 @@ ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 bool vsync
 
 - Description
@@ -247,7 +247,7 @@ Indicates if vertical synchronization is active.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 bool filtering
 
 - Description
@@ -255,7 +255,7 @@ Indicates if bilinear filtering is active.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 int32_t native_w
 int32_t native_h
 
@@ -264,7 +264,7 @@ Stores the native resolution of the game.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 std::string window_caption
 
 - Description
@@ -272,7 +272,7 @@ Stores the text of the window caption.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 SDL_Rect cliparea
 
 - Description
@@ -280,7 +280,7 @@ Stores the values of the clipping area.
 
 --------------------------------------------------------------------------------
 
-- Propiedad
+- Property
 bool force_redraw
 
 - Description

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Fondos Tileados
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -70,11 +70,20 @@ class NGN_TiledBg {
             int32_t position_y = 0          // Posicion Y del fondo [0 por defecto]
         );
 
+        // Constructor (3ra sobrecarga)
+        NGN_TiledBg(
+            NGN_IndexedTiledBgData* bg,     // Datos del fondo
+            int32_t position_x = 0,         // Posicion X del fondo [0 por defecto]
+            int32_t position_y = 0          // Posicion Y del fondo [0 por defecto]
+        );
+
         // Destructor
         ~NGN_TiledBg();
 
         // Propiedades del fondo (publicas)
-        NGN_TiledBgData* bgdata;            // Tiles + Mapa del fondo
+        NGN_TiledBgData* bgdata;            // Atlas + Mapa del fondo
+        NGN_IndexedTiledBgData* ibgdata;    // Atlas (indexado) + Mapa de fondo + paleta + cycles
+        SDL_Texture* indexed_atlas;         // Almacena la textura del Tileset (Atlas) indexado
         Vector2 position;                   // Posicion del fondo
         float width;                        // Tamaño
         float height;
@@ -112,6 +121,9 @@ class NGN_TiledBg {
         // Selecciona un color de tinte (sin parametros, resetea el color)
         void SetTintColor(uint8_t r = 0xFF, uint8_t g = 0xFF, uint8_t b = 0xFF);
         bool ignore_camera_tint;  // Ignorar el tinte aplicado por la camara 2D
+
+        // Pausa en la animacion
+        bool animation_pause;                           // Pausa la animacion actual
 
 
 
@@ -151,6 +163,7 @@ class NGN_TiledBg {
 
         // Si se da el caso, capa en la camara virtual 2D donde esta ubicado
         int32_t camera_layer;
+        uint32_t runtime_frame;         // ID del frame en tiempo de ejecucion
 
         // Tinte del fondo de tiles
         Rgba tint_color;
@@ -163,6 +176,28 @@ class NGN_TiledBg {
             int32_t position_x,     // Posicion X del fondo
             int32_t position_y      // Posicion Y del fondo
         );
+
+        // Crea el objeto que contiene el fondo indexado
+        void CreateIndexedTiledBg(
+            NGN_IndexedTiledBgData* bg,     // Datos del fondo
+            int32_t position_x,             // Posicion X del fondo
+            int32_t position_y              // Posicion Y del fondo
+        );
+
+
+        // Datos comunes a la creacion
+        void CreateCommonData(
+            int32_t position_x,             // Posicion X del fondo
+            int32_t position_y              // Posicion Y del fondo
+        );
+
+        // Paleta indexada: rotacion de colores
+        bool is_indexed;                                                        // El fondo es indexado
+        bool palette_updated;                                                   // Se ha actualizado la paleta?
+        std::vector<NGN_IndexedTiledBgData::PalRotationCycle> pal_cycles;       // Copia local de los ciclos
+        std::vector<uint32_t> local_palette;                                    // Copia local de la paleta
+        std::vector<uint32_t> render_palette;                                   // Paleta que se renderizara
+        std::vector<uint32_t> rgba_atlas;                                       // Copia local del atlas
 
 };
 

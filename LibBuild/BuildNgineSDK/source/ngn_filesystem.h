@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0-wip_0x03 ***
     Funciones del sistema de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -98,15 +98,18 @@ class NGN_FileSystem {
         std::string current_package_file;   // Ruta al archivo empaquetado
 
         // Define la cabecera del archivo empaquetado
+        #pragma pack(push, 1)
         struct FileHeader {
             uint8_t version;                // Version del programa
             char magic[32];                 // Magic String (MAX 32 chars)
+            uint8_t _padding_fix[3];        // FIX: Padding de datos para mantener compatibilidad
             uint32_t fat_offset;            // Punto de inicio de la FAT
             uint32_t fat_size;              // Tamaño de la FAT
             uint32_t data_offset;           // Punto de unicio de los datos
             uint32_t data_size;             // Tamaño de los datos
             uint8_t reserve[256];           // Reservado para usos futuros (256 por defecto)
         };
+        #pragma pack(pop)
 
 
         // Cabecera del archivo

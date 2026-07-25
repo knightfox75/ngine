@@ -6,7 +6,7 @@
 
 # --- [1] CONFIGURATION ---
 TOOL_NAME="NGN_TileMap"
-LINUX_IMAGE="ngn-linux-pc-builder"
+LINUX_IMAGE="ngn-linux-pc-builder_production"
 RPI_IMAGE="ngn-rpi4-builder_production"
 
 # Determine the number of CPU cores for parallel building

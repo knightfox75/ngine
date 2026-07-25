@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación n'gine - NGN_GPIO</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NGN_GPIO.H</h1>
+        </header>
+
+        <main>
+            <!-- ÍNDICE DE TIPOS -->
+            <h2>TIPOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#NGN_GPIO_MODE">NGN_GPIO_MODE</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE TIPOS -->
+            <section id="NGN_GPIO_MODE" class="doc-block">
+                <h3>Tipo</h3>
+                <pre><code>NGN_GPIO_MODE</code></pre>
+                <h3>Descripción</h3>
+                <p>Define el modo de funcionamiento de un puerto GPIO, de forma equivalente al pinMode() de Arduino. Se utiliza como parámetro del método PortMode(). Valores disponibles:<br>
+                <code>NGN_GPIO_MODE.input</code> — Entrada digital estándar, sin resistencia de pull interna.<br>
+                <code>NGN_GPIO_MODE.output</code> — Salida digital.<br>
+                <code>NGN_GPIO_MODE.input_pullup</code> — Entrada digital con resistencia de pull-up interna activada.<br>
+                <code>NGN_GPIO_MODE.input_pulldown</code> — Entrada digital con resistencia de pull-down interna activada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);</code></pre>
+            </section>
+            <hr>
+
+            <!-- ÍNDICE DE MÉTODOS -->
+            <h2>MÉTODOS de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#SetPortMode">SetPortMode</a></li>
+                    <li><a href="#SetDebounce">SetDebounce</a></li>
+                    <li><a href="#SetDebounceAll">SetDebounceAll</a></li>
+                    <li><a href="#DigitalWrite">DigitalWrite</a></li>
+                    <li><a href="#DigitalRead">DigitalRead</a></li>
+                    <li><a href="#ReleasePort">ReleasePort</a></li>
+                    <li><a href="#ReleaseAllPorts">ReleaseAllPorts</a></li>
+                    <li><a href="#GetPortMode">GetPortMode</a></li>
+                    <li><a href="#IsAvailable">IsAvailable</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
+            <section id="SetPortMode" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SetPortMode(uint8_t port_id, uint8_t mode);</code></pre>
+                <h3>Descripción</h3>
+                <p>Configura el modo de funcionamiento de un puerto GPIO (numeración BCM). Debe llamarse antes de usar DigitalWrite() o DigitalRead() sobre ese puerto. Si el puerto ya tenía un modo asignado previamente, se reconfigura con el nuevo modo. Devuelve TRUE si la operación se ha realizado con éxito, o FALSE si el número de puerto no es válido o se ha producido un error al reservarlo. Fuera de una Raspberry Pi el módulo GPIO no está disponible, por lo que este método no tiene ningún efecto y siempre devuelve FALSE.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);</code></pre>
+            </section>
+
+            <section id="SetDebounce" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SetDebounce(uint8_t port_id, uint32_t microseconds = 0);</code></pre>
+                <h3>Descripción</h3>
+                <p>Configura el tiempo del filtro anti-rebote (debounce) por hardware para un puerto previamente configurado como entrada (INPUT, INPUT_PULLUP o INPUT_PULLDOWN) mediante PortMode(). El parámetro microseconds especifica el tiempo mínimo en microsegundos que debe mantenerse estable una señal eléctrica para ser considerada un cambio de estado válido por el kernel, eliminando el ruido o falso contacto de botones y switches mecánicos. El valor por defecto es 0 (filtro desactivado). Devuelve TRUE si la reconfiguración se ha realizado con éxito, o FALSE si el puerto no es válido, no tiene ningún modo asignado o no está configurado como puerto de entrada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->SetDebounce(17, 5000); // Aplica 5 ms (5000 us) de filtro anti-rebote en el pin 17</code></pre>
+            </section>
+
+            <section id="SetDebounceAll" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SetDebounceAll(uint32_t microseconds = 0);</code></pre>
+                <h3>Descripción</h3>
+                <p>Configura de forma global el mismo tiempo del filtro anti-rebote (debounce) por hardware para todos los puertos configurados actualmente en cualquier modo de entrada (INPUT, INPUT_PULLUP o INPUT_PULLDOWN) mediante PortMode(). Los puertos de salida, no asignados o reservados son ignorados automáticamente sin generar un error. El parámetro microseconds especifica el tiempo en microsegundos que debe mantenerse estable la señal en los pines de entrada. El valor por defecto es 0 (filtro desactivado). Devuelve TRUE si la operación se ha realizado con éxito en todos los puertos de entrada activos, o FALSE si no se ha podido reconfigurar alguno de ellos.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->SetDebounceAll(5000); // Aplica 5 ms (5000 us) de filtro anti-rebote a todos los botones de entrada</code></pre>
+            </section>
+
+            <section id="DigitalWrite" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool DigitalWrite(uint8_t port_id, bool value);</code></pre>
+                <h3>Descripción</h3>
+                <p>Escribe un valor digital en un puerto previamente configurado como OUTPUT mediante PortMode(). El valor TRUE equivale a nivel alto (HIGH) y FALSE a nivel bajo (LOW). Devuelve FALSE si el puerto no es válido, si no tiene ningún modo asignado, o si su modo actual no es OUTPUT.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->DigitalWrite(17, true);</code></pre>
+            </section>
+
+            <section id="DigitalRead" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool DigitalRead(uint8_t port_id);</code></pre>
+                <h3>Descripción</h3>
+                <p>Lee el valor digital de un puerto previamente configurado como INPUT, INPUT_PULLUP o INPUT_PULLDOWN mediante PortMode(). Devuelve TRUE si el puerto está a nivel alto y FALSE si está a nivel bajo, si el puerto no es válido, si no tiene ningún modo asignado, o si su modo actual no es de entrada.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>bool state = ngn->gpio->DigitalRead(27);</code></pre>
+            </section>
+
+            <section id="ReleasePort" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ReleasePort(uint8_t port_id);</code></pre>
+                <h3>Descripción</h3>
+                <p>Libera un puerto previamente reservado mediante PortMode(), dejándolo disponible para ser configurado de nuevo. No tiene ningún efecto si el puerto no es válido o si no tenía ningún modo asignado.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->ReleasePort(17);</code></pre>
+            </section>
+
+            <section id="ReleaseAllPorts" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void ReleaseAllPorts();</code></pre>
+                <h3>Descripción</h3>
+                <p>Libera todos los puertos GPIO reservados hasta el momento mediante PortMode().</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->ReleaseAllPorts();</code></pre>
+            </section>
+
+            <section id="GetPortMode" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>uint8_t GetPortMode(uint8_t port_id);</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve el modo de funcionamiento actual de un puerto GPIO (numeración BCM). El valor devuelto corresponde a una de las constantes definidas en NGN_GPIO_MODE (input, output, input_pullup, input_pulldown). Si el número de puerto no es válido, no está disponible o no se le ha asignado ningún modo previamente mediante PortMode(), devuelve NGN_GPIO_MODE.undefined. Fuera de una Raspberry Pi siempre devolverá NGN_GPIO_MODE.undefined.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>uint8_t mode = ngn->gpio->GetPortMode(17);
+if (mode == NGN_GPIO_MODE.output) ngn->gpio->DigitalWrite(17, true);</code></pre>
+            </section>
+
+            <section id="IsAvailable" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool IsAvailable();</code></pre>
+                <h3>Descripción</h3>
+                <p>Indica si el módulo GPIO se ha inicializado correctamente durante el arranque de la librería y está listo para ser usado. Su valor siempre será FALSE fuera de una Raspberry Pi, o en una Raspberry Pi si no ha sido posible abrir el chip GPIO del sistema.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->gpio->IsAvailable()) ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);</code></pre>
+            </section>
+            <hr>
+
+            <!-- ÍNDICE DE CONSTANTES -->
+            <h2>CONSTANTES de la clase</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#NGN_GPIO_DEBOUNCE_TIME">NGN_GPIO_DEBOUNCE_TIME</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <!-- BLOQUES DE DOCUMENTACIÓN DE CONSTANTES -->
+            <section id="NGN_GPIO_DEBOUNCE_TIME" class="doc-block">
+                <h3>Constante</h3>
+                <pre><code>uint32_t NGN_GPIO_DEBOUNCE_TIME</code></pre>
+                <h3>Descripción</h3>
+                <p>Define el tiempo de anti-rebote (debounce) por hardware recomendado en microsegundos para juegos a 60 FPS (8333 us, equivalente a medio frame de 16,66 ms). Este valor es ideal para ser utilizado como parámetro en los métodos SetDebounce() o SetDebounceAll(), eliminando por completo el ruido eléctrico y los falsos contactos de botones y switches mecánicos arcade sin introducir lag perceptible para el jugador.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->gpio->SetDebounceAll(NGN_GPIO_DEBOUNCE_TIME);</code></pre>
+            </section>
+        </main>
+    </div>
+
+	<!-- BOTONES FLOTANTES Y SCRIPT (con menú desplegable para el Manual) -->
+	<div class="floating-buttons">
+        <!-- Bandeja de botones que se mostrará/ocultará -->
+		<div id="button-tray">
+			<a href="index.html">Volver al Índice</a>
+			<!-- Enlace a la página equivalente en inglés -->
+			<a href="../en/ngn_gpio.html">English Version</a>
+			<a href="#" id="back-to-top">Volver Arriba</a>
+		</div>
+        <!-- Botón principal que siempre es visible en móvil -->
+        <button id="menu-toggle">Menú ▲</button>
+	</div>
+
+    <script>
+        // Lógica para el botón "Volver Arriba"
+        const backToTopButton = document.getElementById('back-to-top');
+        window.onscroll = () => {
+            const scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+            if (scrollPosition > 200) { backToTopButton.classList.add('visible'); } 
+            else { backToTopButton.classList.remove('visible'); }
+        };
+        
+        // --- LÓGICA PARA EL MENÚ DESPLEGABLE ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const floatingButtonsContainer = document.querySelector('.floating-buttons');
+        menuToggle.addEventListener('click', () => {
+            floatingButtonsContainer.classList.toggle('is-active');
+        });
+
+        floatingButtonsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'back-to-top') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                floatingButtonsContainer.classList.remove('is-active');
+            }
+        });
+    </script>
+</body>
+</html>

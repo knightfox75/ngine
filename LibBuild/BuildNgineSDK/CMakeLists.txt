@@ -30,7 +30,7 @@ set(CMAKE_RANLIB       "gcc-ranlib")
 # 2. PROJECT INITIALIZATION
 # ------------------------------------------------------------------------------
 # We enable CXX (C++), C, and RC (Windows Resources) languages.
-project(ngn_library LANGUAGES CXX C RC VERSION 1.22.0.7)
+project(ngn_library LANGUAGES CXX C RC VERSION 1.23.0.4)
 
 message(STATUS "--------------------------------------------------------")
 message(STATUS " N'GINE BUILD SYSTEM - Windows MinGW Forge")

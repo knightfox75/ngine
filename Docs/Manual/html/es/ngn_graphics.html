@@ -65,7 +65,7 @@ NGN_SCR_FULLSCREEN  -1      Modo pantalla completa</code></pre>
                 <h3>Método</h3>
                 <pre><code>void SetMode(int8_t mode);</code></pre>
                 <h3>Descripción</h3>
-                <p>Cambia el modo gráfico al indicado. Los cambios de modo gráfico pueden provocar que las capas de texto o canvas deban de redibujarse por completo. Usar la variable “force_redraw” de la clase para detectar si debe realizarse dicho redibujado.</p>
+                <p>Cambia el modo gráfico al indicado. Los cambios de modo gráfico pueden provocar que las capas de texto o canvas deban de redibujarse por completo. Usar la variable "force_redraw" de la clase para detectar si debe realizarse dicho redibujado.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->graphics->SetMode(NGN_SCR_WINDOW_X2);</code></pre>
             </section>
@@ -133,7 +133,7 @@ NGN_SCR_FULLSCREEN  -1      Modo pantalla completa</code></pre>
     uint32_t local_filter = false           // Filtrado bilinear local
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Abre uno de los 8 viewports disponibles con los parámetros facilitados. Se puede cambiar el estado del filtrado local con el parámetro “local_filter”. Esto no afecta al estado del filtrado general de la ventana.</p>
+                <p>Abre uno de los 8 viewports disponibles con los parámetros facilitados. Se puede cambiar el estado del filtrado local con el parámetro "local_filter". Esto no afecta al estado del filtrado general de la ventana.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120);
 ngn->graphics->OpenViewport(3, 480, 240, 320, 240, 160, 120, true);</code></pre>
@@ -222,8 +222,8 @@ void ViewportPosition(uint8_t id, Vector2I32 position);</code></pre>
                 <h3>Descripción</h3>
                 <p>Guarda una captura del contenido del renderer del frame actual en formato PNG en el archivo y rutas especificados. De manera adicional, puede especificarse una textura para superponerla en la captura y pudiendo además especificar su nivel de opacidad.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>ngn->graphics->ScreenShot(“captures/myscreen1.png”);
-ngn->graphics->ScreenShot(“captures/myscreen2.png”, overlay_tex, 0XD0);</code></pre>
+                <pre><code>ngn->graphics->ScreenShot("captures/myscreen1.png");
+ngn->graphics->ScreenShot("captures/myscreen2.png", overlay_tex, 0XD0);</code></pre>
             </section>
             
             <!-- ÍNDICE DE PROPIEDADES -->

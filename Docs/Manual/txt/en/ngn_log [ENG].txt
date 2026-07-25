@@ -3,7 +3,7 @@ v1.16.0-stable
 English
 
 --------------------------------------------------------------------------------
-	MÉTODOS de la clase
+	METHODS of the class
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
@@ -36,6 +36,6 @@ void Message(std::string msg);
 Prints the content of the STRING-format text of the given parameter to the debug console, automatically adding the current timestamp. If the log file is enabled, this information will also be saved in that file. 
 
 - Example
-ngn->log->Message(“Hello World!”);
+ngn->log->Message("Hello World!");
 
 --------------------------------------------------------------------------------

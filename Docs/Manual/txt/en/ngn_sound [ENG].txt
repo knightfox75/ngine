@@ -77,13 +77,13 @@ ngn->sound->SfxVolume(my_sound, 50);
 --------------------------------------------------------------------------------
 
 - Method
-int32_t SfxGetVolume(NGN_AudioClip* sound);
+uint32_t SfxGetVolume(NGN_AudioClip* sound);
 
 - Description
 Returns the current volume level of a sound.
 
 - Example
-int32_t vol = ngn->sound->SfxGetVolume(my_sound);
+uint32_t vol = ngn->sound->SfxGetVolume(my_sound);
 
 --------------------------------------------------------------------------------
 
@@ -333,7 +333,7 @@ ngn->sound->MusicVolume(bgm, 75);
 --------------------------------------------------------------------------------
 
 - Method
-int32_t MusicGetVolume(NGN_MusicClip* music);
+uint32_t MusicGetVolume(NGN_MusicClip* music);
 
 - Description
 Returns the current volume level of the specified music.
@@ -466,7 +466,7 @@ void SetMixerLevel(uint8_t channel, int32_t level);
 
 - Description
 Changes the volume level of one of the sound mixer channels.
-Available channels are MIXER_MASTER_CH (master channel), MIXER_MUSIC_CH (music), MIXER_EFFECTS_CH (sound effects), MIXER_AUX1_CH (auxiliary channel 1), and MIXER_AUX2_CH (auxiliary channel 2).
+Available channels are MIXER_MASTER_CH (master channel), MIXER_MUSIC_CH (music), MIXER_EFFECTS_CH (sound effects), MIXER_VIDEO_CH (video stream), MIXER_AUX1_CH (auxiliary channel 1), and MIXER_AUX2_CH (auxiliary channel 2).
 The volume value is an integer between 0 and 100.
 
 - Example

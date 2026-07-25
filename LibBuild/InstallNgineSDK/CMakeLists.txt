@@ -25,7 +25,7 @@ else()
 endif()
 
 # 3. PROYECTO
-project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
+project(ngn_library LANGUAGES CXX C VERSION 1.23.0.4)
 include(GNUInstallDirs)
 
 message(STATUS "${BoldBlue}Configuring NGN Library v${PROJECT_VERSION} for ${ARCH}${ColorReset}")
@@ -55,6 +55,14 @@ foreach(LIB_VAR SDL2_LIB SDL2_TTF_LIB SFML_SYSTEM_LIB SFML_AUDIO_LIB THEORADEC_L
     endif()
 endforeach()
 
+# GPIO access (NGN_Gpio module, libgpiod v1 API) - Raspberry Pi only, not needed on x86
+if(ARCH STREQUAL "raspberry")
+    find_library(GPIOD_LIB gpiod)
+    if(NOT GPIOD_LIB)
+        message(FATAL_ERROR "${BoldRed}CRITICAL: Dependency GPIOD_LIB NOT FOUND. Install libgpiod-dev.${ColorReset}")
+    endif()
+endif()
+
 set(ALL_LIBS 
     ${SDL2_LIB} ${SDL2_TTF_LIB} ${SFML_SYSTEM_LIB} ${SFML_AUDIO_LIB}
     ${THEORADEC_LIB} ${VORBIS_LIB} ${OGG_LIB}
@@ -63,6 +71,11 @@ set(ALL_LIBS
 # Safely append Theoraplay if it exists as a precompiled library
 if(THEORAPLAY_LIB)
     list(APPEND ALL_LIBS ${THEORAPLAY_LIB})
+endif()
+
+# Append libgpiod only when building for Raspberry Pi
+if(ARCH STREQUAL "raspberry")
+    list(APPEND ALL_LIBS ${GPIOD_LIB})
 endif()
 
 # 5. FUENTES

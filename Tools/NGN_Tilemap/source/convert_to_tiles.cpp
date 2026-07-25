@@ -101,7 +101,7 @@ ConvertToTiles::~ConvertToTiles() {
 bool ConvertToTiles::Convert(
     std::string in_file,        // Archivo PNG a convertir
     std::string out_file,       // Nombre base de los archivos de salida
-    uint32_t tile_size,         // Tama�o del tile
+    uint32_t tile_size,         // Tamaño del tile
     uint32_t op_level,          // Nivel de optimizacion
     bool ex_files               // Generar archivos adicionales?
 ) {
@@ -153,9 +153,9 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
     tmap.clear();
 
     // Reserva el espacio maximo para el buffer y los contenedores de tiles
-    buffer.resize((((map_width * map_height) << 2) + ((size_of_tile * size_of_tile) << 2)), 0);
-    img_tile.resize(((size_of_tile * size_of_tile) << 2), 0);
-    map_tile.resize(((size_of_tile * size_of_tile) << 2), 0);
+    buffer.assign((((map_width * map_height) << 2) + ((size_of_tile * size_of_tile) << 2)), 0);
+    img_tile.assign(((size_of_tile * size_of_tile) << 2), 0);
+    map_tile.assign(((size_of_tile * size_of_tile) << 2), 0);
 
     // Marcador...
     uint64_t max_tiles = ((map_width / size_of_tile) * (map_height / size_of_tile));  // Total de tiles
@@ -164,12 +164,12 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
     std::cout << "Optimizing " << max_tiles << " tiles..." << std::endl;
 
     // Reserva el espacio para el mapa de tiles
-    tmap.resize((max_tiles << 2), 0);
+    tmap.assign((max_tiles << 2), 0);
 
     // Tile vacio al inicio del tileset
     std::vector<uint8_t> empty_tile;
-    empty_tile.resize(((size_of_tile * size_of_tile) << 2), 0);
-    for (uint32_t n = 0; n < empty_tile.capacity(); n += 4) {
+    empty_tile.assign(((size_of_tile * size_of_tile) << 2), 0);
+    for (uint32_t n = 0; n < empty_tile.size(); n += 4) {
         // Codifica el pixel
         empty_tile[n] = 255;
         empty_tile[(n + 1)] = 255;
@@ -187,7 +187,7 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
         for (img_x = 0; img_x <= (map_width - size_of_tile); img_x += size_of_tile) {
             // Obten un tile
             GetTile(img_tile, data, img_x, img_y, bg_width, bg_height);
-            // Comparalo con los tiles existentes y a�adelo si no existe. Registra el resultado en el mapa
+            // Comparalo con los tiles existentes y añadelo si no existe. Registra el resultado en el mapa
             t = OptimizeTiles();
             // Codifica el WORD con la info del tile
             tmap[idx] = (t & 0x000000ff); idx ++;
@@ -210,7 +210,7 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
     std::cout << tileset_length << " tiles from " << total_tiles << " generated." << std::endl;
     //std::cout << "Tile strip image size: " << size_of_tile << "x" << (tileset_length * size_of_tile) << " pixels." << std::endl;
 
-    // Calcula el tama�o de la imagen de destino, para que sea lo mas cuadrada posible
+    // Calcula el tamaño de la imagen de destino, para que sea lo mas cuadrada posible
     double sq = sqrt(tileset_length);                                // Calcula el ancho
     uint32_t w = ceil(sq);
     out_width = (w * size_of_tile);
@@ -218,7 +218,7 @@ void ConvertToTiles::GenerateTileset(std::vector<uint8_t> &data) {
     out_height = (h * size_of_tile);
 
     // Genera la imagen de destino vacia
-    tiles.resize(((out_width * out_height) << 2), 0);  // * 4
+    tiles.assign(((out_width * out_height) << 2), 0);  // * 4
 
     // Copia la tira de tiles a la imagen de destino
     img_x = img_y = 0;
@@ -276,11 +276,11 @@ bool ConvertToTiles::WriteFile(std::string filename) {
     // Datos del mapa
     header.map_width = map_width;
     header.map_height = map_height;
-    header.map_length = tmap.capacity();
+    header.map_length = tmap.size();
     // Datos del tileset
     header.tileset_width = out_width;
     header.tileset_height = out_height;
-    header.tileset_length = tileset_png.capacity();
+    header.tileset_length = tileset_png.size();
     header.tile_size = size_of_tile;
 
     // Genera el nombres de archivo
@@ -292,8 +292,8 @@ bool ConvertToTiles::WriteFile(std::string filename) {
     file.open(tilemap_filename, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
         file.write((char*)&header, sizeof(header));                     // Cabecera
-        file.write((char*)&tileset_png[0], tileset_png.capacity());     // Tileset en PNG
-        file.write((char*)&tmap[0], tmap.capacity());                   // Mapa
+        file.write((char*)&tileset_png[0], tileset_png.size());     // Tileset en PNG
+        file.write((char*)&tmap[0], tmap.size());                   // Mapa
         file.close();
         std::cout << "File " << fname << " successfully saved." << std::endl;
     } else {
@@ -316,7 +316,7 @@ bool ConvertToTiles::WriteFile(std::string filename) {
     const char* map_filename = fname.c_str();
     file.open(map_filename, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
-        file.write((char*)&tmap[0], tmap.capacity());
+        file.write((char*)&tmap[0], tmap.size());
         file.close();
         std::cout << "File " << fname << " successfully saved." << std::endl;
     } else {
@@ -335,7 +335,7 @@ bool ConvertToTiles::WriteFile(std::string filename) {
 bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
 
     // Variables
-    uint32_t width = 0, height = 0;     // Tama�o del archivo cargado
+    uint32_t width = 0, height = 0;     // Tamaño del archivo cargado
 
     // Prepara el buffer temporal
     std::vector<uint8_t> png_data;
@@ -359,11 +359,11 @@ bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
         return false;
     }
 
-    // Guarda los tama�os de la imagen a convertir
+    // Guarda los tamaños de la imagen a convertir
     bg_width = width;
     bg_height = height;
 
-    // Calcula el tama�o del mapa necesario
+    // Calcula el tamaño del mapa necesario
     if ((width % size_of_tile) == 0) {
         map_width = width;
     } else {
@@ -378,7 +378,7 @@ bool ConvertToTiles::ReadPng(std::string filename, std::vector<uint8_t> &data) {
     // Informacion del archivo cargado
     std::cout << "File " << filename << " loaded & decoded successfully." << std::endl;
     std::cout << "Image size is " << width << "x" << height << " pixels." << std::endl;
-    // Aviso de tama�o no exacto
+    // Aviso de tamaño no exacto
     if (((width % size_of_tile) != 0) || ((height % size_of_tile) != 0)) {
         std::cout << std::endl;
         std::cout << "WARNING: Image size doesn't fits the tile size." << std::endl;
@@ -437,7 +437,7 @@ RgbaPixel ConvertToTiles::GetPixel(std::vector<uint8_t> &data, uint32_t x, uint3
     uint32_t offset = (((y * w) + x) << 2);     // * 4
 
     // Lee los bits del pixel
-    /*if ((offset + 3) < data.capacity()) {*/
+    /*if ((offset + 3) < data.size()) {*/
         pixel.r = data[offset];
         pixel.g = data[(offset + 1)];
         pixel.b = data[(offset + 2)];
@@ -459,7 +459,7 @@ void ConvertToTiles::PutPixel(std::vector<uint8_t> &data, uint32_t x, uint32_t y
     // Variables
     uint32_t offset = (((y * w) + x) << 2);     // * 4
 
-    /*if ((offset + 3) < data.capacity()) {*/
+    /*if ((offset + 3) < data.size()) {*/
         data[offset] = pixel.r;
         data[(offset + 1)] = pixel.g;
         data[(offset + 2)] = pixel.b;
@@ -477,7 +477,7 @@ void ConvertToTiles::GetTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img
 
     // Borra el buffer de salida
     //tl.clear();
-    //tl.resize(((size_of_tile * size_of_tile) << 2)); // * 4
+    //tl.assign(((size_of_tile * size_of_tile) << 2)); // * 4
 
     // Lee el tile del buffer de origen y guardalo en el de destino
     uint32_t o_offset = 0, d_offset = 0;
@@ -492,7 +492,7 @@ void ConvertToTiles::GetTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img
                 tl[d_offset] = 255; d_offset ++;
                 tl[d_offset] = 0; d_offset ++;
             } else {
-                /*if ((o_offset + 3) < img.capacity()) {*/
+                /*if ((o_offset + 3) < img.size()) {*/
                     // Copia los 4 bytes de cada pixel
                     o_offset = (((oy * max_w) + ox) << 2);
                     for (uint32_t i = 0; i < 4; i ++) {
@@ -518,7 +518,7 @@ void ConvertToTiles::PutTile(std::vector<uint8_t> &tl, std::vector<uint8_t> &img
     for (uint32_t dy = y; dy < (y + size_of_tile); dy ++) {
         for (uint32_t dx = x; dx < (x + size_of_tile); dx ++) {
             d_offset = (((dy * w) + dx) << 2);
-            /*if ((d_offset + 3) < img.capacity()) {*/
+            /*if ((d_offset + 3) < img.size()) {*/
                 // Copia los 4 bytes de cada pixel
                 for (uint32_t i = 0; i < 4; i ++) {
                     img[(d_offset + i)] = tl[o_offset];
@@ -572,16 +572,16 @@ uint32_t ConvertToTiles::OptimizeTiles() {
 
     }
 
-    // A�ade el tile si es necesario
+    // Añade el tile si es necesario
     if (add_tile == 0) {
         PutTile(img_tile, buffer, 0, (tileset_length * size_of_tile), size_of_tile);
         tile_id = tileset_length;
         tileset_length ++;
-        // Al ser un tile a�adido, por defecto no tiene ni flip ni rotacion
+        // Al ser un tile añadido, por defecto no tiene ni flip ni rotacion
         add_tile = 1;
     }
 
-    // Calcula el valor de devolver para a�adir al mapa
+    // Calcula el valor de devolver para añadir al mapa
     // [8bits FLIP &| ROTATION] [24bits TILE ID]
     tile_id |= (add_tile << 24);
 
@@ -599,7 +599,7 @@ bool ConvertToTiles::CompareNormal() {
     uint32_t i = 0;
 
     // Compara todos los pixels de las tiles
-    for (i = 0; i < img_tile.capacity(); i ++) {
+    for (i = 0; i < img_tile.size(); i ++) {
         if (img_tile[i] != map_tile[i]) {
             //r = false;
             //break;
@@ -738,7 +738,7 @@ bool ConvertToTiles::Compare180deg() {
 
 
 
-/*** Compara si 2 tiles estan rotadas 90� a la derecha (90� Clock Wise) ***/
+/*** Compara si 2 tiles estan rotadas 90º a la derecha (90º Clock Wise) ***/
 bool ConvertToTiles::Compare90degCW() {
 
     //bool r = true;          // Son iguales?
@@ -780,7 +780,7 @@ bool ConvertToTiles::Compare90degCW() {
 
 
 
-/*** Compara si 2 tiles estan rotadas 90� a la izquierda (90� Anti Clock Wise) ***/
+/*** Compara si 2 tiles estan rotadas 90º a la izquierda (90º Anti Clock Wise) ***/
 bool ConvertToTiles::Compare90degACW() {
 
     //bool r = true;          // Son iguales?

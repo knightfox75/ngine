@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.23.0-wip_0x03 ***
+    *** Version 1.23.0+stable ***
     GPIO - Acceso a los puertos de entrada/salida de Raspberry PI
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -66,6 +66,9 @@ const struct {
     };
 } NGN_GPIO_MODE;
 
+/*** Define el valor "recomendado" de debounce para juegos a 60fps ***/
+static const uint32_t NGN_GPIO_DEBOUNCE_TIME = 8333;
+
 
 
 /*** Declaracion de la clase de acceso al GPIO ***/
@@ -82,7 +85,13 @@ class NGN_Gpio {
         void BootUp();
 
         // Configura el modo de un puerto (INPUT, OUTPUT, INPUT_PULLUP, INPUT_PULLDOWN)
-        bool PortMode(uint8_t port_id, uint8_t mode);
+        bool SetPortMode(uint8_t port_id, uint8_t mode);
+
+        // Configura el tiempo del filtro de "rebote" de un puerto cuando esta en modo INPUT (por defecto, 0)
+        bool SetDebounce(uint8_t port_id, uint32_t microseconds = 0);
+
+        // Configura el mismo tiempo de "rebote" a todos los puertos configurados como INPUT
+        bool SetDebounceAll(uint32_t microseconds = 0);
 
         // Escribe un valor digital (true = HIGH, false = LOW) en un puerto ya configurado como OUTPUT
         bool DigitalWrite(uint8_t port_id, bool value);
@@ -95,6 +104,9 @@ class NGN_Gpio {
 
         // Libera todos los puertos reservados hasta el momento
         void ReleaseAllPorts();
+
+        // Devuelve el modo actual de un puerto
+        uint8_t GetPortMode(uint8_t port_id);
 
         // Indica si el backend de GPIO se ha inicializado correctamente
         // (siempre sera "false" fuera de Raspberry Pi)

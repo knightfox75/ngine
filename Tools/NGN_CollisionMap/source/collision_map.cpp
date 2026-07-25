@@ -69,7 +69,7 @@ CollisionMap::CollisionMap(int32_t argc, char* args[]) {
 
     // General al lista de argumentos
     argument_list.clear();
-    argument_list.resize(argument_count);
+    argument_list.assign(argument_count, "");
     for (int32_t i = 0; i < argument_count; i ++) argument_list[i] = args[i];
 
     // Parametros

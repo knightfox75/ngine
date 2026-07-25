@@ -33,15 +33,28 @@
             <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
             <section id="Constructor" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_TiledBg(
+                <pre><code>// Primera sobrecarga (Fondo estándar)
+NGN_TiledBg(
     NGN_TiledBgData* bg,        // Datos del fondo previamente cargados
+    int32_t position_x = 0,     // Posición X del fondo [0 por defecto]
+    int32_t position_y = 0      // Posición Y del fondo [0 por defecto]
+);
+
+// Segunda sobrecarga (Fondo indexado)
+NGN_TiledBg(
+    NGN_IndexedTiledBgData* bg, // Datos del fondo indexado
     int32_t position_x = 0,     // Posición X del fondo [0 por defecto]
     int32_t position_y = 0      // Posición Y del fondo [0 por defecto]
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Crea un nuevo fondo de tiles, usando los datos previamente cargados. Ver las herramientas adjuntas a la librería para realizar la conversión de una imagen PNG a datos de tiles.</p>
+                <p>Crea un nuevo fondo de tiles usando los datos previamente cargados (ya sea en formato estándar <code>NGN_TiledBgData</code> o indexado <code>NGN_IndexedTiledBgData</code>), situándolo inicialmente en las coordenadas X e Y especificadas. Ver las herramientas adjuntas a la librería para realizar la conversión de una imagen PNG a datos de tiles.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);</code></pre>
+                <pre><code>// Fondo estándar
+NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);
+
+// Fondo indexado
+NGN_IndexedTiledBgData* bg_data = ngn->load->IndexedTiledBg("data/bg.itb", "data/bg.pal");
+NGN_TiledBg* background = new NGN_TiledBg(bg_data, 0, 0);</code></pre>
             </section>
 
             <section id="Position" class="doc-block">
@@ -195,6 +208,36 @@ bool flip_v</code></pre>
                 <pre><code>bool ignore_camera_tint</code></pre>
                 <h3>Descripción</h3>
                 <p>Indica si el fondo debe ignorar el color de tinte asignado a la capa de la cámara.</p>
+            </section>
+            <hr>
+
+            <!-- FORMATO DE ARCHIVO DE CICLOS DE PALETA (.CYC) -->
+            <h2>FORMATO DE ARCHIVO DE CICLOS DE PALETA (.CYC)</h2>
+            <nav class="index">
+                <ul>
+                    <li><a href="#cyc_format">Formato .CYC</a></li>
+                </ul>
+            </nav>
+            <hr>
+
+            <section id="cyc_format" class="doc-block">
+                <h3>Sintaxis de línea</h3>
+                <pre><code>UNIQUE_ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]</code></pre>
+                <h3>Parámetros</h3>
+                <p>
+                1. <strong>UNIQUE_ID:</strong> Identificador numérico único del ciclo de rotación dentro del archivo.<br>
+                2. <strong>LOW:</strong> Índice inferior (mínimo) de la paleta a rotar (0 a 255).<br>
+                3. <strong>HIGH:</strong> Índice superior (máximo) de la paleta a rotar (0 a 255).<br>
+                4. <strong>RATE:</strong> Velocidad de rotación expresada en número de fotogramas entre cada cambio.<br>
+                5. <strong>DIRECTION:</strong> Dirección de la rotación (+1 para avance, -1 para retroceso).<br>
+                6. <strong>LOOP_DELAY:</strong> (Opcional) Tiempo de espera en fotogramas antes de reiniciar el ciclo.
+                </p>
+                <h3>Descripción</h3>
+                <p>Archivo de texto plano utilizado para definir animaciones de paleta mediante rotación de rangos de color en fondos de tiles indexados. Cada línea no vacía que no comience por '#' define un ciclo independiente.</p>
+                <h3>Ejemplo</h3>
+                <pre><code># Formato: ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]
+1; 2; 10; 8; 1
+2; 15; 20; 4; -1; 60</code></pre>
             </section>
         </main>
     </div>

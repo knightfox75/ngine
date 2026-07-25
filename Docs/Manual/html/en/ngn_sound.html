@@ -32,6 +32,9 @@
                     <li><a href="#SfxIsPlaying">SfxIsPlaying</a></li>
                     <li><a href="#SfxIsAlive">SfxIsAlive</a></li>
                     <li><a href="#ClearSfx">ClearSfx</a></li>
+                    <li><a href="#PauseAllSfx">PauseAllSfx</a></li>
+                    <li><a href="#ResumeAllSfx">ResumeAllSfx</a></li>
+                    <li><a href="#StopAllSfx">StopAllSfx</a></li>
                 </ul>
             </nav>
             <hr>
@@ -94,7 +97,7 @@ ngn->sound->SfxVolume(my_sound, 50);</code></pre>
 
             <section id="SfxGetVolume" class="doc-block">
                 <h3>Method</h3>
-                <pre><code>int32_t SfxGetVolume(NGN_AudioClip* sound);</code></pre>
+                <pre><code>uint32_t SfxGetVolume(NGN_AudioClip* sound);</code></pre>
                 <h3>Description</h3>
                 <p>Returns the current volume level of a sound.</p>
                 <h3>Example</h3>
@@ -181,6 +184,33 @@ ngn->sound->SfxVolume(my_sound, 50);</code></pre>
                 <h3>Example</h3>
                 <pre><code>ngn->sound->ClearSfx();</code></pre>
             </section>
+
+            <section id="PauseAllSfx" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void PauseAllSfx();</code></pre>
+                <h3>Description</h3>
+                <p>Pauses all currently playing sound effects. This command does not affect sound effects played afterwards.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->sound->PauseAllSfx();</code></pre>
+            </section>
+
+            <section id="ResumeAllSfx" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ResumeAllSfx();</code></pre>
+                <h3>Description</h3>
+                <p>Resumes the playback of all sound effects that are currently paused.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->sound->ResumeAllSfx();</code></pre>
+            </section>
+
+            <section id="StopAllSfx" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void StopAllSfx();</code></pre>
+                <h3>Description</h3>
+                <p>Stops the playback of all sound effects currently in progress.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->sound->StopAllSfx();</code></pre>
+            </section>
             <hr>
 
             <!-- MUSIC AND DIALOGUES (BGM) -->
@@ -202,6 +232,9 @@ ngn->sound->SfxVolume(my_sound, 50);</code></pre>
                     <li><a href="#MusicIsPlaying">MusicIsPlaying</a></li>
                     <li><a href="#MusicIsAlive">MusicIsAlive</a></li>
                     <li><a href="#ClearMusic">ClearMusic</a></li>
+                    <li><a href="#PauseAllMusics">PauseAllMusics</a></li>
+                    <li><a href="#ResumeAllMusics">ResumeAllMusics</a></li>
+                    <li><a href="#StopAllMusics">StopAllMusics</a></li>
                 </ul>
             </nav>
             <hr>
@@ -291,7 +324,7 @@ NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);<
 
             <section id="MusicGetVolume" class="doc-block">
                 <h3>Method</h3>
-                <pre><code>int32_t MusicGetVolume(NGN_MusicClip* music);</code></pre>
+                <pre><code>uint32_t MusicGetVolume(NGN_MusicClip* music);</code></pre>
                 <h3>Description</h3>
                 <p>Returns the current volume level of the specified music.</p>
                 <h3>Example</h3>
@@ -360,6 +393,33 @@ NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);<
                 <h3>Example</h3>
                 <pre><code>ngn->sound->ClearMusic();</code></pre>
             </section>
+
+            <section id="PauseAllMusics" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void PauseAllMusics();</code></pre>
+                <h3>Description</h3>
+                <p>Pauses all currently playing music streams. This command does not affect music streams played afterwards.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->sound->PauseAllMusics();</code></pre>
+            </section>
+
+            <section id="ResumeAllMusics" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void ResumeAllMusics();</code></pre>
+                <h3>Description</h3>
+                <p>Resumes the playback of all music streams that are currently paused.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->sound->ResumeAllMusics();</code></pre>
+            </section>
+
+            <section id="StopAllMusics" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void StopAllMusics();</code></pre>
+                <h3>Description</h3>
+                <p>Stops the playback of all music streams currently in progress.</p>
+                <h3>Example</h3>
+                <pre><code>ngn->sound->StopAllMusics();</code></pre>
+            </section>
             <hr>
 
             <!-- MIXER -->
@@ -377,7 +437,7 @@ NGN_MusicClip* bgm_loop = ngn->sound->OpenMusic("data/ogg/stage01.ogg", 13721);<
                 <h3>Method</h3>
                 <pre><code>void SetMixerLevel(uint8_t channel, int32_t level);</code></pre>
                 <h3>Description</h3>
-                <p>Changes the volume level of one of the sound mixer channels. Available channels are <code>MIXER_MASTER_CH</code> (master channel), <code>MIXER_MUSIC_CH</code> (music), <code>MIXER_EFFECTS_CH</code> (sound effects), <code>MIXER_AUX1_CH</code> (auxiliary channel 1), and <code>MIXER_AUX2_CH</code> (auxiliary channel 2). The volume value is an integer between 0 and 100.</p>
+                <p>Changes the volume level of one of the sound mixer channels. Available channels are <code>MIXER_MASTER_CH</code> (master channel), <code>MIXER_MUSIC_CH</code> (music), <code>MIXER_EFFECTS_CH</code> (sound effects), <code>MIXER_VIDEO_CH</code> (video stream), <code>MIXER_AUX1_CH</code> (auxiliary channel 1), and <code>MIXER_AUX2_CH</code> (auxiliary channel 2). The volume value is an integer between 0 and 100.</p>
                 <h3>Example</h3>
                 <pre><code>ngn->sound->SetMixerLevel(MIXER_MASTER_CH, 75);</code></pre>
             </section>

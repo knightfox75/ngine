@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>n'gine Documentation - NGN_CAMERA</title>
-    <!-- The stylesheet path is correct for the /en/ folder structure -->
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
@@ -41,6 +40,7 @@
                     <li><a href="#GetLayerPosition">GetLayerPosition</a></li>
                     <li><a href="#Shake">Shake</a></li>
                     <li><a href="#SetLayerTintColor">SetLayerTintColor</a></li>
+                    <li><a href="#SetLayerAutoScroll">SetLayerAutoScroll</a></li>
                 </ul>
             </nav>
 
@@ -191,7 +191,7 @@ int32_t SendToBack(NGN_Texture* texture);</code></pre>
                 <h3>Description</h3>
                 <p>Send a sprite to the back of the assigned layer. If the sprite is not found in the list, return -1.</p>
                 <h3>Example</h3>
-                <pre><code>ngn->camera->SendToFront(player->sprite);</code></pre>
+                <pre><code>ngn->camera->SendToBack(player->sprite);</code></pre>
             </section>
 
             <section id="Reset" class="doc-block">
@@ -283,6 +283,15 @@ bool CheckIfRegistered(NGN_Texture* texture);</code></pre>
                 <p>Applies a tint color to all elements (textures, tile backgrounds, and sprites) on the specified layer. If an element has the "ignore_camera_tint" flag set to "true", it will ignore this setting.</p>
                 <h3>Example</h3>
                 <pre><code>ngn->camera->SetLayerTintColor(4, 96, 255, 192);</code></pre>
+            </section>
+
+            <section id="SetLayerAutoScroll" class="doc-block">
+                <h3>Method</h3>
+                <pre><code>void SetLayerAutoScroll(uint32_t layer_number, float x, float y);</code></pre>
+                <h3>Description</h3>
+                <p>Modifies the auto-scroll values of a layer, provided it is registered in the camera and declared as "virtual".</p>
+                <h3>Example</h3>
+                <pre><code>ngn->camera->SetLayerAutoScroll(4, 0.2f, 0.1f);</code></pre>
             </section>
 
             <!-- PROPERTIES INDEX -->

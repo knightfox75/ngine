@@ -28,6 +28,17 @@ With **over 10 years of development**, it is currently in a stable phase, heavil
     <li>Keyboard</li>
     <li>Mouse</li>
     <li>Gamepads (X-Input standard)</li>
+    <li>GPIO digital inputs (Raspberry Pi)</li>
+</ul>
+</details>
+
+<details>
+<summary><strong>🔌 GPIO Ports (Raspberry Pi)</strong></summary>
+<ul>
+    <li>Direct digital I/O port control on Raspberry Pi 4 & 5</li>
+    <li>Digital output & input modes with configurable internal Pull-Up and Pull-Down resistors</li>
+    <li>Hardware debounce filtering configurable in microseconds for arcade buttons and switches</li>
+    <li>Implemented on top of the Linux Kernel <code>libgpiod</code> v2 API</li>
 </ul>
 </details>
 
@@ -35,7 +46,7 @@ With **over 10 years of development**, it is currently in a stable phase, heavil
 <summary><strong>🎨 Graphics</strong></summary>
 <ul>
     <li>Textures up to 8192×8192 pixels</li>
-    <li>Large tile-based backgrounds</li>
+    <li>Large tile-based backgrounds (standard and indexed)</li>
     <li>Sprites with and without animation</li>
     <li>2D virtual camera</li>
     <li>Text layers and canvas for primitives</li>
@@ -93,7 +104,7 @@ N'gine is intended for anyone with object-oriented programming knowledge who wan
 Currently, the engine runs and allows exporting for:
 *   **Windows**
 *   **Linux** (tested on Linux Mint / Ubuntu)
-*   **Raspberry Pi OS**
+*   **Raspberry Pi OS** (with native GPIO support)
 *   **Anbernic RG35XX** (using the provided Docker images)
 *   **Evercade***
 
@@ -150,7 +161,7 @@ ngn.x.x.x-stable
 
 ### 🐧 Linux / Raspberry Pi Setup
 
-The SDK simplifies dependency management (SDL2, SFML, etc.) via scripts:
+The SDK simplifies dependency management (SDL2, SFML, libgpiod, etc.) via scripts:
 1. Navigate to `LibBuild/InstallNgineSDK/`.
 2. Run:
    ~~~bash

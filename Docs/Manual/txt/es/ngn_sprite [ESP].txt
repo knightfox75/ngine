@@ -26,7 +26,7 @@ Crea un nuevo Sprite, usando los datos previamente cargados.
 
 - Ejemplo
 NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 100, 200);
-NGN_Sprite* player = new NGN_Sprite(wizard_sprite, 300, 300, 256, 256, 160, 256);
+NGN_Sprite* player2 = new NGN_Sprite(wizard_sprite, 300, 300, 256, 256, 160, 256);
 
 --------------------------------------------------------------------------------
 
@@ -111,7 +111,7 @@ int32_t AddCollider(
 
 - Descripción
 Añade un colisionador (collider) adicional al sprite, con el nombre, tamaño y posición indicados.
-Pueden añadirse tantos colisionadores adicionales como sea necesario. Estos colisionadores serán detectados por la instrucción “HitBox” de la clase “NGN_Collisions” de manera automática.
+Pueden añadirse tantos colisionadores adicionales como sea necesario. Estos colisionadores serán detectados por la instrucción "HitBox" de la clase "NGN_Collisions" de manera automática.
 La rotación o escalado del sprite no afecta a estos colisionadores.
 Esta función devuelve 0 si el colisionador se añade con éxito.
 
@@ -128,7 +128,7 @@ int32_t GetColliderId(std::string name);
 Devuelve la ID (posición) en el vector de colisionadores del colisionador con el nombre dado. Si no se encuentra, devuelve -1.
 
 - Ejemplo
-Int32_t id = player->GetColliderId(“left”);
+int32_t id = player->GetColliderId("left");
 
 --------------------------------------------------------------------------------
 
@@ -139,7 +139,7 @@ int32_t ColliderEnabled(std::string name, bool status);
 Habilita o deshabilita el colisionador con el nombre dado. Esta función devuelve 0 si tiene éxito el cambio de estado.
 
 - Ejemplo
-player->ColliderEnabled(“left”, false);
+player->ColliderEnabled("left", false);
 
 --------------------------------------------------------------------------------
 
@@ -150,7 +150,7 @@ int32_t RemoveCollider(std::string name);
 Elimina el colisionador con el nombre especificado. En caso de éxito, esta función devuelve 0.
 
 - Ejemplo
-player->RemoveCollider(“left”);
+player->RemoveCollider("left");
 
 --------------------------------------------------------------------------------
 
@@ -159,7 +159,7 @@ int32_t AddAnimation(
 	std::string name,			// Nombre de la animación
 	uint32_t first_frame,		// Primer fotograma de la animación
 	uint32_t last_frame,		// Ultimo fotograma de la animación
-	uint32_t loop,				// Fotograma "punto de loop”
+	uint32_t loop,				// Fotograma "punto de loop"
 	uint32_t frame_duration,	// Duracion en ciclos de cada fotograma
 	int32_t loop_delay = 0      // Pausa (en frames del runtime) antes de repetir la animación
 );
@@ -170,10 +170,10 @@ Es posible crear animaciones con cinemática inversa.
 Devuelve 1 en caso de error.
 
 - Ejemplo
-player->AddAnimation(“walk”, 1, 7, 1, 5);
-player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
-player->AddAnimation(“run”, 0, 20, 8, 3);
-stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);
+player->AddAnimation("walk", 1, 7, 1, 5);
+player->AddAnimation("moonwalk", 7, 1, 7, 8);
+player->AddAnimation("run", 0, 20, 8, 3);
+stonegem->AddAnimation("shine", 0, 10, 0, 5, 120);
 
 --------------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ Si se solicita la animación actualmente seleccionada, se ignora la orden y devu
 En caso de error, devuelve 1.
 
 - Ejemplo
-player->SetAnimation(“walk”);
+player->SetAnimation("walk");
 
 --------------------------------------------------------------------------------
 
@@ -270,7 +270,7 @@ float box.offset.y
 bool box_enabled
 
 - Descripción
-Propiedades de la caja principal de colisión del sprite. Puede habilitarse o deshabilitarse mediante el flag “box_enabled”.
+Propiedades de la caja principal de colisión del sprite. Puede habilitarse o deshabilitarse mediante el flag "box_enabled".
 
 --------------------------------------------------------------------------------
 

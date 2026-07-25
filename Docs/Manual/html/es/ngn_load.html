@@ -19,6 +19,7 @@
                 <ul>
                     <li><a href="#Texture">Texture</a></li>
                     <li><a href="#TiledBg">TiledBg</a></li>
+                    <li><a href="#IndexedTiledBg">IndexedTiledBg</a></li>
                     <li><a href="#Sprite">Sprite</a></li>
                     <li><a href="#CollisionMap">CollisionMap</a></li>
                     <li><a href="#AudioClip">AudioClip</a></li>
@@ -28,9 +29,10 @@
                     <li><a href="#SpriteAsRawVector">SpriteAsRawVector</a></li>
                     <li><a href="#TextFile">TextFile</a></li>
                     <li><a href="#LoadFile">LoadFile</a></li>
+                    <li><a href="#LoadFileChunk">LoadFileChunk</a></li>
                     <li><a href="#SetDisk">SetDisk</a></li>
                     <li><a href="#SetPackage">SetPackage</a></li>
-                    <li><a href="#LoadFileChunk">LoadFileChunk</a></li>
+                    <li><a href="#PackageEnabled">PackageEnabled</a></li>
                 </ul>
             </nav>
             <hr>
@@ -38,7 +40,7 @@
             <!-- BLOQUES DE DOCUMENTACIÓN DE MÉTODOS -->
             <section id="Texture" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_TextureData* Texture(std::string filepath);</code></pre>
+                <pre><code>NGN_TextureData* Texture(const std::string&amp; filepath);</code></pre>
                 <h3>Descripción</h3>
                 <p>Carga una imagen en formato PNG y la convierte a datos de textura. El tamaño máximo de imagen soportado es de 8192x8192 píxeles. Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
@@ -47,25 +49,38 @@
 
             <section id="TiledBg" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_TiledBgData* TiledBg(std::string filepath);</code></pre>
+                <pre><code>NGN_TiledBgData* TiledBg(const std::string&amp; filepath);</code></pre>
                 <h3>Descripción</h3>
                 <p>Carga los datos de un fondo de tiles en formato .tbg (Ver las utilidades adjuntas de la librería). El tamaño máximo del tileset es de 8192x8192 píxeles. Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>NGN_TiledBgData* tiles_bg_front = ngn->load->TiledBg("data/bg/bg_front.tbg");</code></pre>
             </section>
 
+            <section id="IndexedTiledBg" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>NGN_IndexedTiledBgData* IndexedTiledBg(
+    const std::string&amp; bg_file,			// Archivo de tiles + mapa (.itb)
+    const std::string&amp; pal_file,			// Archivo de la paleta de colores
+    const std::string&amp; cyc_file = ""		// (Opcional) Archivo de ciclos de animación
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Carga los datos de un fondo de tiles indexado en formato .itb junto con su archivo de paleta de colores (.pal) y opcionalmente, un archivo de ciclos de animación de paleta .cyc (Ver las utilidades adjuntas de la librería). Devuelve NULL en caso de error.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>NGN_IndexedTiledBgData* idx_bg = ngn->load->IndexedTiledBg("data/bg/stage1.itb", "data/bg/stage1.pal", "data/bg/stage1.cyc");</code></pre>
+            </section>
+
             <section id="Sprite" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_SpriteData* Sprite(std::string filepath);</code></pre>
+                <pre><code>NGN_SpriteData* Sprite(const std::string&amp; filepath);</code></pre>
                 <h3>Descripción</h3>
                 <p>Carga los datos de un sprite en formato .spr (Ver las utilidades adjuntas de la librería). El tamaño máximo de cada fotograma del sprite es de 8192x8192 píxeles. Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>NGN_SpriteData*  wizard_sprite = ngn->load->Sprite("data/spr/wizard.spr");</code></pre>
+                <pre><code>NGN_SpriteData* wizard_sprite = ngn->load->Sprite("data/spr/wizard.spr");</code></pre>
             </section>
 
             <section id="CollisionMap" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_CollisionMapData* CollisionMap(std::string filepath);</code></pre>
+                <pre><code>NGN_CollisionMapData* CollisionMap(const std::string&amp; filepath);</code></pre>
                 <h3>Descripción</h3>
                 <p>Carga los datos de un mapa de colisiones en formato .map (Ver las utilidades adjuntas de la librería). Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
@@ -74,7 +89,7 @@
 
             <section id="AudioClip" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_AudioClipData* AudioClip(std::string filepath);</code></pre>
+                <pre><code>NGN_AudioClipData* AudioClip(const std::string&amp; filepath);</code></pre>
                 <h3>Descripción</h3>
                 <p>Carga un archivo de audio en formato WAV, FLAC o OGG y lo convierte al formato AudioClipData para usarlo como efecto de sonido. Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
@@ -84,24 +99,24 @@
             <section id="TrueTypeFont" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>NGN_TextFont* TrueTypeFont(
-    std::string filepath,               // Archivo a cargar
-    uint32_t height,                    // Altura de la fuente (en pixeles)
-    bool antialias = true,              // Antialias?
+    const std::string&amp; filepath,        // Archivo a cargar
+    uint32_t height,                    // Altura de la fuente (en píxeles)
+    bool antialias = true,              // ¿Antialias?
     uint32_t font_color = 0xFFFFFF,     // Color base (RGB)
-    uint32_t outline = 0,               // Borde? (en pixeles)
+    uint32_t outline = 0,               // ¿Borde? (en píxeles)
     uint32_t outline_color = 0x000000   // Color del borde (RGB)
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Carga un archivo de fuente tipográfica TRUE TYPE y a partir de el, genera las texturas para cada caracter con el tamaño de fuente y propiedades especificadas. Devuelve NULL en caso de no poder cargar o convertir la fuente.</p>
+                <p>Carga un archivo de fuente tipográfica TRUE TYPE y genera las texturas para cada carácter con el tamaño de fuente y propiedades especificadas. Devuelve NULL en caso de no poder cargar o convertir la fuente.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>NGN_TextFont* font = ngn->load->TrueTypeFont("data/consolas.ttf", 24);</code></pre>
             </section>
 
             <section id="PngAsRaw" class="doc-block">
                 <h3>Método</h3>
-                <pre><code>NGN_RawImage* PngAsRaw(std::string filepath);</code></pre>
+                <pre><code>NGN_RawImage* PngAsRaw(const std::string&amp; filepath);</code></pre>
                 <h3>Descripción</h3>
-                <p>Carga una imagen en formato PNG y devuelve los pixeles de la misma en formato RAW. Devuelve NULL en caso de error.</p>
+                <p>Carga una imagen en formato PNG y devuelve los píxeles de la misma en formato RAW. Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>NGN_RawImage* pixels = ngn->load->PngAsRaw("data/clouds.png");</code></pre>
             </section>
@@ -109,11 +124,11 @@
             <section id="SpriteAsRaw" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>NGN_RawImage* SpriteAsRaw(
-    std::string filepath,   // Archivo a cargar
-    uint32_t frame = 0      // Fotograma a convertir
+    const std::string&amp; filepath,    // Archivo a cargar
+    uint32_t frame = 0              // Fotograma a convertir (0 por defecto)
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Carga los datos de un sprite y devuelve los pixeles del fotograma especificado (el primero por defecto) formato RAW. Devuelve NULL en caso de error.</p>
+                <p>Carga los datos de un sprite y devuelve los píxeles del fotograma especificado en formato RAW. Devuelve NULL en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>NGN_RawImage* pixels = ngn->load->SpriteAsRaw("data/coin.spr", 3);</code></pre>
             </section>
@@ -121,13 +136,13 @@
             <section id="SpriteAsRawVector" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>bool SpriteAsRawVector(
-    std::string filepath,                       // Archivo a cargar
-    std::vector&lt;NGN_RawImage*&gt; &raw_frames,  // Vector de destino con los frames
+    const std::string&amp; filepath,                // Archivo a cargar
+    std::vector&lt;NGN_RawImage*&gt;&amp; raw_frames,     // Vector de destino con los frames
     uint32_t first_frame = 0,                   // Frame inicial (0 por defecto)
-    uint32_t last_frame = NGN_DEFAULT_VALUE     // Frame final (ultimo por defecto)
+    uint32_t last_frame = NGN_DEFAULT_VALUE     // Frame final (último por defecto)
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Carga los datos de un sprite y almacena los pixeles de los fotogramas especificados (todos los fotogramas por defecto) formato RAW dentro de un vector. Devuelve TRUE en caso de éxito y FALSE en caso de error.</p>
+                <p>Carga los datos de un sprite y almacena los píxeles de los fotogramas especificados en formato RAW dentro de un vector. Devuelve true en caso de éxito y false en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>std::vector&lt;NGN_RawImage*&gt; frames;
 ngn->load->SpriteAsRawVector("data/coin.spr", frames, 2, 5);</code></pre>
@@ -136,72 +151,83 @@ ngn->load->SpriteAsRawVector("data/coin.spr", frames, 2, 5);</code></pre>
             <section id="TextFile" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>// Primera sobrecarga
-std::string TextFile(std::string filepath);
+std::string TextFile(const std::string&amp; filepath);
 
 // Segunda sobrecarga
-std::string TextFile(
-    std::string filepath,                   // Archivo
-    std::vector&lt;std::string&gt; &text_lines    // Buffer de destino
+bool TextFile(
+    const std::string&amp; filepath,            // Ruta del archivo
+    std::vector&lt;std::string&gt;&amp; text_lines    // Buffer de destino
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Lee el archivo de texto de la ruta especificada y lo devuelve en un string (primera sobrecarga) o almacena las líneas de texto del archivo en el buffer dado y devuelve true o false según sí se ha tenido éxito (segunda sobrecarga).</p>
+                <p>Lee el archivo de texto de la ruta especificada y lo devuelve como un string (primera sobrecarga) o almacena las líneas de texto del archivo en el vector dado y devuelve true o false según el éxito de la operación (segunda sobrecarga).</p>
                 <h3>Ejemplo</h3>
                 <pre><code>// Primera sobrecarga
 std::string text = ngn->load->TextFile("data/script.txt");
 
 // Segunda sobrecarga
 std::vector&lt;std::string&gt; buffer;
-buffer.clear();
 ngn->load->TextFile("data/script.txt", buffer);</code></pre>
             </section>
 
             <section id="LoadFile" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>int32_t LoadFile(
-    std::string filepath,           // Archivo
-    std::vector&lt;uint8_t&gt; &data     // Vector de datos
+    const std::string&amp; filepath,    // Ruta del archivo
+    std::vector&lt;uint8_t&gt;&amp; data      // Vector de datos
 );</code></pre>
                 <h3>Descripción</h3>
-                <p>Lee el archivo de la ruta especificada desde el sistema de archivos del dispositivo o desde un paquete de archivos (ver SetDisk() y SetPackage()) y coloca los datos en el vector dado. Si se lee el archivo desde un paquete y este está encriptado, se desencriptará el contenido. El método devuelve el número de bytes leídos o -1 en caso de error.</p>
+                <p>Lee el archivo de la ruta especificada desde el sistema de archivos del dispositivo o desde un paquete de archivos (ver SetDisk() y SetPackage()) y coloca los datos en el vector dado. Si se lee el archivo desde un paquete y este está encriptado, se desencriptará el contenido automáticamente. El método devuelve el número de bytes leídos o -1 en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; buffer;
 int32_t file_length = ngn->load->LoadFile("data/stage.bin", buffer);</code></pre>
             </section>
 
-            <section id="SetDisk" class="doc-block">
-                <h3>Método</h3>
-                <pre><code>void SetDisk();</code></pre>
-                <h3>Descripción</h3>
-                <p>A partir de ese momento, establece el sistema de archivos del dispositivo como el origen de los datos en los métodos de carga.</p>
-                <h3>Ejemplo</h3>
-                <pre><code>ngn->load->SetDisk();</code></pre>
-            </section>
-
-            <section id="SetPackage" class="doc-block">
-                <h3>Método</h3>
-                <pre><code>bool SetPackage(std::string pkg_file, std::string key = "");</code></pre>
-                <h3>Descripción</h3>
-                <p>A partir de ese momento, establece un paquete de archivos creado con la herramienta NGN_FileSystem como el origen de los datos en los métodos de carga. Si los archivos del paquete están encriptados, deberá de proporcionarse la clave de encriptación en el segundo parámetro.</p>
-                <h3>Ejemplo</h3>
-                <pre><code>ngn->load->SetPackage("gamedata.pkg", "myawesomekey");</code></pre>
-            </section>
-			
-			<section id="LoadFileChunk" class="doc-block">
+            <section id="LoadFileChunk" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>int32_t LoadFileChunk(
-    const std::string& filepath,   // Ruta del archivo
-    std::vector&lt;uint8_t&gt; &data,    // Vector de almacenamiento
-    uint32_t offset,               // Byte de inicio de lectura
-    uint32_t length                // Número de bytes a leer
+    const std::string&amp; filepath,    // Ruta del archivo
+    std::vector&lt;uint8_t&gt;&amp; data,     // Vector de almacenamiento
+    uint32_t offset,                // Byte de inicio de lectura
+    uint32_t length                 // Número de bytes a leer
 );</code></pre>
                 <h3>Descripción</h3>
                 <p>Carga un fragmento específico de un archivo desde el origen predeterminado (ya sea desde el sistema de archivos o desde un paquete de datos). Si el archivo se encuentra encriptado, el método lo desencriptará automáticamente durante la carga. Devuelve el número de bytes leídos o -1 en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; chunk;
 int32_t bytes_read = ngn->load->LoadFileChunk("data/assets.pkg", chunk, 1024, 512);</code></pre>
-
             </section>
-			
+
+            <section id="SetDisk" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>void SetDisk();</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece el sistema de archivos del dispositivo como el origen predeterminado de datos para todos los métodos de carga.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->load->SetDisk();</code></pre>
+            </section>
+
+            <section id="SetPackage" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool SetPackage(
+    const std::string&amp; pkg_file,    // Archivo empaquetado
+    std::string key = ""            // Clave de encriptación (opcional)
+);</code></pre>
+                <h3>Descripción</h3>
+                <p>Establece un archivo empaquetado creado con la herramienta NGN_FileSystem como el origen predeterminado de datos para los métodos de carga. Si los archivos del paquete están encriptados, deberá proporcionarse la clave de encriptación en el segundo parámetro. Devuelve true si el paquete se configuró correctamente o false en caso contrario.</p>
+                <h3>Ejemplo</h3>
+                <pre><code>ngn->load->SetPackage("gamedata.pkg", "myawesomekey");</code></pre>
+            </section>
+
+            <section id="PackageEnabled" class="doc-block">
+                <h3>Método</h3>
+                <pre><code>bool PackageEnabled();</code></pre>
+                <h3>Descripción</h3>
+                <p>Devuelve un valor booleano indicando si actualmente se está utilizando un archivo empaquetado como origen de datos (true) o el disco directo (false).</p>
+                <h3>Ejemplo</h3>
+                <pre><code>if (ngn->load->PackageEnabled()) {
+    // Origen: paquete de datos
+}</code></pre>
+            </section>
         </main>
     </div>
 

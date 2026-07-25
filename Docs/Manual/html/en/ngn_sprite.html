@@ -139,7 +139,7 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Description</h3>
                 <p>Returns the ID (position) in the collider vector of the collider with the given name. If not found, it returns -1.</p>
                 <h3>Example</h3>
-                <pre><code>Int32_t id = player->GetColliderId(“left”);</code></pre>
+                <pre><code>int32_t id = player->GetColliderId("left");</code></pre>
             </section>
             
             <section id="ColliderEnabled" class="doc-block">
@@ -148,7 +148,7 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Description</h3>
                 <p>Enables or disables the collider with the given name. This function returns 0 if the state change is successful.</p>
                 <h3>Example</h3>
-                <pre><code>player->ColliderEnabled(“left”, false);</code></pre>
+                <pre><code>player->ColliderEnabled("left", false);</code></pre>
             </section>
             
             <section id="RemoveCollider" class="doc-block">
@@ -157,7 +157,7 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Description</h3>
                 <p>Removes the collider with the specified name. If successful, this function returns 0.</p>
                 <h3>Example</h3>
-                <pre><code>player->RemoveCollider(“left”);</code></pre>
+                <pre><code>player->RemoveCollider("left");</code></pre>
             </section>
             
             <section id="AddAnimation" class="doc-block">
@@ -173,10 +173,10 @@ player->AddCollider("left", -64.0f, -80.0f, 64.0f, 32.0f);</code></pre>
                 <h3>Description</h3>
                 <p>Adds a new animation to the created Sprite. It is possible to create animations with inverse kinematics. Returns 1 in case of an error.</p>
                 <h3>Example</h3>
-                <pre><code>player->AddAnimation(“walk”, 1, 7, 1, 5);
-player->AddAnimation(“moonwalk”, 7, 1, 7, 8);
-player->AddAnimation(“run”, 0, 20, 8, 3);
-stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);</code></pre>
+                <pre><code>player->AddAnimation("walk", 1, 7, 1, 5);
+player->AddAnimation("moonwalk", 7, 1, 7, 8);
+player->AddAnimation("run", 0, 20, 8, 3);
+stonegem->AddAnimation("shine", 0, 10, 0, 5, 120);</code></pre>
             </section>
             
             <section id="SetAnimation" class="doc-block">
@@ -185,7 +185,7 @@ stonegem->AddAnimation(“shine”, 0, 10, 0, 5, 120);</code></pre>
                 <h3>Description</h3>
                 <p>Selects an animation with the given name for playback. If the currently selected animation is requested, the command is ignored and it returns 2. In case of an error, it returns 1.</p>
                 <h3>Example</h3>
-                <pre><code>player->SetAnimation(“walk”);</code></pre>
+                <pre><code>player->SetAnimation("walk");</code></pre>
             </section>
 
             <section id="PlayAnimation" class="doc-block">

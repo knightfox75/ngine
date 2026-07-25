@@ -1,5 +1,5 @@
 NGN_RESOURCES.H
-v1.17.0-stable
+v1.23.0-stable
 Español
 
 --------------------------------------------------------------------------------
@@ -24,10 +24,11 @@ El sistema de recursos de N’gine permite una gestión rápida y eficiente, med
 # Admited filetypes
 # TEX	Textures (.png)
 # TBG	Tiled backgrounds (.tbg)
+# ITB	Indexed tiled backgrounds (.itb)
 # SPR	Sprites (.spr)
 # MAP	Collision maps (.map)
 # SFX	Sound Effects (.wav) (.ogg)
-# TXT	Plain text files (.txt)Ç
+# TXT	Plain text files (.txt)
 # FNT	Font files (.ttf) (.otf)
 
 
@@ -42,6 +43,9 @@ SPR; bird; data/bird_small.spr
 TBG; bg0; data/bg0.tbg
 TBG; bg1; data/bg1.tbg
 TBG; bg2; data/bg2.tbg
+# Indexed tiled backgrounds
+ITB; clouds; data/tiles/clouds.itb; data/tiles/day_clouds.pal
+ITB; clouds; data/tiles/clouds.itb; data/tiles/night_clouds.pal; data/tiles/clouds_storm.cyc
 # Sound Effects
 SFX; shutter; data/shutter.wav
 # Fonts
@@ -111,6 +115,7 @@ if (!ngn->resources->Load("local", "data/resources.txt")) return false;
 - Métodos
 NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
 NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+NGN_IndexedTiledBgData* GetIndexedTiledbg(std::string repo_name, std::string resource_name, bool err = true);
 NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
 NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
 NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
@@ -129,6 +134,7 @@ NGN_SpriteData* bullet = ngn->resources->GetSprite(“local”, “arrow”);
 - Métodos
 bool RemoveTexture(std::string repo_name, std::string resource_name);
 bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+bool RemoveIndexedTiledbg(std::string repo_name, std::string resource_name);
 bool RemoveSprite(std::string repo_name, std::string resource_name);
 bool RemoveCmap(std::string repo_name, std::string resource_name);
 bool RemoveSfx(std::string repo_name, std::string resource_name);

@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.23.0-wip_0x03 ***
+    *** Version 1.23.0+stable ***
     GPIO - Acceso a los puertos de entrada/salida de Raspberry PI
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -151,7 +151,7 @@ void NGN_Gpio::BootUp() {
 
 
 /*** Configura el modo de un puerto ***/
-bool NGN_Gpio::PortMode(uint8_t port_id, uint8_t mode) {
+bool NGN_Gpio::SetPortMode(uint8_t port_id, uint8_t mode) {
 
     #if defined (TARGET_RASPBERRY)
 
@@ -262,6 +262,124 @@ bool NGN_Gpio::PortMode(uint8_t port_id, uint8_t mode) {
 
 
 
+// Configura el tiempo del filtro de "rebote" de un puerto cuando esta en modo INPUT
+bool NGN_Gpio::SetDebounce(uint8_t port_id, uint32_t microseconds) {
+
+    #if defined (TARGET_RASPBERRY)
+
+        // Si no esta disponible, sal
+        if (!available) return false;
+
+        // Si el puerto no es valido, sal
+        if (!ValidPort(port_id)) return false;
+
+        // Si la linea no esta configurada, sal
+        if (!requests[port_id]) {
+            ngn->log->Message("[NGN_Gpio] error: port_id " + std::to_string(port_id) + " has no PortMode set");
+            return false;
+        }
+
+        // Si el modo es incorrecto, sal
+        if (
+            (port_mode[port_id] != NGN_GPIO_MODE.input)
+            &&
+            (port_mode[port_id] != NGN_GPIO_MODE.input_pullup)
+            &&
+            (port_mode[port_id] != NGN_GPIO_MODE.input_pulldown)
+        ) return false;
+
+        // Crea los ajustes con la configuracion actual y el nuevo debounce
+        gpiod_line_settings* settings = gpiod_line_settings_new();
+        if (!settings) return false;
+        gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_INPUT);
+        
+        // Segun el modo...
+        switch (port_mode[port_id]) {
+            case NGN_GPIO_MODE.input_pullup:
+                gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_PULL_UP);
+                break;
+            case NGN_GPIO_MODE.input_pulldown:
+                gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_PULL_DOWN);
+                break;
+            default:
+                gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_DISABLED);
+                break;
+        }
+
+        // Establece el tiempo de filtrado de rebote en microsegundos
+        gpiod_line_settings_set_debounce_period_us(settings, microseconds);
+
+        // Añade los ajustes a la configuracion de linea
+        gpiod_line_config* line_cfg = gpiod_line_config_new();
+        if (!line_cfg) {
+            gpiod_line_settings_free(settings);
+            return false;
+        }
+        uint32_t offset = port_id;
+        gpiod_line_config_add_line_settings(line_cfg, &offset, 1, settings);
+
+        // Aplica la reconfiguracion sobre la solicitud activa
+        int32_t result = gpiod_line_request_reconfigure_lines(requests[port_id], line_cfg);
+
+        // Libera los objetos temporales
+        gpiod_line_config_free(line_cfg);
+        gpiod_line_settings_free(settings);
+
+        // Devuelve TRUE en caso de exito (0). Si hay un error (-1), devuelve FALSE
+        return (result == 0);
+
+    #else
+
+        // NOOP fuera de la RPi
+        (void)port_id; (void)microseconds;
+        return false;
+
+    #endif
+
+}
+
+
+// Configura el mismo tiempo de "rebote" a todos los puertos configurados como INPUT
+bool NGN_Gpio::SetDebounceAll(uint32_t microseconds) {
+
+    #if defined (TARGET_RASPBERRY)
+
+        bool result = true;
+
+        for (uint8_t k = 0; k < MAX_PORTS; k ++) {
+
+            // Si es un modo de entrada valido, aplica el filtro
+            switch (GetPortMode(k)) {
+
+                case NGN_GPIO_MODE.input:
+                case NGN_GPIO_MODE.input_pullup:
+                case NGN_GPIO_MODE.input_pulldown:
+                    result &= SetDebounce(k, microseconds);
+                    break;
+
+                default:
+                    // Ignora puertos de salida, no configurados o reservados (no es error)
+                    break;
+
+            }
+
+        }
+
+        // Devuelve el resultado
+        return result;
+
+    #else
+
+        // NOOP fuera de la RPi
+        (void)microseconds;
+        return false;
+
+    #endif
+
+}
+
+
+
 /*** Escribe un valor digital en un puerto ya configurado como OUTPUT ***/
 bool NGN_Gpio::DigitalWrite(uint8_t port_id, bool value) {
 
@@ -269,6 +387,7 @@ bool NGN_Gpio::DigitalWrite(uint8_t port_id, bool value) {
 
         // Si no esta disponible, sal
         if (!available) return false;
+
         // Si el puerto no es valido, sal
         if (!ValidPort(port_id)) return false;
 
@@ -307,6 +426,7 @@ bool NGN_Gpio::DigitalRead(uint8_t port_id) {
 
         // Si no esta disponible, sal
         if (!available) return false;
+        
         // Si el puerto no es valido, sal
         if (!ValidPort(port_id)) return false;
 
@@ -377,6 +497,19 @@ void NGN_Gpio::ReleaseAllPorts() {
         for (uint8_t k = 0; k < MAX_PORTS; k ++) ReleasePort(k);
 
     #endif
+
+}
+
+
+
+// Devuelve el modo actual de un puerto
+uint8_t NGN_Gpio::GetPortMode(uint8_t port_id) {
+
+    // Si el puerto no es valido, devuelve indefinido
+    if (!ValidPort(port_id)) return NGN_GPIO_MODE.undefined;
+
+    // Devuelve el modo actual del puerto
+    return port_mode[port_id];
 
 }
 

@@ -1,4 +1,15 @@
 --------------------------------------------------------------------------------
+2026-07-25 Ver.1.23.0+stable
+--------------------------------------------------------------------------------
+- Added NGN_IndexedTiledBgData class to manage indexed tile backgrounds, enabling palette swap and color effects.
+- Fixed headers in all data files to prevent data misalignment issues when switching platforms. Backward compatibility with previously generated files is preserved.
+- Added necessary loading methods for the new indexed backgrounds to the NGN_Load class.
+- Updated the Docker image for Raspberry Pi cross-compilation from "Debian Bookworm" to "Debian Trixie".
+- Updated documentation.
+- Added and updated code examples.
+
+
+--------------------------------------------------------------------------------
 2026-05-01 Ver.1.22.0+stable
 --------------------------------------------------------------------------------
 - Completely rewritten font loading and text character rendering methods. A texture atlas is now generated for all characters, and the print function batches glyph vertex lists to render all pending text in a single draw call.

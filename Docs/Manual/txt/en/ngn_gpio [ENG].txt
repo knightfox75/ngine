@@ -19,7 +19,7 @@ NGN_GPIO_MODE.input_pullup — Digital input with the internal pull-up resistor 
 NGN_GPIO_MODE.input_pulldown — Digital input with the internal pull-down resistor enabled.
 
 - Example
-ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
+ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);
 
 --------------------------------------------------------------------------------
 
@@ -32,13 +32,35 @@ ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
 --------------------------------------------------------------------------------
 
 - Method
-bool PortMode(uint8_t port_id, uint8_t mode);
+bool SetPortMode(uint8_t port_id, uint8_t mode);
 
 - Description
 Configures the operating mode of a GPIO port (BCM numbering). Must be called before using DigitalWrite() or DigitalRead() on that port. If the port already had a mode assigned, it is reconfigured with the new mode. Returns TRUE if the operation succeeded, or FALSE if the port number is not valid or an error occurred while requesting it. Outside a Raspberry Pi the GPIO module is not available, so this method has no effect and always returns FALSE.
 
 - Example
-ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
+ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);
+
+--------------------------------------------------------------------------------
+
+- Method
+bool SetDebounce(uint8_t port_id, uint32_t microseconds = 0);
+
+- Description
+Configures the hardware debounce filter time for a port previously configured as an input (INPUT, INPUT_PULLUP, or INPUT_PULLDOWN) via PortMode(). The microseconds parameter specifies the minimum duration in microseconds that an electrical signal must remain stable to be recognized as a valid state change by the kernel, filtering out noise or contact bounce from mechanical switches and pushbuttons. The default value is 0 (filter disabled). Returns TRUE if the reconfiguration succeeded, or FALSE if the port is invalid, has no mode assigned, or is not configured as an input port.
+
+- Example
+ngn->gpio->SetDebounce(17, 5000); // Applies a 5 ms (5000 us) debounce filter on pin 17
+
+--------------------------------------------------------------------------------
+
+- Method
+bool SetDebounceAll(uint32_t microseconds = 0);
+
+- Description
+Globally configures the same hardware debounce filter time for all ports currently set to any input mode (INPUT, INPUT_PULLUP, or INPUT_PULLDOWN) via PortMode(). Output, unassigned, or reserved ports are automatically ignored without raising an error. The microseconds parameter specifies the duration in microseconds that the signal must remain stable on input pins. The default value is 0 (filter disabled). Returns TRUE if the operation succeeded on all active input ports, or FALSE if any of them failed to reconfigure.
+
+- Example
+ngn->gpio->SetDebounceAll(5000); // Applies a 5 ms (5000 us) debounce filter to all input buttons
 
 --------------------------------------------------------------------------------
 
@@ -87,12 +109,43 @@ ngn->gpio->ReleaseAllPorts();
 --------------------------------------------------------------------------------
 
 - Method
+uint8_t GetPortMode(uint8_t port_id);
+
+- Description
+Returns the current operating mode of a GPIO port (BCM numbering). The returned value corresponds to one of the constants defined in NGN_GPIO_MODE (input, output, input_pullup, input_pulldown). If the port number is invalid, unavailable, or has not been assigned a mode via PortMode() yet, it returns NGN_GPIO_MODE.undefined. Outside a Raspberry Pi it will always return NGN_GPIO_MODE.undefined.
+
+- Example
+uint8_t mode = ngn->gpio->GetPortMode(17);
+if (mode == NGN_GPIO_MODE.output) ngn->gpio->DigitalWrite(17, true);
+
+--------------------------------------------------------------------------------
+
+- Method
 bool IsAvailable();
 
 - Description
 Indicates whether the GPIO module was initialized successfully during library startup and is ready to be used. Its value will always be FALSE outside a Raspberry Pi, or on a Raspberry Pi if it was not possible to open the system's GPIO chip.
 
 - Example
-if (ngn->gpio->IsAvailable()) ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
+if (ngn->gpio->IsAvailable()) ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	CONSTANTS of the class
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Constant
+uint32_t NGN_GPIO_DEBOUNCE_TIME
+
+- Description
+Defines the recommended hardware debounce filter time in microseconds for games running at 60 FPS (8333 us, equivalent to half of a 16.66 ms frame). This value is ideal to be passed as a parameter to SetDebounce() or SetDebounceAll(), completely eliminating electrical noise and contact chatter from mechanical arcade buttons and switches without introducing noticeable input lag for the player.
+
+- Example
+ngn->gpio->SetDebounceAll(NGN_GPIO_DEBOUNCE_TIME);
 
 --------------------------------------------------------------------------------

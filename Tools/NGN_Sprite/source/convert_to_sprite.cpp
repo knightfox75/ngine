@@ -159,7 +159,7 @@ void ConvertToSprite::CutFrames(std::vector<uint8_t> &data) {
 
     // Prepara los bufferes a usar
     sheet.clear();
-    sheet.resize(((out_width * out_height) << 2), 0);   // * 4
+    sheet.assign(((out_width * out_height) << 2), 0);   // * 4
 
     // Marcador
     std::cout << "This image contains " << _total_frames << " frames of " << frame_width << "x" << frame_height << " pixels." << std::endl;
@@ -236,7 +236,7 @@ bool ConvertToSprite::WriteFile(std::string filename) {
     file.open(sprite_filename, std::ofstream::out | std::ofstream::binary);
     if (file.is_open()) {
         file.write((char*)&header, sizeof(header));                             // Cabecera
-        file.write((char*)&spritesheet_png[0], spritesheet_png.capacity());     // Sprite sheet en PNG
+        file.write((char*)&spritesheet_png[0], spritesheet_png.size());     // Sprite sheet en PNG
         file.close();
         std::cout << "File " << fname << " successfully saved." << std::endl;
     } else {

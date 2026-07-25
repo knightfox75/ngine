@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Funciones de carga de archivos
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -48,6 +48,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
+#include <iomanip>      // Remove!
 
 // SDL
 #include <SDL.h>
@@ -223,14 +225,39 @@ NGN_TiledBgData* NGN_Load::TiledBg(const std::string& filepath) {
         memcpy((uint8_t*)&bg->header, (uint8_t*)&buffer[0], sizeof(bg->header));
         file_pos += sizeof(bg->header);
 
+        // Verifica que el archivo es compatible
+        if (std::string(bg->header.magic) != MAGIC_STRING_TBG) {
+            ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
+            buffer.clear();
+            delete bg;
+            return nullptr;
+        }
+
         // Tileset
         tiles.resize(bg->header.tileset_length);
         memcpy((uint8_t*)&tiles[0], (uint8_t*)&buffer[file_pos], bg->header.tileset_length);
         file_pos += bg->header.tileset_length;
 
         // Mapa
-        bg->tmap.resize(bg->header.map_length);
-        memcpy((uint8_t*)&bg->tmap[0], (uint8_t*)&buffer[file_pos], bg->header.map_length);
+        const uint32_t tiles_in_map = ((bg->header.map_width / bg->header.tile_size) * (bg->header.map_height / bg->header.tile_size));
+        bg->bg_map.assign(tiles_in_map, 0);
+        std::vector<uint8_t>raw_map;
+        raw_map.assign(bg->header.map_length, 0);
+        memcpy((uint8_t*)&raw_map[0], (uint8_t*)&buffer[file_pos], bg->header.map_length);
+        // Expande el mapa
+        for (uint32_t k = 0; k < tiles_in_map; k ++) {
+            uint32_t id = (k << 2);
+            bg->bg_map[k] = 
+                (raw_map[id] & 0x000000FF)                      // TILE ID
+                |
+                ((raw_map[(id + 1)] << 8) & 0x0000FF00)
+                |
+                ((raw_map[(id + 2)] << 16) & 0x00FF0000)
+                |
+                ((raw_map[(id + 3)] << 24) & 0xFF000000)        // FLIP
+            ;
+        }
+        raw_map.clear();
 
     } else {
 
@@ -243,14 +270,6 @@ NGN_TiledBgData* NGN_Load::TiledBg(const std::string& filepath) {
 
     // Elimina los datos del buffer temporal de archivo
     buffer.clear();
-
-
-    // Verifica que el archivo es compatible
-    if (std::string(bg->header.magic) != MAGIC_STRING_TBG) {
-        ngn->log->Message("[NGN_Load error] File <" + filepath + "> is in unknow format.");
-        delete bg;
-        return nullptr;
-    }
 
     // Decodifica los datos del tileset en PNG a Pixeles
     std::vector<uint8_t> pixels;
@@ -285,13 +304,13 @@ NGN_TiledBgData* NGN_Load::TiledBg(const std::string& filepath) {
          return nullptr;
     }
 
-    // Crea la textura única del atlas a partir del surface
-    bg->tiles_atlas = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
+    // Crea la textura unica del atlas a partir del surface
+    bg->bg_atlas = SDL_CreateTextureFromSurface(ngn->graphics->renderer, surface);
     // Libera la surface, ya no es necesaria
     SDL_FreeSurface(surface);
 
     // Verifica si se ha creado con éxito
-    if (bg->tiles_atlas == nullptr) {
+    if (bg->bg_atlas == nullptr) {
          ngn->log->Message("[NGN_Load error] Unable to create <" + filepath + "> tileset texture.");
          pixels.clear();
          delete bg;
@@ -305,6 +324,164 @@ NGN_TiledBgData* NGN_Load::TiledBg(const std::string& filepath) {
     return bg;
 
 }
+
+
+
+
+/*** Carga un fondo de tiles indexado ***/
+NGN_IndexedTiledBgData* NGN_Load::IndexedTiledBg(const std::string& bg_file, const std::string& pal_file, const std::string& cyc_file) {
+
+    // Crea un objeto temporal para procesar el fondo cargado
+    NGN_IndexedTiledBgData* bg_data = new NGN_IndexedTiledBgData();
+
+    // Crea un buffer temporal para la carga del archivo
+    std::vector<uint8_t> buffer;
+    uint32_t file_pos = 0;
+
+    /// FASE 1: Carga el ATLAS + MAPA
+
+    // Intenta cargar el archivo del fondo (atlas + mapa)
+    if (LoadFile(bg_file, buffer) > 0) {
+
+        // Cabecera del archivo
+        memcpy((uint8_t*)&bg_data->itb_file_header, (uint8_t*)&buffer[0], sizeof(bg_data->itb_file_header));
+        file_pos += sizeof(bg_data->itb_file_header);
+
+        // Verifica que el archivo es compatible
+        if (std::string(bg_data->itb_file_header.magic) != MAGIC_STRING_ITB) {
+            ngn->log->Message("[NGN_Load error] File <" + bg_file + "> is in unknow format.");
+            buffer.clear();
+            delete bg_data;
+            bg_data = nullptr;
+            return nullptr;
+        }
+
+        // Tileset (Atlas)
+        bg_data->bg_atlas.assign(bg_data->itb_file_header.tileset_length, 0);
+        memcpy((uint8_t*)&bg_data->bg_atlas[0], (uint8_t*)&buffer[file_pos], bg_data->itb_file_header.tileset_length);
+        file_pos += bg_data->itb_file_header.tileset_length;
+
+        // Mapa
+        const uint32_t tiles_in_map =
+            ((bg_data->itb_file_header.map_width / bg_data->itb_file_header.tile_size)
+            *
+            (bg_data->itb_file_header.map_height / bg_data->itb_file_header.tile_size))
+        ;
+        bg_data->bg_map.assign(tiles_in_map, 0);
+        std::vector<uint8_t>raw_map;
+        raw_map.assign(bg_data->itb_file_header.map_length, 0);
+        memcpy((uint8_t*)&raw_map[0], (uint8_t*)&buffer[file_pos], bg_data->itb_file_header.map_length);
+        // Expande el mapa
+        for (uint32_t k = 0; k < tiles_in_map; k ++) {
+            uint32_t id = (k << 2);
+            bg_data->bg_map[k] = 
+                (raw_map[id] & 0x000000FF)                      // TILE ID
+                |
+                ((raw_map[(id + 1)] << 8) & 0x0000FF00)
+                |
+                ((raw_map[(id + 2)] << 16) & 0x00FF0000)
+                |
+                ((raw_map[(id + 3)] << 24) & 0xFF000000)        // FLIP
+            ;
+        }
+        raw_map.clear();
+
+    } else {
+
+        // Error al leer el archivo de atlas + fondo
+        ngn->log->Message("[NGN_Load error] Error opening <" + bg_file + "> for read.");
+        buffer.clear();
+        delete bg_data;
+        return nullptr;
+
+    }
+
+    // Elimina los datos del buffer temporal de archivo y reinicia el contador
+    buffer.clear();
+    file_pos = 0;
+
+    /// FASE 2: Carga la PALETA
+
+    // Intenta cargar el archivo del fondo (atlas + mapa)
+    if (LoadFile(pal_file, buffer) > 0) {
+
+        // Cabecera del archivo
+        memcpy((uint8_t*)&bg_data->pal_file_header, (uint8_t*)&buffer[0], sizeof(bg_data->pal_file_header));
+        file_pos += sizeof(bg_data->pal_file_header);
+
+        // Verifica que el archivo es compatible
+        if (std::string(bg_data->pal_file_header.magic) != MAGIC_STRING_IPAL) {
+            ngn->log->Message("[NGN_Load error] File <" + pal_file + "> is in unknow format.");
+            buffer.clear();
+            delete bg_data;
+            bg_data = nullptr;
+            return nullptr;
+        }
+
+        // Carga la Paleta
+        const uint32_t pal_size = (256 << 2);       // 256 Colors * 4 bytes (RGBA)
+        const uint32_t palette_colors = bg_data->pal_file_header.colors;
+        std::vector<uint8_t> raw_palette;
+        raw_palette.assign(pal_size, 0);
+        bg_data->bg_palette.assign(256, 0);      // Siempre 256 colores
+        memcpy((uint8_t*)&raw_palette[0], (uint8_t*)&buffer[file_pos], pal_size);
+
+        // Expande la paleta a RGBA
+        for (uint32_t k = 0; k < palette_colors; k ++) {
+            uint32_t idx = (k << 2);
+            bg_data->bg_palette[k] =
+                (raw_palette[idx + 3])          // Byte 0: Alpha
+                |
+                (raw_palette[idx + 2] << 8)     // Byte 1: Blue
+                |
+                (raw_palette[idx + 1] << 16)    // Byte 2: Green
+                |
+                (raw_palette[idx] << 24)        // Byte 3: Red
+            ;
+        }
+
+    } else {
+
+        // Error al leer el archivo de paleta
+        ngn->log->Message("[NGN_Load error] Error opening <" + pal_file + "> for read.");
+        buffer.clear();
+        delete bg_data;
+        return nullptr;
+
+    }
+
+    // Elimina los datos del buffer temporal de archivo
+    buffer.clear();
+
+
+    /// FASE 3 (opcional): Carga el archivo de cilos de paleta (.cyc)
+    // Si no se ha especificado, termina aqui
+    if (cyc_file.size() == 0) return bg_data;
+
+    // Intenta abrir el archivo en modo texto
+    std::vector<std::string> cyc_file_lines;
+    if (!TextFile(cyc_file, cyc_file_lines)) {
+        ngn->log->Message("[NGN_Load error] Error opening <" + cyc_file + "> for read.");
+        delete bg_data;
+        return nullptr;
+    }
+
+    // Parsea el archivo .cyc
+    if (!ParseCycFile(cyc_file_lines, bg_data->pal_cycles)) {
+        ngn->log->Message("[NGN_Load error] Error parsing <" + cyc_file + "> file.");
+        delete bg_data;
+        cyc_file_lines.clear();
+        return nullptr;
+    }
+
+    // Paso de limpieza
+    cyc_file_lines.clear();
+
+    // Devuelve el fondo cargado
+    return bg_data;
+
+}
+
 
 
 
@@ -1238,6 +1415,154 @@ bool NGN_Load::LoadSpriteData(const std::string& filepath, std::vector<uint8_t> 
 
 
     // Carga correcta
+    return true;
+
+}
+
+
+
+/*** Prepara la tabla rotacion de paletas ***/
+bool NGN_Load::ParseCycFile(std::vector<std::string> &text, std::vector<NGN_IndexedTiledBgData::PalRotationCycle> &cyc_table) {
+
+    // Prepara la lista
+    cyc_table.clear();
+
+    // Si no hay datos que procesar, sal
+    if (text.size() == 0) return false;
+
+    // Nodo de FAT
+    NGN_IndexedTiledBgData::PalRotationCycle cycle_entry;
+
+    // Control
+    uint32_t p_count = 0;
+    uint32_t offset = 0;
+    std::string line = "";
+    std::string chr = "";
+    uint8_t ascii = 0;
+    const std::string COMMENT_CHAR = "#";
+    const std::string CSV_CHAR = ";";
+    const uint32_t PARAMETERS = 5;
+
+    // Buffer temporal de texto para los parametros
+    std::string str_id = "";
+    std::string str_low = "";
+    std::string str_high = "";
+    std::string str_rate = "";
+    std::string str_direction = "";
+    std::string str_loop_delay = "";
+    
+    // Lee las lineas del archivo
+    for (uint32_t i = 0; i < text.size(); i ++) {
+
+        // Si la linea esta vacia, saltatela
+        if (text[i].size() == 0) continue;
+
+        // Si el primer caracter de la linea, es el caracter de comentario o no es valido, saltala
+        chr = text[i].at(0);
+        ascii = (uint8_t)chr[0];
+        if (
+            (chr == COMMENT_CHAR)       // Comentario
+            ||
+            (ascii < 0x20)              // Antes del ESPACIO
+            ||
+            (ascii == 0x7F)             // DEL
+            ||
+            (ascii == 0xFF)             // BLANK
+        ) continue;
+
+        // Reset del buffer de texto
+        str_id = "";
+        str_low = "";
+        str_high = "";
+        str_rate = "";
+        str_direction = "";
+
+        // Datos de control
+        p_count = 0;
+        offset = 0;
+        line = text[i];
+
+        // Lee la informacion de la linea y pasala a la entrada temporal
+        // Formato: UNIQUE_ID; LOW; HIGH; RATE; DIRECTION
+        // Obligatorios 5 parametros
+        while (offset < line.size()) {
+            chr = line.at(offset);
+            if (chr == " ") {
+                offset ++;
+                continue;
+            } else if (chr == CSV_CHAR) {
+                offset ++;
+                p_count ++;
+                continue;
+            }
+            switch (p_count) {
+                case 0:     // ID
+                    str_id += chr;
+                    break;
+                case 1:     // LOW
+                    str_low += chr;
+                    break;
+                case 2:     // HIGH
+                    str_high += chr;
+                    break;
+                case 3:     // RATE
+                    str_rate += chr;
+                    break;
+                case 4:     // DIRECTION
+                    str_direction += chr;
+                    break;
+                case 5:     // LOOP DELAY
+                    str_loop_delay += chr;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+            offset ++;
+        }
+
+        // Si no se han completado el nodo, error
+        if (p_count != PARAMETERS) return false;
+
+        // Procesa los datos
+        int32_t _int_data = 0; 
+        // Id unico para identificarlo el ciclo
+        cycle_entry.id = std::stoi(str_id, nullptr, 0);
+        // Indice de la paleta (bajo)
+        _int_data = std::stoi(str_low, nullptr, 0);
+        if (_int_data < 0) _int_data = 0;
+        if (_int_data > 255) _int_data = 255;
+        cycle_entry.low = _int_data;
+        // Indice de la paleta (alto)
+        _int_data = std::stoi(str_high, nullptr, 0);
+        if (_int_data < (int32_t)cycle_entry.low) _int_data = (int32_t)cycle_entry.low;
+        if (_int_data > 255) _int_data = 255;
+        cycle_entry.high = _int_data;
+        // Velocidad (numero de frames entre cambios)
+        _int_data = std::stoi(str_rate, nullptr, 0);
+        if (_int_data < 0) _int_data = 0;
+        cycle_entry.rate = _int_data;
+        // +1 adelante, -1 atras
+        _int_data = std::stoi(str_direction, nullptr, 0);
+        if (_int_data >= 0) _int_data = 1;
+        if (_int_data < 0) _int_data = -1;
+        cycle_entry.direction = _int_data;
+        // Espera antes de repetir el loop (numero de frames entre cambios)
+        _int_data = std::stoi(str_loop_delay, nullptr, 0);
+        if (_int_data < 0) _int_data = 0;
+        cycle_entry.loop_delay = _int_data;
+        // Inicializacion de contadores y flags
+        cycle_entry.timer = cycle_entry.rate;                           // Cuenta atras para los cambios
+        cycle_entry.step = 0;                                           // Registro del paso actual
+        cycle_entry.delay_cnt = 0;                                      // Cuenta atras para repetir el ciclo
+        cycle_entry.enabled = true;                                     // Habilitado por defecto
+
+        // Si todo ha ido bien, registra el nodo
+        cyc_table.push_back(cycle_entry);
+
+    }
+
+    // Conversion correcta
     return true;
 
 }

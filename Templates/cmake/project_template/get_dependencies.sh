@@ -6,17 +6,17 @@
 
 clear
 
-# --- CONFIGURATION ---
+# --- CONFIGURACIÓN ---
 BIN_NAME="Sample_Project"
 BIN_DIR="$(dirname "$0")"
 BIN="$BIN_DIR/$BIN_NAME"
 
-# AUTOMATIC ARCHITECTURE DETECTION (The key to portability)
+# DETECCIÓN AUTOMÁTICA DE ARQUITECTURA (La clave de la portabilidad)
 ARCH_NAME=$(uname -m)
 ARCH="${ARCH_NAME}-linux-gnu"
 LIBS_DIR="$BIN_DIR/libs/$ARCH/"
 
-# UNIVERSAL SEARCH PATHS
+# RUTAS DE BÚSQUEDA UNIVERSALES
 LIB_PATHS=(
     "/usr/local/lib"
     "/usr/lib/$ARCH"
@@ -25,7 +25,10 @@ LIB_PATHS=(
     "/lib"
 )
 
-# Colors for Total Commander / Terminal
+# FILTRO DE SEGURIDAD (No tocar: previene conflictos de Kernel/GLIBC)
+EXCLUDE_REGEX="^(libc\.so|libstdc\+\+|libgcc_s|libm\.so|libpthread|libdl|librt|ld-linux|libresolv|libnsl|libutil|libcrypt|libX11|libxcb|libXau|libXdmcp)"
+
+# Colores para Total Commander / Terminal
 GREEN=$(tput setaf 2)
 YELLOW=$(tput setaf 3)
 LIGHT_BLUE=$(tput setaf 6)
@@ -33,27 +36,11 @@ RED=$(tput setaf 1)
 GREY=$(tput setaf 8)
 RESET=$(tput sgr0)
 
-# SECURITY FILTER (Platform specific EXCLUDE_REGEX assignment)
-case "$ARCH_NAME" in
-    x86_64|i?86)
-        # Linux (x86/x64)
-        EXCLUDE_REGEX="^(libc\.|libstdc\+\+|libgcc_s|libm\.|libpthread|libdl|librt|ld-linux|libresolv|libnsl|libutil|libcrypt|libX|libxcb|libGL|libglapi|libdbus|libasound|libgbm|libdrm|libwayland|libpulse|libexpat|libz\.|libuuid|libsndio|libfontconfig|libbsd|libmd)"
-        ;;
-    aarch64|arm*)
-        # Raspberry PI (ARM 64-bit / 32-bit)
-        EXCLUDE_REGEX="^(libc\.|libstdc\+\+|libgcc_s|libm\.|libpthread|libdl|librt|ld-linux|libresolv|libnsl|libutil|libcrypt|libX|libxcb|libGL|libglapi|libdbus|libasound|libgbm|libdrm|libwayland|libpulse|libexpat|libz\.|libuuid|libfontconfig|libbsd|libmd|libglib-2\.0|libpcre2-8|libharfbuzz|libgraphite2)"
-        ;;
-    *)
-        echo "${RED}Error: Unsupported architecture $ARCH_NAME${RESET}"
-        exit 1
-        ;;
-esac
-
 mkdir -p "$LIBS_DIR"
 declare -A PROCESSED_LIBS
 declare -A RESOLVED_DEPS
 
-# --- FUNCTIONS ---
+# --- FUNCIONES ---
 
 clear_libs_dir() {
   echo "?? Cleaning $LIBS_DIR..."
@@ -67,17 +54,17 @@ find_dependencies() {
 copy_library() {
   local lib=$1
   
-  # Filter: Is it a base system library?
+  # Filtro: ¿Es una librería del sistema base?
   if [[ "$lib" =~ $EXCLUDE_REGEX ]]; then
       echo "   ${GREY}[System Lib - Skipped] $lib${RESET}"
       PROCESSED_LIBS["$lib"]=1
       return 2
   fi
 
-  # Search in known paths
+  # Búsqueda en rutas conocidas
   for path in "${LIB_PATHS[@]}"; do
     if [ -e "$path/$lib" ]; then
-      # cp -L is vital: converts symlinks to real files
+      # cp -L es vital: convierte enlaces simbólicos en archivos reales
       cp -L "$path/$lib" "$LIBS_DIR/$lib"
       return 0
     fi
@@ -108,12 +95,12 @@ resolve_dependencies_recursive() {
   done
 }
 
-# --- EXECUTION ---
+# --- EJECUCIÓN ---
 
 clear_libs_dir
 
 if [ ! -f "$BIN" ]; then
-  echo "${RED}Error: Binary $BIN not found.${RESET}"
+  echo "${RED}Error: Binario $BIN no encontrado.${RESET}"
   exit 1
 fi
 

@@ -1,14 +1,14 @@
 # syntax=docker/dockerfile:1
 # ==============================================================================
-# NGN SDK - RASPBERRY PI 4 MASTER FORGE (CROSS-COMPILER)
-# Architecture: x86_64 Host -> ARM64 Target (Cortex-A72)
-# OS: Debian Bookworm (Stable base for RPi OS)
+# NGN SDK - RASPBERRY PI 4/5 MASTER FORGE (CROSS-COMPILER)
+# Architecture: x86_64 Host -> ARM64 Target (Cortex-A72 / Cortex-A76)
+# OS: Debian Trixie (Modern base with libgpiod v2 support)
 # ==============================================================================
 
-FROM debian:bookworm
+FROM debian:trixie
 
 LABEL maintainer="NightFox"
-LABEL description="High-Performance Cross-Compiler for Raspberry Pi 4 (Static & Shared Support)"
+LABEL description="High-Performance Cross-Compiler for Raspberry Pi 4/5 (Static & Shared Support)"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -37,7 +37,7 @@ RUN dpkg --add-architecture arm64 && \
     curl \
     pkg-config \
     ca-certificates \
-    # Target System Dependencies (ARM64)
+    # Target System Dependencies (ARM64) - Installs libgpiod-dev v2 natively in Trixie
     libasound2-dev:arm64 \
     libpulse-dev:arm64 \
     libudev-dev:arm64 \
@@ -56,6 +56,7 @@ RUN dpkg --add-architecture arm64 && \
     libopenal-dev:arm64 \
     libwayland-dev:arm64 \
     libxkbcommon-dev:arm64 \
+    libgpiod-dev:arm64 \
     && rm -rf /var/lib/apt/lists/*
 
 # --- [2] GLOBAL OPTIMIZATION FLAGS (RPi4 / Cortex-A72) ---
@@ -138,4 +139,4 @@ RUN find /usr/aarch64-linux-gnu/lib -name "*.so*" -exec aarch64-linux-gnu-strip 
 WORKDIR /workspace
 
 # Informative output on container startup
-CMD ["/bin/bash", "-c", "echo 'RPi4 Cross-Compiler Forge Ready (Release Mode: Static & Shared)' && aarch64-linux-gnu-g++ --version"]
+CMD ["/bin/bash", "-c", "echo 'RPi Cross-Compiler Forge Ready (Debian Trixie - libgpiod v2)' && aarch64-linux-gnu-g++ --version"]

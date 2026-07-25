@@ -19,7 +19,7 @@ NGN_GPIO_MODE.input_pullup — Entrada digital con resistencia de pull-up intern
 NGN_GPIO_MODE.input_pulldown — Entrada digital con resistencia de pull-down interna activada.
 
 - Ejemplo
-ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
+ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);
 
 --------------------------------------------------------------------------------
 
@@ -32,13 +32,35 @@ ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
 --------------------------------------------------------------------------------
 
 - Método
-bool PortMode(uint8_t port_id, uint8_t mode);
+bool SetPortMode(uint8_t port_id, uint8_t mode);
 
 - Descripción
 Configura el modo de funcionamiento de un puerto GPIO (numeración BCM). Debe llamarse antes de usar DigitalWrite() o DigitalRead() sobre ese puerto. Si el puerto ya tenía un modo asignado previamente, se reconfigura con el nuevo modo. Devuelve TRUE si la operación se ha realizado con éxito, o FALSE si el número de puerto no es válido o se ha producido un error al reservarlo. Fuera de una Raspberry Pi el módulo GPIO no está disponible, por lo que este método no tiene ningún efecto y siempre devuelve FALSE.
 
 - Ejemplo
-ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
+ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SetDebounce(uint8_t port_id, uint32_t microseconds = 0);
+
+- Descripción
+Configura el tiempo del filtro anti-rebote (debounce) por hardware para un puerto previamente configurado como entrada (INPUT, INPUT_PULLUP o INPUT_PULLDOWN) mediante PortMode(). El parámetro microseconds especifica el tiempo mínimo en microsegundos que debe mantenerse estable una señal eléctrica para ser considerada un cambio de estado válido por el kernel, eliminando el ruido o falso contacto de botones y switches mecánicos. El valor por defecto es 0 (filtro desactivado). Devuelve TRUE si la reconfiguración se ha realizado con éxito, o FALSE si el puerto no es válido, no tiene ningún modo asignado o no está configurado como puerto de entrada.
+
+- Ejemplo
+ngn->gpio->SetDebounce(17, 5000); // Aplica 5 ms (5000 us) de filtro anti-rebote en el pin 17
+
+--------------------------------------------------------------------------------
+
+- Método
+bool SetDebounceAll(uint32_t microseconds = 0);
+
+- Descripción
+Configura de forma global el mismo tiempo del filtro anti-rebote (debounce) por hardware para todos los puertos configurados actualmente en cualquier modo de entrada (INPUT, INPUT_PULLUP o INPUT_PULLDOWN) mediante PortMode(). Los puertos de salida, no asignados o reservados son ignorados automáticamente sin generar un error. El parámetro microseconds especifica el tiempo en microsegundos que debe mantenerse estable la señal en los pines de entrada. El valor por defecto es 0 (filtro desactivado). Devuelve TRUE si la operación se ha realizado con éxito en todos los puertos de entrada activos, o FALSE si no se ha podido reconfigurar alguno de ellos.
+
+- Ejemplo
+ngn->gpio->SetDebounceAll(5000); // Aplica 5 ms (5000 us) de filtro anti-rebote a todos los botones de entrada
 
 --------------------------------------------------------------------------------
 
@@ -87,12 +109,43 @@ ngn->gpio->ReleaseAllPorts();
 --------------------------------------------------------------------------------
 
 - Método
+uint8_t GetPortMode(uint8_t port_id);
+
+- Descripción
+Devuelve el modo de funcionamiento actual de un puerto GPIO (numeración BCM). El valor devuelto corresponde a una de las constantes definidas en NGN_GPIO_MODE (input, output, input_pullup, input_pulldown). Si el número de puerto no es válido, no está disponible o no se le ha asignado ningún modo previamente mediante PortMode(), devuelve NGN_GPIO_MODE.undefined. Fuera de una Raspberry Pi siempre devolverá NGN_GPIO_MODE.undefined.
+
+- Ejemplo
+uint8_t mode = ngn->gpio->GetPortMode(17);
+if (mode == NGN_GPIO_MODE.output) ngn->gpio->DigitalWrite(17, true);
+
+--------------------------------------------------------------------------------
+
+- Método
 bool IsAvailable();
 
 - Descripción
 Indica si el módulo GPIO se ha inicializado correctamente durante el arranque de la librería y está listo para ser usado. Su valor siempre será FALSE fuera de una Raspberry Pi, o en una Raspberry Pi si no ha sido posible abrir el chip GPIO del sistema.
 
 - Ejemplo
-if (ngn->gpio->IsAvailable()) ngn->gpio->PortMode(17, NGN_GPIO_MODE.output);
+if (ngn->gpio->IsAvailable()) ngn->gpio->SetPortMode(17, NGN_GPIO_MODE.output);
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+	CONSTANTES de la clase
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+
+- Constante
+uint32_t NGN_GPIO_DEBOUNCE_TIME
+
+- Descripción
+Define el tiempo de anti-rebote (debounce) por hardware recomendado en microsegundos para juegos a 60 FPS (8333 us, equivalente a medio frame de 16,66 ms). Este valor es ideal para ser utilizado como parámetro en los métodos SetDebounce() o SetDebounceAll(), eliminando por completo el ruido eléctrico y los falsos contactos de botones y switches mecánicos arcade sin introducir lag perceptible para el jugador.
+
+- Ejemplo
+ngn->gpio->SetDebounceAll(NGN_GPIO_DEBOUNCE_TIME);
 
 --------------------------------------------------------------------------------

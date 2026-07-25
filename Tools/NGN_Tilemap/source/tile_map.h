@@ -88,7 +88,7 @@ class TileMap {
         argument arg_help;              // Ayuda
         argument arg_in_file;           // Archivo de origen
         argument arg_out_file;          // Archivo de salida
-        argument arg_tile_size;         // Tama�o del tile
+        argument arg_tile_size;         // Tamaño del tile
         argument arg_op_level;          // Nivel de optimizacion
         argument arg_extra_files;       // Generacion de archivos adicionales
 
@@ -101,7 +101,7 @@ class TileMap {
         struct {
             std::string in_file;            // Archivo de entrada
             std::string out_file;           // Archivo de salida
-            int32_t tile_size;              // Tama�o del tile
+            int32_t tile_size;              // Tamaño del tile
             int32_t optimization_level;     // Nivel de optimizacion
             bool generate_extra_files;      // Generar archivos extra?
         } parameter;

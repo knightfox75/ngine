@@ -1,4 +1,15 @@
 --------------------------------------------------------------------------------
+2026-07-25 Ver.1.23.0+stable
+--------------------------------------------------------------------------------
+- Añadida la clase NGN_IndexedTiledBgData para la gestión de fondos de tiles indexados, los cuales permiten realizar efectos de paleta de colores.
+- Corregidas las cabeceras de todos los archivos de datos para evitar el desalineamiento de datos al cambiar de plataforma. Se mantiene la compatibilidad con los archivos generados previamente.
+- Añadidos a la clase NGN_Load los métodos necesarios para la carga de los nuevos fondos indexados.
+- Actualizada la imagen de Docker para la compilación cruzada de Raspberry Pi, pasando de "Debian Bookworm" a "Debian Trixie".
+- Documentación actualizada.
+- Ejemplos añadidos y actualizados.
+
+
+--------------------------------------------------------------------------------
 2026-05-01 Ver.1.22.0+stable
 --------------------------------------------------------------------------------
 - Reescritos por completo los métodos de carga de tipografías y de impresión de caracteres de texto. Ahora se genera un atlas con todos los caracteres y la función de impresión almacena la lista de vértices de los glifos hasta que se renderiza todo el texto pendiente en una sola llamada.

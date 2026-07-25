@@ -1,5 +1,5 @@
 NGN_TILEDBG.H
-v1.20.0-10th-Anniversay
+v1.23.0-stable
 Español
 
 --------------------------------------------------------------------------------
@@ -21,6 +21,22 @@ Ver las herramientas adjuntas a la librería para realizar la conversión de una
 
 - Ejemplo
 NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);
+
+--------------------------------------------------------------------------------
+
+- Método (Tercera sobrecarga)
+NGN_TiledBg(
+    NGN_IndexedTiledBgData* bg,     // Datos del fondo indexado
+    int32_t position_x = 0,         // Posición X del fondo [0 por defecto]
+    int32_t position_y = 0          // Posición Y del fondo [0 por defecto]
+);
+
+- Descripción
+Crea una instancia de un fondo de tiles a partir de una estructura de datos de fondo indexado (NGN_IndexedTiledBgData), situándolo inicialmente en las coordenadas X e Y especificadas.
+
+- Ejemplo
+NGN_IndexedTiledBgData* bg_data = ngn->load->IndexedTiledBg("data/bg.itb", "data/bg.pal");
+NGN_TiledBg* background = new NGN_TiledBg(bg_data, 0, 0);
 
 --------------------------------------------------------------------------------
 
@@ -193,5 +209,32 @@ bool ignore_camera_tint
 
 - Descripción
 Indica si el fondo debe ignorar el color de tinte asignado a la capa de la cámara.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+FORMATO DE ARCHIVO DE CICLOS DE PALETA (.CYC)
+--------------------------------------------------------------------------------
+
+- Sintaxis de línea
+UNIQUE_ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]
+
+- Parámetros
+1. UNIQUE_ID: Identificador numérico único del ciclo de rotación dentro del archivo.
+2. LOW: Índice inferior (mínimo) de la paleta a rotar (0 a 255).
+3. HIGH: Índice superior (máximo) de la paleta a rotar (0 a 255).
+4. RATE: Velocidad de rotación expresada en número de fotogramas entre cada cambio.
+5. DIRECTION: Dirección de la rotación (+1 para avance, -1 para retroceso).
+6. LOOP_DELAY (Opcional): Tiempo de espera en fotogramas antes de reiniciar el ciclo.
+
+- Descripción
+Archivo de texto plano utilizado para definir animaciones de paleta mediante rotación de rangos de color en fondos de tiles indexados. Cada línea no vacía que no comience por '#' define un ciclo independiente.
+
+- Ejemplo
+# Formato: ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]
+1; 2; 10; 8; 1
+2; 15; 20; 4; -1; 60
 
 --------------------------------------------------------------------------------

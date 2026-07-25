@@ -21,7 +21,7 @@ Opens and reads the specified file in binary mode and stores its content in the 
 
 - Example
 std::vector<uint8_t> data;
-int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);
+int32_t length = ngn->disk->ReadBinaryFile("data/gamelevel.bin", data);
 
 --------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ Opens and writes, in binary mode, to the specified file in the system's file sys
 
 - Example
 std::vector<uint8_t> save_data;
-int32_t length = ngn->disk->WriteBinaryFile(“save/card01.sav”, save_data);
+int32_t length = ngn->disk->WriteBinaryFile("save/card01.sav", save_data);
 
 --------------------------------------------------------------------------------
 
@@ -57,11 +57,11 @@ Open and read, in text mode, the specified file in the system's file system and 
 - Example
 
 [First Overload]
-std::string text = ngn->disk-> ReadTextFile(“data/info/eula.txt”);
+std::string text = ngn->disk-> ReadTextFile("data/info/eula.txt");
 
 [Second Overload]
 std::vector<std::string> text_lines;
-bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);
+bool r = ngn->disk->ReadTextFile("data/info/eula.txt", text_lines);
 
 --------------------------------------------------------------------------------
 
@@ -77,8 +77,8 @@ int32_t WriteTextFile(
 Opens and writes, in text mode, to the specified file in the system's file system, the data stored in the given string. Additionally, this method creates the path if it does not exist and returns the number of characters written (including line breaks) to the file or -1 in case of an error. Optionally, you can specify whether the data should be appended to the end of the file, preserving the existing content (append = true), or if the file content should be overwritten (append = false, default).
 
 - Example
-std::string txt = “This is a simple text”;
-int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);
+std::string txt = "This is a simple text";
+int32_t length = ngn->disk->WriteTextFile("logs/debug.log", txt, true);
 
 --------------------------------------------------------------------------------
 
@@ -89,6 +89,6 @@ int32_t CheckFile(std::string path);
 Verifies if the specified file at the path exists and is accessible. If yes, it returns the size of the file in bytes. If not, it returns -1.
 
 - Example
-int32_t length = ngn->disk->CheckFile(“logs/debug.log”);
+int32_t length = ngn->disk->CheckFile("logs/debug.log");
 
 --------------------------------------------------------------------------------

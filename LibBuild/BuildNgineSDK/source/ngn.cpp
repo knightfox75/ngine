@@ -1,7 +1,7 @@
 /******************************************************************************
 
     N'gine Lib for C++
-    *** Version 1.22.0+stable ***
+    *** Version 1.23.0+stable ***
     Archivo principal de la libreria
 
     Proyecto iniciado el 1 de Febrero del 2016
@@ -87,6 +87,7 @@ NGN::NGN() {
     disk = nullptr;             // Gestion de archivos en el disco
     resources = nullptr;        // Gestion integrada de recursos
     video = nullptr;            // Reproduccion de video en formato OGV en una textura
+    gpio = nullptr;             // Acceso al GPIO de Raspberry PI
 
     // Prepara los objetos de la libreria
     camera = nullptr;           // Crea la camara virtual 2D
@@ -102,6 +103,7 @@ NGN::~NGN() {
     delete camera; camera = nullptr;
 
     // Elimina todas las instancias a los singletons
+    NGN_Gpio::RemoveInstance(); gpio = nullptr;
     NGN_Video::RemoveInstance(); video = nullptr;
     NGN_Resources::RemoveInstance(); resources = nullptr;
     NGN_Disk::RemoveInstance(); disk = nullptr;
@@ -144,6 +146,7 @@ bool NGN::Init() {
     disk = NGN_Disk::GetInstance();                 // Gestion de archivos en el disco
     resources = NGN_Resources::GetInstance();       // Gestion integrada de recursos
     video = NGN_Video::GetInstance();               // Reproduccion de video en formato OGV en una textura
+    gpio = NGN_Gpio::GetInstance();                 // Acceso al GPIO de Raspberry PI
 
     // Inicia los singletons de la libreria
     log->BootUp();                      // Mensages de depuracion
@@ -160,6 +163,7 @@ bool NGN::Init() {
     disk->BootUp();                     // Gestion de archivos en el disco
     resources->BootUp();                // Gestion integrada de recursos
     video->BootUp();                    // Reproduccion de video en formato OGV en una textura
+    gpio->BootUp();                     // Acceso al GPIO de Raspberry PI
 
     // Crea los objetos adicionales de a libreria
     camera = new NGN_Camera();          // Crea la camara virtual 2D

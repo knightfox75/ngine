@@ -30,16 +30,16 @@
             <section id="ReadBinaryFile" class="doc-block">
                 <h3>Método</h3>
                 <pre><code>int32_t ReadBinaryFile(
-    std::string filepath,                   // Ruta al archivo
-    std::vector<uint8_t> &buffer,                    // Vector de almacenamiento
-    uint32_t offset = NGN_DEFAULT_VALUE,    // Byte donde empezar la lectura (opcional)
-    uint32_t length = NGN_DEFAULT_VALUE     // Numero de bytes a leer (opcional)
+    std::string filepath,				// Ruta al archivo
+    std::vector&lt;uint8_t&gt; &amp;buffer,			// Vector de almacenamiento
+    uint32_t offset = NGN_DEFAULT_VALUE,		// Byte donde empezar la lectura (opcional)
+    uint32_t length = NGN_DEFAULT_VALUE		// Numero de bytes a leer (opcional)
 );</code></pre>
                 <h3>Descripción</h3>
                 <p>Abre y lee en modo binario el archivo especificado en la ruta y vuelca su contenido en el buffer proporcionado. El método devuelve el tamaño de los datos leídos (en bytes) o -1 en caso de error. Permite realizar lecturas parciales mediante los parámetros opcionales offset y length. Si no se especifica una longitud, se leerá desde el offset hasta el final del archivo.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; data;
-int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);</code></pre>
+int32_t length = ngn->disk->ReadBinaryFile("data/gamelevel.bin", data);</code></pre>
             </section>
 
             <section id="WriteBinaryFile" class="doc-block">
@@ -52,7 +52,7 @@ int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);</cod
                 <p>Abre y escribe, en modo binario, en el archivo especificado en la ruta del sistema de archivos del sistema, los datos almacenados en el buffer dado. Este método, además, crea la ruta si esta no existe y devuelve el número de bytes escritos en el archivo o -1 en caso de error.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; save_data;
-int32_t length = ngn->disk->WriteBinaryFile(“save/card01.sav”, save_data);</code></pre>
+int32_t length = ngn->disk->WriteBinaryFile("save/card01.sav", save_data);</code></pre>
             </section>
 
             <section id="ReadTextFile" class="doc-block">
@@ -69,11 +69,11 @@ bool ReadTextFile(
                 <p>Abre y lee, en modo texto, el archivo especificado en la ruta del sistema de archivos del sistema y devuelve su contenido en un string o una cadena vacia si no se puede leer el archivo (primera sobrecarga). La segunda sobrecarga almacena por separado en el vector de strings dado las líneas de texto, además de devolver TRUE o FALSE según si se ha podido o no leer el archivo.</p>
                 <h3>Ejemplo</h3>
                 <pre><code>// Primera sobrecarga
-std::string text = ngn->disk-> ReadTextFile(“data/info/eula.txt”);
+std::string text = ngn->disk-> ReadTextFile("data/info/eula.txt");
 
 // Segunda sobrecarga
 std::vector&lt;std::string&gt; text_lines;
-bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);</code></pre>
+bool r = ngn->disk->ReadTextFile("data/info/eula.txt", text_lines);</code></pre>
             </section>
 
             <section id="WriteTextFile" class="doc-block">
@@ -86,8 +86,8 @@ bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);</code></
                 <h3>Descripción</h3>
                 <p>Abre y escribe, en modo texto, en el archivo especificado en la ruta del sistema de archivos del sistema, los datos almacenados en el string dado. Este método, además, crea la ruta si esta no existe y devuelve el número de caracteres escritos (saltos de línea incluidos) en el archivo o -1 en caso de error. Opcionalmente, se puede especificar si los datos han de ser adjuntados al final del archivo, conservando los existentes (<code>append = true</code>) o se ha de sobrescribir el contenido del archivo (<code>append = false</code>, por defecto).</p>
                 <h3>Ejemplo</h3>
-                <pre><code>std::string txt = “This is a simple text”;
-int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);</code></pre>
+                <pre><code>std::string txt = "This is a simple text";
+int32_t length = ngn->disk->WriteTextFile("logs/debug.log", txt, true);</code></pre>
             </section>
 
             <section id="CheckFile" class="doc-block">
@@ -96,7 +96,7 @@ int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);</cod
                 <h3>Descripción</h3>
                 <p>Verifica si el archivo especificado en la ruta existe y es accesible. En caso afirmativo, devuelve el tamaño de dicho archivo en bytes. De no serlo, devuelve -1.</p>
                 <h3>Ejemplo</h3>
-                <pre><code>int32_t length = ngn->disk->CheckFile(“logs/debug.log”);</code></pre>
+                <pre><code>int32_t length = ngn->disk->CheckFile("logs/debug.log");</code></pre>
             </section>
         </main>
     </div>

@@ -31,6 +31,7 @@
 # Admited filetypes
 # TEX   Textures (.png)
 # TBG   Tiled backgrounds (.tbg)
+# ITB   Indexed tiled backgrounds (.itb)
 # SPR   Sprites (.spr)
 # MAP   Collision maps (.map)
 # SFX   Sound Effects (.wav) (.ogg)
@@ -49,6 +50,9 @@ SPR; bird; data/bird_small.spr
 TBG; bg0; data/bg0.tbg
 TBG; bg1; data/bg1.tbg
 TBG; bg2; data/bg2.tbg
+# Indexed tiled backgrounds
+ITB; clouds; data/tiles/clouds.itb; data/tiles/day_clouds.pal
+ITB; clouds; data/tiles/clouds.itb; data/tiles/night_clouds.pal; data/tiles/clouds_storm.cyc
 # Sound Effects
 SFX; shutter; data/shutter.wav
 # Fonts
@@ -67,8 +71,8 @@ FNT; mono_16; data/monofonto.ttf; 16; 1; 0xFFFFFF; 1; 0x202020
                     <li><a href="#RemoveRepository">RemoveRepository</a></li>
                     <li><a href="#Clear">Clear</a></li>
                     <li><a href="#Load">Load</a></li>
-                    <li><a href="#GetResource">GetTexture / GetTiledbg / ...</a></li>
-                    <li><a href="#RemoveResource">RemoveTexture / RemoveTiledbg / ...</a></li>
+                    <li><a href="#GetResource">GetTexture / GetTiledbg / GetIndexedTiledbg / ...</a></li>
+                    <li><a href="#RemoveResource">RemoveTexture / RemoveTiledbg / RemoveIndexedTiledbg / ...</a></li>
                 </ul>
             </nav>
             <hr>
@@ -114,6 +118,7 @@ FNT; mono_16; data/monofonto.ttf; 16; 1; 0xFFFFFF; 1; 0x202020
                 <h3>Method</h3>
                 <pre><code>NGN_TextureData* GetTexture(std::string repo_name, std::string resource_name, bool err = true);
 NGN_TiledBgData* GetTiledbg(std::string repo_name, std::string resource_name, bool err = true);
+NGN_IndexedTiledBgData* GetIndexedTiledbg(std::string repo_name, std::string resource_name, bool err = true);
 NGN_SpriteData* GetSprite(std::string repo_name, std::string resource_name, bool err = true);
 NGN_CollisionMapData* GetCmap(std::string repo_name, std::string resource_name, bool err = true);
 NGN_AudioClipData* GetSfx(std::string repo_name, std::string resource_name, bool err = true);
@@ -122,14 +127,15 @@ NGN_TextFont* GetTypeface(std::string repo_name, std::string resource_name, bool
                 <h3>Description</h3>
                 <p>Returns the memory pointer to the resource with the requested name or a vector with the content in the case of text files. If the resource or repository is not found, it returns NULL or an empty vector. If the "err" parameter is TRUE (by default), it also prints the error in the debug console and in the log file if the resource is not found.</p>
                 <h3>Example</h3>
-                <pre><code>NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture(“local”, “background”), 0, 0);
-NGN_SpriteData* bullet = ngn->resources->GetSprite(“local”, “arrow”);</code></pre>
+                <pre><code>NGN_Texture* bg = new NGN_Texture(ngn->resources->GetTexture("local", "background"), 0, 0);
+NGN_SpriteData* bullet = ngn->resources->GetSprite("local", "arrow");</code></pre>
             </section>
 
             <section id="RemoveResource" class="doc-block">
                 <h3>Method</h3>
                 <pre><code>bool RemoveTexture(std::string repo_name, std::string resource_name);
 bool RemoveTiledbg(std::string repo_name, std::string resource_name);
+bool RemoveIndexedTiledbg(std::string repo_name, std::string resource_name);
 bool RemoveSprite(std::string repo_name, std::string resource_name);
 bool RemoveCmap(std::string repo_name, std::string resource_name);
 bool RemoveSfx(std::string repo_name, std::string resource_name);
@@ -174,7 +180,7 @@ bool RemoveTypeface(std::string repo_name, std::string resource_name);</code></p
                 <h3>NGN_Sprite</h3>
                 <pre><code>NGN_Sprite(
     std::string repo_name,              // Repository name
-    std::string resource_name,          // Resource name
+    std::string resource_name,          // Repository name
     int32_t position_x,                 // Initial X position
     int32_t position_y,                 // Initial Y position
     uint32_t sprite_width,              // Sprite width

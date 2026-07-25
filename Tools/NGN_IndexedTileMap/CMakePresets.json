@@ -1,0 +1,79 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 14,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "Base",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/temp",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": true
+            }
+        },
+        {
+            "name": "Linux-Release",
+            "description": "Linux - Release (x86_64)",
+            "generator": "Unix Makefiles",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_ARCH_TYPE": "Linux_x86_64"
+            }
+        },
+        {
+            "name": "Linux-Debug",
+            "description": "Linux - Debug (x86_64)",
+            "generator": "Unix Makefiles",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_ARCH_TYPE": "Linux_x86_64"
+            }
+        },
+        {
+            "name": "Raspberry-Release",
+            "description": "Raspberry Pi - Release (ARM64)",
+            "generator": "Unix Makefiles",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_ARCH_TYPE": "Raspberry"
+            }
+        },
+        {
+            "name": "Raspberry-Debug",
+            "description": "Raspberry Pi - Debug (ARM64)",
+            "generator": "Unix Makefiles",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_ARCH_TYPE": "Raspberry"
+            }
+        },
+        {
+            "name": "Windows-Release",
+            "description": "Windows - Release (MinGW x64)",
+            "generator": "MinGW Makefiles",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_ARCH_TYPE": "Windows_x86_64"
+            }
+        },
+        {
+            "name": "Windows-Debug",
+            "description": "Windows - Debug (MinGW x64)",
+            "generator": "MinGW Makefiles",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_ARCH_TYPE": "Windows_x86_64"
+            }
+        }
+    ]
+}

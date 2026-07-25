@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-project(ngn_library LANGUAGES CXX C VERSION 1.22.0.7)
+project(ngn_library LANGUAGES CXX C VERSION 1.23.0.4)
 include(GNUInstallDirs)
 
 # --- [1] ARCHITECTURE TUNING (Raspberry Pi 4) ---
@@ -42,6 +42,9 @@ find_package(SFML COMPONENTS system audio REQUIRED)
 find_library(THEORADEC_LIB NAMES theoradec theora REQUIRED)
 find_library(VORBIS_LIB NAMES vorbis REQUIRED)
 find_library(OGG_LIB NAMES ogg REQUIRED)
+
+# GPIO access (NGN_Gpio module, libgpiod v1 API) - Raspberry Pi only, not needed on x86
+find_library(GPIOD_LIB gpiod REQUIRED)
 
 # --- [4] SOURCE FILES ---
 # Added "source/*.c" to capture C middleware (theoraplay.c)
@@ -79,6 +82,7 @@ foreach(target ngn ngn_shared)
         ${THEORADEC_LIB}
         ${VORBIS_LIB}
         ${OGG_LIB}
+        ${GPIOD_LIB}
     )
 endforeach()
 

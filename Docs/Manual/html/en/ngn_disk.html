@@ -30,16 +30,16 @@
             <section id="ReadBinaryFile" class="doc-block">
                 <h3>Method</h3>
                 <pre><code>int32_t ReadBinaryFile(
-    std::string filepath,                   // Path to the file
-    std::vector<uint8_t> &buffer,                    // Storage vector
-    uint32_t offset = NGN_DEFAULT_VALUE,    // Starting byte for reading (optional)
-    uint32_t length = NGN_DEFAULT_VALUE     // Number of bytes to read (optional)
+    std::string filepath,				// Path to the file
+    std::vector&lt;uint8_t&gt; &amp;buffer,			// Storage vector
+    uint32_t offset = NGN_DEFAULT_VALUE,		// Starting byte for reading (optional)
+    uint32_t length = NGN_DEFAULT_VALUE		// Number of bytes to read (optional)
 );</code></pre>
                 <h3>Description</h3>
                 <p>Opens and reads the specified file in binary mode and stores its content in the provided buffer. This method returns the total bytes read or -1 if an error occurs. It optionally supports partial reads using the offset and length parameters. If length is not specified, the file will be read from the offset to the end of the file.</p>
                 <h3>Example</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; data;
-int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);</code></pre>
+int32_t length = ngn->disk->ReadBinaryFile("data/gamelevel.bin", data);</code></pre>
             </section>
 
             <section id="WriteBinaryFile" class="doc-block">
@@ -52,7 +52,7 @@ int32_t length = ngn->disk->ReadBinaryFile(“data/gamelevel.bin”, data);</cod
                 <p>Opens and writes, in binary mode, to the specified file in the system's file system, the data stored in the given buffer. Additionally, this method creates the path if it does not exist and returns the number of bytes written to the file or -1 in case of an error.</p>
                 <h3>Example</h3>
                 <pre><code>std::vector&lt;uint8_t&gt; save_data;
-int32_t length = ngn->disk->WriteBinaryFile(“save/card01.sav”, save_data);</code></pre>
+int32_t length = ngn->disk->WriteBinaryFile("save/card01.sav", save_data);</code></pre>
             </section>
 
             <section id="ReadTextFile" class="doc-block">
@@ -69,11 +69,11 @@ bool ReadTextFile(
                 <p>Open and read, in text mode, the specified file in the system's file system and return its content as a string or an empty string if the file cannot be read (first overload). The second overload separately stores the text lines in the given vector of strings and returns TRUE or FALSE depending on whether the file could be read or not.</p>
                 <h3>Example</h3>
                 <pre><code>// First Overload
-std::string text = ngn->disk-> ReadTextFile(“data/info/eula.txt”);
+std::string text = ngn->disk-> ReadTextFile("data/info/eula.txt");
 
 // Second Overload
 std::vector&lt;std::string&gt; text_lines;
-bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);</code></pre>
+bool r = ngn->disk->ReadTextFile("data/info/eula.txt", text_lines);</code></pre>
             </section>
 
             <section id="WriteTextFile" class="doc-block">
@@ -86,8 +86,8 @@ bool r = ngn->disk->ReadTextFile(“data/info/eula.txt”, text_lines);</code></
                 <h3>Description</h3>
                 <p>Opens and writes, in text mode, to the specified file in the system's file system, the data stored in the given string. Additionally, this method creates the path if it does not exist and returns the number of characters written (including line breaks) to the file or -1 in case of an error. Optionally, you can specify whether the data should be appended to the end of the file, preserving the existing content (<code>append = true</code>), or if the file content should be overwritten (<code>append = false</code>, default).</p>
                 <h3>Example</h3>
-                <pre><code>std::string txt = “This is a simple text”;
-int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);</code></pre>
+                <pre><code>std::string txt = "This is a simple text";
+int32_t length = ngn->disk->WriteTextFile("logs/debug.log", txt, true);</code></pre>
             </section>
 
             <section id="CheckFile" class="doc-block">
@@ -96,7 +96,7 @@ int32_t length = ngn->disk->WriteTextFile(“logs/debug.log”, txt, true);</cod
                 <h3>Description</h3>
                 <p>Verifies if the specified file at the path exists and is accessible. If yes, it returns the size of the file in bytes. If not, it returns -1.</p>
                 <h3>Example</h3>
-                <pre><code>int32_t length = ngn->disk->CheckFile(“logs/debug.log”);</code></pre>
+                <pre><code>int32_t length = ngn->disk->CheckFile("logs/debug.log");</code></pre>
             </section>
         </main>
     </div>

@@ -1,5 +1,5 @@
 NGN_TILEDBG.H
-v1.20.0-10th-Anniversay
+v1.23.0-stable
 English
 
 --------------------------------------------------------------------------------
@@ -21,6 +21,22 @@ Refer to the tools provided with the library for converting a PNG image to tiles
 
 - Example
 NGN_TiledBg* bg_front = new NGN_TiledBg(tiles_bg_front);
+
+--------------------------------------------------------------------------------
+
+- Method (Third Overload)
+NGN_TiledBg(
+    NGN_IndexedTiledBgData* bg,     // Indexed background data
+    int32_t position_x = 0,         // X position of the background [0 by default]
+    int32_t position_y = 0          // Y position of the background [0 by default]
+);
+
+- Description
+Creates an instance of a tiled background from an indexed background data structure (NGN_IndexedTiledBgData), placing it initially at the specified X and Y coordinates.
+
+- Example
+NGN_IndexedTiledBgData* bg_data = ngn->load->IndexedTiledBg("data/bg.itb", "data/bg.pal");
+NGN_TiledBg* background = new NGN_TiledBg(bg_data, 0, 0);
 
 --------------------------------------------------------------------------------
 
@@ -171,10 +187,10 @@ The default value for this property is NGN_BLENDMODE_ALPHA.
 
 --------------------------------------------------------------------------------
 
-// Property
+- Property
 double rotation
 
-// Description
+- Description
 Rotation angle of the background, in degrees.
 
 --------------------------------------------------------------------------------
@@ -193,5 +209,32 @@ bool ignore_camera_tint
 
 - Description
 Indicates whether the background should ignore the tint color assigned to the camera layer.
+
+--------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+PALETTE CYCLE FILE FORMAT (.CYC)
+--------------------------------------------------------------------------------
+
+- Line Syntax
+UNIQUE_ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]
+
+- Parameters
+1. UNIQUE_ID: Unique numeric identifier for the rotation cycle within the file.
+2. LOW: Lower index (minimum) of the palette range to rotate (0 to 255).
+3. HIGH: Upper index (maximum) of the palette range to rotate (0 to 255).
+4. RATE: Rotation speed expressed in number of frames between each step.
+5. DIRECTION: Direction of color rotation (+1 for forward, -1 for backward).
+6. LOOP_DELAY (Optional): Wait time in frames before restarting the cycle.
+
+- Description
+Plain text file used to define palette animations by rotating color ranges in indexed tiled backgrounds. Each non-empty line not starting with '#' defines an independent cycle.
+
+- Example
+# Format: ID; LOW; HIGH; RATE; DIRECTION; [LOOP_DELAY]
+1; 2; 10; 8; 1
+2; 15; 20; 4; -1; 60
 
 --------------------------------------------------------------------------------

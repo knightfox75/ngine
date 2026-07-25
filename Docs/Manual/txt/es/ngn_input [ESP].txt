@@ -99,7 +99,7 @@ En caso de conexión o desconexión de un controlador en caliente, la librería 
 --------------------------------------------------------------------------------
 
 - Propiedad
-controler[n]
+controller[n]
 
 - Descripción
 La clase “input” dispone de acceso a los controladores a partir de la propiedad “controller[n]”, donde "n" indica el SLOT de conexión a leer [0 - 7]. Si se accede a un SLOT sin conexión, se devuelven los valores por defecto.
